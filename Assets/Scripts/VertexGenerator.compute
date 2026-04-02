@@ -1,0 +1,251 @@
+#pragma kernel GenerateTerrain
+#pragma kernel SetTerrainBlocks
+#pragma kernel AddOres
+#pragma kernel ComputeMesh
+
+#include "Packages/jp.keijiro.noiseshader/Shader/SimplexNoise3D.hlsl"
+#include "Packages/jp.keijiro.noiseshader/Shader/ClassicNoise3D.hlsl"
+
+
+static const float3  VertsNX[4] = { float3(-0.5, -0.5,  0.5), float3(-0.5,  0.5,  0.5), float3(-0.5,  0.5, -0.5), float3(-0.5, -0.5, -0.5)};
+static const float3  VertsPX[4] = { float3( 0.5, -0.5,  0.5), float3( 0.5, -0.5, -0.5), float3( 0.5,  0.5, -0.5), float3( 0.5,  0.5,  0.5)};
+static const float3  VertsNY[4] = { float3( 0.5, -0.5, -0.5), float3( 0.5, -0.5,  0.5), float3(-0.5, -0.5,  0.5), float3(-0.5, -0.5, -0.5)};
+static const float3  VertsPY[4] = { float3( 0.5,  0.5,  0.5), float3( 0.5,  0.5, -0.5), float3(-0.5,  0.5, -0.5), float3(-0.5,  0.5,  0.5)};
+static const float3  VertsNZ[4] = { float3( 0.5, -0.5, -0.5), float3(-0.5, -0.5, -0.5), float3(-0.5,  0.5, -0.5), float3( 0.5,  0.5, -0.5)};
+static const float3  VertsPZ[4] = { float3(-0.5, -0.5,  0.5), float3( 0.5, -0.5,  0.5), float3( 0.5,  0.5,  0.5), float3(-0.5,  0.5,  0.5)};
+
+static const float3  NormNX = float3(-1.0, 0.0, 0.0);
+static const float3  NormPX = float3( 1.0, 0.0, 0.0);
+static const float3  NormNY = float3( 0.0,-1.0, 0.0);
+static const float3  NormPY = float3( 0.0, 1.0, 0.0);
+static const float3  NormNZ = float3( 0.0, 0.0,-1.0);
+static const float3  NormPZ = float3( 0.0, 0.0, 1.0);
+
+static const float2  TexNX2[4] = { float2(0.001, 0.749), float2(0.249, 0.749), float2(0.249, 0.501), float2(0.001, 0.501)};
+static const float2  TexPX2[4] = { float2(0.501, 0.749), float2(0.749, 0.749), float2(0.749, 0.501), float2(0.501, 0.501)};
+static const float2  TexNY2[4] = { float2(0.251, 0.499), float2(0.499, 0.499), float2(0.499, 0.251), float2(0.251, 0.251)};
+static const float2  TexPY2[4] = { float2(0.251, 0.999), float2(0.499, 0.999), float2(0.499, 0.751), float2(0.251, 0.751)};
+static const float2  TexNZ2[4] = { float2(0.251, 0.749), float2(0.499, 0.749), float2(0.499, 0.501), float2(0.251, 0.501)};
+static const float2  TexPZ2[4] = { float2(0.751, 0.749), float2(0.999, 0.749), float2(0.999, 0.501), float2(0.751, 0.501)};
+
+static const float2  TexNX[4] = { float2(0.001, 0.001), float2(0.001, 0.999), float2(0.999, 0.999), float2(0.999, 0.001) };
+static const float2  TexPX[4] = { float2(0.001, 0.999), float2(0.999, 0.999), float2(0.999, 0.001), float2(0.001, 0.001) };
+static const float2  TexNY[4] = { float2(0.001, 0.001), float2(0.001, 0.999), float2(0.999, 0.999), float2(0.999, 0.001) };
+static const float2  TexPY[4] = { float2(0.001, 0.001), float2(0.001, 0.999), float2(0.999, 0.999), float2(0.999, 0.001) };
+static const float2  TexNZ[4] = { float2(0.001, 0.999), float2(0.999, 0.999), float2(0.999, 0.001), float2(0.001, 0.001) };
+static const float2  TexPZ[4] = { float2(0.001, 0.999), float2(0.999, 0.999), float2(0.999, 0.001), float2(0.001, 0.001) };
+
+static const float4 idColors[4] = {
+    float4(0., 0., 0., 1.),
+    float4(1., 0., 0., 1.),
+    float4(2., 0., 0., 1.),
+    float4(3., 0., 0., 1.)
+};
+
+// Map from a 3D voxel pos to an index in the flat voxel buffer
+int ComputeIndex(uint3 pos, uint3 size) { 
+    return pos.x + size.x * pos.y + size.x * size.y * pos.z;
+}
+
+
+
+RWStructuredBuffer<int> Voxels;
+uint3 Size;
+float Scale;
+float Threshold;
+float3 TranslateNoise;
+
+[numthreads(16,4,16)]
+void GenerateTerrain (uint3 id : SV_DispatchThreadID)
+{
+    for (uint y=0; y<Size.y; y++) {
+        uint3 pos = uint3(id.x % Size.x, y, id.z % Size.z);
+        int index = ComputeIndex(pos, Size);
+
+        float n = SimplexNoise((float3(pos.x,0.,pos.z) + TranslateNoise) * Scale);
+        float yRamp = pow(1-(float(y) / Size.y), 2.);
+
+        float t = yRamp;
+        t += n * 0.1;
+
+        
+
+        if (t > 0.5) {
+            Voxels[index] = 3; 
+        } else {
+            Voxels[index] = 0; 
+        }
+
+        //if (voxelID == 1 && y < Size.y-1) { // put dirt under grass
+        //    if(Voxels[ComputeIndex(pos + uint3(0,1,0), Size)] > 0) {
+        //        voxelID = 2;
+        //    } 
+        //}
+        //Voxels[index] = 1;
+    }
+}   
+
+
+
+[numthreads(16,4,16)]
+void SetTerrainBlocks (uint3 id : SV_DispatchThreadID) {
+    for (uint y=0; y<Size.y; y++) {
+        uint3 pos = uint3(id.x % Size.x, y, id.z % Size.z);
+
+        int index = ComputeIndex(pos, Size);
+
+        int voxel = Voxels[index];
+        int voxel_up1 = Voxels[ComputeIndex(pos + uint3(0,1,0), Size)];
+
+        int index_down1 = ComputeIndex(pos + uint3(0,-1,0), Size);
+        int index_down2 = ComputeIndex(pos + uint3(0,-2,0), Size);
+
+        if (voxel > 0) {
+            
+            if (y == Size.y-1 || voxel_up1 == 0) {
+                Voxels[index] = 1;
+
+                for (uint i=1; i<4; i++) {
+                    if (y > i-1) {
+                        Voxels[ComputeIndex(pos + uint3(0,-1 * i,0), Size)] = 2;
+                    }
+                }
+                
+            } else {
+                float n = SimplexNoise((pos + TranslateNoise) * Scale * 3.);
+                if (n < -0.3) {
+                    Voxels[index] = 4;
+                }
+            }
+        }
+
+    }
+}
+
+[numthreads(16,4,16)]
+void AddOres (uint3 id : SV_DispatchThreadID) {\
+
+    for (uint y=0; y<Size.y; y++) {
+        uint3 pos = uint3(id.x % Size.x, y, id.z % Size.z);
+        int index = ComputeIndex(pos, Size);
+
+        if (Voxels[index] == 3) {
+            float n = SimplexNoise(pos * 100.);
+            if (n < 0.00001) {
+                Voxels[index] = 6;
+            }
+        }
+    }
+        
+}
+
+
+RWStructuredBuffer<float3> Vertices;
+RWStructuredBuffer<float3> Normals;
+RWStructuredBuffer<float4> Colors;
+RWStructuredBuffer<float2> TexCoords;
+
+[numthreads(16,1,16)]
+void ComputeMesh (uint3 id : SV_DispatchThreadID)
+{
+    // Each thread represents one vertical column
+    for (uint y=0; y<Size.y; y++) {
+
+        uint3 pos = uint3(id.x % Size.x, y, id.z % Size.z);
+        uint voxIndex = ComputeIndex(pos, Size);
+        uint voxel = Voxels[voxIndex];        
+
+        if (voxel > 0) { // only run if voxel is not empty
+
+            // Check value of 6 adjacent voxels, and if current voxel is on chunk edge
+
+            uint vox_nx = 0;
+            uint vox_px = 0;
+            uint vox_ny = 0;
+            uint vox_py = 0;
+            uint vox_nz = 0;
+            uint vox_pz = 0;
+
+            if (pos.x > 0) {
+                vox_nx = Voxels[ComputeIndex(pos + NormNX, Size)];
+            }
+            if (pos.x < Size.x - 1){
+                vox_px = Voxels[ComputeIndex(pos + NormPX, Size)];
+            }
+            if (pos.y > 0) {
+                vox_ny = Voxels[ComputeIndex(pos + NormNY, Size)];
+            }
+            if (pos.y < Size.y - 1){
+                vox_py = Voxels[ComputeIndex(pos + NormPY, Size)];
+            }
+            if (pos.z > 0) {
+                vox_nz = Voxels[ComputeIndex(pos + NormNZ, Size)];
+            }
+            if (pos.z < Size.z - 1){
+                vox_pz = Voxels[ComputeIndex(pos + NormPZ, Size)];
+            }
+
+
+            // If adjacent voxel is empty, add a face
+            
+            uint index = 24 * voxIndex; // map from index in Voxel buffer to index in vertex buffer, which has 24 spaces per Voxel (6 faces * 4 verts)
+            float4 faceColor = float4(voxel, 0., 0., 1.);
+
+            if (vox_nx == 0) {
+                // Loop 4 times to add all 4 verts per face
+                for(int i=0; i<4; i++) {
+                    Vertices[index + i] = VertsNX[i] + pos;
+                    Normals[index + i] = NormNX;
+                    faceColor.y = 0.;
+                    Colors[index + i] = faceColor;
+                    TexCoords[index + i] = TexNX[3-i];// + float2(voxel, 0.);
+                }
+            }
+            if (vox_px == 0) {
+                for(int i=0; i<4; i++) {
+                    Vertices[index + i + 4] = VertsPX[i] + pos;
+                    Normals[index + i + 4] = NormPX;
+                    faceColor.y = 1.;
+                    Colors[index + i + 4] = faceColor;
+                    TexCoords[index + i + 4] = TexPX[3-i];// + float2(voxel, 0.);
+                }
+            }
+            if (vox_ny == 0) {
+                for(int i=0; i<4; i++) {
+                    Vertices[index + i + 8] = VertsNY[i] + pos;
+                    Normals[index + i + 8] = NormNY;
+                    faceColor.y = 2.;
+                    Colors[index + i + 8] = faceColor;
+                    TexCoords[index + i + 8] = TexNY[3-i];// + float2(voxel, 0.);
+                }
+            }
+            if (vox_py == 0) {
+                for(int i=0; i<4; i++) {
+                    Vertices[index + i + 12] = VertsPY[i] + pos;
+                    Normals[index + i + 12] = NormPY;
+                    faceColor.y = 3.;
+                    Colors[index + i + 12] = faceColor;
+                    TexCoords[index + i + 12] = TexPY[3-i];// + float2(voxel, 0.);
+                }
+            }
+            if (vox_nz == 0) {
+                for(int i=0; i<4; i++) {
+                    Vertices[index + i + 16] = VertsNZ[i] + pos;
+                    Normals[index + i + 16] = NormNZ;
+                    faceColor.y = 4.;
+                    Colors[index + i + 16] = faceColor;
+                    TexCoords[index + i + 16] = TexNZ[3-i];// + float2(voxel, 0.);
+                }
+            }
+            if (vox_pz == 0) {
+                for(int i=0; i<4; i++) {
+                    Vertices[index + i + 20] = VertsPZ[i] + pos;
+                    Normals[index + i + 20] = NormPZ;
+                    faceColor.y = 5.;
+                    Colors[index + i + 20] = faceColor;
+                    TexCoords[index + i + 20] = TexPZ[3-i];// + float2(voxel, 0.);
+                }
+            }
+        }
+    }
+}
