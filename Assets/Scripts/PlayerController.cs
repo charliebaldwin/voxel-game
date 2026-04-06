@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using VInspector;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class PlayerController : MonoBehaviour
     public float airborneControl = 0.5f;
     public float gravityForce = -9.8f;
     [ShowInInspector] private bool grounded;
+    public float friction = 0.1f;
 
 
     [Foldout("Camera")]
@@ -47,48 +49,82 @@ public class PlayerController : MonoBehaviour
 
     private float currentMoveSpeed = 0f;
     private float currentCameraLean = 0f;
+    private Vector3 cameraEuler;
 
     private Vector3 motion = Vector3.zero;
     private float gravity = 0f;
+
+    private Vector2 moveInput;
+    private Vector3 velocity;
 
     void Start()
     {
         charController = GetComponent<CharacterController>();
         playerCam = GetComponentInChildren<Camera>();
         Cursor.lockState = CursorLockMode.Locked;
+        cameraEuler = cameraPivot.localEulerAngles;
+        currentMoveSpeed = walkSpeed;
+    }
+
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        moveInput = context.ReadValue<Vector2>();
+        Debug.Log($"movement: {moveInput}");
+    }
+    public void OnSprint(InputAction.CallbackContext context)
+    {
+        currentMoveSpeed = Mathf.Lerp(walkSpeed, sprintSpeed, context.ReadValue<float>());
+    }
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (charController.isGrounded)
+        {
+            velocity.y = jumpForce;
+        }
+    }
+
+    public void OnAim(InputAction.CallbackContext context)
+    {
+        Vector2 aimDelta = context.ReadValue<Vector2>();
+
+
+        cameraEuler.x -= aimDelta.y * lookSens;
+        cameraEuler.x = Mathf.Clamp(cameraEuler.x, -90f, 90f);
+        currentCameraLean = Mathf.Lerp(currentCameraLean, -1f * cameraLeanAmount * aimDelta.x, 6f * Time.deltaTime * cameraLeanSpeed);
+        transform.Rotate(transform.up, aimDelta.x * lookSens);
+
+
+
     }
 
     void Update()
     {
-        Vector3 walkInput = GetMovementInput();
-
-        bool sprinting = Input.GetKey(sprintKey);
-        currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, sprinting ? sprintSpeed : walkSpeed, 0.1f);
-
+        //currentMoveSpeed = walkSpeed;
         grounded = charController.isGrounded;
 
-        Vector3 newMotion = Vector3.zero;
-        newMotion += walkInput.x * currentMoveSpeed * transform.right;
-        newMotion += walkInput.z * currentMoveSpeed * transform.forward;
+        if (!charController.isGrounded)
+        {
+            velocity.y += Time.deltaTime * gravityForce; 
+        }
 
+        velocity.x = 0f;
+        velocity.z = 0f;
 
-        // FLYING
-        newMotion += walkInput.y * currentMoveSpeed * transform.up;
+        velocity += moveInput.x * currentMoveSpeed * transform.right;
+        velocity += moveInput.y * currentMoveSpeed * transform.forward;
 
-        motion = Vector3.Lerp(motion, newMotion, grounded ? 1f : airborneControl);
-        motion.y = ComputeGravity();
+        charController.Move(Time.deltaTime * velocity);
 
+        if (charController.isGrounded)
+        {
+            velocity.y = Time.deltaTime * gravityForce;
+        }
 
+        currentCameraLean = Mathf.Lerp(currentCameraLean, -1f * cameraLeanAmount * moveInput.x, cameraLeanSpeed);
+        cameraEuler.y = 0f;
+        cameraEuler.z = currentCameraLean;
+        cameraPivot.localEulerAngles = cameraEuler;
 
-        charController.Move(Time.deltaTime * motion);
-
-        currentCameraLean = Mathf.Lerp(currentCameraLean, -1f * cameraLeanAmount * walkInput.x, cameraLeanSpeed);
-        cameraPivot.transform.localEulerAngles = GetAimInput();
-
-        Quaternion inverseQ = Quaternion.Inverse(cameraPivot.transform.localRotation);
-        handPivot.transform.localRotation = Quaternion.Slerp(inverseQ, Quaternion.identity, handRotateAmount);
-
-        motion = Vector3.zero;
     }
 
 
@@ -128,10 +164,7 @@ public class PlayerController : MonoBehaviour
             gravity = gravity + Time.deltaTime * gravityForce;
             gravity = Mathf.Clamp(gravity, -100f, 100f);
         }
-        if (Input.GetKeyDown(jumpKey) && grounded)
-        {
-            gravity = jumpForce;
-        }
+
         return gravity;
     }
 

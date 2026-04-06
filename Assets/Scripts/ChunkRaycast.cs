@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ChunkRaycast : MonoBehaviour
 {
@@ -54,43 +55,29 @@ public class ChunkRaycast : MonoBehaviour
         }
     }
 
+    public void OnPrimary(InputAction.CallbackContext context)
+    {
+        if (context.started)
+            DoRaycast3(1);
+    }
+    public void OnSecondary(InputAction.CallbackContext context)
+    {
+        if (context.started)
+            DoRaycast3(2);
+    }
+    public void OnNumKey(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            placedBlockType = Mathf.RoundToInt(context.ReadValue<float>());
+            UICubeMat.SetInteger("_Index", placedBlockType);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            DoRaycast3(1);
-        } 
-        else if ( Input.GetMouseButtonDown(1)) 
-        {
-            DoRaycast3(2);
-        } else
-        {
-            DoRaycast3(0);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            placedBlockType = 1;
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-            placedBlockType = 2;
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-            placedBlockType = 3;
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-            placedBlockType = 4;
-        if (Input.GetKeyDown(KeyCode.Alpha5))
-            placedBlockType = 5;
-        if (Input.GetKeyDown(KeyCode.Alpha6))
-            placedBlockType = 6;
-        if (Input.GetKeyDown(KeyCode.Alpha7))
-            placedBlockType = 7;
-        if (Input.GetKeyDown(KeyCode.Alpha8))
-            placedBlockType = 8;
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-            placedBlockType = 9;
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-            placedBlockType = 10;
-
-        UICubeMat.SetInteger("_Index", placedBlockType);
+        DoRaycast3(0);
 
     }
 

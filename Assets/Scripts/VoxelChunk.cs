@@ -294,7 +294,7 @@ public class VoxelChunk : MonoBehaviour
                     int voxelID = voxelData[x, y, z];
                     switch (voxelID)
                     {
-                        case (1):
+                        case (1): // grass
                             if (y < Size3D.y - 1)
                             {
                                 if (voxelData[x, y + 1, z] > 0)
@@ -304,12 +304,13 @@ public class VoxelChunk : MonoBehaviour
                                 }
                             }
                             break;
-                        case (2):
+                        case (2): // dirt
                             if (y < Size3D.y - 1)
                             {
                                 if (voxelData[x, y + 1, z] == 0)
                                 {
-                                    if (BlockRandomEvent(new int3(x, y, z), 0.0025f))
+                                    // grow into dirt with random chance
+                                    if (BlockRandomEvent(new int3(x, y, z), 0.0005f)) 
                                     {
                                         voxelData[x, y, z] = 1;
                                         meshDirty = true;

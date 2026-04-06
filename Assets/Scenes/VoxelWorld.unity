@@ -283,6 +283,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 5169377436148619620, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      propertyPath: Cursor
+      value: 
+      objectReference: {fileID: 2111434827}
     - target: {fileID: 5793974745253439579, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -302,40 +306,13 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       insertIndex: -1
       addedObject: {fileID: 183559700}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5793974745253439579, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 584695761}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
 --- !u!4 &584695759 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
   m_PrefabInstance: {fileID: 584695758}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &584695760 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5793974745253439579, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
-  m_PrefabInstance: {fileID: 584695758}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &584695761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 584695760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13622eb81518af249bfe2df92b2a2440, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ChunkRaycast
-  mask:
-    serializedVersion: 2
-    m_Bits: 0
-  Distance: 20
-  Steps: 300
-  Cursor: {fileID: 2111434827}
-  UICubeMat: {fileID: 2100000, guid: 18d506c3bfbfa214fac62462c4b3e01e, type: 2}
 --- !u!1 &871158458
 GameObject:
   m_ObjectHideFlags: 0
@@ -361,7 +338,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 871158458}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
   m_Name: 
