@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Unity.Mathematics;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using VInspector;
@@ -64,23 +65,28 @@ public class VoxelChunk : MonoBehaviour
 
     private void Awake()
     {
-        meshFilter = GetComponent<MeshFilter>();
-        meshCollider = GetComponent<MeshCollider>();
-        //voxelTex = new RenderTexture(voxelTex);
-
-        lastPos = transform.position;
-        lastScale = NoiseScale;
-        lastThresh = NoiseThreshold;
-        lastSize = Size3D;
+        InitializeChunk();
 
     }
 
 
     private void Start()
     {
-        GenerateVoxels(Compute);
+        //GenerateVoxels(Compute);
         //ComputeMesh(Compute);
 
+    }
+
+    public void InitializeChunk()
+    {
+        meshFilter = GetComponent<MeshFilter>();
+        meshFilter.sharedMesh = new Mesh();
+        meshCollider = GetComponent<MeshCollider>();
+        //voxelTex = new RenderTexture(voxelTex);
+
+
+        GenerateVoxels(Compute);
+        ComputeMesh(Compute);
     }
 
     private void OnDrawGizmos()
@@ -149,19 +155,6 @@ public class VoxelChunk : MonoBehaviour
     private void Update()
     {
         Size3D.y = Mathf.Clamp(Size3D.y, 1, 128);
-
-        //if (transform.position != lastPos || NoiseScale != lastScale || lastThresh != NoiseThreshold || lastSize != Size3D)
-        //{
-        //    lastPos = transform.position;
-        //    lastScale = NoiseScale;
-        //    lastThresh = NoiseThreshold;
-        //    lastSize = Size3D;
-
-        //    //VoxelNoise(Compute);
-        //    ComputeMesh(Compute);
-
-        //}
-        
 
     }
 
@@ -276,15 +269,15 @@ public class VoxelChunk : MonoBehaviour
             tDataTrimmed[i] = tData[validIndices[i]];
         }
        
-        meshFilter.mesh.Clear();
-        meshFilter.mesh.vertices = vDataTrimmed;
-        meshFilter.mesh.uv = tDataTrimmed;
-        meshFilter.mesh.normals = nDataTrimmed;
-        meshFilter.mesh.colors = cDataTrimmed;
-        meshFilter.mesh.triangles = GenerateIndices(vDataTrimmed.Length);
-        meshFilter.mesh.RecalculateBounds();
+        meshFilter.sharedMesh.Clear();
+        meshFilter.sharedMesh.vertices = vDataTrimmed;
+        meshFilter.sharedMesh.uv = tDataTrimmed;
+        meshFilter.sharedMesh.normals = nDataTrimmed;
+        meshFilter.sharedMesh.colors = cDataTrimmed;
+        meshFilter.sharedMesh.triangles = GenerateIndices(vDataTrimmed.Length);
+        meshFilter.sharedMesh.RecalculateBounds();
 
-        meshCollider.sharedMesh = meshFilter.mesh;
+        meshCollider.sharedMesh = meshFilter.sharedMesh;
     }
 
     private void BlockUpdate()
@@ -490,6 +483,15 @@ public class VoxelChunk : MonoBehaviour
     {
         return pos.x >= 0 && pos.y >= 0 && pos.z >= 0 && pos.x < size.x && pos.y < size.y && pos.z < size.z;
     }
+
+    //private void OnApplicationQuit()
+    //{
+    //    SaveMesh();
+    //}
+    //public void SaveMesh()
+    //{
+    //    AssetDatabase.CreateAsset(meshFilter.sharedMesh, $"Assets/Cache/mesh_{ChunkCoord.x}_{ChunkCoord.y}.asset");
+    //}
 
    
 

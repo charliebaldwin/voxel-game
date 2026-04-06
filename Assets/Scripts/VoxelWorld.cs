@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.VFX;
+using VFolders.Libs;
+using VInspector;
 
 public class VoxelWorld : MonoBehaviour
 {
     public static VoxelWorld Instance { get; private set; }
 
     public int2 WorldSize = new int2(32, 32);
+    public int2 InitialChunks = new int2(4, 4);
 
     public GameObject ChunkPrefab;
     public int Spacing = 8;
@@ -22,6 +25,14 @@ public class VoxelWorld : MonoBehaviour
 
     private void Awake()
     {
+        InitializeWorld();
+    }
+
+    [Button(name = "Initialize World", size = 20, color = "black")]
+    private void InitializeWorld()
+    {
+
+
         if (Instance != null && Instance != this)
         {
             Destroy(this);
@@ -30,8 +41,23 @@ public class VoxelWorld : MonoBehaviour
         {
             Instance = this;
         }
+
+        for(int i=transform.childCount-1; i>=0; i--)
+        {
+            GameObject.DestroyImmediate(transform.GetChild(i).gameObject);
+        }
+
+
         voxelChunks = new VoxelChunk[WorldSize.x, WorldSize.y];
+        for (int x = 0; x < InitialChunks.x; x++)
+        {
+            for (int z = 0; z < InitialChunks.y; z++)
+            {
+                AddChunk(new int2(x, z));
+            }
+        }
     }
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -59,6 +85,7 @@ public class VoxelWorld : MonoBehaviour
                 newChunk.ChunkCoord = pos;
                 newChunk.transform.position = new Vector3(pos.x, 0, pos.y) * Spacing;
                 newChunk.transform.parent = transform;
+                newChunk.InitializeChunk();
             }
         }
         catch (IndexOutOfRangeException ex) 
@@ -135,6 +162,7 @@ public class VoxelWorld : MonoBehaviour
         return hitData;
 
     }
+
 
     private int2 FindContainingChunk(Vector3 voxelWorldPos)
     {
