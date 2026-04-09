@@ -68,6 +68,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "LockCursor",
+                    "type": "Button",
+                    "id": "8fb56065-c2cf-4584-8dbb-6c1831d9976d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -354,6 +363,17 @@
                     "processors": "Scale(factor=10)",
                     "groups": "",
                     "action": "NumKey",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0d63ebc2-96fe-4679-84b1-37ca3f8acf56",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LockCursor",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

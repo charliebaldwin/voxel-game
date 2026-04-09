@@ -9,7 +9,7 @@ public class ChunkRaycast : MonoBehaviour
     public float Distance = 20f;
     public int Steps = 300;
 
-    public GameObject Cursor;
+    public GameObject VoxelCursor;
 
     public Material UICubeMat;
 
@@ -57,12 +57,12 @@ public class ChunkRaycast : MonoBehaviour
 
     public void OnPrimary(InputAction.CallbackContext context)
     {
-        if (context.started)
+        if (context.started && Cursor.lockState == CursorLockMode.Locked)
             DoRaycast3(1);
     }
     public void OnSecondary(InputAction.CallbackContext context)
     {
-        if (context.started)
+        if (context.started && Cursor.lockState == CursorLockMode.Locked)
             DoRaycast3(2);
     }
     public void OnNumKey(InputAction.CallbackContext context)
@@ -168,16 +168,17 @@ public class ChunkRaycast : MonoBehaviour
 
     private void DoRaycast3(int mode)
     {
-        VoxelHitData hitData = VoxelWorld.Instance.VoxelRaycast(transform.position, transform.forward, Distance, 300);
+        //VoxelHitData hitData = VoxelWorld.Instance.VoxelRaycast(transform.position, transform.forward, Distance, 300);
         //print(hitData.blockID);
+        VoxelHitData hitData = VoxelWorld.Instance.VoxelTraversal(transform.position, transform.forward, 30);
         if (hitData.didHit)
         {
-            Cursor.SetActive(true);
+            VoxelCursor.SetActive(true);
             switch (mode)
             {
                 case 0:
-                    Cursor.transform.position = hitData.worldVoxelPos;
-                    Cursor.transform.forward = hitData.hitNormal;
+                    VoxelCursor.transform.position = hitData.worldVoxelPos;
+                    VoxelCursor.transform.forward = hitData.hitNormal;
                     break;
                 case 1:
                     VoxelWorld.Instance.DestroyVoxel(hitData.worldVoxelPos);
@@ -190,7 +191,7 @@ public class ChunkRaycast : MonoBehaviour
         } 
         else
         {
-            Cursor.SetActive(false);
+            VoxelCursor.SetActive(false);
         }
     }
 }

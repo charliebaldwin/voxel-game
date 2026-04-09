@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
     {
         charController = GetComponent<CharacterController>();
         playerCam = GetComponentInChildren<Camera>();
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
         cameraEuler = cameraPivot.localEulerAngles;
         currentMoveSpeed = walkSpeed;
     }
@@ -85,15 +85,21 @@ public class PlayerController : MonoBehaviour
 
     public void OnAim(InputAction.CallbackContext context)
     {
-        Vector2 aimDelta = context.ReadValue<Vector2>();
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
+            Vector2 aimDelta = context.ReadValue<Vector2>();
 
 
-        cameraEuler.x -= aimDelta.y * lookSens;
-        cameraEuler.x = Mathf.Clamp(cameraEuler.x, -90f, 90f);
-        currentCameraLean = Mathf.Lerp(currentCameraLean, -1f * cameraLeanAmount * aimDelta.x, 6f * Time.deltaTime * cameraLeanSpeed);
-        transform.Rotate(transform.up, aimDelta.x * lookSens);
+            cameraEuler.x -= aimDelta.y * lookSens;
+            cameraEuler.x = Mathf.Clamp(cameraEuler.x, -90f, 90f);
+            currentCameraLean = Mathf.Lerp(currentCameraLean, -1f * cameraLeanAmount * aimDelta.x, 6f * Time.deltaTime * cameraLeanSpeed);
+            transform.Rotate(transform.up, aimDelta.x * lookSens);
+        }
+    }
 
-
+    public void ToggleCursorLock(InputAction.CallbackContext context)
+    {
+        Cursor.lockState = 1 - Cursor.lockState;
 
     }
 

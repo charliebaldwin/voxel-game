@@ -125,31 +125,31 @@ public class VoxelChunk : MonoBehaviour
         //        }
         //    }
         //}
-        for (int x = 0; x < Size3D.x; x++)
-        {
-            for (int y = 0; y < Size3D.y; y++)
-            {
-                for (int z = 0; z < Size3D.z; z++)
-                {
-                    if (voxelData[x,y,z] > 0)
-                    {
-                        switch (voxelData[x, y, z])
-                        {
-                            case 1:
-                                Gizmos.color = Color.red; break;
-                            case 2:
-                                Gizmos.color = Color.green; break;
-                            case 3:
-                                Gizmos.color = Color.blue; break;
-                        }
+        //for (int x = 0; x < Size3D.x; x++)
+        //{
+        //    for (int y = 0; y < Size3D.y; y++)
+        //    {
+        //        for (int z = 0; z < Size3D.z; z++)
+        //        {
+        //            if (voxelData[x,y,z] > 0)
+        //            {
+        //                switch (voxelData[x, y, z])
+        //                {
+        //                    case 1:
+        //                        Gizmos.color = Color.red; break;
+        //                    case 2:
+        //                        Gizmos.color = Color.green; break;
+        //                    case 3:
+        //                        Gizmos.color = Color.blue; break;
+        //                }
 
-                      //  Gizmos.DrawCube(new Vector3(x, y,z) + transform.position, Vector3.one);
-                    }
+        //              //  Gizmos.DrawCube(new Vector3(x, y,z) + transform.position, Vector3.one);
+        //            }
 
-                }
-            }
+        //        }
+        //    }
             
-        }
+        //}
     }
 
     private void Update()
