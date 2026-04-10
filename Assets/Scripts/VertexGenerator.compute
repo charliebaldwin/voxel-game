@@ -190,11 +190,11 @@ void ComputeMesh (uint3 id : SV_DispatchThreadID)
             
             uint index = 24 * voxIndex; // map from index in Voxel buffer to index in vertex buffer, which has 24 spaces per Voxel (6 faces * 4 verts)
             float4 faceColor = float4(voxel, 0., 0., 1.);
-
+            float3 posOffset = float3(0.499,0.499,0.499);
             if (vox_nx == 0) {
                 // Loop 4 times to add all 4 verts per face
                 for(int i=0; i<4; i++) {
-                    Vertices[index + i] = VertsNX[i] + pos;
+                    Vertices[index + i] = VertsNX[i] + pos + posOffset;
                     Normals[index + i] = NormNX;
                     faceColor.y = 0.;
                     Colors[index + i] = faceColor;
@@ -203,7 +203,7 @@ void ComputeMesh (uint3 id : SV_DispatchThreadID)
             }
             if (vox_px == 0) {
                 for(int i=0; i<4; i++) {
-                    Vertices[index + i + 4] = VertsPX[i] + pos;
+                    Vertices[index + i + 4] = VertsPX[i] + pos + posOffset;
                     Normals[index + i + 4] = NormPX;
                     faceColor.y = 1.;
                     Colors[index + i + 4] = faceColor;
@@ -212,7 +212,7 @@ void ComputeMesh (uint3 id : SV_DispatchThreadID)
             }
             if (vox_ny == 0) {
                 for(int i=0; i<4; i++) {
-                    Vertices[index + i + 8] = VertsNY[i] + pos;
+                    Vertices[index + i + 8] = VertsNY[i] + pos + posOffset;
                     Normals[index + i + 8] = NormNY;
                     faceColor.y = 2.;
                     Colors[index + i + 8] = faceColor;
@@ -221,7 +221,7 @@ void ComputeMesh (uint3 id : SV_DispatchThreadID)
             }
             if (vox_py == 0) {
                 for(int i=0; i<4; i++) {
-                    Vertices[index + i + 12] = VertsPY[i] + pos;
+                    Vertices[index + i + 12] = VertsPY[i] + pos + posOffset;
                     Normals[index + i + 12] = NormPY;
                     faceColor.y = 3.;
                     Colors[index + i + 12] = faceColor;
@@ -230,7 +230,7 @@ void ComputeMesh (uint3 id : SV_DispatchThreadID)
             }
             if (vox_nz == 0) {
                 for(int i=0; i<4; i++) {
-                    Vertices[index + i + 16] = VertsNZ[i] + pos;
+                    Vertices[index + i + 16] = VertsNZ[i] + pos + posOffset;
                     Normals[index + i + 16] = NormNZ;
                     faceColor.y = 4.;
                     Colors[index + i + 16] = faceColor;
@@ -239,7 +239,7 @@ void ComputeMesh (uint3 id : SV_DispatchThreadID)
             }
             if (vox_pz == 0) {
                 for(int i=0; i<4; i++) {
-                    Vertices[index + i + 20] = VertsPZ[i] + pos;
+                    Vertices[index + i + 20] = VertsPZ[i] + pos + posOffset;
                     Normals[index + i + 20] = NormPZ;
                     faceColor.y = 5.;
                     Colors[index + i + 20] = faceColor;

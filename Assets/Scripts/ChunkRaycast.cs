@@ -177,7 +177,7 @@ public class ChunkRaycast : MonoBehaviour
             switch (mode)
             {
                 case 0:
-                    VoxelCursor.transform.position = hitData.worldVoxelPos;
+                    VoxelCursor.transform.position = hitData.worldVoxelPos + 0.5f * Vector3.one;
                     VoxelCursor.transform.forward = hitData.hitNormal;
                     break;
                 case 1:

@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
 using VInspector;
 
 public class RaycastTester : MonoBehaviour
 {
+    public VoxelWorld world;
+    public Vector3 offset = new Vector3(0.5f, 0.5f, 0.5f);
 
     public void OnDrawGizmos()
     {
@@ -29,6 +32,8 @@ public class RaycastTester : MonoBehaviour
 
     public void TestRaycast()
     {
-        VoxelWorld.Instance.VoxelTraversal(transform.position, transform.forward, 30);
+        if (!world.Initialized) world.InitializeWorld();
+        world.VoxelTraversal(transform.position + offset, transform.forward, 30);
+
     }
 }

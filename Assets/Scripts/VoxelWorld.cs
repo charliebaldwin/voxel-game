@@ -24,6 +24,10 @@ public class VoxelWorld : MonoBehaviour
     private List<Vector3Int> DEBUGTraversalPosList = new List<Vector3Int>();
     private List<Color> DEBUGTraversalColorList;
 
+    public bool Initialized = false;
+
+    private Vector3 positionOffset = new Vector3(0.5f, 0.5f, 0.5f);
+
    // private List<int2> chunks = new List<int2>();
     private VoxelChunk[,] voxelChunks;
 
@@ -32,8 +36,13 @@ public class VoxelWorld : MonoBehaviour
         InitializeWorld();
     }
 
+    private void OnValidate()
+    {
+        Initialized = false;
+    }
+
     [Button(name = "Initialize World", size = 20, color = "black")]
-    private void InitializeWorld()
+    public void InitializeWorld()
     {
 
 
@@ -45,6 +54,7 @@ public class VoxelWorld : MonoBehaviour
         {
             Instance = this;
         }
+        Initialized = true;
 
         for(int i=transform.childCount-1; i>=0; i--)
         {
@@ -82,7 +92,7 @@ public class VoxelWorld : MonoBehaviour
             //Gizmos.color = DEBUGTraversalColorList[i];
             Gizmos.color = new Color((float)i / DEBUGTraversalPosList.Count, 0f, 0f);
             if (i >= DEBUGTraversalPosList.Count-1) Gizmos.color = Color.white;
-            Gizmos.DrawCube(DEBUGTraversalPosList[i], Vector3.one);
+            Gizmos.DrawCube(DEBUGTraversalPosList[i] + positionOffset, Vector3.one);
         }
     }
 
@@ -136,6 +146,8 @@ public class VoxelWorld : MonoBehaviour
         DEBUGTraversalPosList = new List<Vector3Int>();
         DEBUGTraversalColorList = new List<Color>();
 
+        //pos += positionOffset;
+
         Vector3Int start = WorldPosToVoxel(pos);
         int stepX = Math.Sign(dir.x);
         int stepY = Math.Sign(dir.y);
@@ -157,9 +169,9 @@ public class VoxelWorld : MonoBehaviour
             (voxelBoundary.y - pos.y) / dir.y,  // Boundary is a plane on the XZ axis
             (voxelBoundary.z - pos.z) / dir.z   // Boundary is a plane on the XY axis
         );
-        Debug.Log($"INIT tMax.x :  ({voxelBoundary.x}-{pos.x})/{dir.x}={tMax.x}");
-        Debug.Log($"INIT tMax.y :  ({voxelBoundary.y}-{pos.y})/{dir.y}={tMax.y}");
-        Debug.Log($"INIT tMax.z :  ({voxelBoundary.z}-{pos.z})/{dir.z}={tMax.z}");
+        Debug.Log($"INIT tMax.x :  ({voxelBoundary.x}-{pos.x})/{dir.x} = {tMax.x}");
+        Debug.Log($"INIT tMax.y :  ({voxelBoundary.y}-{pos.y})/{dir.y} = {tMax.y}");
+        Debug.Log($"INIT tMax.z :  ({voxelBoundary.z}-{pos.z})/{dir.z} = {tMax.z}");
         Vector3 tDelta = new Vector3(
             stepX / dir.x,               // Crossing the width of a cell.
             stepY / dir.y,               // Crossing the height of a cell.
@@ -168,6 +180,9 @@ public class VoxelWorld : MonoBehaviour
         if (Single.IsNaN(tDelta.x)) tDelta.x = Single.PositiveInfinity;
         if (Single.IsNaN(tDelta.y)) tDelta.y = Single.PositiveInfinity;
         if (Single.IsNaN(tDelta.z)) tDelta.z = Single.PositiveInfinity;
+        if (tMax.x == 0f) tMax.x = Single.PositiveInfinity;
+        if (tMax.y == 0f) tMax.y = Single.PositiveInfinity;
+        if (tMax.z == 0f) tMax.z = Single.PositiveInfinity;
 
         // For each step, determine which distance to the next voxel boundary is lowest (i.e.
         // which voxel boundary is nearest) and walk that way.
@@ -176,8 +191,8 @@ public class VoxelWorld : MonoBehaviour
         for (int i = 0; i < maxDepth; i++)
         {
             DEBUGTraversalPosList.Add(stepPos);
-            Debug.Log($"Step {i}: starting at ({stepPos.x}, {stepPos.y}, {stepPos.z})");
-            Debug.Log($"Step {i}: tMax is ({tMax.x}, {tMax.y}, {tMax.z})");
+           // Debug.Log($"Step {i}: starting at ({stepPos.x}, {stepPos.y}, {stepPos.z})");
+          //  Debug.Log($"Step {i}: tMax is ({tMax.x}, {tMax.y}, {tMax.z})");
 
 
             int blockID = LookupVoxel(stepPos);
@@ -206,21 +221,21 @@ public class VoxelWorld : MonoBehaviour
                 stepPos.x += stepX;
                 tMax.x += tDelta.x;
                 hitNormal = new Vector3Int(-stepX, 0, 0);
-                Debug.Log($"Step {i}: tMax.X is lowest, add tDelta.x ({tDelta.x})");
+                Debug.Log($"Step {i}: tMax.X is lowest, add tDelta.x ({tDelta.x})   ->   new tMax = ({tMax.x}, {tMax.y}, {tMax.z})");
             }
             else if (absTMax.y < absTMax.z)               // tMax.Y is the lowest, an XZ cell boundary plane is nearest.
             {
                 stepPos.y += stepY;
                 tMax.y += tDelta.y;
                 hitNormal = new Vector3Int(0, -stepY, 0);
-                Debug.Log($"Step {i}: tMax.Y is lowest, add tDelta.y ({tDelta.y})");
+                Debug.Log($"Step {i}: tMax.Y is lowest, add tDelta.y ({tDelta.y})   ->   new tMax = ({tMax.x}, {tMax.y}, {tMax.z})");
             }
             else                                    // tMax.Z is the lowest, an XY cell boundary plane is nearest.
             {
                 stepPos.z += stepZ;
                 tMax.z += tDelta.z;
                 hitNormal = new Vector3Int(0, 0, -stepZ);
-                Debug.Log($"Step {i}: tMax.Z is lowest, add tDelta.z ({tDelta.z})");
+                Debug.Log($"Step {i}: tMax.Z is lowest, add tDelta.z ({tDelta.z})   ->   new tMax = ({tMax.x}, {tMax.y}, {tMax.z})");
             }
 
             
@@ -305,8 +320,8 @@ public class VoxelWorld : MonoBehaviour
 
     private Vector3Int WorldPosToVoxel(Vector3 worldPos)
     {
-        Vector3Int result = new Vector3Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y), Mathf.RoundToInt(worldPos.z));
-        //Vector3Int result = new Vector3Int(Mathf.FloorToInt(worldPos.x), Mathf.FloorToInt(worldPos.y), Mathf.FloorToInt(worldPos.z));
+        //Vector3Int result = new Vector3Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y), Mathf.RoundToInt(worldPos.z));
+        Vector3Int result = new Vector3Int(Mathf.FloorToInt(worldPos.x), Mathf.FloorToInt(worldPos.y), Mathf.FloorToInt(worldPos.z));
 
         return result;
     }
