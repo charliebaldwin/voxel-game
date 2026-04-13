@@ -70,7 +70,7 @@ public class ChunkRaycast : MonoBehaviour
         if (context.started)
         {
             placedBlockType = Mathf.RoundToInt(context.ReadValue<float>());
-            UICubeMat.SetInteger("_Index", placedBlockType);
+            UICubeMat.SetInteger("_BlockIndex", placedBlockType);
         }
     }
 

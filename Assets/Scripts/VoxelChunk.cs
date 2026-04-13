@@ -24,6 +24,7 @@ public class VoxelChunk : MonoBehaviour
     ComputeBuffer nBuffer; 
     ComputeBuffer tBuffer;
     ComputeBuffer voxelBuffer;
+    ComputeBuffer idBuffer;
     
 
     public int2 ChunkCoord;
@@ -81,6 +82,8 @@ public class VoxelChunk : MonoBehaviour
         meshFilter = GetComponent<MeshFilter>();
         meshFilter.sharedMesh = new Mesh();
         meshCollider = GetComponent<MeshCollider>();
+
+        voxelBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, 3*sizeof(int));
         //voxelTex = new RenderTexture(voxelTex);
 
 
@@ -115,17 +118,9 @@ public class VoxelChunk : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        Size3D.y = Mathf.Clamp(Size3D.y, 1, 128);
-
-    }
-
     private void FixedUpdate()
     {
         BlockUpdate();
-
-        
     }
     private void LateUpdate()
     {
@@ -144,11 +139,11 @@ public class VoxelChunk : MonoBehaviour
     {
 
         int[] vData = new int[Size3D.x * Size3D.y * Size3D.z];
-        voxelBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, sizeof(int));
+        idBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, sizeof(int));
 
         // Generate terrain shape (all stone)
         int kernel = compute.FindKernel("GenerateTerrain");
-        compute.SetBuffer(kernel, "VoxelIDs", voxelBuffer);
+        compute.SetBuffer(kernel, "VoxelIDs", idBuffer);
         compute.SetVector("TranslateNoise", transform.position);
         compute.SetFloat("Scale", NoiseScale);
         compute.SetVector("Size", new Vector4(Size3D.x, Size3D.y, Size3D.z, 0.0f));
@@ -157,7 +152,7 @@ public class VoxelChunk : MonoBehaviour
 
         // Add grass & dirt
         kernel = compute.FindKernel("SetTerrainBlocks");
-        compute.SetBuffer(kernel, "VoxelIDs", voxelBuffer);
+        compute.SetBuffer(kernel, "VoxelIDs", idBuffer);
         compute.SetVector("Size", new Vector4(Size3D.x, Size3D.y, Size3D.z, 0.0f));
         compute.Dispatch(kernel, Size3D.x, 1, Size3D.z);
 
@@ -166,10 +161,12 @@ public class VoxelChunk : MonoBehaviour
         //compute.SetBuffer(kernel, "Voxels", voxelBuffer);
         //compute.Dispatch(kernel, Size3D.x, 1, Size3D.z);
 
-        voxelBuffer.GetData(vData);
-        voxelData = FlatTo3DArray(vData);
+        idBuffer.GetData(vData);
+        //voxelData = FlatTo3DArray(vData);
 
         voxels = IntTo3DVoxelData(vData);
+        //voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
+
 
     }
 
@@ -182,7 +179,7 @@ public class VoxelChunk : MonoBehaviour
         cBuffer = new ComputeBuffer(bufferSizeMult * size3d, 4 * sizeof(float));
         tBuffer = new ComputeBuffer(bufferSizeMult * size3d, 2 * sizeof(float));
 
-        voxelBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, sizeof(int) * 3);
+        // voxelBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, sizeof(int) * 3);
         voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
 
         int kernel = compute.FindKernel("ComputeMesh");
@@ -250,15 +247,15 @@ public class VoxelChunk : MonoBehaviour
     {
         for (int x = 0; x < Size3D.x; x++) {  for(int y = 0; y < Size3D.y; y++) {  for(int z = 0; z < Size3D.z; z++) {
 
-                    int voxelID = voxelData[x, y, z];
+                    int voxelID = voxels[x, y, z].ID;
                     switch (voxelID)
                     {
                         case (1): // grass
                             if (y < Size3D.y - 1)
                             {
-                                if (voxelData[x, y + 1, z] > 0)
+                                if (voxels[x, y + 1, z].ID> 0)
                                 {
-                                    voxelData[x, y, z] = 2;
+                                    voxels[x, y, z].ID = 2;
                                     meshDirty = true;
                                 }
                             }
@@ -266,12 +263,12 @@ public class VoxelChunk : MonoBehaviour
                         case (2): // dirt
                             if (y < Size3D.y - 1)
                             {
-                                if (voxelData[x, y + 1, z] == 0)
+                                if (voxels[x, y + 1, z].ID== 0)
                                 {
                                     // grow into dirt with random chance
                                     if (BlockRandomEvent(new int3(x, y, z), 0.0005f)) 
                                     {
-                                        voxelData[x, y, z] = 1;
+                                        voxels[x, y, z].ID = 1;
                                         meshDirty = true;
                                     }
                                 }
@@ -356,7 +353,7 @@ public class VoxelChunk : MonoBehaviour
                 for (int z = 0; z < Size3D.z; z++)
                 {
                     int id = flat[x + Size3D.x * y + Size3D.x * Size3D.y * z];
-                    result[x, y, z] = new VoxelData((ushort)id, 0, 0);
+                    result[x, y, z] = new VoxelData(id, 0, 0);
                 }
             }
         }
@@ -371,7 +368,6 @@ public class VoxelChunk : MonoBehaviour
             {
                 for (int z = 0; z < Size3D.z; z++)
                 {
-
                     result[x + Size3D.x * y + Size3D.x * Size3D.y * z] = threeDarray[x, y, z];
                 }
             }
@@ -397,7 +393,6 @@ public class VoxelChunk : MonoBehaviour
         //voxelData[localPos.x, localPos.y, localPos.z] = 0;
         //voxelBuffer.SetData(ThreeDToFlatArray(voxelData));
         voxels[localPos.x, localPos.y, localPos.z] = new VoxelData(0,0,0);
-        voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
 
         meshDirty = true;
     }
@@ -415,7 +410,7 @@ public class VoxelChunk : MonoBehaviour
         if (voxels[localPos.x, localPos.y, localPos.z].ID == 0)
         {
             voxels[localPos.x, localPos.y, localPos.z] = new VoxelData(blockType, 0, 0);
-            voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
+            //voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
             meshDirty = true;
         }
     }

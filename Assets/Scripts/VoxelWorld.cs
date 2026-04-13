@@ -32,12 +32,23 @@ public class VoxelWorld : MonoBehaviour
 
     private void Awake()
     {
-        InitializeWorld();
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
 
-    private void OnValidate()
+    //private void OnValidate()
+    //{
+    //    Initialized = false;
+    //}
+    void Start()
     {
-        Initialized = false;
+        InitializeWorld();
     }
 
     [Button(name = "Initialize World", size = 20, color = "black")]
@@ -57,7 +68,14 @@ public class VoxelWorld : MonoBehaviour
 
         for(int i=transform.childCount-1; i>=0; i--)
         {
-            GameObject.DestroyImmediate(transform.GetChild(i).gameObject);
+            if (Application.isPlaying)
+            {
+                GameObject.Destroy(transform.GetChild(i).gameObject);
+            }
+            else
+            {
+                GameObject.DestroyImmediate(transform.GetChild(i).gameObject);
+            }
         }
 
 
@@ -71,12 +89,6 @@ public class VoxelWorld : MonoBehaviour
         }
     }
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-
-    }
 
     // Update is called once per frame
     void Update()
