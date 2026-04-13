@@ -172,10 +172,12 @@ void ComputeMesh (uint3 id : SV_DispatchThreadID)
         uint3 pos = uint3(id.x % Size.x, y, id.z % Size.z);
         uint voxIndex = ComputeIndex(pos, Size);
         uint voxelID = Voxels[voxIndex].ID;  
-        uint voxelDamage = Voxels[voxIndex].Damage;
-        
+
 
         if (voxelID > 0) { // only run if voxel is not empty
+            
+            uint voxelDamage = Voxels[voxIndex].Damage;
+            uint voxelOrientation = Voxels[voxIndex].Orientation;
 
             // Check value of 6 adjacent voxels, and if current voxel is on chunk edge
 
@@ -204,14 +206,31 @@ void ComputeMesh (uint3 id : SV_DispatchThreadID)
             if (pos.z < Size.z - 1){
                 vox_pz = Voxels[ComputeIndex(pos + NormPZ, Size)].ID;
             }
+            
+            float2 texTop[4] = TexPY;
+            float2 texBot[4] = TexNY;
+            float2 texLeft[4] = TexNX;
+            float2 texRight[4] = TexPX;
+            float2 texFront[4] = TexPZ;
+            float2 texBack[4] = TexNZ;
+            
+            // default is +Y
+            if (voxelOrientation == 1) { // -Y
+                texTop = TexNY;
+                texBot = TexPY;
+            }
+            
 
 
             // If adjacent voxel is empty, add a face
             
             uint index = 24 * voxIndex; // map from index in Voxel buffer to index in vertex buffer, which has 24 spaces per Voxel (6 faces * 4 verts)
+            
             float4 faceColor = float4(voxelID, 0., voxelDamage, 1.);
+            
            // float3 posOffset = float3(0.499,0.499,0.499);
             float3 posOffset = float3(0.0,0.0,0.0);
+            
             if (vox_nx == 0) {
                 // Loop 4 times to add all 4 verts per face
                 for(int i=0; i<4; i++) {
