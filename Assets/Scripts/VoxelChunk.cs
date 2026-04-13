@@ -376,67 +376,7 @@ public class VoxelChunk : MonoBehaviour
         return result;
     }
 
-    public VoxelHitData VoxelRaycast(Vector3 origin, Vector3 direction)
-    {
-        tempOrigin = origin;
-        tempDirection = direction;
-        tempCubes = new List<Vector4>();
-
-        float stepDist = 0.05f;
-        int stepCount = 300;
-
-        VoxelHitData hitData = new VoxelHitData(false);
-
-        Vector3 stepPos = origin;
-        Vector3Int lastVoxPos = WorldPosToVoxel(stepPos + 0.5f * direction);
-
-        for (int i = 0; i < stepCount; i++)
-        {
-            Vector3Int voxPos = WorldPosToVoxel(stepPos);
-            stepPos = stepPos + direction * stepDist;
-            Debug.Log($"({ChunkCoord.x},{ChunkCoord.y}) - i:{i}, worldVoxPos={voxPos + transform.position}, stepPos={stepPos}");
-
-            // Debug.Log($"checking voxel {voxPos}");
-
-            if (IsPosInGridBounds(voxPos, Size3D))
-            {
-                if (voxelData[voxPos.x, voxPos.y, voxPos.z] > 0)
-                {
-                    //return new Vector3(voxPos.x, voxPos.y, voxPos.z) + transform.position;
-                    tempCubes.Add(new Vector4(voxPos.x, voxPos.y, voxPos.z, 1.0f) + new Vector4(transform.position.x, transform.position.y, transform.position.z, 0.0f));
-
-                    //if (lastVoxPos - voxPos != Vector3.zero)
-                    hitData.hitNormal = lastVoxPos - voxPos;
-
-                    hitData.didHit = true;
-                    hitData.hitPos = stepPos;
-                    hitData.localVoxelPos = voxPos;
-                    hitData.worldVoxelPos = voxPos + transform.position;
-                    Debug.Log($"hit! at {hitData.worldVoxelPos}, normal={hitData.hitNormal}");
-                    return hitData;
-
-                }
-                else
-                {
-                    tempCubes.Add(new Vector4(voxPos.x, voxPos.y, voxPos.z, 0.0f) + new Vector4(transform.position.x, transform.position.y, transform.position.z, 0.0f));
-                }
-            }
-            else
-            {
-                // ray is outside bounds
-                hitData.didHit = false;
-                hitData.hitPos = stepPos;
-                Debug.Log($"miss! at {hitData.worldVoxelPos}, normal={hitData.hitNormal}");
-                return hitData;
-
-            }
-            stepPos = stepPos + direction * stepDist;
-            hitData.hitPos = stepPos;
-            lastVoxPos = voxPos;
-            //return hitData;
-        }
-        return hitData;
-    }
+ 
 
     public void BreakBlock(Vector3 worldPosition)
     {
@@ -498,22 +438,4 @@ public class VoxelChunk : MonoBehaviour
 
 }
 
-public struct VoxelHitData
-{
-    public bool didHit;
-    public int blockID;
-    public Vector3Int localVoxelPos;
-    public Vector3 worldVoxelPos;
-    public Vector3 hitPos;
-    public Vector3Int hitNormal;
 
-    public VoxelHitData(bool didHit)
-    {
-        this.didHit = didHit;
-        blockID = 0;
-        localVoxelPos = Vector3Int.zero;
-        worldVoxelPos = Vector3.zero;
-        hitPos = Vector3.zero;
-        hitNormal = Vector3Int.up;
-    }
-}

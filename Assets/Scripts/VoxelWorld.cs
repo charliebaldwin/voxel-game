@@ -23,10 +23,9 @@ public class VoxelWorld : MonoBehaviour
 
     private List<Vector3Int> DEBUGTraversalPosList = new List<Vector3Int>();
     private List<Color> DEBUGTraversalColorList;
+    private Vector3 DEBUGWorldHitPoint = Vector3.zero;
 
     public bool Initialized = false;
-
-    private Vector3 positionOffset = new Vector3(0.5f, 0.5f, 0.5f);
 
    // private List<int2> chunks = new List<int2>();
     private VoxelChunk[,] voxelChunks;
@@ -92,7 +91,12 @@ public class VoxelWorld : MonoBehaviour
             //Gizmos.color = DEBUGTraversalColorList[i];
             Gizmos.color = new Color((float)i / DEBUGTraversalPosList.Count, 0f, 0f);
             if (i >= DEBUGTraversalPosList.Count-1) Gizmos.color = Color.white;
-            Gizmos.DrawCube(DEBUGTraversalPosList[i] + positionOffset, Vector3.one);
+            Gizmos.DrawCube(DEBUGTraversalPosList[i], Vector3.one);
+        }
+        if (DEBUGWorldHitPoint != Vector3.zero)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawSphere(DEBUGWorldHitPoint, 0.2f);
         }
     }
 
@@ -108,6 +112,7 @@ public class VoxelWorld : MonoBehaviour
                 VoxelChunk newChunk = Instantiate(ChunkPrefab).GetComponent<VoxelChunk>();
                 voxelChunks[pos.x, pos.y] = newChunk;
                 newChunk.ChunkCoord = pos;
+                newChunk.transform.name = $"Chunk_x{pos.x}_z{pos.y}";
                 newChunk.transform.position = new Vector3(pos.x, 0, pos.y) * Spacing;
                 newChunk.transform.parent = transform;
                 newChunk.InitializeChunk();
@@ -141,14 +146,15 @@ public class VoxelWorld : MonoBehaviour
     }
 
     // from https://web.archive.org/web/20121024081332/www.xnawiki.com/index.php?title=Voxel_traversal
-    public VoxelHitData VoxelTraversal(Vector3 pos, Vector3 dir, int maxDepth)
+    public VoxelHitInfo VoxelTraversal(Vector3 pos, Vector3 dir, int maxDepth)
     {
         DEBUGTraversalPosList = new List<Vector3Int>();
         DEBUGTraversalColorList = new List<Color>();
 
         //pos += positionOffset;
 
-        Vector3Int start = WorldPosToVoxel(pos);
+        Vector3Int start = WorldPosToVoxel(pos + 0.5f * Vector3.one);
+        Debug.Log($"pos = ({pos.x}, {pos.y}, {pos.z}) -> start = ({start.x}, {start.y}, {start.z})");
         int stepX = Math.Sign(dir.x);
         int stepY = Math.Sign(dir.y);
         int stepZ = Math.Sign(dir.z);
@@ -157,10 +163,10 @@ public class VoxelWorld : MonoBehaviour
         // Calculate cell boundaries. When the step (i.e. direction sign) is positive,
         // the next boundary is AFTER our current position, meaning that we have to add 1.
         // Otherwise, it is BEFORE our current position, in which case we add nothing.
-        Vector3Int voxelBoundary = new Vector3Int(
-            start.x + (stepX > 0 ? 1 : 0),
-            start.y + (stepY > 0 ? 1 : 0),
-            start.z + (stepZ > 0 ? 1 : 0)
+        Vector3 voxelBoundary = new Vector3(
+            start.x + (stepX > 0 ? 0.5f : -0.5f),
+            start.y + (stepY > 0 ? 0.5f : -0.5f),
+            start.z + (stepZ > 0 ? 0.5f : -0.5f)
         );
 
         // tMax : Determine how far we can travel along the ray before we hit a voxel boundary.
@@ -188,27 +194,29 @@ public class VoxelWorld : MonoBehaviour
         // which voxel boundary is nearest) and walk that way.
         Vector3Int stepPos = start;
         Vector3Int hitNormal = new Vector3Int(0,0,0);
+        float t = 0f;
         for (int i = 0; i < maxDepth; i++)
         {
             DEBUGTraversalPosList.Add(stepPos);
-           // Debug.Log($"Step {i}: starting at ({stepPos.x}, {stepPos.y}, {stepPos.z})");
-          //  Debug.Log($"Step {i}: tMax is ({tMax.x}, {tMax.y}, {tMax.z})");
-
 
             int blockID = LookupVoxel(stepPos);
             if (blockID > 0)
             {
                 DEBUGTraversalColorList.Add(Color.white);
 
-                VoxelHitData hitData = new VoxelHitData(true);
+                VoxelHitInfo hitData = new VoxelHitInfo(true);
                 hitData.hitNormal = hitNormal;
                 hitData.blockID = blockID;
-                hitData.worldVoxelPos = stepPos;
+                hitData.voxelPos = stepPos;
+                hitData.hitPos = pos + t * dir;
+                
+                DEBUGWorldHitPoint = hitData.hitPos;
+
                 return hitData;
             }
             else if (blockID == -1)
             {
-                return new VoxelHitData(false);
+                return new VoxelHitInfo(false);
             }
             else
             {
@@ -219,76 +227,31 @@ public class VoxelWorld : MonoBehaviour
             if (absTMax.x < absTMax.y && absTMax.x < absTMax.z) // tMax.X is the lowest, an YZ cell boundary plane is nearest.
             {
                 stepPos.x += stepX;
+                t = tMax.x;
                 tMax.x += tDelta.x;
                 hitNormal = new Vector3Int(-stepX, 0, 0);
-                Debug.Log($"Step {i}: tMax.X is lowest, add tDelta.x ({tDelta.x})   ->   new tMax = ({tMax.x}, {tMax.y}, {tMax.z})");
+              //  Debug.Log($"Step {i}: tMax.X is lowest, add tDelta.x ({tDelta.x})   ->   new tMax = ({tMax.x}, {tMax.y}, {tMax.z})");
             }
             else if (absTMax.y < absTMax.z)               // tMax.Y is the lowest, an XZ cell boundary plane is nearest.
             {
                 stepPos.y += stepY;
+                t = tMax.y;
                 tMax.y += tDelta.y;
                 hitNormal = new Vector3Int(0, -stepY, 0);
-                Debug.Log($"Step {i}: tMax.Y is lowest, add tDelta.y ({tDelta.y})   ->   new tMax = ({tMax.x}, {tMax.y}, {tMax.z})");
+                //Debug.Log($"Step {i}: tMax.Y is lowest, add tDelta.y ({tDelta.y})   ->   new tMax = ({tMax.x}, {tMax.y}, {tMax.z})");
             }
             else                                    // tMax.Z is the lowest, an XY cell boundary plane is nearest.
             {
                 stepPos.z += stepZ;
+                t = tMax.z;
                 tMax.z += tDelta.z;
                 hitNormal = new Vector3Int(0, 0, -stepZ);
-                Debug.Log($"Step {i}: tMax.Z is lowest, add tDelta.z ({tDelta.z})   ->   new tMax = ({tMax.x}, {tMax.y}, {tMax.z})");
+                //Debug.Log($"Step {i}: tMax.Z is lowest, add tDelta.z ({tDelta.z})   ->   new tMax = ({tMax.x}, {tMax.y}, {tMax.z})");
             }
 
             
         }
-        return new VoxelHitData(false);
-    }
-    public VoxelHitData VoxelRaycast(Vector3 pos, Vector3 dir, float distance, int steps)
-    {
-        Vector3 d = (distance / (float)steps) * dir;
-        Vector3 stepPos = pos;
-        Vector3Int lastVoxelPos = WorldPosToVoxel(stepPos);
-        Vector3Int lastVoxelPos2 = lastVoxelPos;
-        VoxelHitData hitData = new VoxelHitData(false);
-
-
-        for (int i = 0; i < steps; i++) {
-            stepPos += d;
-            Vector3Int voxelPos = WorldPosToVoxel(stepPos);
-            if (voxelPos != lastVoxelPos) {
-                //Debug.Log($"last voxel pos changed from {lastVoxelPos} to {voxelPos}");
-                lastVoxelPos2 = lastVoxelPos;
-                lastVoxelPos = voxelPos;
-            }
-
-            int2 chunkPos = FindContainingChunk(stepPos);
-            try
-            {
-                VoxelChunk chunk = voxelChunks[chunkPos.x, chunkPos.y];
-                int lookup = chunk.LookupVoxel(voxelPos);
-
-                if (lookup != 0)
-                {
-                    hitData.worldVoxelPos = voxelPos;
-                    hitData.hitNormal = lastVoxelPos2 - voxelPos;
-                    //Debug.Log($"hitdata normal: {hitData.hitNormal}");
-                    hitData.blockID = lookup;
-                    hitData.didHit = true;
-                    return hitData;
-                }
-            }
-            catch (NullReferenceException ex)
-            {
-                Debug.Log($"No chunk at ({chunkPos.x}, {chunkPos.y}) [{ex.Message}]");
-            }
-            catch (IndexOutOfRangeException ex)
-            {
-                Debug.LogWarning(ex.Message);
-            }
-
-
-        }
-        return hitData;
-
+        return new VoxelHitInfo(false);
     }
 
     private int LookupVoxel(Vector3Int voxelPos)
@@ -320,9 +283,34 @@ public class VoxelWorld : MonoBehaviour
 
     private Vector3Int WorldPosToVoxel(Vector3 worldPos)
     {
-        //Vector3Int result = new Vector3Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y), Mathf.RoundToInt(worldPos.z));
-        Vector3Int result = new Vector3Int(Mathf.FloorToInt(worldPos.x), Mathf.FloorToInt(worldPos.y), Mathf.FloorToInt(worldPos.z));
+        Vector3Int result = new Vector3Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y), Mathf.RoundToInt(worldPos.z));
+        //Vector3Int result = new Vector3Int(Mathf.FloorToInt(worldPos.x), Mathf.FloorToInt(worldPos.y), Mathf.FloorToInt(worldPos.z));
 
         return result;
+    }
+}
+
+public struct VoxelData
+{
+    public ushort id;
+    public byte damage;
+    public byte orientation;
+}
+
+public struct VoxelHitInfo
+{
+    public bool didHit;
+    public int blockID;
+    public Vector3Int voxelPos;
+    public Vector3 hitPos;
+    public Vector3Int hitNormal;
+
+    public VoxelHitInfo(bool didHit)
+    {
+        this.didHit = didHit;
+        blockID = 0;
+        voxelPos = Vector3Int.zero;
+        hitPos = Vector3.zero;
+        hitNormal = Vector3Int.up;
     }
 }

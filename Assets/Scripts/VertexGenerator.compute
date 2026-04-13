@@ -190,7 +190,8 @@ void ComputeMesh (uint3 id : SV_DispatchThreadID)
             
             uint index = 24 * voxIndex; // map from index in Voxel buffer to index in vertex buffer, which has 24 spaces per Voxel (6 faces * 4 verts)
             float4 faceColor = float4(voxel, 0., 0., 1.);
-            float3 posOffset = float3(0.499,0.499,0.499);
+           // float3 posOffset = float3(0.499,0.499,0.499);
+            float3 posOffset = float3(0.0,0.0,0.0);
             if (vox_nx == 0) {
                 // Loop 4 times to add all 4 verts per face
                 for(int i=0; i<4; i++) {
