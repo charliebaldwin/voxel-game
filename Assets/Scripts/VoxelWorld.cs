@@ -130,8 +130,8 @@ public class VoxelWorld : MonoBehaviour
         int2 chunkPos = FindContainingChunk(worldPos);
         VoxelChunk chunk = voxelChunks[chunkPos.x, chunkPos.y];
         GameObject breakVFX = Instantiate(BlockBreakVFXPrefab, worldPos, Quaternion.identity);
-        breakVFX.GetComponent<VFXObject>().InitVFX(chunk.LookupVoxel(worldPos));
-        chunk.BreakBlock(worldPos);
+        breakVFX.GetComponent<VFXObject>().InitVFX(chunk.LookupVoxel(worldPos).ID);
+        chunk.DamageBlock(worldPos, 1);
     }
 
     public void AddVoxel(Vector3 worldPos, int blockType)
@@ -199,14 +199,14 @@ public class VoxelWorld : MonoBehaviour
         {
             DEBUGTraversalPosList.Add(stepPos);
 
-            int blockID = LookupVoxel(stepPos);
-            if (blockID > 0)
+            VoxelData hitVoxel = LookupVoxel(stepPos);
+            if (hitVoxel.ID > 0)
             {
                 DEBUGTraversalColorList.Add(Color.white);
 
                 VoxelHitInfo hitData = new VoxelHitInfo(true);
                 hitData.hitNormal = hitNormal;
-                hitData.blockID = blockID;
+                hitData.blockID = hitVoxel.ID;
                 hitData.voxelPos = stepPos;
                 hitData.hitPos = pos + t * dir;
                 
@@ -214,7 +214,7 @@ public class VoxelWorld : MonoBehaviour
 
                 return hitData;
             }
-            else if (blockID == -1)
+            else if (hitVoxel.ID == -1)
             {
                 return new VoxelHitInfo(false);
             }
@@ -254,7 +254,7 @@ public class VoxelWorld : MonoBehaviour
         return new VoxelHitInfo(false);
     }
 
-    private int LookupVoxel(Vector3Int voxelPos)
+    private VoxelData LookupVoxel(Vector3Int voxelPos)
     {
         int2 chunkPos = new int2(Mathf.FloorToInt(voxelPos.x / Spacing), Mathf.FloorToInt(voxelPos.z / Spacing));
         try
@@ -266,12 +266,12 @@ public class VoxelWorld : MonoBehaviour
         catch (NullReferenceException ex)
         {
             Debug.Log($"No chunk at ({chunkPos.x}, {chunkPos.y}) [{ex.Message}]");
-            return -1;
+            return new VoxelData(-1,0,0);
         }
         catch (IndexOutOfRangeException ex)
         {
             Debug.LogWarning(ex.Message);
-            return -1;
+            return new VoxelData(-1, 0, 0);
         }
     }
 
@@ -292,15 +292,23 @@ public class VoxelWorld : MonoBehaviour
 
 public struct VoxelData
 {
-    public ushort id;
-    public byte damage;
-    public byte orientation;
+    public int ID;
+    public int Damage;
+    public int Orientation;
+
+    public VoxelData(int id, int damage, int orientation)
+    {
+        ID = id;
+        Damage = damage;
+        Orientation = orientation;
+    }
 }
 
 public struct VoxelHitInfo
 {
     public bool didHit;
     public int blockID;
+    public VoxelData voxel;
     public Vector3Int voxelPos;
     public Vector3 hitPos;
     public Vector3Int hitNormal;
@@ -309,6 +317,7 @@ public struct VoxelHitInfo
     {
         this.didHit = didHit;
         blockID = 0;
+        voxel = new VoxelData();
         voxelPos = Vector3Int.zero;
         hitPos = Vector3.zero;
         hitNormal = Vector3Int.up;

@@ -35,6 +35,7 @@ static const float2  TexPY[4] = { float2(0.001, 0.001), float2(0.001, 0.999), fl
 static const float2  TexNZ[4] = { float2(0.001, 0.999), float2(0.999, 0.999), float2(0.999, 0.001), float2(0.001, 0.001) };
 static const float2  TexPZ[4] = { float2(0.001, 0.999), float2(0.999, 0.999), float2(0.999, 0.001), float2(0.001, 0.001) };
 
+
 static const float4 idColors[4] = {
     float4(0., 0., 0., 1.),
     float4(1., 0., 0., 1.),
@@ -42,14 +43,31 @@ static const float4 idColors[4] = {
     float4(3., 0., 0., 1.)
 };
 
+struct VoxelData 
+{
+    uint ID;
+    uint Damage;
+    uint Orientation;
+};
+
 // Map from a 3D voxel pos to an index in the flat voxel buffer
 int ComputeIndex(uint3 pos, uint3 size) { 
     return pos.x + size.x * pos.y + size.x * size.y * pos.z;
 }
 
+VoxelData NewVoxelData(uint id, uint damage, uint orientation) {
+    VoxelData result;
+    result.ID = id;
+    result.Damage = damage;
+    result.Orientation = orientation;
+    return result;
+}
 
 
-RWStructuredBuffer<int> Voxels;
+
+RWStructuredBuffer<int> VoxelIDs;
+RWStructuredBuffer<VoxelData> Voxels;
+
 uint3 Size;
 float Scale;
 float Threshold;
@@ -71,9 +89,9 @@ void GenerateTerrain (uint3 id : SV_DispatchThreadID)
         
 
         if (t > 0.5) {
-            Voxels[index] = 3; 
+            VoxelIDs[index] = 3; 
         } else {
-            Voxels[index] = 0; 
+            VoxelIDs[index] = 0; 
         }
 
         //if (voxelID == 1 && y < Size.y-1) { // put dirt under grass
@@ -94,8 +112,8 @@ void SetTerrainBlocks (uint3 id : SV_DispatchThreadID) {
 
         int index = ComputeIndex(pos, Size);
 
-        int voxel = Voxels[index];
-        int voxel_up1 = Voxels[ComputeIndex(pos + uint3(0,1,0), Size)];
+        int voxel = VoxelIDs[index];
+        int voxel_up1 = VoxelIDs[ComputeIndex(pos + uint3(0,1,0), Size)];
 
         int index_down1 = ComputeIndex(pos + uint3(0,-1,0), Size);
         int index_down2 = ComputeIndex(pos + uint3(0,-2,0), Size);
@@ -103,18 +121,18 @@ void SetTerrainBlocks (uint3 id : SV_DispatchThreadID) {
         if (voxel > 0) {
             
             if (y == Size.y-1 || voxel_up1 == 0) {
-                Voxels[index] = 1;
+                VoxelIDs[index] = 1;
 
                 for (uint i=1; i<4; i++) {
                     if (y > i-1) {
-                        Voxels[ComputeIndex(pos + uint3(0,-1 * i,0), Size)] = 2;
+                        VoxelIDs[ComputeIndex(pos + uint3(0,-1 * i,0), Size)] = 2;
                     }
                 }
                 
             } else {
                 float n = SimplexNoise((pos + TranslateNoise) * Scale * 3.);
                 if (n < -0.3) {
-                    Voxels[index] = 4;
+                    VoxelIDs[index] = 4;
                 }
             }
         }
@@ -129,10 +147,10 @@ void AddOres (uint3 id : SV_DispatchThreadID) {\
         uint3 pos = uint3(id.x % Size.x, y, id.z % Size.z);
         int index = ComputeIndex(pos, Size);
 
-        if (Voxels[index] == 3) {
+        if (VoxelIDs[index] == 3) {
             float n = SimplexNoise(pos * 100.);
             if (n < 0.00001) {
-                Voxels[index] = 6;
+                VoxelIDs[index] = 6;
             }
         }
     }
@@ -153,9 +171,11 @@ void ComputeMesh (uint3 id : SV_DispatchThreadID)
 
         uint3 pos = uint3(id.x % Size.x, y, id.z % Size.z);
         uint voxIndex = ComputeIndex(pos, Size);
-        uint voxel = Voxels[voxIndex];        
+        uint voxelID = Voxels[voxIndex].ID;  
+        uint voxelDamage = Voxels[voxIndex].Damage;
+        
 
-        if (voxel > 0) { // only run if voxel is not empty
+        if (voxelID > 0) { // only run if voxel is not empty
 
             // Check value of 6 adjacent voxels, and if current voxel is on chunk edge
 
@@ -167,29 +187,29 @@ void ComputeMesh (uint3 id : SV_DispatchThreadID)
             uint vox_pz = 0;
 
             if (pos.x > 0) {
-                vox_nx = Voxels[ComputeIndex(pos + NormNX, Size)];
+                vox_nx = Voxels[ComputeIndex(pos + NormNX, Size)].ID;
             }
             if (pos.x < Size.x - 1){
-                vox_px = Voxels[ComputeIndex(pos + NormPX, Size)];
+                vox_px = Voxels[ComputeIndex(pos + NormPX, Size)].ID;
             }
             if (pos.y > 0) {
-                vox_ny = Voxels[ComputeIndex(pos + NormNY, Size)];
+                vox_ny = Voxels[ComputeIndex(pos + NormNY, Size)].ID;
             }
             if (pos.y < Size.y - 1){
-                vox_py = Voxels[ComputeIndex(pos + NormPY, Size)];
+                vox_py = Voxels[ComputeIndex(pos + NormPY, Size)].ID;
             }
             if (pos.z > 0) {
-                vox_nz = Voxels[ComputeIndex(pos + NormNZ, Size)];
+                vox_nz = Voxels[ComputeIndex(pos + NormNZ, Size)].ID;
             }
             if (pos.z < Size.z - 1){
-                vox_pz = Voxels[ComputeIndex(pos + NormPZ, Size)];
+                vox_pz = Voxels[ComputeIndex(pos + NormPZ, Size)].ID;
             }
 
 
             // If adjacent voxel is empty, add a face
             
             uint index = 24 * voxIndex; // map from index in Voxel buffer to index in vertex buffer, which has 24 spaces per Voxel (6 faces * 4 verts)
-            float4 faceColor = float4(voxel, 0., 0., 1.);
+            float4 faceColor = float4(voxelID, 0., voxelDamage, 1.);
            // float3 posOffset = float3(0.499,0.499,0.499);
             float3 posOffset = float3(0.0,0.0,0.0);
             if (vox_nx == 0) {
