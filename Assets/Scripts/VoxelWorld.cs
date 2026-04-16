@@ -166,7 +166,7 @@ public class VoxelWorld : MonoBehaviour
         //pos += positionOffset;
 
         Vector3Int start = WorldPosToVoxel(pos + 0.5f * Vector3.one);
-        Debug.Log($"pos = ({pos.x}, {pos.y}, {pos.z}) -> start = ({start.x}, {start.y}, {start.z})");
+        //  Debug.Log($"pos = ({pos.x}, {pos.y}, {pos.z}) -> start = ({start.x}, {start.y}, {start.z})");
         int stepX = Math.Sign(dir.x);
         int stepY = Math.Sign(dir.y);
         int stepZ = Math.Sign(dir.z);
@@ -187,9 +187,9 @@ public class VoxelWorld : MonoBehaviour
             (voxelBoundary.y - pos.y) / dir.y,  // Boundary is a plane on the XZ axis
             (voxelBoundary.z - pos.z) / dir.z   // Boundary is a plane on the XY axis
         );
-        Debug.Log($"INIT tMax.x :  ({voxelBoundary.x}-{pos.x})/{dir.x} = {tMax.x}");
-        Debug.Log($"INIT tMax.y :  ({voxelBoundary.y}-{pos.y})/{dir.y} = {tMax.y}");
-        Debug.Log($"INIT tMax.z :  ({voxelBoundary.z}-{pos.z})/{dir.z} = {tMax.z}");
+       //Debug.Log($"INIT tMax.x :  ({voxelBoundary.x}-{pos.x})/{dir.x} = {tMax.x}");
+       //Debug.Log($"INIT tMax.y :  ({voxelBoundary.y}-{pos.y})/{dir.y} = {tMax.y}");
+       //Debug.Log($"INIT tMax.z :  ({voxelBoundary.z}-{pos.z})/{dir.z} = {tMax.z}");
         Vector3 tDelta = new Vector3(
             stepX / dir.x,               // Crossing the width of a cell.
             stepY / dir.y,               // Crossing the height of a cell.

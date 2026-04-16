@@ -23,6 +23,7 @@ public class VoxelChunk : MonoBehaviour
     ComputeBuffer vBuffer;
     ComputeBuffer nBuffer; 
     ComputeBuffer tBuffer;
+    ComputeBuffer iBuffer;
     ComputeBuffer voxelBuffer;
     ComputeBuffer idBuffer;
     
@@ -83,7 +84,7 @@ public class VoxelChunk : MonoBehaviour
         meshFilter.sharedMesh = new Mesh();
         meshCollider = GetComponent<MeshCollider>();
 
-        voxelBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, 3*sizeof(int));
+        //voxelBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, 3*sizeof(int));
         //voxelTex = new RenderTexture(voxelTex);
 
 
@@ -178,8 +179,9 @@ public class VoxelChunk : MonoBehaviour
         nBuffer = new ComputeBuffer(bufferSizeMult * size3d, 3 * sizeof(float));
         cBuffer = new ComputeBuffer(bufferSizeMult * size3d, 4 * sizeof(float));
         tBuffer = new ComputeBuffer(bufferSizeMult * size3d, 2 * sizeof(float));
+        iBuffer = new ComputeBuffer(bufferSizeMult * size3d, 1 * sizeof(int));
 
-        // voxelBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, sizeof(int) * 3);
+        voxelBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, sizeof(int) * 3);
         voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
 
         int kernel = compute.FindKernel("ComputeMesh");
@@ -190,13 +192,14 @@ public class VoxelChunk : MonoBehaviour
         compute.SetBuffer(kernel, "Normals", nBuffer);
         compute.SetBuffer(kernel, "Colors", cBuffer);
         compute.SetBuffer(kernel, "TexCoords", tBuffer);
+        compute.SetBuffer(kernel, "ValidIndices", iBuffer);
 
         compute.Dispatch(kernel, Size3D.x, 1, Size3D.z);
 
-        //computeReadCoroutine = BufferReadTimer(BufferReadDelay);
-        //StartCoroutine(computeReadCoroutine); 
-
-        ReadBufferData();
+        computeReadCoroutine = BufferReadTimer(BufferReadDelay);
+        StartCoroutine(computeReadCoroutine); 
+        
+        //ReadBufferData();
     }
 
     private IEnumerator BufferReadTimer(float duration)
@@ -212,13 +215,15 @@ public class VoxelChunk : MonoBehaviour
         Vector3[] nData = new Vector3[bufferSizeMult * size3d];
         Color[] cData = new Color[bufferSizeMult * size3d];
         Vector2[] tData = new Vector2[bufferSizeMult * size3d];
+        int[] iData = new int[bufferSizeMult * size3d];
 
         vBuffer.GetData(vData);
         nBuffer.GetData(nData);
         cBuffer.GetData(cData);
         tBuffer.GetData(tData);
+        iBuffer.GetData(iData);
 
-        List<int> validIndices = GetValidIndices(vData);
+        List<int> validIndices = GetValidIndices(iData);
 
         Vector3[] vDataTrimmed = new Vector3[validIndices.Count];
         Vector3[] nDataTrimmed = new Vector3[validIndices.Count];
@@ -247,34 +252,34 @@ public class VoxelChunk : MonoBehaviour
     {
         for (int x = 0; x < Size3D.x; x++) {  for(int y = 0; y < Size3D.y; y++) {  for(int z = 0; z < Size3D.z; z++) {
 
-                    int voxelID = voxels[x, y, z].ID;
-                    switch (voxelID)
+            int voxelID = voxels[x, y, z].ID;
+            switch (voxelID)
+            {
+                case (1): // grass
+                    if (y < Size3D.y - 1)
                     {
-                        case (1): // grass
-                            if (y < Size3D.y - 1)
-                            {
-                                if (voxels[x, y + 1, z].ID> 0)
-                                {
-                                    voxels[x, y, z].ID = 2;
-                                    meshDirty = true;
-                                }
-                            }
-                            break;
-                        case (2): // dirt
-                            if (y < Size3D.y - 1)
-                            {
-                                if (voxels[x, y + 1, z].ID== 0)
-                                {
-                                    // grow into dirt with random chance
-                                    if (BlockRandomEvent(new int3(x, y, z), 0.0005f)) 
-                                    {
-                                        voxels[x, y, z].ID = 1;
-                                        meshDirty = true;
-                                    }
-                                }
-                            }
-                            break;
+                        if (voxels[x, y + 1, z].ID> 0)
+                        {
+                            voxels[x, y, z].ID = 2;
+                            meshDirty = true;
+                        }
                     }
+                    break;
+                case (2): // dirt
+                    if (y < Size3D.y - 1)
+                    {
+                        if (voxels[x, y + 1, z].ID== 0)
+                        {
+                            // grow into dirt with random chance
+                            if (BlockRandomEvent(new int3(x, y, z), 0.0005f)) 
+                            {
+                                voxels[x, y, z].ID = 1;
+                                meshDirty = true;
+                            }
+                        }
+                    }
+                    break;
+            }
         } } }
     }
     private bool BlockRandomEvent(int3 pos, float probability)
@@ -285,16 +290,17 @@ public class VoxelChunk : MonoBehaviour
     }
 
 
-    private List<int> GetValidIndices(Vector3[] array)
+    private List<int> GetValidIndices(int[] array)
     {
         List<int> result = new List<int>();
         for (int i = 0; i < array.Length; i++)
         {
-            if (array[i] != null && array[i] != Vector3.zero)
+            if (array[i] != 0 && array[i] != null )
             {
                 result.Add(i);
             }
         }
+        Debug.Log($"num indices = {result.Count}");
         return result;
     }
     private int[] GenerateIndices(int vertexCount)
