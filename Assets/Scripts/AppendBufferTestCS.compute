@@ -1,0 +1,29 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+#include "Packages/jp.keijiro.noiseshader/Shader/SimplexNoise3D.hlsl"
+#include "Packages/jp.keijiro.noiseshader/Shader/ClassicNoise3D.hlsl"
+
+RWStructuredBuffer<float3> StaticBuffer;
+
+uint3 Size;
+
+int ComputeIndex(uint3 pos, uint3 size)
+{
+    return pos.x + size.x * pos.y + size.x * size.y * pos.z;
+}
+
+[numthreads(16, 1, 16)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    
+    float3 pos = uint3(id.x % Size.x, id.y % Size.y, id.z % Size.z);
+    float n = SimplexNoise(pos * 0.1);
+    if (n > 0.1)
+    {
+        uint index = StaticBuffer.IncrementCounter();
+        StaticBuffer[index] = pos;
+    }
+
+
+}
