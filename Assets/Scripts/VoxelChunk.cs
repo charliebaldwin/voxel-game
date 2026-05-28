@@ -66,15 +66,7 @@ public class VoxelChunk : MonoBehaviour
 
     private void Awake()
     {
-        InitializeChunk();
-
-    }
-
-
-    private void Start()
-    {
-        //GenerateVoxels(Compute);
-        //ComputeMesh(Compute);
+        voxels = new VoxelData[Size3D.x, Size3D.y, Size3D.z];
 
     }
 
@@ -88,8 +80,15 @@ public class VoxelChunk : MonoBehaviour
         //voxelTex = new RenderTexture(voxelTex);
 
 
-        GenerateVoxels(Compute);
-        ComputeMesh(Compute);
+        //GenerateVoxels(Compute);
+        //ComputeMesh(Compute);
+        //GenerateVoxelsCPU();
+        ComputeMeshCPU();
+    }
+
+    public void SetVoxels(VoxelData[,,] newVoxels)
+    {
+        voxels = newVoxels;
     }
 
     private void OnDrawGizmos()
@@ -130,45 +129,123 @@ public class VoxelChunk : MonoBehaviour
         //cBuffer.Release();
         if (meshDirty)
         {
-            ComputeMesh(Compute);
+            //ComputeMesh(Compute);
+            ComputeMeshCPU();
             meshDirty = false;
         }
     }
 
 
-    private void GenerateVoxels(ComputeShader compute)
+    private void GenerateVoxelsCPU()
     {
+        voxels = new VoxelData[Size3D.x, Size3D.y, Size3D.z];
+        for (int x = 0; x < Size3D.x; x++)
+        {
+            for (int z = 0; z < Size3D.z; z++)
+            {
+                float r = Random.Range(Size3D.y - 3f, Size3D.y);
+                for (int y = 0; y < Size3D.y; y++)
+                {
+                    voxels[x, y, z] = new VoxelData(y < r ? 1 : 0, 0, 0);
+                }
+            }
+        }
+    }
 
-        int[] vData = new int[Size3D.x * Size3D.y * Size3D.z];
-        idBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, sizeof(int));
+    private static Vector3 nx_ny_nz = new Vector3(-1f, -1f, -1f);
+    private static Vector3 nx_ny_pz = new Vector3(-1f, -1f,  1f);
+    private static Vector3 nx_py_pz = new Vector3(-1f,  1f,  1f);
+    private static Vector3 px_py_pz = new Vector3( 1f,  1f,  1f);
+    private static Vector3 px_py_nz = new Vector3( 1f,  1f, -1f);
+    private static Vector3 px_ny_nz = new Vector3( 1f, -1f, -1f);
+    private static Vector3 nx_py_nz = new Vector3(-1f,  1f, -1f);
+    private static Vector3 px_ny_pz = new Vector3( 1f, -1f,  1f);
+    private static Vector3[] GetFaceVerts(Vector3Int normal)
+    {
+        if (normal == Vector3Int.left)
+        {
+            return new Vector3[4] { nx_py_nz, nx_ny_nz, nx_ny_pz, nx_py_pz };
+        }
+        else if (normal == Vector3Int.right)
+        {
+            return new Vector3[4] { px_ny_nz, px_py_nz, px_py_pz, px_ny_pz };
+        }
+        else if (normal == Vector3Int.down)
+        {
+            return new Vector3[4] { nx_ny_nz, px_ny_nz, px_ny_pz, nx_ny_pz };
+        }
+        else if (normal == Vector3Int.up)
+        {
+            return new Vector3[4] { px_py_nz, nx_py_nz, nx_py_pz, px_py_pz };
+        }
+        else if (normal == Vector3Int.back) 
+        {
+            return new Vector3[4] { px_py_nz, px_ny_nz, nx_ny_nz, nx_py_nz };
+        }
+        else if (normal == Vector3Int.forward)
+        {
+            return new Vector3[4] { px_ny_pz, px_py_pz, nx_py_pz, nx_ny_pz };
+        } 
+        else
+        {
+            return null;
+        }
+    }
 
-        // Generate terrain shape (all stone)
-        int kernel = compute.FindKernel("GenerateTerrain");
-        compute.SetBuffer(kernel, "VoxelIDs", idBuffer);
-        compute.SetVector("TranslateNoise", transform.position);
-        compute.SetFloat("Scale", NoiseScale);
-        compute.SetVector("Size", new Vector4(Size3D.x, Size3D.y, Size3D.z, 0.0f));
-        compute.SetFloat("Threshold", NoiseThreshold);
-        compute.Dispatch(kernel, Size3D.x, 1, Size3D.z);
+    private static int[] tris = new int[6] { 0, 1, 2, 0, 2, 3 };
+    private void ComputeMeshCPU()
+    {
+        List<Vector3> vertices = new List<Vector3>();
+        List<Vector3> normals = new List<Vector3>();
+        List<int> triangles = new List<int>();
+        int t = 0;
+        Vector3Int[] dirs = new Vector3Int[6] { Vector3Int.left, Vector3Int.right, Vector3Int.down, Vector3Int.up, Vector3Int.back, Vector3Int.forward };
+        
+        for (int x = 0; x < Size3D.x; x++) {
+            for (int y = 0; y < Size3D.y; y++) {
+                for (int z = 0; z < Size3D.z; z++) {
 
-        // Add grass & dirt
-        kernel = compute.FindKernel("SetTerrainBlocks");
-        compute.SetBuffer(kernel, "VoxelIDs", idBuffer);
-        compute.SetVector("Size", new Vector4(Size3D.x, Size3D.y, Size3D.z, 0.0f));
-        compute.Dispatch(kernel, Size3D.x, 1, Size3D.z);
+                    VoxelData vox = voxels[x, y, z];
+                    if (vox.ID != 0)
+                    {
+                        int[] neighbors = new int[6] { 0, 0, 0, 0, 0, 0 };
+                        for (int n = 0; n < 6; n++)
+                        {
+                            Vector3Int n_pos = new Vector3Int(x, y, z) + dirs[n];
+                            Vector3 pos = new Vector3(x, y, z);
+                            if (n_pos.x >= 0 && n_pos.y >= 0 && n_pos.z >= 0 && n_pos.x <= Size3D.x - 1 && n_pos.y <= Size3D.y - 1 && n_pos.z <= Size3D.z - 1)
+                            {
 
-        // Add ores
-        //kernel = compute.FindKernel("AddOres");
-        //compute.SetBuffer(kernel, "Voxels", voxelBuffer);
-        //compute.Dispatch(kernel, Size3D.x, 1, Size3D.z);
+                                neighbors[n] = voxels[n_pos.x, n_pos.y, n_pos.z].ID;
 
-        idBuffer.GetData(vData);
-        //voxelData = FlatTo3DArray(vData);
+                            }
+                            if (neighbors[n] == 0)
+                            {
+                                Vector3[] new_verts = GetFaceVerts(dirs[n]);
+                                foreach (Vector3 v in new_verts)
+                                {
+                                    vertices.Add(v * 0.5f + pos);
+                                    normals.Add(dirs[n]);
+                                }
+                                for (int i = 0; i < 6; i++)
+                                {
+                                    triangles.Add(t + tris[i]);
+                                }
+                                t += 4;
+                            }
+                        }
+                    }
 
-        voxels = IntTo3DVoxelData(vData);
-        //voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
+                }
+            }
+        }
 
-
+        mesh = new Mesh();
+        mesh.vertices = vertices.ToArray();
+        mesh.triangles = triangles.ToArray();
+        mesh.normals = normals.ToArray();
+        meshFilter.mesh = mesh;
+        meshCollider.sharedMesh = mesh;
     }
 
     private void ComputeMesh(ComputeShader compute)

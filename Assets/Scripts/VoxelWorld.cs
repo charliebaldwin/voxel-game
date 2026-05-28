@@ -1,18 +1,23 @@
 using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using Unity.Mathematics.Geometry;
 using UnityEngine;
 using UnityEngine.VFX;
 using VFolders.Libs;
 using VInspector;
 using static UnityEngine.Analytics.IAnalytic;
+using Random = UnityEngine.Random;
 
 public class VoxelWorld : MonoBehaviour
 {
     public static VoxelWorld Instance { get; private set; }
 
+    public Vector3Int chunkSize = new Vector3Int(8, 8, 8);
     public int2 WorldSize = new int2(32, 32);
     public int2 InitialChunks = new int2(4, 4);
+
+    private VoxelData[,,] voxels;
 
     public GameObject ChunkPrefab;
     public int Spacing = 8;
@@ -42,29 +47,23 @@ public class VoxelWorld : MonoBehaviour
         }
     }
 
-    //private void OnValidate()
-    //{
-    //    Initialized = false;
-    //}
+
     void Start()
     {
         InitializeWorld();
     }
 
+
     [Button(name = "Initialize World", size = 20, color = "black")]
     public void InitializeWorld()
     {
-
-
-        if (Instance != null && Instance != this)
-        {
+        if (Instance != null && Instance != this) {
             Destroy(this);
-        }
-        else
-        {
+        } else {
             Instance = this;
         }
         Initialized = true;
+
 
         for(int i=transform.childCount-1; i>=0; i--)
         {
@@ -78,6 +77,10 @@ public class VoxelWorld : MonoBehaviour
             }
         }
 
+        Vector3Int worldVoxelSize = new Vector3Int(chunkSize.x * WorldSize.x, chunkSize.y, chunkSize.z * WorldSize.y);
+        voxels = GenerateVoxelsCPU(worldVoxelSize);
+        Debug.Log($"voxels size={worldVoxelSize}");
+
 
         voxelChunks = new VoxelChunk[WorldSize.x, WorldSize.y];
         for (int x = 0; x < InitialChunks.x; x++)
@@ -89,12 +92,6 @@ public class VoxelWorld : MonoBehaviour
         }
     }
 
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void OnDrawGizmos()
     {
@@ -114,27 +111,66 @@ public class VoxelWorld : MonoBehaviour
 
     public void AddChunk(int2 pos)
     {
-
-        try
+        if (voxelChunks[pos.x, pos.y] == null)
         {
-            if (voxelChunks[pos.x, pos.y] == null)
+            //Debug.Log($"Adding chunk at ({pos.x},{pos.y})");
+            //chunks.Add(pos);
+            VoxelChunk newChunk = Instantiate(ChunkPrefab).GetComponent<VoxelChunk>();
+            voxelChunks[pos.x, pos.y] = newChunk;
+
+            newChunk.Size3D = chunkSize;
+            newChunk.ChunkCoord = pos;
+            newChunk.transform.name = $"Chunk_x{pos.x}_z{pos.y}";
+            newChunk.transform.position = new Vector3(pos.x * chunkSize.x, 0, pos.y * chunkSize.z);
+            newChunk.transform.parent = transform;
+
+            MinMaxAABB bounds = new MinMaxAABB(new float3(pos.x * chunkSize.x, 0f, pos.y * chunkSize.z), new float3((pos.x + 1) * chunkSize.x, chunkSize.y, (pos.y + 1) * chunkSize.z));
+
+            Debug.Log($"Bounds = ({bounds.Min}) - ({bounds.Max})");
+
+            VoxelData[,,] chunkData = new VoxelData[chunkSize.x, chunkSize.y, chunkSize.z];
+  
+            for (int x = 0; x < chunkSize.x; x++)
             {
-                //Debug.Log($"Adding chunk at ({pos.x},{pos.y})");
-                //chunks.Add(pos);
-                VoxelChunk newChunk = Instantiate(ChunkPrefab).GetComponent<VoxelChunk>();
-                voxelChunks[pos.x, pos.y] = newChunk;
-                newChunk.ChunkCoord = pos;
-                newChunk.transform.name = $"Chunk_x{pos.x}_z{pos.y}";
-                newChunk.transform.position = new Vector3(pos.x, 0, pos.y) * Spacing;
-                newChunk.transform.parent = transform;
-                newChunk.InitializeChunk();
+                for (int y = 0; y < chunkSize.y; y++)
+                {
+                    for (int z = 0; z < chunkSize.z; z++)
+                    {
+                        VoxelData v = voxels[x + pos.x*chunkSize.x, y, z + pos.y* chunkSize.z];
+                        chunkData[x, y, z] = v;
+                    }
+                }
+            }
+            newChunk.SetVoxels(chunkData);
+            newChunk.InitializeChunk();
+        }
+        //try
+        //{
+            
+        //}
+        //catch (IndexOutOfRangeException ex) 
+        //{
+        //    Debug.LogWarning(ex.Message);
+        //    return;
+        //}
+    }
+    private VoxelData[,,] GenerateVoxelsCPU(Vector3Int Size3D)
+    {
+        VoxelData[,,] voxels = new VoxelData[Size3D.x, Size3D.y, Size3D.z];
+        for (int x = 0; x < Size3D.x; x++)
+        {
+            for (int z = 0; z < Size3D.z; z++)
+            {
+                float r = Mathf.Cos(z * .1f) * Mathf.Sin(x * 0.1f) * 4f + 8f;
+
+                for (int y = 0; y < Size3D.y; y++)
+                {
+
+                    voxels[x, y, z] = new VoxelData(y < r ? 1 : 0, 0, 0);
+                }
             }
         }
-        catch (IndexOutOfRangeException ex) 
-        {
-            Debug.LogWarning(ex.Message);
-            return;
-        }
+        return voxels;
     }
 
     public void DestroyVoxel(Vector3 worldPos)
@@ -167,9 +203,9 @@ public class VoxelWorld : MonoBehaviour
 
         Vector3Int start = WorldPosToVoxel(pos + 0.5f * Vector3.one);
         //  Debug.Log($"pos = ({pos.x}, {pos.y}, {pos.z}) -> start = ({start.x}, {start.y}, {start.z})");
-        int stepX = Math.Sign(dir.x);
-        int stepY = Math.Sign(dir.y);
-        int stepZ = Math.Sign(dir.z);
+        int stepX = System.Math.Sign(dir.x);
+        int stepY = System.Math.Sign(dir.y);
+        int stepZ = System.Math.Sign(dir.z);
 
 
         // Calculate cell boundaries. When the step (i.e. direction sign) is positive,

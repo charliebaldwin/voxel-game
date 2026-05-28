@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd09311d58c1f44bb43a7989836bc93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Size3D: {x: 16, y: 16, z: 16}
+  Size3D: {x: 8, y: 8, z: 8}
   ChunkCoord:
     x: 0
     y: 0
@@ -89,7 +89,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7c52d8cb10c9bbd45bbbb873b2757954, type: 2}
+  - {fileID: 2100000, guid: 8b4c48e45c3fdf44c8182706fc9b95d3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
