@@ -12,11 +12,14 @@ using static Perlin;
 using static UnityEditor.PlayerSettings;
 using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
+using static VoxelHelper;
 
 
 public class VoxelChunk : MonoBehaviour
 {
     public static bool DrawDebugs = false;
+
+    public bool useGreedy = true;
 
     public Vector3Int Size3D = new Vector3Int(16,32,16);
     private int bufferSizeMult = 24;
@@ -47,10 +50,6 @@ public class VoxelChunk : MonoBehaviour
     private Mesh mesh;
     private MeshCollider meshCollider;
 
-    private Vector3 lastPos = Vector3.zero;
-    private float lastScale = 0f;
-    private float lastThresh = 0f;
-    private Vector3Int lastSize = Vector3Int.zero;
 
     private Vector3 tempOrigin = Vector3.zero;
     private Vector3 tempDirection = Vector3.forward;
@@ -84,7 +83,14 @@ public class VoxelChunk : MonoBehaviour
         //GenerateVoxels(Compute);
         //ComputeMesh(Compute);
         //GenerateVoxelsCPU();
-        ComputeMeshCPU();
+        if (useGreedy)
+        {
+            GreedyMesh();
+        }
+        else
+        {
+            ComputeMeshCPU();
+        }
     }
 
     public void SetVoxels(VoxelData[,,] newVoxels)
@@ -92,32 +98,6 @@ public class VoxelChunk : MonoBehaviour
         voxels = newVoxels;
     }
 
-    private void OnDrawGizmos()
-    {
-        if (DrawDebugs)
-        {
-            Gizmos.color = Color.green;
-
-
-            Gizmos.color = Color.white;
-            Gizmos.DrawRay(tempOrigin, 100f * tempDirection);
-            foreach (Vector4 v in tempCubes)
-            {
-                if (v.w == 1.0f)
-                {
-                    Gizmos.color = Color.red;
-                    Gizmos.DrawCube(new Vector3(v.x, v.y, v.z), Vector3.one);
-                }
-                else
-                {
-                    Gizmos.color = Color.white;
-                }
-                Gizmos.DrawCube(new Vector3(v.x, v.y, v.z), Vector3.one);
-            }
-            Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(tempOrigin, 0.5f);
-        }
-    }
 
     private void FixedUpdate()
     {
@@ -131,25 +111,27 @@ public class VoxelChunk : MonoBehaviour
         if (meshDirty)
         {
             //ComputeMesh(Compute);
-            ComputeMeshCPU();
+
+            if (useGreedy)
+            {
+                GreedyMesh();
+            }
+            else
+            {
+                ComputeMeshCPU();
+            }
             meshDirty = false;
         }
     }
-
-
-    private void GenerateVoxelsCPU()
+    private void OnValidate()
     {
-        voxels = new VoxelData[Size3D.x, Size3D.y, Size3D.z];
-        for (int x = 0; x < Size3D.x; x++)
+        if (useGreedy)
         {
-            for (int z = 0; z < Size3D.z; z++)
-            {
-                float r = Random.Range(Size3D.y - 3f, Size3D.y);
-                for (int y = 0; y < Size3D.y; y++)
-                {
-                    voxels[x, y, z] = new VoxelData(y < r ? 1 : 0, 0, 0);
-                }
-            }
+            GreedyMesh();
+        }
+        else
+        {
+            ComputeMeshCPU();
         }
     }
 
@@ -160,12 +142,13 @@ public class VoxelChunk : MonoBehaviour
         List<Vector3> vertices = new List<Vector3>();
         List<Vector3> normals = new List<Vector3>();
         List<int> triangles = new List<int>();
+        List<Color> colors = new List<Color>();
         int t = 0;
         Vector3Int[] dirs = new Vector3Int[6] { Vector3Int.left, Vector3Int.right, Vector3Int.down, Vector3Int.up, Vector3Int.back, Vector3Int.forward };
         
-        for (int x = 0; x < Size3D.x; x++) {
+        for (int z = 0; z < Size3D.z; z++) {
             for (int y = 0; y < Size3D.y; y++) {
-                for (int z = 0; z < Size3D.z; z++) {
+                for (int x = 0; x < Size3D.x; x++) {
 
                     VoxelData vox = voxels[x, y, z];
                     if (vox.ID != 0)
@@ -176,7 +159,7 @@ public class VoxelChunk : MonoBehaviour
                             Vector3Int n_pos = new Vector3Int(x, y, z) + dirs[n];
                             Vector3 pos = new Vector3(x, y, z);
 
-                            neighbors[n] = VoxelWorld.Instance.LookupVoxel(LocalToWorld(n_pos)).ID;
+                            neighbors[n] = VoxelWorld.Instance.LookupVoxel(LocalToWorld(n_pos, ChunkCoord, Size3D)).ID;
 
                             if (neighbors[n] == 0)
                             {
@@ -185,6 +168,7 @@ public class VoxelChunk : MonoBehaviour
                                 {
                                     vertices.Add(v * 0.5f + pos);
                                     normals.Add(dirs[n]);
+                                    colors.Add(new Color(vox.ID, 0f, 0f));
                                 }
                                 for (int i = 0; i < 6; i++)
                                 {
@@ -202,9 +186,190 @@ public class VoxelChunk : MonoBehaviour
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
         mesh.normals = normals.ToArray();
+        mesh.colors = colors.ToArray();
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
     }
+
+    private void GreedyMesh()
+    {
+        List<Vector3> vertices = new List<Vector3>();
+        List<Vector3> normals = new List<Vector3>();
+        List<int> triangles = new List<int>();
+
+        int t = 0;
+        for (int y = 0; y < Size3D.y; y++) {
+            for (int x = 0; x < Size3D.x; x++) {
+                for (int z = 0; z < Size3D.z; z++) {
+                    Vector3Int pos = new Vector3Int(x, y, z);
+                    if (GetVoxelFaceVisible(pos, Directions[0]))
+                    {
+                        GreedyFace newFace = new GreedyFace(Directions[0], pos);
+                        for (int i = z+1; i < Size3D.z; i++)
+                        {
+                            Vector3Int neighborPos = new Vector3Int(pos.x, pos.y, i);
+                            if (GetVoxelFaceVisible(neighborPos, newFace.faceDirection))
+                                newFace.lengthPrimary += 1;
+                            else
+                                break;
+                        }
+                        Vector3[] newVerts = newFace.GetFaceData();
+                        foreach (Vector3 v in newVerts)
+                        {
+                            vertices.Add(v);
+                            normals.Add(Directions[0]);
+                        }
+                        for (int i = 0; i < 6; i++)
+                        {
+                            triangles.Add(t + Triangles[i]);
+                        }
+                        t += 4;
+                        x += newFace.lengthPrimary-1;
+                    }
+                }
+            }
+        }
+        for (int y = 0; y < Size3D.y; y++) {
+            for (int x = 0; x < Size3D.x; x++) {
+                for (int z = 0; z < Size3D.z; z++) {
+                    Vector3Int pos = new Vector3Int(x, y, z);
+                    if (GetVoxelFaceVisible(pos, Directions[1]))
+                    {
+                        GreedyFace newFace = new GreedyFace(Directions[1], pos);
+                        for (int i = z+1; i < Size3D.z; i++)
+                        {
+                            Vector3Int neighborPos = new Vector3Int(pos.x, pos.y, i);
+                            if (GetVoxelFaceVisible(neighborPos, newFace.faceDirection))
+                                newFace.lengthPrimary += 1;
+                            else
+                                break;
+                        }
+                        Vector3[] newVerts = newFace.GetFaceData();
+                        foreach (Vector3 v in newVerts)
+                        {
+                            vertices.Add(v);
+                            normals.Add(Directions[1]);
+                        }
+                        for (int i = 0; i < 6; i++)
+                        {
+                            triangles.Add(t + Triangles[i]);
+                        }
+                        t += 4;
+                        x += newFace.lengthPrimary-1;
+                    }
+                }
+            }
+        }
+
+        for (int y = 0; y < Size3D.y; y++) {
+            for (int z = 0; z < Size3D.z; z++) {
+                for (int x = 0; x < Size3D.x; x++) {
+                    Vector3Int pos = new Vector3Int(x, y, z);
+                    if (GetVoxelFaceVisible(pos, Directions[3]))
+                    {
+                        GreedyFace newFace = new GreedyFace(Directions[3], pos);
+                        for (int i = x+1; i < Size3D.x; i++)
+                        {
+                            Vector3Int neighborPos = new Vector3Int(i, pos.y, pos.z);
+                            if (GetVoxelFaceVisible(neighborPos, newFace.faceDirection))
+                                newFace.lengthPrimary += 1;
+                            else
+                                break;
+                        }
+                        Vector3[] newVerts = newFace.GetFaceData();
+                        foreach (Vector3 v in newVerts)
+                        {
+                            vertices.Add(v);
+                            normals.Add(Directions[3]);
+                        }
+                        for (int i = 0; i < 6; i++)
+                        {
+                            triangles.Add(t + Triangles[i]);
+                        }
+                        t += 4;
+                        x += newFace.lengthPrimary-1;
+                    }
+                }
+            }
+        }
+        for (int y = 0; y < Size3D.y; y++) {
+            for (int z = 0; z < Size3D.z; z++) {
+                for (int x = 0; x < Size3D.x; x++) {
+                    Vector3Int pos = new Vector3Int(x, y, z);
+                    if (GetVoxelFaceVisible(pos, Directions[4]))
+                    {
+                        GreedyFace newFace = new GreedyFace(Directions[4], pos);
+                        for (int i = x+1; i < Size3D.x; i++)
+                        {
+                            Vector3Int neighborPos = new Vector3Int(i, pos.y, pos.z);
+                            if (GetVoxelFaceVisible(neighborPos, newFace.faceDirection))
+                                newFace.lengthPrimary += 1;
+                            else
+                                break;
+                        }
+                        Vector3[] newVerts = newFace.GetFaceData();
+                        foreach (Vector3 v in newVerts)
+                        {
+                            vertices.Add(v);
+                            normals.Add(Directions[4]);
+                        }
+                        for (int i = 0; i < 6; i++)
+                        {
+                            triangles.Add(t + Triangles[i]);
+                        }
+                        t += 4;
+                        x += newFace.lengthPrimary-1;
+                    }
+                }
+            }
+        }
+        for (int y = 0; y < Size3D.y; y++) {
+            for (int z = 0; z < Size3D.z; z++) {
+                for (int x = 0; x < Size3D.x; x++) {
+                    Vector3Int pos = new Vector3Int(x, y, z);
+                    if (GetVoxelFaceVisible(pos, Directions[5]))
+                    {
+                        GreedyFace newFace = new GreedyFace(Directions[5], pos);
+                        for (int i = x+1; i < Size3D.x; i++)
+                        {
+                            Vector3Int neighborPos = new Vector3Int(i, pos.y, pos.z);
+                            if (GetVoxelFaceVisible(neighborPos, newFace.faceDirection))
+                                newFace.lengthPrimary += 1;
+                            else
+                                break;
+                        }
+                        Vector3[] newVerts = newFace.GetFaceData();
+                        foreach (Vector3 v in newVerts)
+                        {
+                            vertices.Add(v);
+                            normals.Add(Directions[5]);
+                        }
+                        for (int i = 0; i < 6; i++)
+                        {
+                            triangles.Add(t + Triangles[i]);
+                        }
+                        t += 4;
+                        x += newFace.lengthPrimary-1;
+                    }
+                }
+            }
+        }
+        mesh = new Mesh();
+        mesh.vertices = vertices.ToArray();
+        mesh.triangles = triangles.ToArray();
+        mesh.normals = normals.ToArray();
+        meshFilter.mesh = mesh;
+        meshCollider.sharedMesh = mesh;
+    }
+
+    private bool GetVoxelFaceVisible(Vector3Int pos, Vector3Int faceDirection)
+    {
+        VoxelData thisVoxel = VoxelWorld.Instance.LookupVoxel(LocalToWorld(pos, ChunkCoord, Size3D));
+        VoxelData neighborVoxel = VoxelWorld.Instance.LookupVoxel(LocalToWorld(pos + faceDirection, ChunkCoord, Size3D));
+        return neighborVoxel.ID == 0 && thisVoxel.ID > 0;
+    }
+
+    
 
     private void BlockUpdate()
     {
@@ -261,93 +426,13 @@ public class VoxelChunk : MonoBehaviour
         Debug.Log($"num indices = {result.Count}");
         return result;
     }
-    private int[] GenerateIndices(int vertexCount)
-    {
-        int[] result = new int[(vertexCount / 4) * 6];
-        for (int i=0; i < vertexCount/4 - 0; i++)
-        {
-            result[i * 6 + 0] = i * 4 + 0;
-            result[i * 6 + 1] = i * 4 + 1;
-            result[i * 6 + 2] = i * 4 + 2;
-            result[i * 6 + 3] = i * 4 + 0;
-            result[i * 6 + 4] = i * 4 + 2;
-            result[i * 6 + 5] = i * 4 + 3;
-        }
-        return result;
-    }
-    private int[,,] FlatTo3DArray(int[] flat)
-    {
-        int[,,] result = new int[Size3D.x, Size3D.y, Size3D.z];
 
-        for (int x = 0; x < Size3D.x; x++) {
-            for (int y = 0; y < Size3D.y; y++) {
-                for (int z = 0; z < Size3D.z; z++) {
-
-                    result[x, y, z] = flat[x + Size3D.x * y + Size3D.x * Size3D.y * z];
-                }
-            }
-        }
-        return result;
-    }
-    private int[] ThreeDToFlatArray(int[,,] threeDarray)
-    {
-        int[] result = new int[Size3D.x * Size3D.y * Size3D.z];
-        for (int x = 0; x < Size3D.x; x++)
-        {
-            for (int y = 0; y < Size3D.y; y++)
-            {
-                for (int z = 0; z < Size3D.z; z++)
-                {
-
-                    result[x + Size3D.x * y + Size3D.x * Size3D.y * z] = threeDarray[x, y, z];
-                }
-            }
-        }
-        return result;
-    }
-
-    private VoxelData[,,] IntTo3DVoxelData(int[] flat)
-    {
-        VoxelData[,,] result = new VoxelData[Size3D.x, Size3D.y, Size3D.z];
-
-        for (int x = 0; x < Size3D.x; x++)
-        {
-            for (int y = 0; y < Size3D.y; y++)
-            {
-                for (int z = 0; z < Size3D.z; z++)
-                {
-                    int id = flat[x + Size3D.x * y + Size3D.x * Size3D.y * z];
-                    result[x, y, z] = new VoxelData(id, 0, 0);
-                }
-            }
-        }
-        return result;
-    }
-    private VoxelData[] VoxelDataToFlatArray(VoxelData[,,] threeDarray)
-    {
-        VoxelData[] result = new VoxelData[Size3D.x * Size3D.y * Size3D.z];
-        for (int x = 0; x < Size3D.x; x++)
-        {
-            for (int y = 0; y < Size3D.y; y++)
-            {
-                for (int z = 0; z < Size3D.z; z++)
-                {
-                    result[x + Size3D.x * y + Size3D.x * Size3D.y * z] = threeDarray[x, y, z];
-                }
-            }
-        }
-        return result;
-    }
-
-    private Vector3Int LocalToWorld(Vector3Int localPos)
-    {
-        return new Vector3Int(localPos.x + ChunkCoord.x * Size3D.x, localPos.y, localPos.z + ChunkCoord.y * Size3D.z);
-    }
+    
 
 
     public void DamageBlock(Vector3 worldPosition, byte damage)
     {
-        Vector3Int localPos = WorldPosToVoxel(worldPosition);
+        Vector3Int localPos = WorldToLocal(worldPosition, transform.position);
         voxels[localPos.x, localPos.y, localPos.z].Damage += damage;
         meshDirty = true;
         if (voxels[localPos.x, localPos.y, localPos.z].Damage >= 3)
@@ -359,7 +444,7 @@ public class VoxelChunk : MonoBehaviour
     }
     public void BreakBlock(Vector3 worldPosition)
     {
-        Vector3Int localPos = WorldPosToVoxel(worldPosition);
+        Vector3Int localPos = WorldToLocal(worldPosition, transform.position);
         //voxelData[localPos.x, localPos.y, localPos.z] = 0;
         //voxelBuffer.SetData(ThreeDToFlatArray(voxelData));
         voxels[localPos.x, localPos.y, localPos.z] = new VoxelData(0,0,0);
@@ -368,7 +453,7 @@ public class VoxelChunk : MonoBehaviour
     }
     public void PlaceBlock(Vector3 worldPosition, int blockType)
     {
-        Vector3Int localPos = WorldPosToVoxel(worldPosition);
+        Vector3Int localPos = WorldToLocal(worldPosition, transform.position);
 
         //if (voxelData[localPos.x, localPos.y, localPos.z] == 0)
         //{
@@ -386,16 +471,11 @@ public class VoxelChunk : MonoBehaviour
             meshDirty = true;
         }
     }
-    private Vector3Int WorldPosToVoxel(Vector3 worldPos)
-    {
-        Vector3 localPos = worldPos - transform.position;
-        Vector3Int result = new Vector3Int(Mathf.RoundToInt(localPos.x), Mathf.RoundToInt(localPos.y), Mathf.RoundToInt(localPos.z));
-        return result;
-    }
+
 
     public VoxelData LookupVoxel(Vector3 worldPos)
     {
-        Vector3Int localPos = WorldPosToVoxel(worldPos);
+        Vector3Int localPos = WorldToLocal(worldPos, transform.position);
         if (IsPosInGridBounds(localPos, Size3D))
         {
             return voxels[localPos.x,localPos.y,localPos.z];    
@@ -406,20 +486,6 @@ public class VoxelChunk : MonoBehaviour
     }
 
 
-
-    private bool IsPosInGridBounds(Vector3Int pos, Vector3Int size)
-    {
-        return pos.x >= 0 && pos.y >= 0 && pos.z >= 0 && pos.x < size.x && pos.y < size.y && pos.z < size.z;
-    }
-
-    //private void OnApplicationQuit()
-    //{
-    //    SaveMesh();
-    //}
-    //public void SaveMesh()
-    //{
-    //    AssetDatabase.CreateAsset(meshFilter.sharedMesh, $"Assets/Cache/mesh_{ChunkCoord.x}_{ChunkCoord.y}.asset");
-    //}
 
     private void ComputeMesh(ComputeShader compute)
     {
@@ -432,7 +498,7 @@ public class VoxelChunk : MonoBehaviour
         iBuffer = new ComputeBuffer(bufferSizeMult * size3d, 1 * sizeof(int));
 
         voxelBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, sizeof(int) * 3);
-        voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
+        voxelBuffer.SetData(VoxelDataToFlatArray(voxels, Size3D));
 
         int kernel = compute.FindKernel("ComputeMesh");
         compute.SetBuffer(kernel, "Voxels", voxelBuffer);
@@ -496,6 +562,34 @@ public class VoxelChunk : MonoBehaviour
         meshFilter.sharedMesh.RecalculateBounds();
 
         meshCollider.sharedMesh = meshFilter.sharedMesh;
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        if (DrawDebugs)
+        {
+            Gizmos.color = Color.green;
+
+
+            Gizmos.color = Color.white;
+            Gizmos.DrawRay(tempOrigin, 100f * tempDirection);
+            foreach (Vector4 v in tempCubes)
+            {
+                if (v.w == 1.0f)
+                {
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawCube(new Vector3(v.x, v.y, v.z), Vector3.one);
+                }
+                else
+                {
+                    Gizmos.color = Color.white;
+                }
+                Gizmos.DrawCube(new Vector3(v.x, v.y, v.z), Vector3.one);
+            }
+            Gizmos.color = Color.blue;
+            Gizmos.DrawSphere(tempOrigin, 0.5f);
+        }
     }
 
 

@@ -8,14 +8,16 @@ using VFolders.Libs;
 using VInspector;
 using static UnityEngine.Analytics.IAnalytic;
 using Random = UnityEngine.Random;
+using static Perlin;
 
-public class VoxelWorld : MonoBehaviour
+public partial class VoxelWorld : MonoBehaviour
 {
     public static VoxelWorld Instance { get; private set; }
 
     public Vector3Int ChunkSize = new Vector3Int(8, 8, 8);
     public Vector3Int WorldSize = new Vector3Int(32, 1, 32);
     public int2 InitialChunks = new int2(4, 4);
+    public WorldGenSettings Settings;
 
     private VoxelData[,,] Voxels;
     private VoxelChunk[,] Chunks;
@@ -158,16 +160,42 @@ public class VoxelWorld : MonoBehaviour
         {
             for (int z = 0; z < Size3D.z; z++)
             {
-                float r = Mathf.Cos(z * .1f) * Mathf.Sin(x * 0.1f) * 4f + 8f;
+                //float h = Mathf.Cos(z * .1f) * Mathf.Sin(x * 0.1f) * 4f + 8f;
+
+                float noise = Perlin.Fbm(x * Settings.NoiseScale, z * Settings.NoiseScale, Settings.NoiseOctaves);
+                float noise2 = Perlin.Fbm(x * Settings.NoiseScale * 0.2f, z * Settings.NoiseScale * 0.2f, Settings.NoiseOctaves);
+                float h = noise * Settings.HeightRange + Settings.HeightOffset;
+                h = h + (noise2 * Settings.HeightRange * 4);
+
 
                 for (int y = 0; y < Size3D.y; y++)
                 {
 
-                    voxels[x, y, z] = new VoxelData(y < r ? 1 : 0, 0, 0);
+                    voxels[x, y, z] = new VoxelData(y < h ? 1 : 0, 0, 0);
                 }
             }
         }
+
+        // grass
+        for (int x = 0; x < Size3D.x; x++)
+        {
+            for (int z = 0; z < Size3D.z; z++)
+            {
+                for (int y = 0; y < Size3D.y; y++)
+                {
+                    if (voxels[x,y,z].ID > 0 && y < Size3D.y-1)
+                    {
+                        if (voxels[x,y+1,z].ID == 0)
+                        {
+                            voxels[x, y, z].ID = 2;
+                        }
+                    }
+                }
+            }
+        }
+
         return voxels;
+
     }
 
     public void DestroyVoxel(Vector3 worldPos)
@@ -343,36 +371,3 @@ public class VoxelWorld : MonoBehaviour
     }
 }
 
-public struct VoxelData
-{
-    public int ID;
-    public int Damage;
-    public int Orientation;
-
-    public VoxelData(int id, int damage, int orientation)
-    {
-        ID = id;
-        Damage = damage;
-        Orientation = orientation;
-    }
-}
-
-public struct VoxelHitInfo
-{
-    public bool didHit;
-    public int blockID;
-    public VoxelData voxel;
-    public Vector3Int voxelPos;
-    public Vector3 hitPos;
-    public Vector3Int hitNormal;
-
-    public VoxelHitInfo(bool didHit)
-    {
-        this.didHit = didHit;
-        blockID = 0;
-        voxel = new VoxelData();
-        voxelPos = Vector3Int.zero;
-        hitPos = Vector3.zero;
-        hitNormal = Vector3Int.up;
-    }
-}
