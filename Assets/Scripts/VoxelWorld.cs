@@ -13,11 +13,12 @@ public class VoxelWorld : MonoBehaviour
 {
     public static VoxelWorld Instance { get; private set; }
 
-    public Vector3Int chunkSize = new Vector3Int(8, 8, 8);
-    public int2 WorldSize = new int2(32, 32);
+    public Vector3Int ChunkSize = new Vector3Int(8, 8, 8);
+    public Vector3Int WorldSize = new Vector3Int(32, 1, 32);
     public int2 InitialChunks = new int2(4, 4);
 
-    private VoxelData[,,] voxels;
+    private VoxelData[,,] Voxels;
+    private VoxelChunk[,] Chunks;
 
     public GameObject ChunkPrefab;
     public int Spacing = 8;
@@ -32,8 +33,6 @@ public class VoxelWorld : MonoBehaviour
 
     public bool Initialized = false;
 
-   // private List<int2> chunks = new List<int2>();
-    private VoxelChunk[,] voxelChunks;
 
     private void Awake()
     {
@@ -77,12 +76,12 @@ public class VoxelWorld : MonoBehaviour
             }
         }
 
-        Vector3Int worldVoxelSize = new Vector3Int(chunkSize.x * WorldSize.x, chunkSize.y, chunkSize.z * WorldSize.y);
-        voxels = GenerateVoxelsCPU(worldVoxelSize);
+        Vector3Int worldVoxelSize = new Vector3Int(ChunkSize.x * WorldSize.x, ChunkSize.y * WorldSize.y, ChunkSize.z * WorldSize.z);
+        Voxels = GenerateVoxelsCPU(worldVoxelSize);
         Debug.Log($"voxels size={worldVoxelSize}");
 
 
-        voxelChunks = new VoxelChunk[WorldSize.x, WorldSize.y];
+        Chunks = new VoxelChunk[WorldSize.x, WorldSize.z];
         for (int x = 0; x < InitialChunks.x; x++)
         {
             for (int z = 0; z < InitialChunks.y; z++)
@@ -111,32 +110,30 @@ public class VoxelWorld : MonoBehaviour
 
     public void AddChunk(int2 pos)
     {
-        if (voxelChunks[pos.x, pos.y] == null)
+        if (Chunks[pos.x, pos.y] == null)
         {
-            //Debug.Log($"Adding chunk at ({pos.x},{pos.y})");
-            //chunks.Add(pos);
             VoxelChunk newChunk = Instantiate(ChunkPrefab).GetComponent<VoxelChunk>();
-            voxelChunks[pos.x, pos.y] = newChunk;
+            Chunks[pos.x, pos.y] = newChunk;
 
-            newChunk.Size3D = chunkSize;
+            newChunk.Size3D = ChunkSize;
             newChunk.ChunkCoord = pos;
             newChunk.transform.name = $"Chunk_x{pos.x}_z{pos.y}";
-            newChunk.transform.position = new Vector3(pos.x * chunkSize.x, 0, pos.y * chunkSize.z);
+            newChunk.transform.position = new Vector3(pos.x * ChunkSize.x, 0, pos.y * ChunkSize.z);
             newChunk.transform.parent = transform;
 
-            MinMaxAABB bounds = new MinMaxAABB(new float3(pos.x * chunkSize.x, 0f, pos.y * chunkSize.z), new float3((pos.x + 1) * chunkSize.x, chunkSize.y, (pos.y + 1) * chunkSize.z));
+            MinMaxAABB bounds = new MinMaxAABB(new float3(pos.x * ChunkSize.x, 0f, pos.y * ChunkSize.z), new float3((pos.x + 1) * ChunkSize.x, ChunkSize.y, (pos.y + 1) * ChunkSize.z));
 
             Debug.Log($"Bounds = ({bounds.Min}) - ({bounds.Max})");
 
-            VoxelData[,,] chunkData = new VoxelData[chunkSize.x, chunkSize.y, chunkSize.z];
+            VoxelData[,,] chunkData = new VoxelData[ChunkSize.x, ChunkSize.y, ChunkSize.z];
   
-            for (int x = 0; x < chunkSize.x; x++)
+            for (int x = 0; x < ChunkSize.x; x++)
             {
-                for (int y = 0; y < chunkSize.y; y++)
+                for (int y = 0; y < ChunkSize.y; y++)
                 {
-                    for (int z = 0; z < chunkSize.z; z++)
+                    for (int z = 0; z < ChunkSize.z; z++)
                     {
-                        VoxelData v = voxels[x + pos.x*chunkSize.x, y, z + pos.y* chunkSize.z];
+                        VoxelData v = LookupVoxel(new Vector3Int(x + pos.x * ChunkSize.x, y, z + pos.y * ChunkSize.z));
                         chunkData[x, y, z] = v;
                     }
                 }
@@ -176,7 +173,7 @@ public class VoxelWorld : MonoBehaviour
     public void DestroyVoxel(Vector3 worldPos)
     {
         int2 chunkPos = FindContainingChunk(worldPos);
-        VoxelChunk chunk = voxelChunks[chunkPos.x, chunkPos.y];
+        VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
         GameObject breakVFX = Instantiate(BlockBreakVFXPrefab, worldPos, Quaternion.identity);
         breakVFX.GetComponent<VFXObject>().InitVFX(chunk.LookupVoxel(worldPos).ID);
         chunk.DamageBlock(worldPos, 1);
@@ -185,7 +182,7 @@ public class VoxelWorld : MonoBehaviour
     public void AddVoxel(Vector3 worldPos, int blockType)
     {
         int2 chunkPos = FindContainingChunk(worldPos);
-        VoxelChunk chunk = voxelChunks[chunkPos.x, chunkPos.y];
+        VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
         if (Physics.CheckBox(worldPos, Vector3.one * 0.5f, Quaternion.identity, BlockVoxelPlacement.value))
         {
             return;
@@ -302,25 +299,33 @@ public class VoxelWorld : MonoBehaviour
         return new VoxelHitInfo(false);
     }
 
-    private VoxelData LookupVoxel(Vector3Int voxelPos)
+    public VoxelData LookupVoxel(Vector3Int p)
     {
-        int2 chunkPos = new int2(Mathf.FloorToInt(voxelPos.x / Spacing), Mathf.FloorToInt(voxelPos.z / Spacing));
-        try
+        if (CheckWorldBounds(p))
         {
-            VoxelChunk chunk = voxelChunks[chunkPos.x, chunkPos.y];
-            return chunk.LookupVoxel(voxelPos);
+            return Voxels[p.x, p.y, p.z];
+        }
+        else
+        {
+            return new VoxelData(0, 0, 0); 
+        }
+    }
 
-        }
-        catch (NullReferenceException ex)
+    public void SetVoxel(Vector3Int p, VoxelData newVoxel)
+    {
+        if (CheckWorldBounds(p))
         {
-            Debug.Log($"No chunk at ({chunkPos.x}, {chunkPos.y}) [{ex.Message}]");
-            return new VoxelData(-1,0,0);
+            Voxels[p.x,p.y,p.z] = newVoxel;
         }
-        catch (IndexOutOfRangeException ex)
+    }
+
+    public bool CheckWorldBounds(Vector3Int p)
+    {
+        if (p.x < 0 || p.y < 0 || p.z < 0 || p.x >= ChunkSize.x * WorldSize.x || p.y >= ChunkSize.y * WorldSize.y || p.z >= ChunkSize.z * WorldSize.z)
         {
-            Debug.LogWarning(ex.Message);
-            return new VoxelData(-1, 0, 0);
+            return false;
         }
+        return true;
     }
 
 

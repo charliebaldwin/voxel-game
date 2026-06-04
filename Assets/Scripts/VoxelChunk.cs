@@ -13,6 +13,7 @@ using static UnityEditor.PlayerSettings;
 using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 
+
 public class VoxelChunk : MonoBehaviour
 {
     public static bool DrawDebugs = false;
@@ -152,47 +153,8 @@ public class VoxelChunk : MonoBehaviour
         }
     }
 
-    private static Vector3 nx_ny_nz = new Vector3(-1f, -1f, -1f);
-    private static Vector3 nx_ny_pz = new Vector3(-1f, -1f,  1f);
-    private static Vector3 nx_py_pz = new Vector3(-1f,  1f,  1f);
-    private static Vector3 px_py_pz = new Vector3( 1f,  1f,  1f);
-    private static Vector3 px_py_nz = new Vector3( 1f,  1f, -1f);
-    private static Vector3 px_ny_nz = new Vector3( 1f, -1f, -1f);
-    private static Vector3 nx_py_nz = new Vector3(-1f,  1f, -1f);
-    private static Vector3 px_ny_pz = new Vector3( 1f, -1f,  1f);
-    private static Vector3[] GetFaceVerts(Vector3Int normal)
-    {
-        if (normal == Vector3Int.left)
-        {
-            return new Vector3[4] { nx_py_nz, nx_ny_nz, nx_ny_pz, nx_py_pz };
-        }
-        else if (normal == Vector3Int.right)
-        {
-            return new Vector3[4] { px_ny_nz, px_py_nz, px_py_pz, px_ny_pz };
-        }
-        else if (normal == Vector3Int.down)
-        {
-            return new Vector3[4] { nx_ny_nz, px_ny_nz, px_ny_pz, nx_ny_pz };
-        }
-        else if (normal == Vector3Int.up)
-        {
-            return new Vector3[4] { px_py_nz, nx_py_nz, nx_py_pz, px_py_pz };
-        }
-        else if (normal == Vector3Int.back) 
-        {
-            return new Vector3[4] { px_py_nz, px_ny_nz, nx_ny_nz, nx_py_nz };
-        }
-        else if (normal == Vector3Int.forward)
-        {
-            return new Vector3[4] { px_ny_pz, px_py_pz, nx_py_pz, nx_ny_pz };
-        } 
-        else
-        {
-            return null;
-        }
-    }
 
-    private static int[] tris = new int[6] { 0, 1, 2, 0, 2, 3 };
+
     private void ComputeMeshCPU()
     {
         List<Vector3> vertices = new List<Vector3>();
@@ -213,15 +175,12 @@ public class VoxelChunk : MonoBehaviour
                         {
                             Vector3Int n_pos = new Vector3Int(x, y, z) + dirs[n];
                             Vector3 pos = new Vector3(x, y, z);
-                            if (n_pos.x >= 0 && n_pos.y >= 0 && n_pos.z >= 0 && n_pos.x <= Size3D.x - 1 && n_pos.y <= Size3D.y - 1 && n_pos.z <= Size3D.z - 1)
-                            {
 
-                                neighbors[n] = voxels[n_pos.x, n_pos.y, n_pos.z].ID;
+                            neighbors[n] = VoxelWorld.Instance.LookupVoxel(LocalToWorld(n_pos)).ID;
 
-                            }
                             if (neighbors[n] == 0)
                             {
-                                Vector3[] new_verts = GetFaceVerts(dirs[n]);
+                                Vector3[] new_verts = VoxelHelper.GetFaceVerts(dirs[n]);
                                 foreach (Vector3 v in new_verts)
                                 {
                                     vertices.Add(v * 0.5f + pos);
@@ -229,13 +188,12 @@ public class VoxelChunk : MonoBehaviour
                                 }
                                 for (int i = 0; i < 6; i++)
                                 {
-                                    triangles.Add(t + tris[i]);
+                                    triangles.Add(t + VoxelHelper.Triangles[i]);
                                 }
                                 t += 4;
                             }
                         }
                     }
-
                 }
             }
         }
@@ -246,83 +204,6 @@ public class VoxelChunk : MonoBehaviour
         mesh.normals = normals.ToArray();
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
-    }
-
-    private void ComputeMesh(ComputeShader compute)
-    {
-        int size3d = Size3D.x * Size3D.y * Size3D.z;
-
-        vBuffer = new ComputeBuffer(bufferSizeMult * size3d, 3 * sizeof(float));
-        nBuffer = new ComputeBuffer(bufferSizeMult * size3d, 3 * sizeof(float));
-        cBuffer = new ComputeBuffer(bufferSizeMult * size3d, 4 * sizeof(float));
-        tBuffer = new ComputeBuffer(bufferSizeMult * size3d, 2 * sizeof(float));
-        iBuffer = new ComputeBuffer(bufferSizeMult * size3d, 1 * sizeof(int));
-
-        voxelBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, sizeof(int) * 3);
-        voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
-
-        int kernel = compute.FindKernel("ComputeMesh");
-        compute.SetBuffer(kernel, "Voxels", voxelBuffer);
-        compute.SetFloat("Threshold", NoiseThreshold);
-        compute.SetVector("Size", new Vector4(Size3D.x, Size3D.y, Size3D.z, 1.0f));
-        compute.SetBuffer(kernel, "Vertices", vBuffer);
-        compute.SetBuffer(kernel, "Normals", nBuffer);
-        compute.SetBuffer(kernel, "Colors", cBuffer);
-        compute.SetBuffer(kernel, "TexCoords", tBuffer);
-        compute.SetBuffer(kernel, "ValidIndices", iBuffer);
-
-        compute.Dispatch(kernel, Size3D.x, 1, Size3D.z);
-
-        computeReadCoroutine = BufferReadTimer(BufferReadDelay);
-        StartCoroutine(computeReadCoroutine); 
-        
-        //ReadBufferData();
-    }
-
-    private IEnumerator BufferReadTimer(float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        ReadBufferData();
-    }
-
-    private void ReadBufferData()
-    {
-        int size3d = Size3D.x * Size3D.y * Size3D.z;
-        Vector3[] vData = new Vector3[bufferSizeMult * size3d];
-        Vector3[] nData = new Vector3[bufferSizeMult * size3d];
-        Color[] cData = new Color[bufferSizeMult * size3d];
-        Vector2[] tData = new Vector2[bufferSizeMult * size3d];
-        int[] iData = new int[bufferSizeMult * size3d];
-
-        vBuffer.GetData(vData);
-        nBuffer.GetData(nData);
-        cBuffer.GetData(cData);
-        tBuffer.GetData(tData);
-        iBuffer.GetData(iData);
-
-        List<int> validIndices = GetValidIndices(iData);
-
-        Vector3[] vDataTrimmed = new Vector3[validIndices.Count];
-        Vector3[] nDataTrimmed = new Vector3[validIndices.Count];
-        Color[] cDataTrimmed = new Color[validIndices.Count];
-        Vector2[] tDataTrimmed = new Vector2[validIndices.Count];
-        for (int i = 0; i < validIndices.Count; i++)
-        {
-            vDataTrimmed[i] = vData[validIndices[i]];
-            nDataTrimmed[i] = nData[validIndices[i]];
-            cDataTrimmed[i] = cData[validIndices[i]];
-            tDataTrimmed[i] = tData[validIndices[i]];
-        }
-       
-        meshFilter.sharedMesh.Clear();
-        meshFilter.sharedMesh.vertices = vDataTrimmed;
-        meshFilter.sharedMesh.uv = tDataTrimmed;
-        meshFilter.sharedMesh.normals = nDataTrimmed;
-        meshFilter.sharedMesh.colors = cDataTrimmed;
-        meshFilter.sharedMesh.triangles = GenerateIndices(vDataTrimmed.Length);
-        meshFilter.sharedMesh.RecalculateBounds();
-
-        meshCollider.sharedMesh = meshFilter.sharedMesh;
     }
 
     private void BlockUpdate()
@@ -372,7 +253,7 @@ public class VoxelChunk : MonoBehaviour
         List<int> result = new List<int>();
         for (int i = 0; i < array.Length; i++)
         {
-            if (array[i] != 0 && array[i] != null )
+            if (array[i] != 0)
             {
                 result.Add(i);
             }
@@ -458,6 +339,11 @@ public class VoxelChunk : MonoBehaviour
         return result;
     }
 
+    private Vector3Int LocalToWorld(Vector3Int localPos)
+    {
+        return new Vector3Int(localPos.x + ChunkCoord.x * Size3D.x, localPos.y, localPos.z + ChunkCoord.y * Size3D.z);
+    }
+
 
     public void DamageBlock(Vector3 worldPosition, byte damage)
     {
@@ -467,6 +353,7 @@ public class VoxelChunk : MonoBehaviour
         if (voxels[localPos.x, localPos.y, localPos.z].Damage >= 3)
         {
             BreakBlock(worldPosition);
+            
         }
 
     }
@@ -476,7 +363,7 @@ public class VoxelChunk : MonoBehaviour
         //voxelData[localPos.x, localPos.y, localPos.z] = 0;
         //voxelBuffer.SetData(ThreeDToFlatArray(voxelData));
         voxels[localPos.x, localPos.y, localPos.z] = new VoxelData(0,0,0);
-
+        VoxelWorld.Instance.SetVoxel(Vector3Int.FloorToInt(worldPosition), new VoxelData(0, 0, 0));
         meshDirty = true;
     }
     public void PlaceBlock(Vector3 worldPosition, int blockType)
@@ -493,9 +380,17 @@ public class VoxelChunk : MonoBehaviour
         if (voxels[localPos.x, localPos.y, localPos.z].ID == 0)
         {
             voxels[localPos.x, localPos.y, localPos.z] = new VoxelData(blockType, 0, 0);
+            VoxelWorld.Instance.SetVoxel(Vector3Int.FloorToInt(worldPosition), new VoxelData(blockType, 0, 0));
+
             //voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
             meshDirty = true;
         }
+    }
+    private Vector3Int WorldPosToVoxel(Vector3 worldPos)
+    {
+        Vector3 localPos = worldPos - transform.position;
+        Vector3Int result = new Vector3Int(Mathf.RoundToInt(localPos.x), Mathf.RoundToInt(localPos.y), Mathf.RoundToInt(localPos.z));
+        return result;
     }
 
     public VoxelData LookupVoxel(Vector3 worldPos)
@@ -510,12 +405,7 @@ public class VoxelChunk : MonoBehaviour
         }
     }
 
-    private Vector3Int WorldPosToVoxel(Vector3 worldPos)
-    {
-        Vector3 localPos = worldPos - transform.position;
-        Vector3Int result = new Vector3Int(Mathf.RoundToInt(localPos.x), Mathf.RoundToInt(localPos.y), Mathf.RoundToInt(localPos.z));
-        return result;
-    }
+
 
     private bool IsPosInGridBounds(Vector3Int pos, Vector3Int size)
     {
@@ -531,7 +421,85 @@ public class VoxelChunk : MonoBehaviour
     //    AssetDatabase.CreateAsset(meshFilter.sharedMesh, $"Assets/Cache/mesh_{ChunkCoord.x}_{ChunkCoord.y}.asset");
     //}
 
-   
+    private void ComputeMesh(ComputeShader compute)
+    {
+        int size3d = Size3D.x * Size3D.y * Size3D.z;
+
+        vBuffer = new ComputeBuffer(bufferSizeMult * size3d, 3 * sizeof(float));
+        nBuffer = new ComputeBuffer(bufferSizeMult * size3d, 3 * sizeof(float));
+        cBuffer = new ComputeBuffer(bufferSizeMult * size3d, 4 * sizeof(float));
+        tBuffer = new ComputeBuffer(bufferSizeMult * size3d, 2 * sizeof(float));
+        iBuffer = new ComputeBuffer(bufferSizeMult * size3d, 1 * sizeof(int));
+
+        voxelBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, sizeof(int) * 3);
+        voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
+
+        int kernel = compute.FindKernel("ComputeMesh");
+        compute.SetBuffer(kernel, "Voxels", voxelBuffer);
+        compute.SetFloat("Threshold", NoiseThreshold);
+        compute.SetVector("Size", new Vector4(Size3D.x, Size3D.y, Size3D.z, 1.0f));
+        compute.SetBuffer(kernel, "Vertices", vBuffer);
+        compute.SetBuffer(kernel, "Normals", nBuffer);
+        compute.SetBuffer(kernel, "Colors", cBuffer);
+        compute.SetBuffer(kernel, "TexCoords", tBuffer);
+        compute.SetBuffer(kernel, "ValidIndices", iBuffer);
+
+        compute.Dispatch(kernel, Size3D.x, 1, Size3D.z);
+
+        computeReadCoroutine = BufferReadTimer(BufferReadDelay);
+        StartCoroutine(computeReadCoroutine);
+
+        //ReadBufferData();
+    }
+
+    private IEnumerator BufferReadTimer(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        ReadBufferData();
+    }
+
+    private void ReadBufferData()
+    {
+        int size3d = Size3D.x * Size3D.y * Size3D.z;
+        Vector3[] vData = new Vector3[bufferSizeMult * size3d];
+        Vector3[] nData = new Vector3[bufferSizeMult * size3d];
+        Color[] cData = new Color[bufferSizeMult * size3d];
+        Vector2[] tData = new Vector2[bufferSizeMult * size3d];
+        int[] iData = new int[bufferSizeMult * size3d];
+
+        vBuffer.GetData(vData);
+        nBuffer.GetData(nData);
+        cBuffer.GetData(cData);
+        tBuffer.GetData(tData);
+        iBuffer.GetData(iData);
+
+        List<int> validIndices = GetValidIndices(iData);
+
+        Vector3[] vDataTrimmed = new Vector3[validIndices.Count];
+        Vector3[] nDataTrimmed = new Vector3[validIndices.Count];
+        Color[] cDataTrimmed = new Color[validIndices.Count];
+        Vector2[] tDataTrimmed = new Vector2[validIndices.Count];
+        for (int i = 0; i < validIndices.Count; i++)
+        {
+            vDataTrimmed[i] = vData[validIndices[i]];
+            nDataTrimmed[i] = nData[validIndices[i]];
+            cDataTrimmed[i] = cData[validIndices[i]];
+            tDataTrimmed[i] = tData[validIndices[i]];
+        }
+
+        meshFilter.sharedMesh.Clear();
+        meshFilter.sharedMesh.vertices = vDataTrimmed;
+        meshFilter.sharedMesh.uv = tDataTrimmed;
+        meshFilter.sharedMesh.normals = nDataTrimmed;
+        meshFilter.sharedMesh.colors = cDataTrimmed;
+        meshFilter.sharedMesh.triangles = GenerateIndices(vDataTrimmed.Length);
+        meshFilter.sharedMesh.RecalculateBounds();
+
+        meshCollider.sharedMesh = meshFilter.sharedMesh;
+    }
+
+
+
 
 
 }
