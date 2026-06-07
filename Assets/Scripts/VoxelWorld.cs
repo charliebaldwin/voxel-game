@@ -9,6 +9,7 @@ using VInspector;
 using static UnityEngine.Analytics.IAnalytic;
 using Random = UnityEngine.Random;
 using static Perlin;
+using UnityEngine.Splines;
 
 public partial class VoxelWorld : MonoBehaviour
 {
@@ -34,6 +35,8 @@ public partial class VoxelWorld : MonoBehaviour
     private Vector3 DEBUGWorldHitPoint = Vector3.zero;
 
     public bool Initialized = false;
+
+
 
 
     private void Awake()
@@ -96,6 +99,10 @@ public partial class VoxelWorld : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(nearest, 0.5f);
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(testPoint, 0.5f);
         for (int i=0; i<DEBUGTraversalPosList.Count; i++)
         {
             //Gizmos.color = DEBUGTraversalColorList[i];
@@ -125,7 +132,7 @@ public partial class VoxelWorld : MonoBehaviour
 
             MinMaxAABB bounds = new MinMaxAABB(new float3(pos.x * ChunkSize.x, 0f, pos.y * ChunkSize.z), new float3((pos.x + 1) * ChunkSize.x, ChunkSize.y, (pos.y + 1) * ChunkSize.z));
 
-            Debug.Log($"Bounds = ({bounds.Min}) - ({bounds.Max})");
+            //Debug.Log($"Bounds = ({bounds.Min}) - ({bounds.Max})");
 
             VoxelData[,,] chunkData = new VoxelData[ChunkSize.x, ChunkSize.y, ChunkSize.z];
   
@@ -143,18 +150,17 @@ public partial class VoxelWorld : MonoBehaviour
             newChunk.SetVoxels(chunkData);
             newChunk.InitializeChunk();
         }
-        //try
-        //{
-            
-        //}
-        //catch (IndexOutOfRangeException ex) 
-        //{
-        //    Debug.LogWarning(ex.Message);
-        //    return;
-        //}
     }
+
+    private Vector3 nearest;
+    public Vector3 testPoint;
+    public SplineContainer SplineCutter;
+    public SplineVoxelizer splineVoxelizer;
     private VoxelData[,,] GenerateVoxelsCPU(Vector3Int Size3D)
     {
+
+        
+
         VoxelData[,,] voxels = new VoxelData[Size3D.x, Size3D.y, Size3D.z];
         for (int x = 0; x < Size3D.x; x++)
         {
@@ -170,10 +176,16 @@ public partial class VoxelWorld : MonoBehaviour
 
                 for (int y = 0; y < Size3D.y; y++)
                 {
-
                     voxels[x, y, z] = new VoxelData(y < h ? 1 : 0, 0, 0);
                 }
             }
+        }
+
+        List<Vector3Int> splineVoxels = splineVoxelizer.VoxelizeSpline();
+        foreach (Vector3Int v in splineVoxels)
+        {
+            if (VoxelHelper.IsPosInGridBounds(v, Size3D))
+                voxels[v.x, v.y, v.z].ID = 0;
         }
 
         // grass
