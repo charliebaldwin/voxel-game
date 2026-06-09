@@ -17,9 +17,8 @@ using static VoxelHelper;
 
 public class VoxelChunk : MonoBehaviour
 {
-    public static bool DrawDebugs = false;
-
-    public bool useGreedy = true;
+    public static bool drawDebugs = false;
+    public static bool useGreedy = false;
 
     public Vector3Int Size3D = new Vector3Int(16,32,16);
     private int bufferSizeMult = 24;
@@ -30,9 +29,14 @@ public class VoxelChunk : MonoBehaviour
     ComputeBuffer iBuffer;
     ComputeBuffer voxelBuffer;
     ComputeBuffer idBuffer;
-    
+
+    public bool Loaded = true;
 
     public int2 ChunkCoord;
+    private VoxelChunk neighborNX;
+    private VoxelChunk neighborPX;
+    private VoxelChunk neighborNZ;
+    private VoxelChunk neighborPZ;
 
 
     public int[,,] voxelData = new int[1,1,1];
@@ -70,35 +74,6 @@ public class VoxelChunk : MonoBehaviour
 
     }
 
-    public void InitializeChunk()
-    {
-        meshFilter = GetComponent<MeshFilter>();
-        meshFilter.sharedMesh = new Mesh();
-        meshCollider = GetComponent<MeshCollider>();
-
-        //voxelBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, 3*sizeof(int));
-        //voxelTex = new RenderTexture(voxelTex);
-
-
-        //GenerateVoxels(Compute);
-        //ComputeMesh(Compute);
-        //GenerateVoxelsCPU();
-        if (useGreedy)
-        {
-            GreedyMesh();
-        }
-        else
-        {
-            ComputeMeshCPU();
-        }
-    }
-
-    public void SetVoxels(VoxelData[,,] newVoxels)
-    {
-        voxels = newVoxels;
-    }
-
-
     private void FixedUpdate()
     {
         BlockUpdate();
@@ -125,6 +100,41 @@ public class VoxelChunk : MonoBehaviour
     }
     private void OnValidate()
     {
+        //if (useGreedy)
+        //{
+        //    GreedyMesh();
+        //}
+        //else
+        //{
+        //    ComputeMeshCPU();
+        //}
+    }
+
+    public void SetVoxels(VoxelData[,,] newVoxels)
+    {
+        voxels = newVoxels;
+    }
+
+    public void FindNeighbors()
+    {
+        neighborNX = VoxelWorld.Instance.GetChunk(ChunkCoord + new int2(-1,  0));
+        neighborPX = VoxelWorld.Instance.GetChunk(ChunkCoord + new int2( 1,  0));
+        neighborNZ = VoxelWorld.Instance.GetChunk(ChunkCoord + new int2( 0, -1));
+        neighborPZ = VoxelWorld.Instance.GetChunk(ChunkCoord + new int2( 0,  1));
+    }
+    public void InitializeChunk()
+    {
+        meshFilter = GetComponent<MeshFilter>();
+        meshFilter.sharedMesh = new Mesh();
+        meshCollider = GetComponent<MeshCollider>();
+
+        //voxelBuffer = new ComputeBuffer(Size3D.x * Size3D.y * Size3D.z, 3*sizeof(int));
+        //voxelTex = new RenderTexture(voxelTex);
+
+
+        //GenerateVoxels(Compute);
+        //ComputeMesh(Compute);
+        //GenerateVoxelsCPU();
         if (useGreedy)
         {
             GreedyMesh();
@@ -151,7 +161,7 @@ public class VoxelChunk : MonoBehaviour
                 for (int x = 0; x < Size3D.x; x++) {
 
                     VoxelData vox = voxels[x, y, z];
-                    if (vox.ID != 0)
+                    if (Blocks.IsSolid(vox))
                     {
                         int[] neighbors = new int[6] { 0, 0, 0, 0, 0, 0 };
                         for (int n = 0; n < 6; n++)
@@ -161,7 +171,7 @@ public class VoxelChunk : MonoBehaviour
 
                             neighbors[n] = VoxelWorld.Instance.LookupVoxel(LocalToWorld(n_pos, ChunkCoord, Size3D)).ID;
 
-                            if (neighbors[n] == 0)
+                            if (!Blocks.IsSolid(neighbors[n]))
                             {
                                 Vector3[] new_verts = VoxelHelper.GetFaceVerts(dirs[n]);
                                 foreach (Vector3 v in new_verts)
@@ -378,25 +388,25 @@ public class VoxelChunk : MonoBehaviour
             int voxelID = voxels[x, y, z].ID;
             switch (voxelID)
             {
-                case (1): // grass
+                case (Blocks.GRASS): 
                     if (y < Size3D.y - 1)
                     {
-                        if (voxels[x, y + 1, z].ID> 0)
+                        if (Blocks.IsSolid(voxels[x, y + 1, z]))
                         {
-                            voxels[x, y, z].ID = 2;
+                            voxels[x, y, z].ID = Blocks.DIRT;
                             meshDirty = true;
                         }
                     }
                     break;
-                case (2): // dirt
+                case (Blocks.DIRT): 
                     if (y < Size3D.y - 1)
                     {
-                        if (voxels[x, y + 1, z].ID== 0)
+                        if (voxels[x, y + 1, z].ID == Blocks.AIR)
                         {
                             // grow into dirt with random chance
                             if (BlockRandomEvent(new int3(x, y, z), 0.0005f)) 
                             {
-                                voxels[x, y, z].ID = 1;
+                                voxels[x, y, z].ID = Blocks.GRASS;
                                 meshDirty = true;
                             }
                         }
@@ -473,16 +483,9 @@ public class VoxelChunk : MonoBehaviour
     }
 
 
-    public VoxelData LookupVoxel(Vector3 worldPos)
+    public VoxelData LookupVoxel(Vector3Int localPos)
     {
-        Vector3Int localPos = WorldToLocal(worldPos, transform.position);
-        if (IsPosInGridBounds(localPos, Size3D))
-        {
-            return voxels[localPos.x,localPos.y,localPos.z];    
-            //return voxelData[localPos.x, localPos.y, localPos.z];
-        } else {
-            return new VoxelData(-1,0,0);
-        }
+        return VoxelWorld.Instance.LookupVoxel(localPos);
     }
 
 
@@ -567,7 +570,7 @@ public class VoxelChunk : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (DrawDebugs)
+        if (drawDebugs)
         {
             Gizmos.color = Color.green;
 

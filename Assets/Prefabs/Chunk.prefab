@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd09311d58c1f44bb43a7989836bc93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useGreedy: 0
   Size3D: {x: 8, y: 8, z: 8}
   ChunkCoord:
     x: 0

@@ -116,3 +116,27 @@ public struct FaceData
     public Vector3[] vertices;
     public int[] triangles;
 }
+
+public static class Blocks
+{
+    public const int INVALID = -1;
+    public const int AIR = 0;
+    public const int DIRT = 2;
+    public const int GRASS = 1;
+    public const int STONE = 3;
+    public const int GRANITE = 4;
+    public const int WOOD = 5;
+    public const int ORE = 6;
+    public const int LOG = 7;
+    public const int LEAVES = 8;
+
+    public static bool IsSolid(int id)
+    {
+        return id > AIR;
+    }
+    public static bool IsSolid(VoxelData voxelData)
+    {
+        return voxelData.ID > AIR;
+    }
+
+}

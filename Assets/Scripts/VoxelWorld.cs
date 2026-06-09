@@ -99,10 +99,7 @@ public partial class VoxelWorld : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawSphere(nearest, 0.5f);
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(testPoint, 0.5f);
+
         for (int i=0; i<DEBUGTraversalPosList.Count; i++)
         {
             //Gizmos.color = DEBUGTraversalColorList[i];
@@ -150,17 +147,39 @@ public partial class VoxelWorld : MonoBehaviour
             newChunk.SetVoxels(chunkData);
             newChunk.InitializeChunk();
         }
+
+        for(int x=0; x<WorldSize.x; x++)
+        {
+            for (int z=0; z<WorldSize.z;z++)
+            {
+                if (Chunks[x,z] != null)
+                {
+                    Chunks[x, z].FindNeighbors();
+                }
+            }
+        }
+    }
+    public VoxelChunk GetChunk(int2 chunkCoord)
+    {
+        if (chunkCoord.x >= 0 && chunkCoord.y >= 0 && chunkCoord.x < WorldSize.x &&  chunkCoord.y < WorldSize.z)
+        {
+            if (Chunks[chunkCoord.x, chunkCoord.y] != null)
+            {
+                return Chunks[chunkCoord.x, chunkCoord.y];
+            }
+            else
+            {
+                return null;
+            }
+        } else
+        {
+            return null;
+        }
+        
     }
 
-    private Vector3 nearest;
-    public Vector3 testPoint;
-    public SplineContainer SplineCutter;
-    public SplineVoxelizer splineVoxelizer;
     private VoxelData[,,] GenerateVoxelsCPU(Vector3Int Size3D)
     {
-
-        
-
         VoxelData[,,] voxels = new VoxelData[Size3D.x, Size3D.y, Size3D.z];
         for (int x = 0; x < Size3D.x; x++)
         {
@@ -176,16 +195,9 @@ public partial class VoxelWorld : MonoBehaviour
 
                 for (int y = 0; y < Size3D.y; y++)
                 {
-                    voxels[x, y, z] = new VoxelData(y < h ? 1 : 0, 0, 0);
+                    voxels[x, y, z] = new VoxelData(y < h ? Blocks.DIRT : Blocks.AIR, 0, 0);
                 }
             }
-        }
-
-        List<Vector3Int> splineVoxels = splineVoxelizer.VoxelizeSpline();
-        foreach (Vector3Int v in splineVoxels)
-        {
-            if (VoxelHelper.IsPosInGridBounds(v, Size3D))
-                voxels[v.x, v.y, v.z].ID = 0;
         }
 
         // grass
@@ -195,11 +207,11 @@ public partial class VoxelWorld : MonoBehaviour
             {
                 for (int y = 0; y < Size3D.y; y++)
                 {
-                    if (voxels[x,y,z].ID > 0 && y < Size3D.y-1)
+                    if (voxels[x,y,z].ID != Blocks.AIR && y < Size3D.y-1)
                     {
-                        if (voxels[x,y+1,z].ID == 0)
+                        if (voxels[x,y+1,z].ID == Blocks.AIR)
                         {
-                            voxels[x, y, z].ID = 2;
+                            voxels[x, y, z].ID = Blocks.GRASS;
                         }
                     }
                 }
@@ -215,7 +227,7 @@ public partial class VoxelWorld : MonoBehaviour
         int2 chunkPos = FindContainingChunk(worldPos);
         VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
         GameObject breakVFX = Instantiate(BlockBreakVFXPrefab, worldPos, Quaternion.identity);
-        breakVFX.GetComponent<VFXObject>().InitVFX(chunk.LookupVoxel(worldPos).ID);
+        //breakVFX.GetComponent<VFXObject>().InitVFX(chunk.LookupVoxel(worldPos).ID);
         chunk.DamageBlock(worldPos, 1);
     }
 
@@ -285,7 +297,7 @@ public partial class VoxelWorld : MonoBehaviour
             DEBUGTraversalPosList.Add(stepPos);
 
             VoxelData hitVoxel = LookupVoxel(stepPos);
-            if (hitVoxel.ID > 0)
+            if (hitVoxel.ID > Blocks.AIR)
             {
                 DEBUGTraversalColorList.Add(Color.white);
 
@@ -299,7 +311,7 @@ public partial class VoxelWorld : MonoBehaviour
 
                 return hitData;
             }
-            else if (hitVoxel.ID == -1)
+            else if (hitVoxel.ID == Blocks.INVALID)
             {
                 return new VoxelHitInfo(false);
             }
