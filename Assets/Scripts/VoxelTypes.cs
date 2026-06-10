@@ -1,20 +1,31 @@
 using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 using static VoxelHelper;
 
-public struct VoxelData
+public struct VoxelData 
 {
+    // data for voxels in world
     public int ID;
-    public int Damage;
-    public int Orientation;
+    public byte Damage;
+    public byte Orientation;
 
-    public VoxelData(int id, int damage, int orientation)
+    public VoxelData(int id, byte damage, byte orientation)
     {
         ID = id;
         Damage = damage;
         Orientation = orientation;
     }
 }
+
+public struct BlockData
+{
+    // data for different block types
+    public int ID;
+    public byte Toughness;
+}
+
+
 
 public struct VoxelHitInfo
 {

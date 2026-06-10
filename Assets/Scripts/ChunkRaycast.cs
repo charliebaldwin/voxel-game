@@ -97,7 +97,7 @@ public class ChunkRaycast : MonoBehaviour
                     VoxelCursor.transform.forward = hitData.hitNormal;
                     break;
                 case 1:
-                    VoxelWorld.Instance.DestroyVoxel(hitData.voxelPos);
+                    VoxelWorld.Instance.DamageVoxel(hitData.voxelPos);
                     break;
                 case 2:
                     VoxelWorld.Instance.AddVoxel(hitData.voxelPos + hitData.hitNormal, placedBlockType);

@@ -59,10 +59,6 @@ public class VoxelChunk : MonoBehaviour
     private Vector3 tempDirection = Vector3.forward;
     private List<Vector4> tempCubes = new List<Vector4>();
 
-    private VoxelChunk adjacentChunkNX;
-    private VoxelChunk adjacentChunkPX;
-    private VoxelChunk adjacentChunkNZ;
-    private VoxelChunk adjacentChunkPZ;
 
     private IEnumerator computeReadCoroutine;
     public float BufferReadDelay = 0.5f;
@@ -117,10 +113,14 @@ public class VoxelChunk : MonoBehaviour
 
     public void FindNeighbors()
     {
-        neighborNX = VoxelWorld.Instance.GetChunk(ChunkCoord + new int2(-1,  0));
-        neighborPX = VoxelWorld.Instance.GetChunk(ChunkCoord + new int2( 1,  0));
-        neighborNZ = VoxelWorld.Instance.GetChunk(ChunkCoord + new int2( 0, -1));
-        neighborPZ = VoxelWorld.Instance.GetChunk(ChunkCoord + new int2( 0,  1));
+        if (neighborNX == null)
+            neighborNX = VoxelWorld.Instance.GetChunk(ChunkCoord + new int2(-1,  0));
+        if (neighborPX == null)
+            neighborPX = VoxelWorld.Instance.GetChunk(ChunkCoord + new int2( 1,  0));
+        if (neighborNZ == null)
+            neighborNZ = VoxelWorld.Instance.GetChunk(ChunkCoord + new int2( 0, -1));
+        if (neighborPZ == null)
+            neighborPZ = VoxelWorld.Instance.GetChunk(ChunkCoord + new int2( 0,  1));
     }
     public void InitializeChunk()
     {
@@ -151,6 +151,7 @@ public class VoxelChunk : MonoBehaviour
     {
         List<Vector3> vertices = new List<Vector3>();
         List<Vector3> normals = new List<Vector3>();
+        List<Vector2> uvs = new List<Vector2>();
         List<int> triangles = new List<int>();
         List<Color> colors = new List<Color>();
         int t = 0;
@@ -173,16 +174,18 @@ public class VoxelChunk : MonoBehaviour
 
                             if (!Blocks.IsSolid(neighbors[n]))
                             {
-                                Vector3[] new_verts = VoxelHelper.GetFaceVerts(dirs[n]);
-                                foreach (Vector3 v in new_verts)
+                                Vector3[] new_verts = GetFaceVerts(dirs[n]);
+                                Vector2[] new_uvs = GetFaceUVs(dirs[n]);
+                                for(int v=0; v<new_verts.Length; v++)
                                 {
-                                    vertices.Add(v * 0.5f + pos);
+                                    vertices.Add(new_verts[v] * 0.5f + pos);
                                     normals.Add(dirs[n]);
-                                    colors.Add(new Color(vox.ID, 0f, 0f));
+                                    colors.Add(new Color(vox.ID, n, 0f));
+                                    uvs.Add(new_uvs[v]);
                                 }
                                 for (int i = 0; i < 6; i++)
                                 {
-                                    triangles.Add(t + VoxelHelper.Triangles[i]);
+                                    triangles.Add(t + Triangles[i]);
                                 }
                                 t += 4;
                             }
@@ -197,6 +200,7 @@ public class VoxelChunk : MonoBehaviour
         mesh.triangles = triangles.ToArray();
         mesh.normals = normals.ToArray();
         mesh.colors = colors.ToArray();
+        mesh.uv = uvs.ToArray();
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
     }
@@ -384,7 +388,7 @@ public class VoxelChunk : MonoBehaviour
     private void BlockUpdate()
     {
         for (int x = 0; x < Size3D.x; x++) {  for(int y = 0; y < Size3D.y; y++) {  for(int z = 0; z < Size3D.z; z++) {
-
+            Vector3Int pos = new Vector3Int(x, y, z);  
             int voxelID = voxels[x, y, z].ID;
             switch (voxelID)
             {
@@ -401,7 +405,8 @@ public class VoxelChunk : MonoBehaviour
                 case (Blocks.DIRT): 
                     if (y < Size3D.y - 1)
                     {
-                        if (voxels[x, y + 1, z].ID == Blocks.AIR)
+                        VoxelData upVoxel = LookupVoxel(pos + new Vector3Int(0, 1, 0));
+                        if (upVoxel.ID == Blocks.AIR)
                         {
                             // grow into dirt with random chance
                             if (BlockRandomEvent(new int3(x, y, z), 0.0005f)) 
@@ -440,42 +445,38 @@ public class VoxelChunk : MonoBehaviour
     
 
 
-    public void DamageBlock(Vector3 worldPosition, byte damage)
+    public void DamageBlock(Vector3Int worldPosition, byte damage)
     {
-        Vector3Int localPos = WorldToLocal(worldPosition, transform.position);
+        Debug.Log(gameObject.name);
+
+        Vector3Int localPos = WorldToLocal(worldPosition, ChunkCoord, Size3D);
+
         voxels[localPos.x, localPos.y, localPos.z].Damage += damage;
         meshDirty = true;
-        if (voxels[localPos.x, localPos.y, localPos.z].Damage >= 3)
+        if (voxels[localPos.x, localPos.y, localPos.z].Damage >= 1)
         {
-            BreakBlock(worldPosition);
+            SetBlock(worldPosition, Blocks.AIR);
             
         }
 
     }
-    public void BreakBlock(Vector3 worldPosition)
+    public void BreakBlock(Vector3Int worldPosition)
     {
-        Vector3Int localPos = WorldToLocal(worldPosition, transform.position);
+        Vector3Int localPos = WorldToLocal(worldPosition, ChunkCoord, Size3D);
         //voxelData[localPos.x, localPos.y, localPos.z] = 0;
         //voxelBuffer.SetData(ThreeDToFlatArray(voxelData));
         voxels[localPos.x, localPos.y, localPos.z] = new VoxelData(0,0,0);
-        VoxelWorld.Instance.SetVoxel(Vector3Int.FloorToInt(worldPosition), new VoxelData(0, 0, 0));
+        VoxelWorld.Instance.SetVoxel(worldPosition, new VoxelData(0, 0, 0));
         meshDirty = true;
     }
-    public void PlaceBlock(Vector3 worldPosition, int blockType)
+    public void SetBlock(Vector3Int worldPosition, int blockType)
     {
-        Vector3Int localPos = WorldToLocal(worldPosition, transform.position);
+        Vector3Int localPos = WorldToLocal(worldPosition, ChunkCoord, Size3D);
 
-        //if (voxelData[localPos.x, localPos.y, localPos.z] == 0)
-        //{
-        //    voxelData[localPos.x, localPos.y, localPos.z] = blockType;
-        //    voxelBuffer.SetData(ThreeDToFlatArray(voxelData));
-
-        //    meshDirty = true;
-        //}
-        if (voxels[localPos.x, localPos.y, localPos.z].ID == 0)
+        if (voxels[localPos.x, localPos.y, localPos.z].ID == 0 || true)
         {
             voxels[localPos.x, localPos.y, localPos.z] = new VoxelData(blockType, 0, 0);
-            VoxelWorld.Instance.SetVoxel(Vector3Int.FloorToInt(worldPosition), new VoxelData(blockType, 0, 0));
+            VoxelWorld.Instance.SetVoxel(worldPosition, new VoxelData(blockType, 0, 0));
 
             //voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
             meshDirty = true;
@@ -485,7 +486,7 @@ public class VoxelChunk : MonoBehaviour
 
     public VoxelData LookupVoxel(Vector3Int localPos)
     {
-        return VoxelWorld.Instance.LookupVoxel(localPos);
+        return VoxelWorld.Instance.LookupVoxel(LocalToWorld(localPos, ChunkCoord, Size3D));
     }
 
 

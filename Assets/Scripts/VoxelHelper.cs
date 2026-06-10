@@ -17,52 +17,73 @@ public static class VoxelHelper
     private static Vector3 nx_py_nz = new Vector3(-1f, 1f, -1f);
     private static Vector3 px_ny_pz = new Vector3(1f, -1f, 1f);
 
+    private static Vector2 u0v0 = new Vector2(0f, 0f);
+    private static Vector2 u1v0 = new Vector2(1f, 0f);
+    private static Vector2 u0v1 = new Vector2(0f, 1f);
+    private static Vector2 u1v1 = new Vector2(1f, 1f);
+
     public static Vector3[] GetFaceVerts(Vector3Int normal)
     {
         if (normal == Vector3Int.left)
-        {
             return new Vector3[4] { nx_py_nz, nx_ny_nz, nx_ny_pz, nx_py_pz };
-        }
         else if (normal == Vector3Int.right)
-        {
             return new Vector3[4] { px_ny_nz, px_py_nz, px_py_pz, px_ny_pz };
-        }
         else if (normal == Vector3Int.down)
-        {
             return new Vector3[4] { nx_ny_nz, px_ny_nz, px_ny_pz, nx_ny_pz };
-        }
         else if (normal == Vector3Int.up)
-        {
             return new Vector3[4] { px_py_nz, nx_py_nz, nx_py_pz, px_py_pz };
-        }
         else if (normal == Vector3Int.back)
-        {
             return new Vector3[4] { px_py_nz, px_ny_nz, nx_ny_nz, nx_py_nz };
-        }
         else if (normal == Vector3Int.forward)
-        {
             return new Vector3[4] { px_ny_pz, px_py_pz, nx_py_pz, nx_ny_pz };
-        }
         else
-        {
             return null;
-        }
+    }
+    public static Vector2[] GetFaceUVs(Vector3Int normal)
+    {
+
+        if (normal == Vector3Int.left)
+            return new Vector2[4] { u0v1, u0v0, u1v0, u1v1, };
+        else if (normal == Vector3Int.right)
+            return new Vector2[4] { u1v0, u1v1, u0v1, u0v0, };
+        else if (normal == Vector3Int.down)
+            return new Vector2[4] { u0v1, u0v0, u1v0, u1v1, };
+        else if (normal == Vector3Int.up)
+            return new Vector2[4] { u1v0, u1v1, u0v1, u0v0, };
+        else if (normal == Vector3Int.back)
+            return new Vector2[4] { u0v1, u0v0, u1v0, u1v1, };
+        else if (normal == Vector3Int.forward)
+            return new Vector2[4] { u1v0, u1v1, u0v1, u0v0, };
+        else
+            return null;
     }
 
     public static bool IsPosInGridBounds(Vector3Int pos, Vector3Int size)
     {
         return pos.x >= 0 && pos.y >= 0 && pos.z >= 0 && pos.x < size.x && pos.y < size.y && pos.z < size.z;
     }
+    public static int2 FindContainingChunk(Vector3Int worldPos, Vector3Int size)
+    {
+        int2 chunkCoord = new int2(Mathf.FloorToInt(worldPos.x / size.x), Mathf.FloorToInt(worldPos.z / size.z));
+        return chunkCoord;
+    }
 
     public static Vector3Int LocalToWorld(Vector3Int localPos, int2 chunkCoord, Vector3Int size)
     {
-        return new Vector3Int(localPos.x + chunkCoord.x * size.x, localPos.y, localPos.z + chunkCoord.y * size.z);
+        Vector3Int worldPos = new Vector3Int(localPos.x + chunkCoord.x * size.x, localPos.y, localPos.z + chunkCoord.y * size.z);
+        return worldPos;
     }
-    public static Vector3Int WorldToLocal(Vector3 worldPos, Vector3 chunkPos)
+    public static Vector3Int WorldToLocal(Vector3Int worldPos, int2 chunkPos, Vector3Int size)
     {
-        Vector3 localPos = worldPos - chunkPos;
-        Vector3Int result = new Vector3Int(Mathf.RoundToInt(localPos.x), Mathf.RoundToInt(localPos.y), Mathf.RoundToInt(localPos.z));
-        return result;
+
+        Vector3Int localPos = worldPos - new Vector3Int(chunkPos.x * size.x, 0, chunkPos.y * size.z);
+        return localPos;
+    }
+    public static Vector3Int SnapToGrid(Vector3 floatPos)
+    {
+        Vector3Int gridPos = new Vector3Int(Mathf.FloorToInt(floatPos.x), Mathf.FloorToInt(floatPos.y), Mathf.FloorToInt(floatPos.z));
+        return gridPos;
+
     }
 
     public static int[] GenerateIndices(int vertexCount)

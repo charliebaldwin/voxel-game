@@ -10,6 +10,7 @@ using static UnityEngine.Analytics.IAnalytic;
 using Random = UnityEngine.Random;
 using static Perlin;
 using UnityEngine.Splines;
+using static VoxelHelper;
 
 public partial class VoxelWorld : MonoBehaviour
 {
@@ -35,8 +36,6 @@ public partial class VoxelWorld : MonoBehaviour
     private Vector3 DEBUGWorldHitPoint = Vector3.zero;
 
     public bool Initialized = false;
-
-
 
 
     private void Awake()
@@ -83,7 +82,7 @@ public partial class VoxelWorld : MonoBehaviour
 
         Vector3Int worldVoxelSize = new Vector3Int(ChunkSize.x * WorldSize.x, ChunkSize.y * WorldSize.y, ChunkSize.z * WorldSize.z);
         Voxels = GenerateVoxelsCPU(worldVoxelSize);
-        Debug.Log($"voxels size={worldVoxelSize}");
+       // Debug.Log($"voxels size={worldVoxelSize}");
 
 
         Chunks = new VoxelChunk[WorldSize.x, WorldSize.z];
@@ -222,24 +221,24 @@ public partial class VoxelWorld : MonoBehaviour
 
     }
 
-    public void DestroyVoxel(Vector3 worldPos)
+    public void DamageVoxel(Vector3 worldPos)
     {
-        int2 chunkPos = FindContainingChunk(worldPos);
+        int2 chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
         VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
         GameObject breakVFX = Instantiate(BlockBreakVFXPrefab, worldPos, Quaternion.identity);
         //breakVFX.GetComponent<VFXObject>().InitVFX(chunk.LookupVoxel(worldPos).ID);
-        chunk.DamageBlock(worldPos, 1);
+        chunk.DamageBlock(SnapToGrid(worldPos), 1);
     }
 
     public void AddVoxel(Vector3 worldPos, int blockType)
     {
-        int2 chunkPos = FindContainingChunk(worldPos);
+        int2 chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
         VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
         if (Physics.CheckBox(worldPos, Vector3.one * 0.5f, Quaternion.identity, BlockVoxelPlacement.value))
         {
             return;
         }
-        chunk.PlaceBlock(worldPos, blockType);
+        chunk.SetBlock(SnapToGrid(worldPos), blockType);
     }
 
     // from https://web.archive.org/web/20121024081332/www.xnawiki.com/index.php?title=Voxel_traversal
@@ -250,7 +249,7 @@ public partial class VoxelWorld : MonoBehaviour
 
         //pos += positionOffset;
 
-        Vector3Int start = WorldPosToVoxel(pos + 0.5f * Vector3.one);
+        Vector3Int start = SnapToGrid(pos + 0.5f * Vector3.one);
         //  Debug.Log($"pos = ({pos.x}, {pos.y}, {pos.z}) -> start = ({start.x}, {start.y}, {start.z})");
         int stepX = System.Math.Sign(dir.x);
         int stepY = System.Math.Sign(dir.y);
@@ -381,10 +380,7 @@ public partial class VoxelWorld : MonoBehaviour
     }
 
 
-    private int2 FindContainingChunk(Vector3 voxelWorldPos)
-    {
-        return new int2(Mathf.FloorToInt(voxelWorldPos.x / Spacing), Mathf.FloorToInt(voxelWorldPos.z / Spacing));
-    }
+    
 
     private Vector3Int WorldPosToVoxel(Vector3 worldPos)
     {

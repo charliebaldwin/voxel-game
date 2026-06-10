@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WorldGenSettings
   NoiseScale: 0.05
   NoiseOctaves: 2
-  HeightRange: 2
-  HeightOffset: 4
+  HeightRange: 4
+  HeightOffset: 6
