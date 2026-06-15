@@ -180,7 +180,7 @@ public class VoxelChunk : MonoBehaviour
                                 {
                                     vertices.Add(new_verts[v] * 0.5f + pos);
                                     normals.Add(dirs[n]);
-                                    colors.Add(new Color(vox.ID, n, 0f));
+                                    colors.Add(new Color(vox.ID, n, vox.Damage));
                                     uvs.Add(new_uvs[v]);
                                 }
                                 for (int i = 0; i < 6; i++)
@@ -384,7 +384,10 @@ public class VoxelChunk : MonoBehaviour
     }
 
     
-
+    public void SetDirty()
+    {
+        meshDirty = true;
+    }
     private void BlockUpdate()
     {
         for (int x = 0; x < Size3D.x; x++) {  for(int y = 0; y < Size3D.y; y++) {  for(int z = 0; z < Size3D.z; z++) {
@@ -442,46 +445,77 @@ public class VoxelChunk : MonoBehaviour
         return result;
     }
 
-    
 
 
+    private const int DAMAGE_THRESH = 6;
     public void DamageBlock(Vector3Int worldPosition, byte damage)
     {
-        Debug.Log(gameObject.name);
-
         Vector3Int localPos = WorldToLocal(worldPosition, ChunkCoord, Size3D);
-
-        voxels[localPos.x, localPos.y, localPos.z].Damage += damage;
-        meshDirty = true;
-        if (voxels[localPos.x, localPos.y, localPos.z].Damage >= 1)
+        VoxelData voxel = LookupVoxel(localPos);
+        voxel.Damage += damage;
+        if (voxel.Damage >= DAMAGE_THRESH)
         {
-            SetBlock(worldPosition, Blocks.AIR);
-            
+            voxel = new VoxelData(Blocks.AIR, 0, 0);
         }
+        SetBlock(worldPosition, voxel);
 
     }
-    public void BreakBlock(Vector3Int worldPosition)
-    {
-        Vector3Int localPos = WorldToLocal(worldPosition, ChunkCoord, Size3D);
-        //voxelData[localPos.x, localPos.y, localPos.z] = 0;
-        //voxelBuffer.SetData(ThreeDToFlatArray(voxelData));
-        voxels[localPos.x, localPos.y, localPos.z] = new VoxelData(0,0,0);
-        VoxelWorld.Instance.SetVoxel(worldPosition, new VoxelData(0, 0, 0));
-        meshDirty = true;
-    }
+
     public void SetBlock(Vector3Int worldPosition, int blockType)
     {
         Vector3Int localPos = WorldToLocal(worldPosition, ChunkCoord, Size3D);
+        if (IsPosInGridBounds(localPos, Size3D)) { 
+            if (voxels[localPos.x, localPos.y, localPos.z].ID == 0 || true)
+            {
+                voxels[localPos.x, localPos.y, localPos.z] = new VoxelData(blockType, 0, 0);
+                VoxelWorld.Instance.SetVoxel(worldPosition, new VoxelData(blockType, 0, 0));
 
-        if (voxels[localPos.x, localPos.y, localPos.z].ID == 0 || true)
-        {
-            voxels[localPos.x, localPos.y, localPos.z] = new VoxelData(blockType, 0, 0);
-            VoxelWorld.Instance.SetVoxel(worldPosition, new VoxelData(blockType, 0, 0));
+                //voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
+                meshDirty = true;
+                
+                Vector3Int dirtyNeighbors = CheckPosOnEdge(localPos, Size3D);
+                if (dirtyNeighbors.x == -1 && neighborNX != null)
+                    neighborNX.SetDirty();
+                if (dirtyNeighbors.x == 1 && neighborPX != null)
+                    neighborPX.SetDirty();
+                if (dirtyNeighbors.z == -1 && neighborNZ != null)
+                    neighborNZ.SetDirty();
+                if (dirtyNeighbors.z == 1 && neighborPZ  != null)
+                    neighborPZ.SetDirty();
 
-            //voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
-            meshDirty = true;
+            }
         }
     }
+    public void SetBlock(Vector3Int worldPosition, VoxelData voxelData)
+    {
+        Vector3Int localPos = WorldToLocal(worldPosition, ChunkCoord, Size3D);
+        if (IsPosInGridBounds(localPos, Size3D))
+        {
+            if (voxels[localPos.x, localPos.y, localPos.z].ID == 0 || true)
+            {
+                voxels[localPos.x, localPos.y, localPos.z] = voxelData;
+                VoxelWorld.Instance.SetVoxel(worldPosition, voxelData);
+
+                //voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
+                meshDirty = true;
+
+                Vector3Int dirtyNeighbors = CheckPosOnEdge(localPos, Size3D);
+                if (dirtyNeighbors.x == -1 && neighborNX != null)
+                    neighborNX.SetDirty();
+                if (dirtyNeighbors.x == 1 && neighborPX != null)
+                    neighborPX.SetDirty();
+                if (dirtyNeighbors.z == -1 && neighborNZ != null)
+                    neighborNZ.SetDirty();
+                if (dirtyNeighbors.z == 1 && neighborPZ != null)
+                    neighborPZ.SetDirty();
+
+            }
+        }
+    }
+
+
+
+
 
 
     public VoxelData LookupVoxel(Vector3Int localPos)

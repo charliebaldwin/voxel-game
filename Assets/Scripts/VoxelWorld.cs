@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Unity.Mathematics;
 using Unity.Mathematics.Geometry;
 using UnityEngine;
+using UnityEngine.Splines;
 using UnityEngine.VFX;
 using VFolders.Libs;
 using VInspector;
-using static UnityEngine.Analytics.IAnalytic;
-using Random = UnityEngine.Random;
 using static Perlin;
-using UnityEngine.Splines;
+using static UnityEngine.Analytics.IAnalytic;
 using static VoxelHelper;
+using Color = UnityEngine.Color;
+using Random = UnityEngine.Random;
 
 public partial class VoxelWorld : MonoBehaviour
 {
@@ -217,17 +219,57 @@ public partial class VoxelWorld : MonoBehaviour
             }
         }
 
+        Vector3Int[] sphere = GetCoordinateSphere(new Vector3Int(20,12, 20), 10f);
+        foreach (Vector3Int p in sphere)
+        {
+            voxels[p.x, p.y, p.z].ID = Blocks.STONE;
+        }
+
+
         return voxels;
 
     }
 
-    public void DamageVoxel(Vector3 worldPos)
+    private Vector3Int[] GetCoordinateCuboid(Vector3Int cornerPos, Vector3Int size)
+    {
+        List<Vector3Int> points = new List<Vector3Int>();
+        //Vector3Int[] points = new Vector3Int[size.x, size.y,size.z];
+        for (int x = 0;x < size.x; x++)
+        {
+            for (int y=0;y < size.y; y++)
+            {
+                for (int z=0;z < size.z; z++)
+                {
+                    points.Add(cornerPos + new Vector3Int(x, y, z));
+                    //points[x, y, z] = cornerPos + new Vector3Int(x, y, z);
+                }
+            }
+        }
+        return points.ToArray();
+    }
+    private Vector3Int[] GetCoordinateSphere(Vector3Int center, float radius)
+    {
+        List<Vector3Int> points = new List<Vector3Int>();
+        Vector3Int corner = new Vector3Int(radius.CeilToInt(), radius.CeilToInt(), radius.CeilToInt());
+        Vector3Int[] cuboid = GetCoordinateCuboid(center - corner, corner * 2);
+        Vector3 centerFloat = SnapToGrid(center);
+        foreach(Vector3Int p in cuboid)
+        {
+            if (Vector3.Distance(SnapToGrid(p), centerFloat) < radius)
+            {
+                points.Add(p);
+            }
+        }
+        return points.ToArray();
+    }
+
+    public void DamageVoxel(Vector3 worldPos, byte damage)
     {
         int2 chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
         VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
         GameObject breakVFX = Instantiate(BlockBreakVFXPrefab, worldPos, Quaternion.identity);
         //breakVFX.GetComponent<VFXObject>().InitVFX(chunk.LookupVoxel(worldPos).ID);
-        chunk.DamageBlock(SnapToGrid(worldPos), 1);
+        chunk.DamageBlock(SnapToGrid(worldPos), damage);
     }
 
     public void AddVoxel(Vector3 worldPos, int blockType)
@@ -377,6 +419,16 @@ public partial class VoxelWorld : MonoBehaviour
             return false;
         }
         return true;
+    }
+
+    public void Explode(Vector3Int center, float radius)
+    {
+        Vector3Int[] sphere = GetCoordinateSphere(center,radius);
+        foreach (Vector3Int p in sphere)
+        {
+            int2 chunkCoord = FindContainingChunk(p, ChunkSize);
+            Chunks[chunkCoord.x, chunkCoord.y].SetBlock(p, Blocks.AIR);
+        }
     }
 
 

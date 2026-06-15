@@ -62,6 +62,27 @@ public static class VoxelHelper
     {
         return pos.x >= 0 && pos.y >= 0 && pos.z >= 0 && pos.x < size.x && pos.y < size.y && pos.z < size.z;
     }
+
+    public static Vector3Int CheckPosOnEdge(Vector3Int pos, Vector3Int size)
+    {
+        Vector3Int edges = new Vector3Int(0,0,0);
+        if (pos.x <= 0)
+            edges.x = -1;
+        else if (pos.x >= size.x - 1)
+            edges.x = 1;
+
+        if (pos.y <= 0)
+            edges.y = -1;
+        else if (pos.y >= size.y - 1)
+            edges.y = 1;
+
+        if (pos.z <= 0)
+            edges.z = -1;
+        else if (pos.z >= size.z - 1)
+            edges.z = 1;
+
+        return edges;
+    }
     public static int2 FindContainingChunk(Vector3Int worldPos, Vector3Int size)
     {
         int2 chunkCoord = new int2(Mathf.FloorToInt(worldPos.x / size.x), Mathf.FloorToInt(worldPos.z / size.z));
