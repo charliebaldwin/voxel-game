@@ -38,17 +38,14 @@ public partial class VoxelWorld : MonoBehaviour
 
     public bool Initialized = false;
 
-
+    private void SetInstance()
+    {
+        if (Instance != null && Instance != this) Destroy(this);
+        else Instance = this;
+    }
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
+        SetInstance();
     }
 
 
@@ -62,11 +59,7 @@ public partial class VoxelWorld : MonoBehaviour
     [Button(name = "Initialize World", size = 20, color = "black")]
     public void InitializeWorld()
     {
-        if (Instance != null && Instance != this) {
-            Destroy(this);
-        } else {
-            Instance = this;
-        }
+        SetInstance();
         Initialized = true;
 
 
@@ -83,7 +76,7 @@ public partial class VoxelWorld : MonoBehaviour
         }
 
         Vector3Int worldVoxelSize = new Vector3Int(ChunkSize.x * WorldSize.x, ChunkSize.y * WorldSize.y, ChunkSize.z * WorldSize.z);
-        Voxels = GenerateVoxelsCPU(worldVoxelSize);
+        GenerateVoxelsCPU(worldVoxelSize);
        // Debug.Log($"voxels size={worldVoxelSize}");
 
 
@@ -97,23 +90,29 @@ public partial class VoxelWorld : MonoBehaviour
         }
     }
 
-
-    private void OnDrawGizmos()
+    private void Loop3D(Action<int, int, int> loopFunction)
     {
-
-        for (int i=0; i<DEBUGTraversalPosList.Count; i++)
-        {
-            //Gizmos.color = DEBUGTraversalColorList[i];
-            Gizmos.color = new Color((float)i / DEBUGTraversalPosList.Count, 0f, 0f);
-            if (i >= DEBUGTraversalPosList.Count-1) Gizmos.color = Color.white;
-            Gizmos.DrawCube(DEBUGTraversalPosList[i], Vector3.one);
-        }
-        if (DEBUGWorldHitPoint != Vector3.zero)
-        {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(DEBUGWorldHitPoint, 0.2f);
+        Vector3Int Size3D = new Vector3Int(ChunkSize.x * WorldSize.x, ChunkSize.y * WorldSize.y, ChunkSize.z * WorldSize.z);
+        for (int x = 0; x < Size3D.x; x++) {
+            for (int z = 0; z < Size3D.z; z++) {
+                for (int y = 0; y < Size3D.y; y++) {
+                    loopFunction(x, y, z);
+                }
+            }
         }
     }
+    private void Loop3D(Action<int, int, int> loopFunction, Vector3Int origin, Vector3Int size)
+    {
+        Vector3Int endPoint = origin + size;
+        for (int x = origin.x; x < endPoint.x; x++) {
+            for (int z = origin.z; z < endPoint.z; z++) {
+                for (int y = origin.y; y < endPoint.y; y++) {
+                    loopFunction(x, y, z);
+                }
+            }
+        }
+    }
+
 
     public void AddChunk(int2 pos)
     {
@@ -165,23 +164,17 @@ public partial class VoxelWorld : MonoBehaviour
         if (chunkCoord.x >= 0 && chunkCoord.y >= 0 && chunkCoord.x < WorldSize.x &&  chunkCoord.y < WorldSize.z)
         {
             if (Chunks[chunkCoord.x, chunkCoord.y] != null)
-            {
                 return Chunks[chunkCoord.x, chunkCoord.y];
-            }
             else
-            {
                 return null;
-            }
-        } else
-        {
-            return null;
-        }
-        
+        } 
+        else
+            return null;       
     }
 
-    private VoxelData[,,] GenerateVoxelsCPU(Vector3Int Size3D)
+    private void GenerateVoxelsCPU(Vector3Int Size3D)
     {
-        VoxelData[,,] voxels = new VoxelData[Size3D.x, Size3D.y, Size3D.z];
+        Voxels = new VoxelData[Size3D.x, Size3D.y, Size3D.z];
         for (int x = 0; x < Size3D.x; x++)
         {
             for (int z = 0; z < Size3D.z; z++)
@@ -198,50 +191,58 @@ public partial class VoxelWorld : MonoBehaviour
                 {
                     if (y < h)
                     {
-                        voxels[x, y, z] = new VoxelData(Blocks.DIRT, 0, orientation, 1);
+                        Voxels[x, y, z] = new VoxelData(Blocks.DIRT, 0, orientation, 1);
                     }
                     else
                     {
-                        voxels[x, y, z] = new VoxelData(Blocks.AIR, 0, 0, 0);
+                        Voxels[x, y, z] = new VoxelData(Blocks.AIR, 0, 0, 0);
                     }
                 }
             }
         }
 
         // grass
+        /**
         for (int x = 0; x < Size3D.x; x++)
         {
             for (int z = 0; z < Size3D.z; z++)
             {
                 for (int y = 0; y < Size3D.y; y++)
                 {
-                    if (voxels[x,y,z].ID != Blocks.AIR && y < Size3D.y-1)
+                    if (Voxels[x, y, z].ID != Blocks.AIR && y < Size3D.y - 1)
                     {
-                        if (voxels[x,y+1,z].ID == Blocks.AIR)
+                        if (Voxels[x, y + 1, z].ID == Blocks.AIR)
                         {
-                            voxels[x, y, z].ID = Blocks.GRASS;
+                            Voxels[x, y, z].ID = Blocks.GRASS;
                         }
                     }
                 }
             }
-        }
+        }**/
+        Loop3D(GenerateGrassAction);
 
         Vector3Int[] sphere = GetCoordinateSphere(new Vector3Int(20,12, 20), 10f);
         foreach (Vector3Int p in sphere)
         {
-            voxels[p.x, p.y, p.z] = new VoxelData(Blocks.STONE, 0, 0, 1);
-            voxels[p.x,p.y, p.z].Toughness = 24;
+            Voxels[p.x, p.y, p.z] = new VoxelData(Blocks.STONE, 0, 0, 1);
+            Voxels[p.x,p.y, p.z].Toughness = 24;
         }
+    }
 
-
-        return voxels;
-
+    private void GenerateGrassAction(int x, int y, int z)
+    {
+        if (Voxels[x, y, z].ID != Blocks.AIR && y < ChunkSize.y - 1)
+        {
+            if (Voxels[x, y + 1, z].ID == Blocks.AIR)
+            {
+                Voxels[x, y, z].ID = Blocks.GRASS;
+            }
+        }
     }
 
     private Vector3Int[] GetCoordinateCuboid(Vector3Int cornerPos, Vector3Int size)
     {
         List<Vector3Int> points = new List<Vector3Int>();
-        //Vector3Int[] points = new Vector3Int[size.x, size.y,size.z];
         for (int x = 0;x < size.x; x++)
         {
             for (int y=0;y < size.y; y++)
@@ -249,26 +250,38 @@ public partial class VoxelWorld : MonoBehaviour
                 for (int z=0;z < size.z; z++)
                 {
                     points.Add(cornerPos + new Vector3Int(x, y, z));
-                    //points[x, y, z] = cornerPos + new Vector3Int(x, y, z);
                 }
             }
         }
         return points.ToArray();
     }
+
+    private List<Vector3Int> tempSpherePoints;
+    private Vector3 tempSphereCenter;
+    private float tempSphereRadius;
+
     private Vector3Int[] GetCoordinateSphere(Vector3Int center, float radius)
     {
-        List<Vector3Int> points = new List<Vector3Int>();
+        tempSpherePoints = new List<Vector3Int>();
         Vector3Int corner = new Vector3Int(radius.CeilToInt(), radius.CeilToInt(), radius.CeilToInt());
-        Vector3Int[] cuboid = GetCoordinateCuboid(center - corner, corner * 2);
-        Vector3 centerFloat = SnapToGrid(center);
-        foreach(Vector3Int p in cuboid)
-        {
-            if (Vector3.Distance(SnapToGrid(p), centerFloat) < radius)
-            {
-                points.Add(p);
-            }
-        }
-        return points.ToArray();
+        Loop3D(CoordinateSphereAction, center - corner, corner * 2);
+        return tempSpherePoints.ToArray();
+
+        //List<Vector3Int> points = new List<Vector3Int>();
+        //Vector3Int[] cuboid = GetCoordinateCuboid(center - corner, corner * 2);
+        //Vector3 centerFloat = SnapToGrid(center);
+        //foreach(Vector3Int p in cuboid)
+        //{
+        //if (Vector3.Distance(SnapToGrid(p), center) < radius)
+        //{
+        //    points.Add(p);
+        //}
+        //}
+
+    }
+    private void CoordinateSphereAction(int x, int y, int z)
+    {
+
     }
 
     public void DamageVoxel(Vector3 worldPos, Vector3 hitPos, byte damage)
@@ -458,6 +471,22 @@ public partial class VoxelWorld : MonoBehaviour
         //Vector3Int result = new Vector3Int(Mathf.FloorToInt(worldPos.x), Mathf.FloorToInt(worldPos.y), Mathf.FloorToInt(worldPos.z));
 
         return result;
+    }
+    private void OnDrawGizmos()
+    {
+
+        for (int i = 0; i < DEBUGTraversalPosList.Count; i++)
+        {
+            //Gizmos.color = DEBUGTraversalColorList[i];
+            Gizmos.color = new Color((float)i / DEBUGTraversalPosList.Count, 0f, 0f);
+            if (i >= DEBUGTraversalPosList.Count - 1) Gizmos.color = Color.white;
+            Gizmos.DrawCube(DEBUGTraversalPosList[i], Vector3.one);
+        }
+        if (DEBUGWorldHitPoint != Vector3.zero)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawSphere(DEBUGWorldHitPoint, 0.2f);
+        }
     }
 }
 

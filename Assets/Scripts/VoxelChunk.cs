@@ -76,38 +76,23 @@ public class VoxelChunk : MonoBehaviour
 
     private void FixedUpdate()
     {
-        BlockUpdate();
+        //BlockUpdate();
+        Loop3D(BlockUpdateAction);
     }
     private void LateUpdate()
     {
-        //vBuffer.Release();
-        //nBuffer.Release();
-        //cBuffer.Release();
+
         if (meshDirty)
         {
-            //ComputeMesh(Compute);
+            if (useGreedy) GreedyMesh();
+            else ComputeMeshCPU();
 
-            if (useGreedy)
-            {
-                GreedyMesh();
-            }
-            else
-            {
-                ComputeMeshCPU();
-            }
             meshDirty = false;
         }
     }
     private void OnValidate()
     {
-        //if (useGreedy)
-        //{
-        //    GreedyMesh();
-        //}
-        //else
-        //{
-        //    ComputeMeshCPU();
-        //}
+        
     }
 
     public void SetVoxels(VoxelData[,,] newVoxels)
@@ -149,17 +134,35 @@ public class VoxelChunk : MonoBehaviour
         }
     }
 
+    private void Loop3D(Action<int, int, int> loopFunction)
+    {
+        for (int z = 0; z < Size3D.z; z++)
+        {
+            for (int y = 0; y < Size3D.y; y++)
+            {
+                for (int x = 0; x < Size3D.x; x++)
+                {
+                    loopFunction(x, y, z);
+                }
+            }
+        }
+    }
 
-
+    private List<Vector3> vertices = new List<Vector3>();
+    private List<Vector3> normals = new List<Vector3>();
+    private List<Vector2> uvs = new List<Vector2>();
+    private List<int>     triangles = new List<int>();
+    private List<Color>   colors = new List<Color>();
+    private int           t = 0;
     private void ComputeMeshCPU()
     {
-        List<Vector3> vertices = new List<Vector3>();
-        List<Vector3> normals = new List<Vector3>();
-        List<Vector2> uvs = new List<Vector2>();
-        List<int> triangles = new List<int>();
-        List<Color> colors = new List<Color>();
-        int t = 0;        
-
+        vertices = new List<Vector3>();
+        normals = new List<Vector3>();
+        uvs = new List<Vector2>();
+        triangles = new List<int>();
+        colors = new List<Color>();
+        t = 0;
+        /**
         // get model data for each voxel
         for (int z = 0; z < Size3D.z; z++) {
             for (int y = 0; y < Size3D.y; y++) {
@@ -185,6 +188,9 @@ public class VoxelChunk : MonoBehaviour
                 }
             }
         }
+        **/
+
+        Loop3D(ComputeMeshAction);
 
         // send all data for chunk into mesh
         mesh = new Mesh();
@@ -195,6 +201,33 @@ public class VoxelChunk : MonoBehaviour
         mesh.uv = uvs.ToArray();
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
+
+        vertices.Clear();
+        normals.Clear();
+        uvs.Clear();
+        triangles.Clear();
+        colors.Clear();
+    }
+
+    private void ComputeMeshAction(int x, int y, int z)
+    {
+        VoxelData vox = voxels[x, y, z];
+        if ((BlockShapes)vox.BlockShape != BlockShapes.EMPTY)
+        {
+            Vector3 pos = new Vector3(x, y, z);
+
+            int[] neighbors = new int[6] { 0, 0, 0, 0, 0, 0 };
+            for (int n = 0; n < 6; n++)
+                neighbors[n] = VoxelWorld.Instance.LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).BlockShape;
+
+            BlockModel model = new BlockModel(pos, t, neighbors, vox);
+            foreach (Vector3 v in model.vertices) vertices.Add(v);
+            foreach (Vector3 n in model.normals) normals.Add(n);
+            foreach (Vector2 uv in model.uvs) uvs.Add(uv);
+            foreach (Color c in model.colors) colors.Add(c);
+            foreach (int tri in model.triangles) triangles.Add(tri);
+            t = model.lastT;
+        }
     }
 
     private void GreedyMesh()
@@ -430,6 +463,50 @@ public class VoxelChunk : MonoBehaviour
                         }
                     }
                 }
+            }
+        }
+    }
+    private void BlockUpdateAction(int  x, int y, int z)
+    {
+        Vector3Int pos = new Vector3Int(x, y, z);
+        VoxelData voxel = voxels[x, y, z];
+        int voxelID = voxel.ID;
+        switch (voxelID)
+        {
+            case (Blocks.GRASS):
+                if (y < Size3D.y - 1)
+                {
+                    if (Blocks.IsSolid(voxels[x, y + 1, z]))
+                    {
+                        voxels[x, y, z].ID = Blocks.DIRT;
+                        meshDirty = true;
+                    }
+                }
+                break;
+            case (Blocks.DIRT):
+                if (y < Size3D.y - 1)
+                {
+                    VoxelData upVoxel = LookupVoxel(pos + new Vector3Int(0, 1, 0));
+                    if (upVoxel.ID == Blocks.AIR)
+                    {
+                        // grow into dirt with random chance
+                        if (BlockRandomEvent(new int3(x, y, z), 0.0005f))
+                        {
+                            voxels[x, y, z].ID = Blocks.GRASS;
+                            SetDirty();
+                        }
+                    }
+                }
+                break;
+        }
+
+        if (voxels[x, y, z].Damage > 0 && !PlayerView.usingTool)
+        {
+            if (BlockRandomEvent(new int3(x, y, z), 0.003f))
+            {
+                voxel.Damage -= 1;
+                SetBlock(LocalToWorld(new Vector3Int(x, y, z), ChunkCoord, Size3D), voxel);
+                SetDirty();
             }
         }
     }

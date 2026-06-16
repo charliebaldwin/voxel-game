@@ -22,8 +22,10 @@ public class PlayerView : MonoBehaviour
     public Inventory PlayerInventory;
     public Material UICubeMat;
     public Animator HandAnimator;
-    public Material HeldItemMat;
-    public Texture2D NullTex;
+    public MeshFilter ItemMeshFilter;
+    public MeshRenderer ItemMeshRenderer;
+    public Material NullMaterial;
+    public Mesh NullMesh;
 
     private Vector3 debugRayStart;
     private Vector3 debugRayEnd;
@@ -127,8 +129,6 @@ public class PlayerView : MonoBehaviour
             UICubeMat.SetInteger("_BlockIndex", placedBlockType);
         }
     }
-
-
     public void OnScroll(InputAction.CallbackContext context)
     {
         if (context.started) 
@@ -151,9 +151,8 @@ public class PlayerView : MonoBehaviour
             placedBlockType = slotItem.blockID;
             toolDamage = slotItem.toolDamage;
             toolUseTime = slotItem.toolUseTime;
-            HeldItemMat.SetTexture("_Tex_Color", slotItem.mainTex);
-            HeldItemMat.SetTexture("_Tex_MetalSmooth", slotItem.metalSmoothTex);
-            HeldItemMat.SetTexture("_Tex_Emission", slotItem.emissiveTex);
+            ItemMeshFilter.mesh = slotItem.mesh;
+            ItemMeshRenderer.material = slotItem.material;
 
 
         }
@@ -161,9 +160,8 @@ public class PlayerView : MonoBehaviour
         {
             toolDamage = 1;
             toolUseTime = DEFAULT_TOOL_USE_TIME;
-            HeldItemMat.SetTexture("_Tex_Color", NullTex);
-            HeldItemMat.SetTexture("_Tex_MetalSmooth", NullTex);
-            HeldItemMat.SetTexture("_Tex_Emission", NullTex);
+            ItemMeshFilter.mesh = NullMesh;
+            ItemMeshRenderer.material = NullMaterial;
 
         }
     }

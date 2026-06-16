@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3086c6bdcb89b9e41b780520397b1c9b, type: 3}
-  m_Name: Item_Pickaxe_Gold
+  m_Name: Item_Pickaxe-God
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: Gold Pickaxe
+  itemName: God Pickaxe
   type: 0
-  toolDamage: 6
-  toolUseTime: 0.15
-  mainTex: {fileID: 2800000, guid: c3f956cfeca8d064d801b65df8bc3241, type: 3}
-  metalSmoothTex: {fileID: 2800000, guid: 4362773882799cc449e55983ab7c8287, type: 3}
-  emissiveTex: {fileID: 2800000, guid: 067fee68b1b1d5d48b3268337ed102cc, type: 3}
+  toolDamage: 36
+  toolUseTime: 0.35
+  blockID: 0
+  mesh: {fileID: 8573983735195795733, guid: 4fbafe63c35ef3b48a71dadd48faefe7, type: 3}
+  material: {fileID: 2100000, guid: 9278495cef1f3d04bbdb519446267ef9, type: 2}
