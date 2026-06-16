@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4fbafe63c35ef3b48a71dadd48faefe7
+guid: 8f5ae8c2efbb65145b09d5cd4e987b17
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -8,7 +8,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: pixel
-    second: {fileID: 2100000, guid: 9278495cef1f3d04bbdb519446267ef9, type: 2}
+    second: {fileID: 2100000, guid: 37f472fce9221394cb98e31d38e6603e, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

@@ -262,46 +262,33 @@ public partial class VoxelWorld : MonoBehaviour
 
     private Vector3Int[] GetCoordinateSphere(Vector3Int center, float radius)
     {
-        tempSpherePoints = new List<Vector3Int>();
         Vector3Int corner = new Vector3Int(radius.CeilToInt(), radius.CeilToInt(), radius.CeilToInt());
+        tempSpherePoints = new List<Vector3Int>();
+        tempSphereRadius = radius;
+        tempSphereCenter = center;
         Loop3D(CoordinateSphereAction, center - corner, corner * 2);
-        return tempSpherePoints.ToArray();
 
-        //List<Vector3Int> points = new List<Vector3Int>();
-        //Vector3Int[] cuboid = GetCoordinateCuboid(center - corner, corner * 2);
-        //Vector3 centerFloat = SnapToGrid(center);
-        //foreach(Vector3Int p in cuboid)
-        //{
-        //if (Vector3.Distance(SnapToGrid(p), center) < radius)
-        //{
-        //    points.Add(p);
-        //}
-        //}
+        Vector3Int[] array = tempSpherePoints.ToArray();
+        tempSpherePoints.Clear();
+
+        return array;
 
     }
     private void CoordinateSphereAction(int x, int y, int z)
     {
-
+        Vector3Int p = new Vector3Int(x, y, z);
+        float dist = Vector3.Distance(p, tempSphereCenter);
+        if (dist < tempSphereRadius)
+            tempSpherePoints.Add(p);
     }
 
     public void DamageVoxel(Vector3 worldPos, Vector3 hitPos, byte damage)
     {
         int2 chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
         VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
-        //breakVFX.GetComponent<VFXObject>().InitVFX(chunk.LookupVoxel(worldPos).ID);
         chunk.DamageBlock(SnapToGrid(worldPos), hitPos, damage);
     }
 
-    //public void AddVoxel(Vector3 worldPos, int blockType)
-    //{
-    //    int2 chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
-    //    VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
-    //    if (Physics.CheckBox(worldPos, Vector3.one * 0.5f, Quaternion.identity, BlockVoxelPlacement.value))
-    //    {
-    //        return;
-    //    }
-    //    chunk.SetBlock(SnapToGrid(worldPos), blockType);
-    //}
     public void AddVoxel(Vector3 worldPos, VoxelData voxel)
     {
         if (voxel.ID == 0) voxel.BlockShape = 0;
@@ -319,8 +306,6 @@ public partial class VoxelWorld : MonoBehaviour
     {
         DEBUGTraversalPosList = new List<Vector3Int>();
         DEBUGTraversalColorList = new List<Color>();
-
-        //pos += positionOffset;
 
         Vector3Int start = SnapToGrid(pos + 0.5f * Vector3.one);
         //  Debug.Log($"pos = ({pos.x}, {pos.y}, {pos.z}) -> start = ({start.x}, {start.y}, {start.z})");
@@ -344,9 +329,7 @@ public partial class VoxelWorld : MonoBehaviour
             (voxelBoundary.y - pos.y) / dir.y,  // Boundary is a plane on the XZ axis
             (voxelBoundary.z - pos.z) / dir.z   // Boundary is a plane on the XY axis
         );
-       //Debug.Log($"INIT tMax.x :  ({voxelBoundary.x}-{pos.x})/{dir.x} = {tMax.x}");
-       //Debug.Log($"INIT tMax.y :  ({voxelBoundary.y}-{pos.y})/{dir.y} = {tMax.y}");
-       //Debug.Log($"INIT tMax.z :  ({voxelBoundary.z}-{pos.z})/{dir.z} = {tMax.z}");
+
         Vector3 tDelta = new Vector3(
             stepX / dir.x,               // Crossing the width of a cell.
             stepY / dir.y,               // Crossing the height of a cell.
@@ -384,13 +367,9 @@ public partial class VoxelWorld : MonoBehaviour
                 return hitData;
             }
             else if (hitVoxel.ID == Blocks.INVALID)
-            {
                 return new VoxelHitInfo(false);
-            }
             else
-            {
                 DEBUGTraversalColorList.Add(new Color(Mathf.Abs(hitNormal.x), Mathf.Abs(hitNormal.y), Mathf.Abs(hitNormal.z)));
-            }
 
             Vector3 absTMax = new Vector3(Mathf.Abs(tMax.x), Mathf.Abs(tMax.y), Mathf.Abs(tMax.z)); 
             if (absTMax.x < absTMax.y && absTMax.x < absTMax.z) // tMax.X is the lowest, an YZ cell boundary plane is nearest.
@@ -399,7 +378,6 @@ public partial class VoxelWorld : MonoBehaviour
                 t = tMax.x;
                 tMax.x += tDelta.x;
                 hitNormal = new Vector3Int(-stepX, 0, 0);
-              //  Debug.Log($"Step {i}: tMax.X is lowest, add tDelta.x ({tDelta.x})   ->   new tMax = ({tMax.x}, {tMax.y}, {tMax.z})");
             }
             else if (absTMax.y < absTMax.z)               // tMax.Y is the lowest, an XZ cell boundary plane is nearest.
             {
@@ -407,7 +385,6 @@ public partial class VoxelWorld : MonoBehaviour
                 t = tMax.y;
                 tMax.y += tDelta.y;
                 hitNormal = new Vector3Int(0, -stepY, 0);
-                //Debug.Log($"Step {i}: tMax.Y is lowest, add tDelta.y ({tDelta.y})   ->   new tMax = ({tMax.x}, {tMax.y}, {tMax.z})");
             }
             else                                    // tMax.Z is the lowest, an XY cell boundary plane is nearest.
             {
@@ -415,10 +392,7 @@ public partial class VoxelWorld : MonoBehaviour
                 t = tMax.z;
                 tMax.z += tDelta.z;
                 hitNormal = new Vector3Int(0, 0, -stepZ);
-                //Debug.Log($"Step {i}: tMax.Z is lowest, add tDelta.z ({tDelta.z})   ->   new tMax = ({tMax.x}, {tMax.y}, {tMax.z})");
             }
-
-            
         }
         return new VoxelHitInfo(false);
     }
@@ -426,30 +400,20 @@ public partial class VoxelWorld : MonoBehaviour
     public VoxelData LookupVoxel(Vector3Int p)
     {
         if (CheckWorldBounds(p))
-        {
             return Voxels[p.x, p.y, p.z];
-        }
         else
-        {
             return new VoxelData(0, 0, 0); 
-        }
     }
 
     public void SetVoxel(Vector3Int p, VoxelData newVoxel)
     {
         if (CheckWorldBounds(p))
-        {
             Voxels[p.x,p.y,p.z] = newVoxel;
-        }
     }
 
     public bool CheckWorldBounds(Vector3Int p)
     {
-        if (p.x < 0 || p.y < 0 || p.z < 0 || p.x >= ChunkSize.x * WorldSize.x || p.y >= ChunkSize.y * WorldSize.y || p.z >= ChunkSize.z * WorldSize.z)
-        {
-            return false;
-        }
-        return true;
+        return !(p.x < 0 || p.y < 0 || p.z < 0 || p.x >= ChunkSize.x * WorldSize.x || p.y >= ChunkSize.y * WorldSize.y || p.z >= ChunkSize.z * WorldSize.z);
     }
 
     public void Explode(Vector3Int center, float radius)
@@ -473,8 +437,7 @@ public partial class VoxelWorld : MonoBehaviour
         return result;
     }
     private void OnDrawGizmos()
-    {
-
+    { 
         for (int i = 0; i < DEBUGTraversalPosList.Count; i++)
         {
             //Gizmos.color = DEBUGTraversalColorList[i];
@@ -482,11 +445,13 @@ public partial class VoxelWorld : MonoBehaviour
             if (i >= DEBUGTraversalPosList.Count - 1) Gizmos.color = Color.white;
             Gizmos.DrawCube(DEBUGTraversalPosList[i], Vector3.one);
         }
+
         if (DEBUGWorldHitPoint != Vector3.zero)
         {
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(DEBUGWorldHitPoint, 0.2f);
         }
+
     }
 }
 

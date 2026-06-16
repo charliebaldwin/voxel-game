@@ -17,5 +17,6 @@ MonoBehaviour:
   toolDamage: 6
   toolUseTime: 0.15
   blockID: 0
-  mesh: {fileID: 8573983735195795733, guid: 4fbafe63c35ef3b48a71dadd48faefe7, type: 3}
-  material: {fileID: 2100000, guid: 9278495cef1f3d04bbdb519446267ef9, type: 2}
+  sprite: {fileID: 2800000, guid: 367ca7c55e0079941a323c849c0608ee, type: 3}
+  mesh: {fileID: -1491930556405071566, guid: 8f5ae8c2efbb65145b09d5cd4e987b17, type: 3}
+  material: {fileID: 2100000, guid: 37f472fce9221394cb98e31d38e6603e, type: 2}
