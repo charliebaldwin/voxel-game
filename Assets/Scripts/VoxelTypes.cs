@@ -8,13 +8,25 @@ public struct VoxelData
     // data for voxels in world
     public int ID;
     public byte Damage;
+    public byte Toughness;
     public byte Orientation;
+    public byte BlockShape; // 0 = empty, 1 = full, 2 = slab, 3 = stairs
 
     public VoxelData(int id, byte damage, byte orientation)
     {
         ID = id;
         Damage = damage;
         Orientation = orientation;
+        Toughness = 12;
+        BlockShape = 1;
+    }
+    public VoxelData(int id, byte damage, byte orientation, byte blockShape)
+    {
+        ID = id;
+        Damage = damage;
+        Orientation = orientation;
+        Toughness = 12;
+        BlockShape = blockShape;
     }
 }
 
@@ -141,13 +153,22 @@ public static class Blocks
     public const int LOG = 7;
     public const int LEAVES = 8;
 
-    public static bool IsSolid(int id)
+    public static bool IsSolid(int shape)
     {
-        return id > AIR;
+        return (BlockShapes)shape == BlockShapes.SOLID;
+
     }
     public static bool IsSolid(VoxelData voxelData)
     {
-        return voxelData.ID > AIR;
+        return (BlockShapes)voxelData.BlockShape == BlockShapes.SOLID;
     }
 
+}
+
+public enum BlockShapes
+{
+    EMPTY       = 0,
+    SOLID       = 1,
+    HALF_SLAB   = 2,
+    STAIRS      = 3
 }

@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 
     [Foldout("References")]
     public CharacterController charController;
+    public Animator handAnimator;
     public Camera playerCam;
     public Transform cameraPivot;
     public Transform handPivot;
@@ -69,16 +70,20 @@ public class PlayerController : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
+        handAnimator.SetBool("Walking", moveInput.SqrMagnitude() > 0f);
         //Debug.Log($"movement: {moveInput}");
     }
     public void OnSprint(InputAction.CallbackContext context)
     {
         currentMoveSpeed = Mathf.Lerp(walkSpeed, sprintSpeed, context.ReadValue<float>());
+        handAnimator.SetBool("Running", context.ReadValue<float>() > 0f);
     }
     public void OnJump(InputAction.CallbackContext context)
     {
         if (charController.isGrounded)
         {
+            handAnimator.SetBool("Airborne", true);
+            handAnimator.SetTrigger("Jump");
             velocity.y = jumpForce;
         }
     }
@@ -107,10 +112,11 @@ public class PlayerController : MonoBehaviour
     {
         //currentMoveSpeed = walkSpeed;
         grounded = charController.isGrounded;
-
         if (!charController.isGrounded)
         {
-            velocity.y += Time.deltaTime * gravityForce; 
+            velocity.y += Time.deltaTime * gravityForce;
+            //handAnimator.SetBool("Airborne", true);
+
         }
 
         velocity.x = 0f;
@@ -124,7 +130,10 @@ public class PlayerController : MonoBehaviour
         if (charController.isGrounded)
         {
             velocity.y = Time.deltaTime * gravityForce;
-        }
+            handAnimator.SetBool("Airborne", false);
+        } 
+
+
 
         currentCameraLean = Mathf.Lerp(currentCameraLean, -1f * cameraLeanAmount * moveInput.x, cameraLeanSpeed);
         cameraEuler.y = 0f;

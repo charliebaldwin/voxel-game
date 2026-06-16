@@ -69,11 +69,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Tex_Color:
-        m_Texture: {fileID: 2800000, guid: c3f956cfeca8d064d801b65df8bc3241, type: 3}
+        m_Texture: {fileID: 2800000, guid: a0532847bfb058141a65e8fae209a7c7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Tex_Emission:
+        m_Texture: {fileID: 2800000, guid: a0532847bfb058141a65e8fae209a7c7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Tex_MetalSmooth:
-        m_Texture: {fileID: 2800000, guid: 4362773882799cc449e55983ab7c8287, type: 3}
+        m_Texture: {fileID: 2800000, guid: a0532847bfb058141a65e8fae209a7c7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:

@@ -31,7 +31,6 @@ public partial class VoxelWorld : MonoBehaviour
 
     public LayerMask BlockVoxelPlacement;
 
-    public GameObject BlockBreakVFXPrefab;
 
     private List<Vector3Int> DEBUGTraversalPosList = new List<Vector3Int>();
     private List<Color> DEBUGTraversalColorList;
@@ -196,7 +195,14 @@ public partial class VoxelWorld : MonoBehaviour
 
                 for (int y = 0; y < Size3D.y; y++)
                 {
-                    voxels[x, y, z] = new VoxelData(y < h ? Blocks.DIRT : Blocks.AIR, 0, 0);
+                    if (y < h)
+                    {
+                        voxels[x, y, z] = new VoxelData(Blocks.DIRT, 0, 0, 1);
+                    }
+                    else
+                    {
+                        voxels[x, y, z] = new VoxelData(Blocks.AIR, 0, 0, 0);
+                    }
                 }
             }
         }
@@ -222,7 +228,8 @@ public partial class VoxelWorld : MonoBehaviour
         Vector3Int[] sphere = GetCoordinateSphere(new Vector3Int(20,12, 20), 10f);
         foreach (Vector3Int p in sphere)
         {
-            voxels[p.x, p.y, p.z].ID = Blocks.STONE;
+            voxels[p.x, p.y, p.z] = new VoxelData(Blocks.STONE, 0, 0, 1);
+            voxels[p.x,p.y, p.z].Toughness = 24;
         }
 
 
@@ -263,24 +270,34 @@ public partial class VoxelWorld : MonoBehaviour
         return points.ToArray();
     }
 
-    public void DamageVoxel(Vector3 worldPos, byte damage)
+    public void DamageVoxel(Vector3 worldPos, Vector3 hitPos, byte damage)
     {
         int2 chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
         VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
-        GameObject breakVFX = Instantiate(BlockBreakVFXPrefab, worldPos, Quaternion.identity);
         //breakVFX.GetComponent<VFXObject>().InitVFX(chunk.LookupVoxel(worldPos).ID);
-        chunk.DamageBlock(SnapToGrid(worldPos), damage);
+        chunk.DamageBlock(SnapToGrid(worldPos), hitPos, damage);
     }
 
-    public void AddVoxel(Vector3 worldPos, int blockType)
+    //public void AddVoxel(Vector3 worldPos, int blockType)
+    //{
+    //    int2 chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
+    //    VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
+    //    if (Physics.CheckBox(worldPos, Vector3.one * 0.5f, Quaternion.identity, BlockVoxelPlacement.value))
+    //    {
+    //        return;
+    //    }
+    //    chunk.SetBlock(SnapToGrid(worldPos), blockType);
+    //}
+    public void AddVoxel(Vector3 worldPos, VoxelData voxel)
     {
+        if (voxel.ID == 0) voxel.BlockShape = 0;
         int2 chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
         VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
         if (Physics.CheckBox(worldPos, Vector3.one * 0.5f, Quaternion.identity, BlockVoxelPlacement.value))
         {
             return;
         }
-        chunk.SetBlock(SnapToGrid(worldPos), blockType);
+        chunk.SetBlock(SnapToGrid(worldPos), voxel);
     }
 
     // from https://web.archive.org/web/20121024081332/www.xnawiki.com/index.php?title=Voxel_traversal
@@ -427,7 +444,7 @@ public partial class VoxelWorld : MonoBehaviour
         foreach (Vector3Int p in sphere)
         {
             int2 chunkCoord = FindContainingChunk(p, ChunkSize);
-            Chunks[chunkCoord.x, chunkCoord.y].SetBlock(p, Blocks.AIR);
+            Chunks[chunkCoord.x, chunkCoord.y].SetBlock(p, new VoxelData(Blocks.AIR,0,0,0));
         }
     }
 

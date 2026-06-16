@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: Gold Pickaxe
   type: 0
-  toolDamage: 3
+  toolDamage: 6
+  toolUseTime: 0.15
   mainTex: {fileID: 2800000, guid: c3f956cfeca8d064d801b65df8bc3241, type: 3}
   metalSmoothTex: {fileID: 2800000, guid: 4362773882799cc449e55983ab7c8287, type: 3}
+  emissiveTex: {fileID: 2800000, guid: 067fee68b1b1d5d48b3268337ed102cc, type: 3}

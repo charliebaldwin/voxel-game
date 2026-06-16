@@ -13,6 +13,7 @@ using static UnityEditor.PlayerSettings;
 using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 using static VoxelHelper;
+using UnityEngine.VFX;
 
 
 public class VoxelChunk : MonoBehaviour
@@ -53,6 +54,9 @@ public class VoxelChunk : MonoBehaviour
     private MeshFilter meshFilter;
     private Mesh mesh;
     private MeshCollider meshCollider;
+    [SerializeField] private GameObject blockBreakVFXPrefab;
+    [SerializeField] private GameObject blockHitVFXPrefab;
+
 
 
     private Vector3 tempOrigin = Vector3.zero;
@@ -162,39 +166,84 @@ public class VoxelChunk : MonoBehaviour
                 for (int x = 0; x < Size3D.x; x++) {
 
                     VoxelData vox = voxels[x, y, z];
-                    if (Blocks.IsSolid(vox))
+                    if ((BlockShapes)vox.BlockShape == BlockShapes.SOLID)
                     {
                         int[] neighbors = new int[6] { 0, 0, 0, 0, 0, 0 };
+                        Vector3 pos = new Vector3(x, y, z);
                         for (int n = 0; n < 6; n++)
                         {
                             Vector3Int n_pos = new Vector3Int(x, y, z) + dirs[n];
-                            Vector3 pos = new Vector3(x, y, z);
+                           
 
-                            neighbors[n] = VoxelWorld.Instance.LookupVoxel(LocalToWorld(n_pos, ChunkCoord, Size3D)).ID;
+                            neighbors[n] = VoxelWorld.Instance.LookupVoxel(LocalToWorld(n_pos, ChunkCoord, Size3D)).BlockShape;
 
-                            if (!Blocks.IsSolid(neighbors[n]))
-                            {
-                                Vector3[] new_verts = GetFaceVerts(dirs[n]);
-                                Vector2[] new_uvs = GetFaceUVs(dirs[n]);
-                                for(int v=0; v<new_verts.Length; v++)
-                                {
-                                    vertices.Add(new_verts[v] * 0.5f + pos);
-                                    normals.Add(dirs[n]);
-                                    colors.Add(new Color(vox.ID, n, vox.Damage));
-                                    uvs.Add(new_uvs[v]);
-                                }
-                                for (int i = 0; i < 6; i++)
-                                {
-                                    triangles.Add(t + Triangles[i]);
-                                }
-                                t += 4;
-                            }
+                            //if ((BlockShapes)neighbors[n] != BlockShapes.SOLID)
+                            //{
+                            //    Vector3[] new_verts = GetFaceVerts(dirs[n]);
+                            //    Vector2[] new_uvs = GetFaceUVs(dirs[n]);
+                            //    for(int v=0; v<new_verts.Length; v++)
+                            //    {
+                            //        vertices.Add(new_verts[v] * 0.5f + pos);
+                            //        normals.Add(dirs[n]);
+                            //        colors.Add(new Color(vox.ID, n, (float)vox.Damage / (float)vox.Toughness));
+                            //        uvs.Add(new_uvs[v]);
+                            //    }
+                            //    for (int i = 0; i < 6; i++)
+                            //    {
+                            //        triangles.Add(t + Triangles[i]);
+                            //    }
+                            //    t += 4;
+                            //}
                         }
+
+                        BlockModel model = new BlockModel(pos, t, neighbors, vox);
+                        foreach (Vector3 v in model.vertices)   vertices.Add(v);
+                        foreach (Vector3 n in model.normals)    normals.Add(n);
+                        foreach (Vector2 uv in model.uvs)       uvs.Add(uv);
+                        foreach (Color c in model.colors)       colors.Add(c);
+                        foreach (int tri in model.triangles)    triangles.Add(tri);
+                        t = model.lastT;
+                    }
+                    else if ((BlockShapes)vox.BlockShape == BlockShapes.HALF_SLAB)
+                    {
+                        Vector3 pos = new Vector3(x, y, z);
+                        int[] neighbors = new int[6] { 0, 0, 0, 0, 0, 0 };
+                        BlockModel model = new BlockModel(pos, t, neighbors, vox);
+                        foreach (Vector3 v in model.vertices) vertices.Add(v);
+                        foreach (Vector3 n in model.normals) normals.Add(n);
+                        foreach (Vector2 uv in model.uvs) uvs.Add(uv);
+                        foreach (Color c in model.colors) colors.Add(c);
+                        foreach (int tri in model.triangles) triangles.Add(tri);
+                        t = model.lastT;
+
+                        //for (int n=0; n<6; n++)
+                        //{
+                        //    Vector3[] new_verts = GetFaceVerts(dirs[n]);
+                        //    Vector2[] new_uvs = GetFaceUVs(dirs[n]);
+                        //    for (int v = 0; v < new_verts.Length; v++)
+                        //    {
+                        //        Vector3 new_vert = new_verts[v];
+                        //        new_vert.y = Mathf.Clamp(new_vert.y, -1f, 0f);
+                        //        vertices.Add(new_vert * 0.5f + pos);
+                        //        normals.Add(dirs[n]);
+                        //        colors.Add(new Color(vox.ID, n, (float)vox.Damage / (float)vox.Toughness));
+                        //        Vector2 new_uv = new_uvs[v];
+                        //        if (n!=2 && n!=3)
+                        //            new_uv.y = Mathf.Clamp(new_uv.y, 0.5f, 1f);
+                        //        uvs.Add(new_uv);
+                        //    }
+                        //    for (int i = 0; i < 6; i++)
+                        //    {
+                        //        triangles.Add(t + Triangles[i]);
+                        //    }
+                        //    t += 4;
+                        //}
                     }
                 }
             }
         }
 
+        //Debug.Log($"list counts - v:{vertices.Count()}, n:{normals.Count()}, c:{colors.Count()}, uv:{uvs.Count()}, t:{triangles.Count()}");
         mesh = new Mesh();
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
@@ -390,39 +439,58 @@ public class VoxelChunk : MonoBehaviour
     }
     private void BlockUpdate()
     {
-        for (int x = 0; x < Size3D.x; x++) {  for(int y = 0; y < Size3D.y; y++) {  for(int z = 0; z < Size3D.z; z++) {
-            Vector3Int pos = new Vector3Int(x, y, z);  
-            int voxelID = voxels[x, y, z].ID;
-            switch (voxelID)
+        for (int x = 0; x < Size3D.x; x++)
+        {
+            for (int y = 0; y < Size3D.y; y++)
             {
-                case (Blocks.GRASS): 
-                    if (y < Size3D.y - 1)
+                for (int z = 0; z < Size3D.z; z++)
+                {
+                    Vector3Int pos = new Vector3Int(x, y, z);
+                    VoxelData voxel = voxels[x, y, z];
+                    int voxelID = voxel.ID;
+                    switch (voxelID)
                     {
-                        if (Blocks.IsSolid(voxels[x, y + 1, z]))
-                        {
-                            voxels[x, y, z].ID = Blocks.DIRT;
-                            meshDirty = true;
-                        }
-                    }
-                    break;
-                case (Blocks.DIRT): 
-                    if (y < Size3D.y - 1)
-                    {
-                        VoxelData upVoxel = LookupVoxel(pos + new Vector3Int(0, 1, 0));
-                        if (upVoxel.ID == Blocks.AIR)
-                        {
-                            // grow into dirt with random chance
-                            if (BlockRandomEvent(new int3(x, y, z), 0.0005f)) 
+                        case (Blocks.GRASS):
+                            if (y < Size3D.y - 1)
                             {
-                                voxels[x, y, z].ID = Blocks.GRASS;
-                                meshDirty = true;
+                                if (Blocks.IsSolid(voxels[x, y + 1, z]))
+                                {
+                                    voxels[x, y, z].ID = Blocks.DIRT;
+                                    meshDirty = true;
+                                }
                             }
+                            break;
+                        case (Blocks.DIRT):
+                            if (y < Size3D.y - 1)
+                            {
+                                VoxelData upVoxel = LookupVoxel(pos + new Vector3Int(0, 1, 0));
+                                if (upVoxel.ID == Blocks.AIR)
+                                {
+                                    // grow into dirt with random chance
+                                    if (BlockRandomEvent(new int3(x, y, z), 0.0005f))
+                                    {
+                                        voxels[x, y, z].ID = Blocks.GRASS;
+                                        SetDirty();
+                                    }
+                                }
+                            }
+                            break;
+                    }
+
+                    if (voxels[x, y, z].Damage > 0 && !PlayerView.usingTool)
+                    {
+                        if (BlockRandomEvent(new int3(x, y, z), 0.003f))
+                        {
+                            voxel.Damage -= 1;
+                            SetBlock(LocalToWorld(new Vector3Int(x, y, z), ChunkCoord, Size3D), voxel);
+                            SetDirty();
                         }
                     }
-                    break;
+                }
             }
-        } } }
+        }
     }
+
     private bool BlockRandomEvent(int3 pos, float probability)
     {
         int seed = (pos.x + Size3D.x * pos.y + Size3D.x * Size3D.y * pos.z) + (1000*ChunkCoord.x + 10000*ChunkCoord.y) + (Time.frameCount % 10000);
@@ -447,15 +515,22 @@ public class VoxelChunk : MonoBehaviour
 
 
 
-    private const int DAMAGE_THRESH = 6;
-    public void DamageBlock(Vector3Int worldPosition, byte damage)
+    private const int DAMAGE_THRESH = 12;
+    public void DamageBlock(Vector3Int worldPosition, Vector3 hitPosition, byte damage)
     {
         Vector3Int localPos = WorldToLocal(worldPosition, ChunkCoord, Size3D);
         VoxelData voxel = LookupVoxel(localPos);
         voxel.Damage += damage;
-        if (voxel.Damage >= DAMAGE_THRESH)
+        GameObject hitVFX = Instantiate(blockHitVFXPrefab, hitPosition, Quaternion.identity);
+        hitVFX.GetComponent<VFXObject>().InitVFX(voxel.ID, 0.5f);
+
+        if (voxel.Damage >= voxel.Toughness)
         {
+            GameObject breakVFX = Instantiate(blockBreakVFXPrefab, worldPosition, Quaternion.identity);
+            breakVFX.GetComponent<VFXObject>().InitVFX(voxel.ID, 1f);
+
             voxel = new VoxelData(Blocks.AIR, 0, 0);
+            voxel.BlockShape = 0;
         }
         SetBlock(worldPosition, voxel);
 
@@ -488,6 +563,7 @@ public class VoxelChunk : MonoBehaviour
     }
     public void SetBlock(Vector3Int worldPosition, VoxelData voxelData)
     {
+       
         Vector3Int localPos = WorldToLocal(worldPosition, ChunkCoord, Size3D);
         if (IsPosInGridBounds(localPos, Size3D))
         {

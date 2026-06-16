@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3086c6bdcb89b9e41b780520397b1c9b, type: 3}
+  m_Name: Item_Pickaxe_God
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemName: God Pickaxe
+  type: 0
+  toolDamage: 36
+  toolUseTime: 0.35
+  mainTex: {fileID: 2800000, guid: f10fea7c156edd74a8ff7eb95f6dfaeb, type: 3}
+  metalSmoothTex: {fileID: 2800000, guid: 51db049a2fe252944a7d629ca0ee8ca3, type: 3}
+  emissiveTex: {fileID: 2800000, guid: 0ea5ce4c303a519459e7946b55039d66, type: 3}
