@@ -158,56 +158,22 @@ public class VoxelChunk : MonoBehaviour
         List<Vector2> uvs = new List<Vector2>();
         List<int> triangles = new List<int>();
         List<Color> colors = new List<Color>();
-        int t = 0;
-        Vector3Int[] dirs = new Vector3Int[6] { Vector3Int.left, Vector3Int.right, Vector3Int.down, Vector3Int.up, Vector3Int.back, Vector3Int.forward };
-        
+        int t = 0;        
+
+        // get model data for each voxel
         for (int z = 0; z < Size3D.z; z++) {
             for (int y = 0; y < Size3D.y; y++) {
                 for (int x = 0; x < Size3D.x; x++) {
 
                     VoxelData vox = voxels[x, y, z];
-                    if ((BlockShapes)vox.BlockShape == BlockShapes.SOLID)
+                    if ((BlockShapes)vox.BlockShape != BlockShapes.EMPTY)
                     {
-                        int[] neighbors = new int[6] { 0, 0, 0, 0, 0, 0 };
                         Vector3 pos = new Vector3(x, y, z);
+
+                        int[] neighbors = new int[6] { 0, 0, 0, 0, 0, 0 };
                         for (int n = 0; n < 6; n++)
-                        {
-                            Vector3Int n_pos = new Vector3Int(x, y, z) + dirs[n];
-                           
+                            neighbors[n] = VoxelWorld.Instance.LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).BlockShape;
 
-                            neighbors[n] = VoxelWorld.Instance.LookupVoxel(LocalToWorld(n_pos, ChunkCoord, Size3D)).BlockShape;
-
-                            //if ((BlockShapes)neighbors[n] != BlockShapes.SOLID)
-                            //{
-                            //    Vector3[] new_verts = GetFaceVerts(dirs[n]);
-                            //    Vector2[] new_uvs = GetFaceUVs(dirs[n]);
-                            //    for(int v=0; v<new_verts.Length; v++)
-                            //    {
-                            //        vertices.Add(new_verts[v] * 0.5f + pos);
-                            //        normals.Add(dirs[n]);
-                            //        colors.Add(new Color(vox.ID, n, (float)vox.Damage / (float)vox.Toughness));
-                            //        uvs.Add(new_uvs[v]);
-                            //    }
-                            //    for (int i = 0; i < 6; i++)
-                            //    {
-                            //        triangles.Add(t + Triangles[i]);
-                            //    }
-                            //    t += 4;
-                            //}
-                        }
-
-                        BlockModel model = new BlockModel(pos, t, neighbors, vox);
-                        foreach (Vector3 v in model.vertices)   vertices.Add(v);
-                        foreach (Vector3 n in model.normals)    normals.Add(n);
-                        foreach (Vector2 uv in model.uvs)       uvs.Add(uv);
-                        foreach (Color c in model.colors)       colors.Add(c);
-                        foreach (int tri in model.triangles)    triangles.Add(tri);
-                        t = model.lastT;
-                    }
-                    else if ((BlockShapes)vox.BlockShape == BlockShapes.HALF_SLAB)
-                    {
-                        Vector3 pos = new Vector3(x, y, z);
-                        int[] neighbors = new int[6] { 0, 0, 0, 0, 0, 0 };
                         BlockModel model = new BlockModel(pos, t, neighbors, vox);
                         foreach (Vector3 v in model.vertices) vertices.Add(v);
                         foreach (Vector3 n in model.normals) normals.Add(n);
@@ -215,35 +181,12 @@ public class VoxelChunk : MonoBehaviour
                         foreach (Color c in model.colors) colors.Add(c);
                         foreach (int tri in model.triangles) triangles.Add(tri);
                         t = model.lastT;
-
-                        //for (int n=0; n<6; n++)
-                        //{
-                        //    Vector3[] new_verts = GetFaceVerts(dirs[n]);
-                        //    Vector2[] new_uvs = GetFaceUVs(dirs[n]);
-                        //    for (int v = 0; v < new_verts.Length; v++)
-                        //    {
-                        //        Vector3 new_vert = new_verts[v];
-                        //        new_vert.y = Mathf.Clamp(new_vert.y, -1f, 0f);
-                        //        vertices.Add(new_vert * 0.5f + pos);
-                        //        normals.Add(dirs[n]);
-                        //        colors.Add(new Color(vox.ID, n, (float)vox.Damage / (float)vox.Toughness));
-                        //        Vector2 new_uv = new_uvs[v];
-                        //        if (n!=2 && n!=3)
-                        //            new_uv.y = Mathf.Clamp(new_uv.y, 0.5f, 1f);
-                        //        uvs.Add(new_uv);
-                        //    }
-                        //    for (int i = 0; i < 6; i++)
-                        //    {
-                        //        triangles.Add(t + Triangles[i]);
-                        //    }
-                        //    t += 4;
-                        //}
                     }
                 }
             }
         }
 
-        //Debug.Log($"list counts - v:{vertices.Count()}, n:{normals.Count()}, c:{colors.Count()}, uv:{uvs.Count()}, t:{triangles.Count()}");
+        // send all data for chunk into mesh
         mesh = new Mesh();
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();

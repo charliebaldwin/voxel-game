@@ -236,7 +236,8 @@ public class PlayerView : MonoBehaviour
                 case 2:
                     if (currentItemType == ItemType.Block)
                     {
-                        VoxelWorld.Instance.AddVoxel(hitData.voxelPos + hitData.hitNormal, new VoxelData(placedBlockType, 0, 0, placedBlockShape));
+                        byte o = VoxelHelper.NormalToOrientation(hitData.hitNormal);
+                        VoxelWorld.Instance.AddVoxel(hitData.voxelPos + hitData.hitNormal, new VoxelData(placedBlockType, 0, o, placedBlockShape));
                     }
                     //Debug.Log($"normal: {hitData.hitNormal}"); 
                     break;

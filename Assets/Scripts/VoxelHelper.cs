@@ -1,5 +1,6 @@
 using Unity.Mathematics;
 using UnityEngine;
+using static UnityEngine.Analytics.IAnalytic;
 
 public static class VoxelHelper
 {
@@ -56,6 +57,24 @@ public static class VoxelHelper
             return new Vector2[4] { u1v0, u1v1, u0v1, u0v0, };
         else
             return null;
+    }
+
+    public static byte NormalToOrientation(Vector3Int normal)
+    {
+        if (normal == Vector3Int.up)
+        return 0;
+        else if (normal == Vector3Int.down)
+            return 1;
+        else if (normal == Vector3Int.left)
+            return 2;
+        else if (normal == Vector3Int.right)
+            return 3;
+        else if (normal == Vector3Int.back)
+            return 4;
+        else if (normal == Vector3Int.forward)
+            return 5;
+        else
+            return 0;
     }
 
     public static bool IsPosInGridBounds(Vector3Int pos, Vector3Int size)

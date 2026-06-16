@@ -57,7 +57,8 @@ public partial class VoxelWorld : MonoBehaviour
         InitializeWorld();
     }
 
-
+    public int[] shuffle = new int[6] { 0, 1, 2, 3, 4, 5 };
+    public byte orientation = 5;
     [Button(name = "Initialize World", size = 20, color = "black")]
     public void InitializeWorld()
     {
@@ -197,7 +198,7 @@ public partial class VoxelWorld : MonoBehaviour
                 {
                     if (y < h)
                     {
-                        voxels[x, y, z] = new VoxelData(Blocks.DIRT, 0, 0, 1);
+                        voxels[x, y, z] = new VoxelData(Blocks.DIRT, 0, orientation, 1);
                     }
                     else
                     {
