@@ -17,6 +17,6 @@ MonoBehaviour:
   toolDamage: 0
   toolUseTime: 0.25
   blockID: 3
-  mainTex: {fileID: 2800000, guid: a0532847bfb058141a65e8fae209a7c7, type: 3}
-  metalSmoothTex: {fileID: 2800000, guid: a0532847bfb058141a65e8fae209a7c7, type: 3}
-  emissiveTex: {fileID: 2800000, guid: a0532847bfb058141a65e8fae209a7c7, type: 3}
+  sprite: {fileID: 0}
+  mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  material: {fileID: 0}

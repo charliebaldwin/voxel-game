@@ -171,6 +171,7 @@ public class PlayerView : MonoBehaviour
     void Update()
     {
         DoRaycast3(0);
+        //HandAnimator = GetComponent<Animator>();
 
     }
 
@@ -229,7 +230,7 @@ public class PlayerView : MonoBehaviour
                     break;
                 case 1:
                     Vector3 normal = new Vector3(hitData.hitNormal.x, hitData.hitNormal.y, hitData.hitNormal.z);
-                    VoxelWorld.Instance.DamageVoxel(hitData.voxelPos, hitData.hitPos + 0.2f*normal, toolDamage);
+                    VoxelWorld.Instance.DamageVoxel(hitData.voxelPos, hitData, toolDamage);
                     break;
                 case 2:
                     if (currentItemType == ItemType.Block)

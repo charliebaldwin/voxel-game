@@ -536,13 +536,13 @@ public class VoxelChunk : MonoBehaviour
 
 
     private const int DAMAGE_THRESH = 12;
-    public void DamageBlock(Vector3Int worldPosition, Vector3 hitPosition, byte damage)
+    public void DamageBlock(Vector3Int worldPosition, VoxelHitInfo hitInfo, byte damage)
     {
         Vector3Int localPos = WorldToLocal(worldPosition, ChunkCoord, Size3D);
         VoxelData voxel = LookupVoxel(localPos);
         voxel.Damage += damage;
-        GameObject hitVFX = Instantiate(blockHitVFXPrefab, hitPosition, Quaternion.identity);
-        hitVFX.GetComponent<VFXObject>().InitVFX(voxel.ID, 0.5f);
+        GameObject hitVFX = Instantiate(blockHitVFXPrefab, hitInfo.hitPos, Quaternion.identity);
+        hitVFX.GetComponent<VFXObject>().InitVFX(voxel.ID, 0.5f, hitInfo.hitNormal);
 
         if (voxel.Damage >= voxel.Toughness)
         {

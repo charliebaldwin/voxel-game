@@ -282,11 +282,11 @@ public partial class VoxelWorld : MonoBehaviour
             tempSpherePoints.Add(p);
     }
 
-    public void DamageVoxel(Vector3 worldPos, Vector3 hitPos, byte damage)
+    public void DamageVoxel(Vector3 worldPos, VoxelHitInfo hitInfo, byte damage)
     {
         int2 chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
         VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
-        chunk.DamageBlock(SnapToGrid(worldPos), hitPos, damage);
+        chunk.DamageBlock(SnapToGrid(worldPos), hitInfo, damage);
     }
 
     public void AddVoxel(Vector3 worldPos, VoxelData voxel)
