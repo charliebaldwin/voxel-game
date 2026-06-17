@@ -77,6 +77,11 @@ public static class VoxelHelper
             return 0;
     }
 
+    public static VoxelWorld World()
+    {
+        return VoxelWorld.Instance;
+    }
+
     public static bool IsPosInGridBounds(Vector3Int pos, Vector3Int size)
     {
         return pos.x >= 0 && pos.y >= 0 && pos.z >= 0 && pos.x < size.x && pos.y < size.y && pos.z < size.z;

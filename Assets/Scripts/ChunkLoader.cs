@@ -4,23 +4,22 @@ using Unity.VisualScripting;
 using UnityEngine;
 using VInspector;
 using VInspector.Libs;
+using static VoxelHelper;
 
 public class ChunkLoader : MonoBehaviour
 {
-    public float Radius;
-    private int spacing = 12;
-
-    void Start()
-    {
-        spacing = VoxelWorld.Instance.Spacing;
-
-    }
+    int2 currentChunkPos = new int2(0, 0);
 
     
     void Update()
     {
-        int2 steppedPos = new int2(Mathf.FloorToInt(transform.position.x / spacing), Mathf.FloorToInt(transform.position.z / spacing));
-        VoxelWorld.Instance.AddChunk(steppedPos);
+        int2 chunkPos = FindContainingChunk(SnapToGrid(transform.position), World().ChunkSize);
 
+        if (chunkPos.x != currentChunkPos.x || chunkPos.y != currentChunkPos.y)
+        {
+            World().LoadChunkSpread(chunkPos, 4);
+            //World().UnloadChunk(currentChunkPos);
+            currentChunkPos = chunkPos;
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using Unity.Mathematics;
@@ -18,97 +19,82 @@ public partial class VoxelWorld : MonoBehaviour
 {
     public static VoxelWorld Instance { get; private set; }
 
+    [Foldout("World Settings")]
     public Vector3Int ChunkSize = new Vector3Int(8, 8, 8);
-    public Vector3Int WorldSize = new Vector3Int(32, 1, 32);
-    public int2 InitialChunks = new int2(4, 4);
-    public WorldGenSettings Settings;
+    [SerializeField] private Vector3Int WorldSize = new Vector3Int(32, 1, 32);
+    [SerializeField] private int2 InitialChunks = new int2(4, 4);
+    [SerializeField] private int2 InitialLoadedChunks = new int2(2, 2);
+    [SerializeField] private WorldGenSettings GenerationSettings;
+    [SerializeField] private GameObject ChunkPrefab;
+    [EndFoldout]
 
-    private VoxelData[,,] Voxels;
-    private VoxelChunk[,] Chunks;
+    [Foldout("Data")]
+    [ShowInInspector] private VoxelData[,,] Voxels;
+    [ShowInInspector] private VoxelChunk[,] Chunks;
+    private List<VoxelChunk> loadedChunks;
+    [EndFoldout]
 
-    public GameObject ChunkPrefab;
-    public int Spacing = 8;
+    public bool Initialized = false;
 
-    public LayerMask BlockVoxelPlacement;
+    public LayerMask BlockPlacementMask;
 
+    public float BlockUpdateDelay = 0.05f;
+    private IEnumerator blockUpdate_co;
 
+    [Foldout("Debug")]
     private List<Vector3Int> DEBUGTraversalPosList = new List<Vector3Int>();
     private List<Color> DEBUGTraversalColorList;
     private Vector3 DEBUGWorldHitPoint = Vector3.zero;
+    public int[] shuffle = new int[6] { 0, 1, 2, 3, 4, 5 };
+    public byte orientation = 5;
+    [EndFoldout]
 
-    public bool Initialized = false;
+
+
+    private void Awake()
+    {
+        SetInstance();
+    }
+
+    void Start()
+    {
+        InitializeWorld();
+        blockUpdate_co = BlockUpdateCO();
+        StartCoroutine(blockUpdate_co);
+    }
 
     private void SetInstance()
     {
         if (Instance != null && Instance != this) Destroy(this);
         else Instance = this;
     }
-    private void Awake()
-    {
-        SetInstance();
-    }
 
-
-    void Start()
-    {
-        InitializeWorld();
-    }
-
-    public int[] shuffle = new int[6] { 0, 1, 2, 3, 4, 5 };
-    public byte orientation = 5;
     [Button(name = "Initialize World", size = 20, color = "black")]
     public void InitializeWorld()
     {
         SetInstance();
         Initialized = true;
 
-
         for(int i=transform.childCount-1; i>=0; i--)
         {
             if (Application.isPlaying)
-            {
                 GameObject.Destroy(transform.GetChild(i).gameObject);
-            }
             else
-            {
                 GameObject.DestroyImmediate(transform.GetChild(i).gameObject);
-            }
         }
 
         Vector3Int worldVoxelSize = new Vector3Int(ChunkSize.x * WorldSize.x, ChunkSize.y * WorldSize.y, ChunkSize.z * WorldSize.z);
         GenerateVoxelsCPU(worldVoxelSize);
-       // Debug.Log($"voxels size={worldVoxelSize}");
+        // Debug.Log($"voxels size={worldVoxelSize}");
 
 
+        loadedChunks = new List<VoxelChunk>();
         Chunks = new VoxelChunk[WorldSize.x, WorldSize.z];
         for (int x = 0; x < InitialChunks.x; x++)
         {
             for (int z = 0; z < InitialChunks.y; z++)
             {
                 AddChunk(new int2(x, z));
-            }
-        }
-    }
-
-    private void Loop3D(Action<int, int, int> loopFunction)
-    {
-        Vector3Int Size3D = new Vector3Int(ChunkSize.x * WorldSize.x, ChunkSize.y * WorldSize.y, ChunkSize.z * WorldSize.z);
-        for (int x = 0; x < Size3D.x; x++) {
-            for (int z = 0; z < Size3D.z; z++) {
-                for (int y = 0; y < Size3D.y; y++) {
-                    loopFunction(x, y, z);
-                }
-            }
-        }
-    }
-    private void Loop3D(Action<int, int, int> loopFunction, Vector3Int origin, Vector3Int size)
-    {
-        Vector3Int endPoint = origin + size;
-        for (int x = origin.x; x < endPoint.x; x++) {
-            for (int z = origin.z; z < endPoint.z; z++) {
-                for (int y = origin.y; y < endPoint.y; y++) {
-                    loopFunction(x, y, z);
-                }
             }
         }
     }
@@ -120,16 +106,11 @@ public partial class VoxelWorld : MonoBehaviour
         {
             VoxelChunk newChunk = Instantiate(ChunkPrefab).GetComponent<VoxelChunk>();
             Chunks[pos.x, pos.y] = newChunk;
-
-            newChunk.Size3D = ChunkSize;
-            newChunk.ChunkCoord = pos;
             newChunk.transform.name = $"Chunk_x{pos.x}_z{pos.y}";
             newChunk.transform.position = new Vector3(pos.x * ChunkSize.x, 0, pos.y * ChunkSize.z);
             newChunk.transform.parent = transform;
 
             MinMaxAABB bounds = new MinMaxAABB(new float3(pos.x * ChunkSize.x, 0f, pos.y * ChunkSize.z), new float3((pos.x + 1) * ChunkSize.x, ChunkSize.y, (pos.y + 1) * ChunkSize.z));
-
-            //Debug.Log($"Bounds = ({bounds.Min}) - ({bounds.Max})");
 
             VoxelData[,,] chunkData = new VoxelData[ChunkSize.x, ChunkSize.y, ChunkSize.z];
   
@@ -144,21 +125,67 @@ public partial class VoxelWorld : MonoBehaviour
                     }
                 }
             }
-            newChunk.SetVoxels(chunkData);
-            newChunk.InitializeChunk();
+            newChunk.InitializeChunk(ChunkSize, pos);
+            newChunk.FillVoxelData(chunkData);
+            if (pos.x<=InitialLoadedChunks.x && pos.y <= InitialLoadedChunks.y)
+                LoadChunk(pos);
         }
 
-        for(int x=0; x<WorldSize.x; x++)
-        {
-            for (int z=0; z<WorldSize.z;z++)
-            {
+        for(int x=0; x<WorldSize.x; x++) {
+            for (int z=0; z<WorldSize.z;z++) {
                 if (Chunks[x,z] != null)
-                {
                     Chunks[x, z].FindNeighbors();
-                }
             }
         }
     }
+
+    public void LoadChunk(int2 coord)
+    {
+        if (IsChunkCoordInBounds(coord)) {
+            if (!Chunks[coord.x, coord.y].Loaded)
+                loadedChunks.Add(Chunks[coord.x, coord.y].LoadChunk());
+        } else
+        {
+            Debug.Log("chunk outside bounds");
+        }
+    }
+    public void LoadChunkSpread(int2 coord, int spreadDist)
+    {
+
+        if (IsChunkCoordInBounds(coord))
+        {
+            LoadChunk(coord);
+            if (spreadDist > 0)
+            {
+                spreadDist -= 1;
+                LoadChunkSpread(coord + new int2(-1,  0), spreadDist);
+                LoadChunkSpread(coord + new int2( 1,  0), spreadDist);
+                LoadChunkSpread(coord + new int2( 0, -1), spreadDist);
+                LoadChunkSpread(coord + new int2( 0,  1), spreadDist);
+            }
+            
+        }
+        else
+            Debug.Log("chunk outside bounds");
+    }
+
+    public void UnloadChunk(int2 coord)
+    {
+        if (IsChunkCoordInBounds(coord)) {
+            loadedChunks.Remove(Chunks[coord.x, coord.y].UnloadChunk());
+        } else
+        {
+            Debug.Log("chunk outside bounds");
+        }    
+    }
+
+    public int2 debugChunkToUnload = new int2(0,0);
+    [Button(name="DebugUnloadChunk")]
+    public void DebugUnloadChunk()
+    {
+        UnloadChunk(debugChunkToUnload);
+    }
+
     public VoxelChunk GetChunk(int2 chunkCoord)
     {
         if (chunkCoord.x >= 0 && chunkCoord.y >= 0 && chunkCoord.x < WorldSize.x &&  chunkCoord.y < WorldSize.z)
@@ -172,6 +199,35 @@ public partial class VoxelWorld : MonoBehaviour
             return null;       
     }
 
+    private void Loop3D(Action<int, int, int> loopFunction)
+    {
+        Vector3Int Size3D = new Vector3Int(ChunkSize.x * WorldSize.x, ChunkSize.y * WorldSize.y, ChunkSize.z * WorldSize.z);
+        for (int x = 0; x < Size3D.x; x++)
+        {
+            for (int z = 0; z < Size3D.z; z++)
+            {
+                for (int y = 0; y < Size3D.y; y++)
+                {
+                    loopFunction(x, y, z);
+                }
+            }
+        }
+    }
+    private void Loop3D(Action<int, int, int> loopFunction, Vector3Int origin, Vector3Int size)
+    {
+        Vector3Int endPoint = origin + size;
+        for (int x = origin.x; x < endPoint.x; x++)
+        {
+            for (int z = origin.z; z < endPoint.z; z++)
+            {
+                for (int y = origin.y; y < endPoint.y; y++)
+                {
+                    loopFunction(x, y, z);
+                }
+            }
+        }
+    }
+
     private void GenerateVoxelsCPU(Vector3Int Size3D)
     {
         Voxels = new VoxelData[Size3D.x, Size3D.y, Size3D.z];
@@ -181,10 +237,10 @@ public partial class VoxelWorld : MonoBehaviour
             {
                 //float h = Mathf.Cos(z * .1f) * Mathf.Sin(x * 0.1f) * 4f + 8f;
 
-                float noise = Perlin.Fbm(x * Settings.NoiseScale, z * Settings.NoiseScale, Settings.NoiseOctaves);
-                float noise2 = Perlin.Fbm(x * Settings.NoiseScale * 0.2f, z * Settings.NoiseScale * 0.2f, Settings.NoiseOctaves);
-                float h = noise * Settings.HeightRange + Settings.HeightOffset;
-                h = h + (noise2 * Settings.HeightRange * 4);
+                float noise = Perlin.Fbm(x * GenerationSettings.NoiseScale, z * GenerationSettings.NoiseScale, GenerationSettings.NoiseOctaves);
+                float noise2 = Perlin.Fbm(x * GenerationSettings.NoiseScale * 0.2f, z * GenerationSettings.NoiseScale * 0.2f, GenerationSettings.NoiseOctaves);
+                float h = noise * GenerationSettings.HeightRange + GenerationSettings.HeightOffset;
+                h = h + (noise2 * GenerationSettings.HeightRange * 4);
 
 
                 for (int y = 0; y < Size3D.y; y++)
@@ -231,10 +287,8 @@ public partial class VoxelWorld : MonoBehaviour
 
     private void GenerateGrassAction(int x, int y, int z)
     {
-        if (Voxels[x, y, z].ID != Blocks.AIR && y < ChunkSize.y - 1)
-        {
-            if (Voxels[x, y + 1, z].ID == Blocks.AIR)
-            {
+        if (Voxels[x, y, z].ID != Blocks.AIR && y < ChunkSize.y - 1) {
+            if (Voxels[x, y + 1, z].ID == Blocks.AIR) {
                 Voxels[x, y, z].ID = Blocks.GRASS;
             }
         }
@@ -259,7 +313,6 @@ public partial class VoxelWorld : MonoBehaviour
     private List<Vector3Int> tempSpherePoints;
     private Vector3 tempSphereCenter;
     private float tempSphereRadius;
-
     private Vector3Int[] GetCoordinateSphere(Vector3Int center, float radius)
     {
         Vector3Int corner = new Vector3Int(radius.CeilToInt(), radius.CeilToInt(), radius.CeilToInt());
@@ -272,7 +325,6 @@ public partial class VoxelWorld : MonoBehaviour
         tempSpherePoints.Clear();
 
         return array;
-
     }
     private void CoordinateSphereAction(int x, int y, int z)
     {
@@ -282,24 +334,57 @@ public partial class VoxelWorld : MonoBehaviour
             tempSpherePoints.Add(p);
     }
 
+
+    private IEnumerator BlockUpdateCO()
+    {
+        for (int i = 0; i < loadedChunks.Count; i++) {
+            loadedChunks[i].BlockUpdate();
+            //Debug.Log($"chunk {loadedChunks[i].ChunkCoord} updated");
+            yield return new WaitForSeconds(BlockUpdateDelay);
+        }
+
+        blockUpdate_co = BlockUpdateCO();
+        StartCoroutine(blockUpdate_co);
+    }
+
+
+    public VoxelData LookupVoxel(Vector3Int worldPos)
+    {
+        if (CheckWorldBounds(worldPos))
+            return Voxels[worldPos.x, worldPos.y, worldPos.z];
+        else
+            return new VoxelData(0, 0, 0);
+    }
     public void DamageVoxel(Vector3 worldPos, VoxelHitInfo hitInfo, byte damage)
     {
         int2 chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
         VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
-        chunk.DamageBlock(SnapToGrid(worldPos), hitInfo, damage);
+        chunk.DamageVoxel(SnapToGrid(worldPos), hitInfo, damage);
     }
-
     public void AddVoxel(Vector3 worldPos, VoxelData voxel)
     {
         if (voxel.ID == 0) voxel.BlockShape = 0;
+
         int2 chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
         VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
-        if (Physics.CheckBox(worldPos, Vector3.one * 0.5f, Quaternion.identity, BlockVoxelPlacement.value))
+        if (Physics.CheckBox(worldPos, Vector3.one * 0.5f, Quaternion.identity, BlockPlacementMask.value))
         {
             return;
         }
-        chunk.SetBlock(SnapToGrid(worldPos), voxel);
+        chunk.SetVoxel(SnapToGrid(worldPos), voxel);
     }
+    public void SetVoxel(Vector3Int worldPos, VoxelData newVoxel)
+    {
+        if (CheckWorldBounds(worldPos))
+        {
+            Voxels[worldPos.x, worldPos.y, worldPos.z] = newVoxel;
+
+            int2 chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
+            VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
+            chunk.SetVoxel(worldPos, newVoxel);
+        }
+    }
+
 
     // from https://web.archive.org/web/20121024081332/www.xnawiki.com/index.php?title=Voxel_traversal
     public VoxelHitInfo VoxelTraversal(Vector3 pos, Vector3 dir, int maxDepth)
@@ -397,23 +482,15 @@ public partial class VoxelWorld : MonoBehaviour
         return new VoxelHitInfo(false);
     }
 
-    public VoxelData LookupVoxel(Vector3Int p)
-    {
-        if (CheckWorldBounds(p))
-            return Voxels[p.x, p.y, p.z];
-        else
-            return new VoxelData(0, 0, 0); 
-    }
-
-    public void SetVoxel(Vector3Int p, VoxelData newVoxel)
-    {
-        if (CheckWorldBounds(p))
-            Voxels[p.x,p.y,p.z] = newVoxel;
-    }
+    
 
     public bool CheckWorldBounds(Vector3Int p)
     {
         return !(p.x < 0 || p.y < 0 || p.z < 0 || p.x >= ChunkSize.x * WorldSize.x || p.y >= ChunkSize.y * WorldSize.y || p.z >= ChunkSize.z * WorldSize.z);
+    }
+    public bool IsChunkCoordInBounds(int2 coord)
+    {
+        return coord.x >= 0 && coord.y >= 0 && coord.x < WorldSize.x - 1 && coord.y < WorldSize.z - 1;
     }
 
     public void Explode(Vector3Int center, float radius)
@@ -422,20 +499,12 @@ public partial class VoxelWorld : MonoBehaviour
         foreach (Vector3Int p in sphere)
         {
             int2 chunkCoord = FindContainingChunk(p, ChunkSize);
-            Chunks[chunkCoord.x, chunkCoord.y].SetBlock(p, new VoxelData(Blocks.AIR,0,0,0));
+            Chunks[chunkCoord.x, chunkCoord.y].SetVoxel(p, new VoxelData(Blocks.AIR,0,0,0));
         }
     }
 
 
     
-
-    private Vector3Int WorldPosToVoxel(Vector3 worldPos)
-    {
-        Vector3Int result = new Vector3Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y), Mathf.RoundToInt(worldPos.z));
-        //Vector3Int result = new Vector3Int(Mathf.FloorToInt(worldPos.x), Mathf.FloorToInt(worldPos.y), Mathf.FloorToInt(worldPos.z));
-
-        return result;
-    }
     private void OnDrawGizmos()
     { 
         for (int i = 0; i < DEBUGTraversalPosList.Count; i++)

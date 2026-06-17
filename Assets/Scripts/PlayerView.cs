@@ -43,7 +43,7 @@ public class PlayerView : MonoBehaviour
     private bool primaryDown = false;
     public static bool usingTool = false;
 
-    private IEnumerator toolUseCoroutine = null;
+    private IEnumerator cr_toolUse = null;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -86,9 +86,9 @@ public class PlayerView : MonoBehaviour
             primaryDown = true;
             if (!usingTool)
             {
-                toolUseCoroutine = UseToolTimer();
+                cr_toolUse = UseToolTimer();
 
-                StartCoroutine(toolUseCoroutine);
+                StartCoroutine(cr_toolUse);
             }
 
         }
@@ -106,9 +106,9 @@ public class PlayerView : MonoBehaviour
            // DoRaycast3(2);
             if (!usingTool)
             {
-                toolUseCoroutine = PlaceBlockTimer();
+                cr_toolUse = PlaceBlockTimer();
 
-                StartCoroutine(toolUseCoroutine);
+                StartCoroutine(cr_toolUse);
             }
         }
     }
@@ -135,7 +135,7 @@ public class PlayerView : MonoBehaviour
         {
             hotbarSlot += context.ReadValue<float>().RoundToInt();
             hotbarSlot = hotbarSlot.Clamp(0, NUM_HOTBAR_SLOTS - 1);
-            Debug.Log(hotbarSlot);
+            //Debug.Log(hotbarSlot);
             SetTool(hotbarSlot);
         }
     }
@@ -185,8 +185,8 @@ public class PlayerView : MonoBehaviour
         yield return new WaitForSeconds(duration);
         if (primaryDown)
         {
-            toolUseCoroutine = UseToolTimer();
-            StartCoroutine(toolUseCoroutine);
+            cr_toolUse = UseToolTimer();
+            StartCoroutine(cr_toolUse);
         }
         else
         {
@@ -203,8 +203,8 @@ public class PlayerView : MonoBehaviour
         yield return new WaitForSeconds(duration);
         if (primaryDown)
         {
-            toolUseCoroutine = UseToolTimer();
-            StartCoroutine(toolUseCoroutine);
+            cr_toolUse = UseToolTimer();
+            StartCoroutine(cr_toolUse);
         }
         else
         {
