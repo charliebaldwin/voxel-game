@@ -20170,6 +20170,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7748345313803126428, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7748345313803126428, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_ActionEvents.Array.size
       value: 10
       objectReference: {fileID: 0}
@@ -20241,13 +20245,17 @@ PrefabInstance:
       propertyPath: 'm_Cameras.Array.data[0]'
       value: 
       objectReference: {fileID: 929656772}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6277950794279834453, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
     m_RemovedGameObjects:
     - {fileID: 2742617686343426155, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       insertIndex: -1
       addedObject: {fileID: 183559700}
+    - targetCorrespondingSourceObject: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1659096135}
     - targetCorrespondingSourceObject: {fileID: 6122245305625610504, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       insertIndex: 1
       addedObject: {fileID: 929656775}
@@ -20264,6 +20272,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
   m_PrefabInstance: {fileID: 584695758}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &584695760 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5169377436148619620, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+  m_PrefabInstance: {fileID: 584695758}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13622eb81518af249bfe2df92b2a2440, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChunkRaycast
 --- !u!43 &593541425
 Mesh:
   m_ObjectHideFlags: 0
@@ -62932,6 +62951,228 @@ MonoBehaviour:
   meshCollider: {fileID: 1658810172}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
+--- !u!1 &1659096134
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1659096135}
+  - component: {fileID: 1659096136}
+  m_Layer: 6
+  m_Name: PlayerInput
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1659096135
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1659096134}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 584695759}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1659096136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1659096134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
+  m_Actions: {fileID: -944628639613478452, guid: ef669b18c752fa7409441bc8bc980374, type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1515763913}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnMove
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 1f3d9e98-c04a-4bd5-b7ce-f8b861833eb9
+    m_ActionName: 'FirstPerson/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1515763913}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnJump
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 15ad6cd9-748f-4dab-8257-926af1cab860
+    m_ActionName: 'FirstPerson/Jump[/Keyboard/space]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 584695760}
+        m_TargetAssemblyTypeName: ChunkRaycast, Assembly-CSharp
+        m_MethodName: OnPrimary
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 60ec1f16-6f71-4bee-a038-b77d66e75318
+    m_ActionName: 'FirstPerson/Primary[/Mouse/leftButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 584695760}
+        m_TargetAssemblyTypeName: ChunkRaycast, Assembly-CSharp
+        m_MethodName: OnSecondary
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 6a9a75f4-cba2-44ac-bb8d-6b952dd71417
+    m_ActionName: 'FirstPerson/Secondary[/Mouse/rightButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1515763913}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnAim
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 83f45a41-f84c-4068-bb06-bca3bd79e137
+    m_ActionName: 'FirstPerson/Aim[/Mouse/delta]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1515763913}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnSprint
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 372cb29c-500b-4001-9574-f96e1454992d
+    m_ActionName: 'FirstPerson/Sprint[/Keyboard/leftShift]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 584695760}
+        m_TargetAssemblyTypeName: ChunkRaycast, Assembly-CSharp
+        m_MethodName: OnNumKey
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: dad7f475-bf78-4706-bf13-f06070af0b2f
+    m_ActionName: 'FirstPerson/NumKey[/Keyboard/1,/Keyboard/2,/Keyboard/3,/Keyboard/4,/Keyboard/5,/Keyboard/6,/Keyboard/7,/Keyboard/8,/Keyboard/9,/Keyboard/0]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1515763913}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: ToggleCursorLock
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 8fb56065-c2cf-4584-8dbb-6c1831d9976d
+    m_ActionName: 'FirstPerson/LockCursor[/Keyboard/r]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 584695760}
+        m_TargetAssemblyTypeName: ChunkRaycast, Assembly-CSharp
+        m_MethodName: OnTertiary
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 6e475f89-0b1b-49a0-a985-19a5248378e1
+    m_ActionName: 'FirstPerson/Tertiary[/Mouse/middleButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 584695760}
+        m_TargetAssemblyTypeName: ChunkRaycast, Assembly-CSharp
+        m_MethodName: OnScroll
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 6236e099-113d-43cb-81c8-dfdf057659ad
+    m_ActionName: 'FirstPerson/Scroll[/Mouse/scroll/down,/Mouse/scroll/up]'
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: FirstPerson
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!43 &1666108708
 Mesh:
   m_ObjectHideFlags: 0

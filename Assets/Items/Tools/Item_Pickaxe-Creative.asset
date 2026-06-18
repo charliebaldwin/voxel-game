@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3086c6bdcb89b9e41b780520397b1c9b, type: 3}
-  m_Name: Item_Pickaxe-God
+  m_Name: Item_Pickaxe-Creative
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: God Pickaxe
+  itemName: Creative Pickaxe
   type: 0
   toolDamage: 36
-  toolUseTime: 0.35
+  toolUseTime: 0.1
   blockID: 0
-  mesh: {fileID: 8573983735195795733, guid: 4fbafe63c35ef3b48a71dadd48faefe7, type: 3}
-  material: {fileID: 2100000, guid: 9278495cef1f3d04bbdb519446267ef9, type: 2}
+  sprite: {fileID: 0}
+  mesh: {fileID: 171654353733398019, guid: 491346b1e7a4da04fae96258398d7b13, type: 3}
+  material: {fileID: 2100000, guid: a4513b78e11a5d346aab54ba19132225, type: 2}

@@ -5,7 +5,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VInspector.Libs;
-
+using static VoxelHelper;
 public class PlayerView : MonoBehaviour
 {
 
@@ -45,6 +45,7 @@ public class PlayerView : MonoBehaviour
 
     private IEnumerator cr_toolUse = null;
 
+    private VoxelHitInfo lastHitInfo;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -79,6 +80,7 @@ public class PlayerView : MonoBehaviour
         }
     }
 
+    #region Input Handlers
     public void OnPrimary(InputAction.CallbackContext context)
     {
         if (context.started && Cursor.lockState == CursorLockMode.Locked)
@@ -87,23 +89,18 @@ public class PlayerView : MonoBehaviour
             if (!usingTool)
             {
                 cr_toolUse = UseToolTimer();
-
                 StartCoroutine(cr_toolUse);
             }
-
         }
         else if (context.canceled)
         {
-            //Debug.Log("canceled primary");
             primaryDown = false;
-           // if (toolUseCoroutine != null) StopCoroutine(toolUseCoroutine);
         }
     }
     public void OnSecondary(InputAction.CallbackContext context)
     {
         if (context.started && Cursor.lockState == CursorLockMode.Locked && currentItemType == ItemType.Block)
         {
-           // DoRaycast3(2);
             if (!usingTool)
             {
                 cr_toolUse = PlaceBlockTimer();
@@ -116,7 +113,7 @@ public class PlayerView : MonoBehaviour
     {
         if (context.started && Cursor.lockState == CursorLockMode.Locked)
         {
-            DoRaycast3(3);
+            DoTertiary();
         }
     }
     public void OnNumKey(InputAction.CallbackContext context)
@@ -139,6 +136,7 @@ public class PlayerView : MonoBehaviour
             SetTool(hotbarSlot);
         }
     }
+    #endregion
 
     private void SetTool(int hotbarSlot)
     {
@@ -153,8 +151,6 @@ public class PlayerView : MonoBehaviour
             toolUseTime = slotItem.toolUseTime;
             ItemMeshFilter.mesh = slotItem.mesh;
             ItemMeshRenderer.material = slotItem.material;
-
-
         }
         else
         {
@@ -162,7 +158,6 @@ public class PlayerView : MonoBehaviour
             toolUseTime = DEFAULT_TOOL_USE_TIME;
             ItemMeshFilter.mesh = NullMesh;
             ItemMeshRenderer.material = NullMaterial;
-
         }
     }
 
@@ -170,7 +165,8 @@ public class PlayerView : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        DoRaycast3(0);
+        RaycastWorld();
+        //DoRaycast3(0);
         //HandAnimator = GetComponent<Animator>();
 
     }
@@ -179,7 +175,7 @@ public class PlayerView : MonoBehaviour
     {
         usingTool = true;
         float duration = toolUseTime;
-        DoRaycast3(1);
+        DoPrimary();
         HandAnimator.SetTrigger("Hit");
         HandAnimator.SetFloat("ToolSpeed", 1f / duration);
         yield return new WaitForSeconds(duration);
@@ -197,7 +193,7 @@ public class PlayerView : MonoBehaviour
     {
         usingTool = true;
         float duration = toolUseTime;
-        DoRaycast3(2);
+        DoSecondary();
         HandAnimator.SetTrigger("Hit");
         HandAnimator.SetFloat("ToolSpeed", 1f / duration);
         yield return new WaitForSeconds(duration);
@@ -212,36 +208,76 @@ public class PlayerView : MonoBehaviour
         }
     }
 
+    private void RaycastWorld()
+    {
+        lastHitInfo = VoxelWorld.Instance.VoxelTraversal(transform.position, transform.forward, AimDistance.CeilToInt());
+        if (lastHitInfo.didHit)
+        {
+            VoxelCursor.transform.position = lastHitInfo.voxelPos;
+            VoxelCursor.transform.forward = lastHitInfo.hitNormal;
+            VoxelCursor.SetActive(true);
+        }
+        else
+            VoxelCursor.SetActive(false);
 
+    }
+
+    private void DoPrimary()
+    {
+        if (lastHitInfo.didHit)
+        {
+            Vector3 normal = new Vector3(lastHitInfo.hitNormal.x, lastHitInfo.hitNormal.y, lastHitInfo.hitNormal.z);
+            World().DamageVoxel(lastHitInfo.voxelPos, lastHitInfo, toolDamage);
+        }
+    }
+    private void DoSecondary()
+    {
+        if (lastHitInfo.didHit)
+        {
+            if (currentItemType == ItemType.Block)
+            {
+                byte o = VoxelHelper.NormalToOrientation(lastHitInfo.hitNormal);
+                World().AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new VoxelData(placedBlockType, 0, o, placedBlockShape));
+            }
+        }
+    }
+    private void DoTertiary()
+    {
+        if (lastHitInfo.didHit)
+        {
+            World().Explode(lastHitInfo.voxelPos, 3f);
+        }
+
+    }
 
     private void DoRaycast3(int mode)
     {
         //VoxelHitData hitData = VoxelWorld.Instance.VoxelRaycast(transform.position, transform.forward, Distance, 300);
         //print(hitData.blockID);
-        VoxelHitInfo hitData = VoxelWorld.Instance.VoxelTraversal(transform.position, transform.forward, AimDistance.CeilToInt());
-        if (hitData.didHit)
+        //VoxelHitInfo hitData = VoxelWorld.Instance.VoxelTraversal(transform.position, transform.forward, AimDistance.CeilToInt());
+        if (lastHitInfo.didHit)
         {
             VoxelCursor.SetActive(true);
             switch (mode)
             {
                 case 0:
-                    VoxelCursor.transform.position = hitData.voxelPos;
-                    VoxelCursor.transform.forward = hitData.hitNormal;
+                    VoxelCursor.transform.position = lastHitInfo.voxelPos;
+                    VoxelCursor.transform.forward = lastHitInfo.hitNormal;
                     break;
                 case 1:
-                    Vector3 normal = new Vector3(hitData.hitNormal.x, hitData.hitNormal.y, hitData.hitNormal.z);
-                    VoxelWorld.Instance.DamageVoxel(hitData.voxelPos, hitData, toolDamage);
+                    Vector3 normal = new Vector3(lastHitInfo.hitNormal.x, lastHitInfo.hitNormal.y, lastHitInfo.hitNormal.z);
+                    VoxelWorld.Instance.DamageVoxel(lastHitInfo.voxelPos, lastHitInfo, toolDamage);
                     break;
                 case 2:
                     if (currentItemType == ItemType.Block)
                     {
-                        byte o = VoxelHelper.NormalToOrientation(hitData.hitNormal);
-                        VoxelWorld.Instance.AddVoxel(hitData.voxelPos + hitData.hitNormal, new VoxelData(placedBlockType, 0, o, placedBlockShape));
+                        byte o = VoxelHelper.NormalToOrientation(lastHitInfo.hitNormal);
+                        VoxelWorld.Instance.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new VoxelData(placedBlockType, 0, o, placedBlockShape));
                     }
                     //Debug.Log($"normal: {hitData.hitNormal}"); 
                     break;
                 case 3:
-                    VoxelWorld.Instance.Explode(hitData.voxelPos, 3f);
+                    VoxelWorld.Instance.Explode(lastHitInfo.voxelPos, 3f);
                     break;
             }
         } 

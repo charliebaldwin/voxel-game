@@ -371,7 +371,7 @@ public partial class VoxelWorld : MonoBehaviour
         {
             return;
         }
-        chunk.SetVoxel(SnapToGrid(worldPos), voxel);
+        SetVoxel(SnapToGrid(worldPos), voxel);
     }
     public void SetVoxel(Vector3Int worldPos, VoxelData newVoxel)
     {
@@ -498,8 +498,9 @@ public partial class VoxelWorld : MonoBehaviour
         Vector3Int[] sphere = GetCoordinateSphere(center,radius);
         foreach (Vector3Int p in sphere)
         {
-            int2 chunkCoord = FindContainingChunk(p, ChunkSize);
-            Chunks[chunkCoord.x, chunkCoord.y].SetVoxel(p, new VoxelData(Blocks.AIR,0,0,0));
+            //int2 chunkCoord = FindContainingChunk(p, ChunkSize);
+            //Chunks[chunkCoord.x, chunkCoord.y].SetVoxel(p, new VoxelData(Blocks.AIR,0,0,0));
+            SetVoxel(p, new VoxelData(Blocks.AIR, 0, 0, 0));
         }
     }
 
