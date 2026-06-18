@@ -1,19 +1,24 @@
+using NUnit.Framework.Internal;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using Unity.Collections;
+using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.VFX;
 using VInspector;
 using static Perlin;
 using static UnityEditor.PlayerSettings;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
+using static VoxelHelper;
 using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
-using static VoxelHelper;
-using UnityEngine.VFX;
 
 
 public class VoxelChunk : MonoBehaviour
@@ -51,8 +56,13 @@ public class VoxelChunk : MonoBehaviour
     private List<Vector4> tempCubes = new List<Vector4>();
 
 
-
-
+    private JobHandle handle;
+    private bool jobActive = false;
+    public NativeArray<Vector3> verticesResult;
+    public NativeArray<Vector3> normalsResult;
+    public NativeArray<Vector2> uvsResult;
+    public NativeArray<int> trianglesResult;
+    public NativeArray<Color> colorsResult;
 
     private void Awake()
     {
@@ -62,17 +72,24 @@ public class VoxelChunk : MonoBehaviour
     {
         //BlockUpdate();
         //Loop3D(BlockUpdateAction);
-    }
-    private void LateUpdate()
-    {
-
         if (meshDirty && Loaded)
         {
-            if (useGreedy) GreedyMesh();
-            else ComputeMeshCPU();
+
+            ChunkMesh();
 
             meshDirty = false;
         }
+    }
+    private void LateUpdate()
+    {
+        if (jobActive)
+        {
+            if (handle.IsCompleted)
+            {
+                FinishChunkJob();
+            }
+        }
+
     }
     private void OnValidate()
     {
@@ -101,10 +118,7 @@ public class VoxelChunk : MonoBehaviour
         meshRenderer.enabled = true;
         meshFilter.sharedMesh = new Mesh();
 
-        if (useGreedy)
-            GreedyMesh();
-        else
-            ComputeMeshCPU();
+        ChunkMesh();
 
         meshCollider.enabled = true;
         return this;
@@ -149,6 +163,16 @@ public class VoxelChunk : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void ChunkMesh()
+    {
+        if (useGreedy)
+            GreedyMesh();
+        else
+            ComputeMeshCPU();
+
+       // DispatchChunkJob();
     }
 
     private List<Vector3> vertices = new List<Vector3>();
@@ -432,7 +456,8 @@ public class VoxelChunk : MonoBehaviour
                 {
                     if (Blocks.IsSolid(Voxels[x, y + 1, z]))
                     {
-                        Voxels[x, y, z].ID = Blocks.DIRT;
+                        World().SetVoxel(LocalToWorld(pos, ChunkCoord, Size3D), new VoxelData(Blocks.DIRT, voxel.Damage, voxel.Orientation));
+//                        Voxels[x, y, z].ID = Blocks.DIRT;
                         meshDirty = true;
                     }
                 }
@@ -446,7 +471,9 @@ public class VoxelChunk : MonoBehaviour
                         // grow into dirt with random chance
                         if (BlockRandomEvent(new int3(x, y, z), 0.01f))
                         {
-                            Voxels[x, y, z].ID = Blocks.GRASS;
+                            World().SetVoxel(LocalToWorld(pos, ChunkCoord, Size3D), new VoxelData(Blocks.GRASS, voxel.Damage, voxel.Orientation));
+
+                            //Voxels[x, y, z].ID = Blocks.GRASS;
                             SetDirty();
                         }
                     }
@@ -556,22 +583,11 @@ public class VoxelChunk : MonoBehaviour
     }
 
 
-
-
-
-
     public VoxelData LookupVoxel(Vector3Int localPos)
     {
         return World().LookupVoxel(LocalToWorld(localPos, ChunkCoord, Size3D));
     }
-
-
-
-    
-
-
-
-    
+   
 
 
     private void OnDrawGizmos()
@@ -601,10 +617,146 @@ public class VoxelChunk : MonoBehaviour
         }
     }
 
+    private void DispatchChunkJob()
+    {
+        verticesResult = new NativeArray<Vector3>(30000,Allocator.TempJob);
+        normalsResult = new NativeArray<Vector3>(30000, Allocator.TempJob);
+        uvsResult = new NativeArray<Vector2>(30000, Allocator.TempJob);
+        trianglesResult = new NativeArray<int>(30000, Allocator.TempJob);
+        colorsResult = new NativeArray<Color>(30000, Allocator.TempJob);
+        NativeArray<int> voxelInts = new NativeArray<int>(Size3D.x*Size3D.y*Size3D.z, Allocator.TempJob);
+        int i = 0;
+        foreach (VoxelData v in Voxels)
+        {
+            voxelInts[i] = v.ID;
+            i++;
+        }
+        VoxelMesherJob job = new VoxelMesherJob
+        {
+            Size3D = Size3D,
+            Voxels = voxelInts,
+            ChunkCoord = ChunkCoord,
+            verticesResult = verticesResult,
+            normalsResult = normalsResult,
+            uvsResult = uvsResult,
+            trianglesResult = trianglesResult,
+            colorsResult = colorsResult
+        };
+
+        handle = job.Schedule();
+        jobActive = true;
+
+    }
+
+    private void FinishChunkJob()
+    {
+        handle.Complete();
+
+        mesh = new Mesh();
+        mesh.vertices = verticesResult.ToArray();
+        Debug.Log(trianglesResult.Length);
+        mesh.triangles = trianglesResult.ToArray();
+        mesh.normals = normalsResult.ToArray();
+        mesh.colors = colorsResult.ToArray();
+        mesh.uv = uvsResult.ToArray();
+        meshFilter.mesh = mesh;
+        meshCollider.sharedMesh = mesh;
 
 
+        verticesResult.Dispose();
+        normalsResult.Dispose();
+        uvsResult.Dispose();
+        trianglesResult.Dispose();
+        colorsResult.Dispose();
+
+        jobActive = false;
+    }
+}
+
+public struct VoxelMesherJob : IJob
+{
+    public Vector3Int Size3D;
+    public NativeArray<int> Voxels;
+    public int2 ChunkCoord;
+
+    public int t;
+    public NativeArray<Vector3> verticesResult;
+    public NativeArray<Vector3> normalsResult;
+    public NativeArray<Vector2> uvsResult;
+    public NativeArray<int> trianglesResult;
+    public NativeArray<Color> colorsResult;
+
+    public void Execute ()
+    {
+        t = 0;
+
+        ComputeMesh();
+    }
+
+    private void ComputeMesh()
+    {
+        List<Vector3> vertices = new List<Vector3>();
+        List<Vector3> normals = new List<Vector3>();
+        List<Vector2> uvs = new List<Vector2>();
+        List<int> triangles = new List<int>();
+        List<Color> colors = new List<Color>();
+        t = 0;
+
+        int i_v = 0, i_n = 0, i_uv = 0, i_c = 0, i_t = 0;
+
+        for (int z = 0; z < Size3D.z; z++)
+        {
+            for (int y = 0; y < Size3D.y; y++)
+            {
+                for (int x = 0; x < Size3D.x; x++)
+                {
+                    int vox = Voxels[x + Size3D.x * y + Size3D.x * Size3D.y * z];
+                    if (vox != 0)
+                    {
+                        Vector3 pos = new Vector3(x, y, z);
+
+                        int[] neighbors = new int[6] { 0, 0, 0, 0, 0, 0 };
+                        for (int n = 0; n < 6; n++)
+                            neighbors[n] = World().LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).BlockShape;
+
+                        BlockModel model = new BlockModel(pos, t, neighbors, new VoxelData(vox, 0, 0));
+                        foreach (Vector3 v in model.vertices)
+                        {
+                            verticesResult[i_v] = v;
+                            i_v++;
+                        }
+                        foreach (Vector3 n in model.normals)
+                        {
+                            normalsResult[i_n] = n;
+                            i_n++;
+                        }
+                        foreach (Vector2 uv in model.uvs)
+                        {
+                            uvsResult[i_uv] = uv;
+                            i_uv++;
+                        }
+                        foreach (Color c in model.colors)
+                        {
+                            colorsResult[i_c] = c;
+                            i_c++;
+                        }
+                        foreach (int tri in model.triangles)
+                        {
+                            trianglesResult[i_t] = tri;
+                            i_t++;
+                        }
+                        t = model.lastT;
+                    }
+                }
+            }
+        }
+        //verticesResult.CopyFrom(vertices.ToArray());
+        //normalsResult.CopyFrom(normals.ToArray());
+        //uvsResult.CopyFrom(uvs.ToArray());
+        //trianglesResult.CopyFrom(triangles.ToArray());
+        //colorsResult.CopyFrom(colors.ToArray());
+
+    }
 
 
 }
-
-
