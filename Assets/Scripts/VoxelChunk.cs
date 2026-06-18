@@ -38,6 +38,7 @@ public class VoxelChunk : MonoBehaviour
     [SerializeField] private MeshFilter meshFilter;
     [SerializeField] private Mesh mesh;
     [SerializeField] private MeshCollider meshCollider;
+    [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private GameObject blockBreakVFXPrefab;
     [SerializeField] private GameObject blockHitVFXPrefab;
     [EndFoldout]
@@ -84,25 +85,39 @@ public class VoxelChunk : MonoBehaviour
         Voxels = new VoxelData[Size3D.x, Size3D.y, Size3D.z];
         ChunkCoord = coord;
         meshFilter = GetComponent<MeshFilter>();
-        meshFilter.sharedMesh = new Mesh();
         meshCollider = GetComponent<MeshCollider>();
-
+        meshRenderer = GetComponent<MeshRenderer>();
+        meshCollider.enabled = false;
+        meshRenderer.enabled = false;
+        gameObject.SetActive(false);
     }
     public VoxelChunk LoadChunk()
     {
-        Debug.Log($"loaded {name}");
+        //Debug.Log($"loaded {name}");
+        gameObject.SetActive(true);
+
         Loaded = true;
+
+        meshRenderer.enabled = true;
+        meshFilter.sharedMesh = new Mesh();
+
         if (useGreedy)
             GreedyMesh();
         else
             ComputeMeshCPU();
 
+        meshCollider.enabled = true;
         return this;
     }
     public VoxelChunk UnloadChunk()
     {
         Loaded = false;
+        meshCollider.enabled = false;
+        meshRenderer.enabled = false;
         meshFilter.sharedMesh.Clear();
+        gameObject.SetActive(false);
+
+
         return this;
     }
     public void FillVoxelData(VoxelData[,,] newVoxels)
@@ -429,7 +444,7 @@ public class VoxelChunk : MonoBehaviour
                     if (upVoxel.ID == Blocks.AIR)
                     {
                         // grow into dirt with random chance
-                        if (BlockRandomEvent(new int3(x, y, z), 0.0005f))
+                        if (BlockRandomEvent(new int3(x, y, z), 0.01f))
                         {
                             Voxels[x, y, z].ID = Blocks.GRASS;
                             SetDirty();
@@ -471,13 +486,15 @@ public class VoxelChunk : MonoBehaviour
 
         voxel.Damage += damage;
 
-        GameObject hitVFX = Instantiate(blockHitVFXPrefab, hitInfo.hitPos, Quaternion.identity);
-        hitVFX.GetComponent<VFXObject>().InitVFX(voxel.ID, 0.5f, hitInfo.hitNormal);
+        //GameObject hitVFX = Instantiate(blockHitVFXPrefab, hitInfo.hitPos, Quaternion.identity);
+        //hitVFX.GetComponent<VFXObject>().InitVFX(voxel.ID, 0.5f, hitInfo.hitNormal);
+        VFX().SpawnVFX(VFXType.BLOCK_DMG, hitInfo.hitPos, hitInfo.hitNormal, voxel.ID);
 
         if (voxel.Damage >= voxel.Toughness)
         {
-            GameObject breakVFX = Instantiate(blockBreakVFXPrefab, worldPos, Quaternion.identity);
-            breakVFX.GetComponent<VFXObject>().InitVFX(voxel.ID, 1f);
+            //GameObject breakVFX = Instantiate(blockBreakVFXPrefab, worldPos, Quaternion.identity);
+            //breakVFX.GetComponent<VFXObject>().InitVFX(voxel.ID, 1f);
+            VFX().SpawnVFX(VFXType.BLOCK_BREAK, worldPos, Vector3.zero, voxel.ID);
 
             voxel = new VoxelData(Blocks.AIR, 0, 0);
             voxel.BlockShape = 0;

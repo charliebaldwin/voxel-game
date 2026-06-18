@@ -9,7 +9,7 @@ using static VoxelHelper;
 public class ChunkLoader : MonoBehaviour
 {
     int2 currentChunkPos = new int2(0, 0);
-
+    public int RenderDistance = 6;
     
     void Update()
     {
@@ -17,7 +17,9 @@ public class ChunkLoader : MonoBehaviour
 
         if (chunkPos.x != currentChunkPos.x || chunkPos.y != currentChunkPos.y)
         {
-            World().LoadChunkSpread(chunkPos, 4);
+            Debug.Log($"ChunkPos = {chunkPos}");
+            World().LoadChunkSpread(chunkPos, RenderDistance);
+            World().UnloadDistantChunks(chunkPos, RenderDistance + 2);
             //World().UnloadChunk(currentChunkPos);
             currentChunkPos = chunkPos;
         }

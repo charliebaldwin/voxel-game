@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: Gold Pickaxe
   type: 0
-  toolDamage: 6
+  toolDamage: 12
   toolUseTime: 0.35
   blockID: 0
   sprite: {fileID: 2800000, guid: 367ca7c55e0079941a323c849c0608ee, type: 3}

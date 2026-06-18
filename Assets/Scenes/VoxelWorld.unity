@@ -604,6 +604,7 @@ MonoBehaviour:
   meshFilter: {fileID: 6063871}
   mesh: {fileID: 0}
   meshCollider: {fileID: 6063869}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &11588464
@@ -913,6 +914,7 @@ MonoBehaviour:
   meshFilter: {fileID: 14735395}
   mesh: {fileID: 0}
   meshCollider: {fileID: 14735393}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &16167604
@@ -1044,6 +1046,7 @@ MonoBehaviour:
   meshFilter: {fileID: 16167608}
   mesh: {fileID: 0}
   meshCollider: {fileID: 16167606}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &17458531
@@ -2674,6 +2677,7 @@ MonoBehaviour:
   meshFilter: {fileID: 86104191}
   mesh: {fileID: 0}
   meshCollider: {fileID: 86104189}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &88099385
@@ -3161,6 +3165,7 @@ MonoBehaviour:
   meshFilter: {fileID: 90661924}
   mesh: {fileID: 0}
   meshCollider: {fileID: 90661922}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &92471048
@@ -3470,6 +3475,7 @@ MonoBehaviour:
   meshFilter: {fileID: 94393678}
   mesh: {fileID: 0}
   meshCollider: {fileID: 94393676}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &104502728
@@ -3601,6 +3607,7 @@ MonoBehaviour:
   meshFilter: {fileID: 104502732}
   mesh: {fileID: 0}
   meshCollider: {fileID: 104502730}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &106823892
@@ -3732,6 +3739,7 @@ MonoBehaviour:
   meshFilter: {fileID: 106823896}
   mesh: {fileID: 0}
   meshCollider: {fileID: 106823894}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &108026101
@@ -3863,6 +3871,7 @@ MonoBehaviour:
   meshFilter: {fileID: 108026105}
   mesh: {fileID: 0}
   meshCollider: {fileID: 108026103}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &112206680
@@ -4172,6 +4181,7 @@ MonoBehaviour:
   meshFilter: {fileID: 119563582}
   mesh: {fileID: 0}
   meshCollider: {fileID: 119563580}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &127290129
@@ -4303,6 +4313,7 @@ MonoBehaviour:
   meshFilter: {fileID: 127290133}
   mesh: {fileID: 0}
   meshCollider: {fileID: 127290131}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &129263406
@@ -4434,6 +4445,7 @@ MonoBehaviour:
   meshFilter: {fileID: 129263410}
   mesh: {fileID: 0}
   meshCollider: {fileID: 129263408}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &132818267
@@ -4921,6 +4933,7 @@ MonoBehaviour:
   meshFilter: {fileID: 139490183}
   mesh: {fileID: 0}
   meshCollider: {fileID: 139490181}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &150478185
@@ -5052,6 +5065,7 @@ MonoBehaviour:
   meshFilter: {fileID: 150478189}
   mesh: {fileID: 0}
   meshCollider: {fileID: 150478187}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &154768368
@@ -5361,6 +5375,7 @@ MonoBehaviour:
   meshFilter: {fileID: 172445622}
   mesh: {fileID: 0}
   meshCollider: {fileID: 172445620}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &176088088
@@ -5848,6 +5863,7 @@ MonoBehaviour:
   meshFilter: {fileID: 180303415}
   mesh: {fileID: 0}
   meshCollider: {fileID: 180303413}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &183559699
@@ -5894,6 +5910,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ea3812596c805341a0f4af672318b6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChunkLoader
+  RenderDistance: 8
 --- !u!1 &193269890
 GameObject:
   m_ObjectHideFlags: 0
@@ -6023,6 +6040,7 @@ MonoBehaviour:
   meshFilter: {fileID: 193269894}
   mesh: {fileID: 0}
   meshCollider: {fileID: 193269892}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &193932604
@@ -6154,6 +6172,7 @@ MonoBehaviour:
   meshFilter: {fileID: 193932608}
   mesh: {fileID: 0}
   meshCollider: {fileID: 193932606}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &200694174
@@ -6463,6 +6482,7 @@ MonoBehaviour:
   meshFilter: {fileID: 206464138}
   mesh: {fileID: 0}
   meshCollider: {fileID: 206464136}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &207864352
@@ -6950,6 +6970,7 @@ MonoBehaviour:
   meshFilter: {fileID: 216341666}
   mesh: {fileID: 0}
   meshCollider: {fileID: 216341664}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &216791990
@@ -7081,6 +7102,7 @@ MonoBehaviour:
   meshFilter: {fileID: 216791994}
   mesh: {fileID: 0}
   meshCollider: {fileID: 216791992}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &227527016
@@ -7422,6 +7444,7 @@ MonoBehaviour:
   meshFilter: {fileID: 235919880}
   mesh: {fileID: 0}
   meshCollider: {fileID: 235919878}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &243195451
@@ -7731,6 +7754,7 @@ MonoBehaviour:
   meshFilter: {fileID: 246403252}
   mesh: {fileID: 0}
   meshCollider: {fileID: 246403250}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &248691191
@@ -8040,6 +8064,7 @@ MonoBehaviour:
   meshFilter: {fileID: 260613703}
   mesh: {fileID: 0}
   meshCollider: {fileID: 260613701}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &262098099
@@ -8171,6 +8196,7 @@ MonoBehaviour:
   meshFilter: {fileID: 262098103}
   mesh: {fileID: 0}
   meshCollider: {fileID: 262098101}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &262525597
@@ -8480,6 +8506,7 @@ MonoBehaviour:
   meshFilter: {fileID: 267526145}
   mesh: {fileID: 0}
   meshCollider: {fileID: 267526143}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &269520319
@@ -8611,6 +8638,7 @@ MonoBehaviour:
   meshFilter: {fileID: 269520323}
   mesh: {fileID: 0}
   meshCollider: {fileID: 269520321}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &274170341
@@ -8742,6 +8770,7 @@ MonoBehaviour:
   meshFilter: {fileID: 274170345}
   mesh: {fileID: 0}
   meshCollider: {fileID: 274170343}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &278292197
@@ -9407,6 +9436,7 @@ MonoBehaviour:
   meshFilter: {fileID: 288684244}
   mesh: {fileID: 0}
   meshCollider: {fileID: 288684242}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &292636481
@@ -9538,6 +9568,7 @@ MonoBehaviour:
   meshFilter: {fileID: 292636485}
   mesh: {fileID: 0}
   meshCollider: {fileID: 292636483}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &293061863
@@ -9847,6 +9878,7 @@ MonoBehaviour:
   meshFilter: {fileID: 306594043}
   mesh: {fileID: 0}
   meshCollider: {fileID: 306594041}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &307696706
@@ -9978,6 +10010,7 @@ MonoBehaviour:
   meshFilter: {fileID: 307696710}
   mesh: {fileID: 0}
   meshCollider: {fileID: 307696708}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &311232591
@@ -10287,6 +10320,7 @@ MonoBehaviour:
   meshFilter: {fileID: 312672485}
   mesh: {fileID: 0}
   meshCollider: {fileID: 312672483}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &318901775
@@ -10596,6 +10630,7 @@ MonoBehaviour:
   meshFilter: {fileID: 320456942}
   mesh: {fileID: 0}
   meshCollider: {fileID: 320456940}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &322165490
@@ -10727,6 +10762,7 @@ MonoBehaviour:
   meshFilter: {fileID: 322165494}
   mesh: {fileID: 0}
   meshCollider: {fileID: 322165492}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &324167930 stripped
@@ -11219,6 +11255,7 @@ MonoBehaviour:
   meshFilter: {fileID: 337446109}
   mesh: {fileID: 0}
   meshCollider: {fileID: 337446107}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &338040916
@@ -11528,6 +11565,7 @@ MonoBehaviour:
   meshFilter: {fileID: 343928676}
   mesh: {fileID: 0}
   meshCollider: {fileID: 343928674}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &346238546
@@ -11659,6 +11697,7 @@ MonoBehaviour:
   meshFilter: {fileID: 346238550}
   mesh: {fileID: 0}
   meshCollider: {fileID: 346238548}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &349976004
@@ -11790,6 +11829,7 @@ MonoBehaviour:
   meshFilter: {fileID: 349976008}
   mesh: {fileID: 0}
   meshCollider: {fileID: 349976006}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &351853874
@@ -12545,6 +12585,7 @@ MonoBehaviour:
   meshFilter: {fileID: 363051951}
   mesh: {fileID: 775771031}
   meshCollider: {fileID: 363051949}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &365066159
@@ -12676,6 +12717,7 @@ MonoBehaviour:
   meshFilter: {fileID: 365066163}
   mesh: {fileID: 0}
   meshCollider: {fileID: 365066161}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &371769456
@@ -12985,6 +13027,7 @@ MonoBehaviour:
   meshFilter: {fileID: 377781575}
   mesh: {fileID: 0}
   meshCollider: {fileID: 377781573}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &379989658
@@ -13116,8 +13159,56 @@ MonoBehaviour:
   meshFilter: {fileID: 379989662}
   mesh: {fileID: 0}
   meshCollider: {fileID: 379989660}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
+--- !u!1 &380934260
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 380934262}
+  - component: {fileID: 380934261}
+  m_Layer: 0
+  m_Name: VFXManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &380934261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380934260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca335f2f7bc66354aa3e95444616ab83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VFXManager
+  MaxVFXObjects: 10
+  VFXBlockBreak: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
+  VFXBlockDamage: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
+--- !u!4 &380934262
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380934260}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.52547, y: 5.5, z: 5.49775}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &384397099
 GameObject:
   m_ObjectHideFlags: 0
@@ -13247,6 +13338,7 @@ MonoBehaviour:
   meshFilter: {fileID: 384397103}
   mesh: {fileID: 0}
   meshCollider: {fileID: 384397101}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &392205513
@@ -13378,6 +13470,7 @@ MonoBehaviour:
   meshFilter: {fileID: 392205517}
   mesh: {fileID: 0}
   meshCollider: {fileID: 392205515}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &394141051
@@ -13509,6 +13602,7 @@ MonoBehaviour:
   meshFilter: {fileID: 394141055}
   mesh: {fileID: 0}
   meshCollider: {fileID: 394141053}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &395133368
@@ -13640,6 +13734,7 @@ MonoBehaviour:
   meshFilter: {fileID: 395133372}
   mesh: {fileID: 0}
   meshCollider: {fileID: 395133370}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &395239246
@@ -13949,6 +14044,7 @@ MonoBehaviour:
   meshFilter: {fileID: 396394507}
   mesh: {fileID: 0}
   meshCollider: {fileID: 396394505}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &397858605
@@ -14614,6 +14710,7 @@ MonoBehaviour:
   meshFilter: {fileID: 421933999}
   mesh: {fileID: 0}
   meshCollider: {fileID: 421933997}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &429931911
@@ -14745,6 +14842,7 @@ MonoBehaviour:
   meshFilter: {fileID: 429931915}
   mesh: {fileID: 0}
   meshCollider: {fileID: 429931913}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &432733379
@@ -14876,6 +14974,7 @@ MonoBehaviour:
   meshFilter: {fileID: 432733383}
   mesh: {fileID: 0}
   meshCollider: {fileID: 432733381}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &433925806
@@ -15178,11 +15277,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e55df7c589bc5dc4a95df630c28d767f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VoxelWorld
-  ChunkSize: {x: 8, y: 32, z: 8}
-  WorldSize: {x: 16, y: 1, z: 16}
+  ChunkSize: {x: 16, y: 64, z: 16}
+  WorldSize: {x: 64, y: 1, z: 64}
   InitialChunks:
-    x: 16
-    y: 16
+    x: 64
+    y: 64
   InitialLoadedChunks:
     x: 2
     y: 2
@@ -15327,6 +15426,7 @@ MonoBehaviour:
   meshFilter: {fileID: 434252724}
   mesh: {fileID: 0}
   meshCollider: {fileID: 434252722}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &437741879
@@ -15458,6 +15558,7 @@ MonoBehaviour:
   meshFilter: {fileID: 437741883}
   mesh: {fileID: 0}
   meshCollider: {fileID: 437741881}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &441053682
@@ -15589,6 +15690,7 @@ MonoBehaviour:
   meshFilter: {fileID: 441053686}
   mesh: {fileID: 0}
   meshCollider: {fileID: 441053684}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &442361987
@@ -16151,6 +16253,7 @@ MonoBehaviour:
   meshFilter: {fileID: 452208905}
   mesh: {fileID: 0}
   meshCollider: {fileID: 452208903}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &454972772
@@ -16536,6 +16639,7 @@ MonoBehaviour:
   meshFilter: {fileID: 464917776}
   mesh: {fileID: 0}
   meshCollider: {fileID: 464917774}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &468900421
@@ -17023,6 +17127,7 @@ MonoBehaviour:
   meshFilter: {fileID: 473764306}
   mesh: {fileID: 0}
   meshCollider: {fileID: 473764304}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &475138978
@@ -17332,6 +17437,7 @@ MonoBehaviour:
   meshFilter: {fileID: 480746157}
   mesh: {fileID: 0}
   meshCollider: {fileID: 480746155}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &481212620
@@ -17463,6 +17569,7 @@ MonoBehaviour:
   meshFilter: {fileID: 481212624}
   mesh: {fileID: 0}
   meshCollider: {fileID: 481212622}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &488903356
@@ -17594,6 +17701,7 @@ MonoBehaviour:
   meshFilter: {fileID: 488903360}
   mesh: {fileID: 0}
   meshCollider: {fileID: 488903358}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &492851374
@@ -17903,6 +18011,7 @@ MonoBehaviour:
   meshFilter: {fileID: 497974724}
   mesh: {fileID: 0}
   meshCollider: {fileID: 497974722}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &502925640
@@ -18212,6 +18321,7 @@ MonoBehaviour:
   meshFilter: {fileID: 513645662}
   mesh: {fileID: 0}
   meshCollider: {fileID: 513645660}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &514762776
@@ -18521,6 +18631,7 @@ MonoBehaviour:
   meshFilter: {fileID: 522450798}
   mesh: {fileID: 0}
   meshCollider: {fileID: 522450796}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &541057091
@@ -19008,6 +19119,7 @@ MonoBehaviour:
   meshFilter: {fileID: 552614208}
   mesh: {fileID: 0}
   meshCollider: {fileID: 552614206}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &559613414
@@ -19139,6 +19251,7 @@ MonoBehaviour:
   meshFilter: {fileID: 559613418}
   mesh: {fileID: 0}
   meshCollider: {fileID: 559613416}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &570673012
@@ -19270,6 +19383,7 @@ MonoBehaviour:
   meshFilter: {fileID: 570673016}
   mesh: {fileID: 0}
   meshCollider: {fileID: 570673014}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &572374784
@@ -19757,6 +19871,7 @@ MonoBehaviour:
   meshFilter: {fileID: 577431121}
   mesh: {fileID: 0}
   meshCollider: {fileID: 577431119}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &578039423
@@ -19888,6 +20003,7 @@ MonoBehaviour:
   meshFilter: {fileID: 578039427}
   mesh: {fileID: 0}
   meshCollider: {fileID: 578039425}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &581314662
@@ -20019,6 +20135,7 @@ MonoBehaviour:
   meshFilter: {fileID: 581314666}
   mesh: {fileID: 0}
   meshCollider: {fileID: 581314664}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1001 &584695758
@@ -20047,15 +20164,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.1
+      value: 19.8
       objectReference: {fileID: 0}
     - target: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 8.9
+      value: 28.45
       objectReference: {fileID: 0}
     - target: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.8
+      value: 16.34
       objectReference: {fileID: 0}
     - target: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_LocalRotation.w
@@ -20160,6 +20277,10 @@ PrefabInstance:
     - target: {fileID: 6843547710664959715, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: field of view
       value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 6843547710664959715, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      propertyPath: near clip plane
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6843547710664959715, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_CullingMask.m_Bits
@@ -20590,6 +20711,7 @@ MonoBehaviour:
   meshFilter: {fileID: 594749183}
   mesh: {fileID: 0}
   meshCollider: {fileID: 594749181}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &602305425
@@ -20721,6 +20843,7 @@ MonoBehaviour:
   meshFilter: {fileID: 602305429}
   mesh: {fileID: 0}
   meshCollider: {fileID: 602305427}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &605125445
@@ -21208,6 +21331,7 @@ MonoBehaviour:
   meshFilter: {fileID: 613158521}
   mesh: {fileID: 0}
   meshCollider: {fileID: 613158519}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &613896304
@@ -21339,6 +21463,7 @@ MonoBehaviour:
   meshFilter: {fileID: 613896308}
   mesh: {fileID: 0}
   meshCollider: {fileID: 613896306}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &614575535
@@ -21826,6 +21951,7 @@ MonoBehaviour:
   meshFilter: {fileID: 619272914}
   mesh: {fileID: 0}
   meshCollider: {fileID: 619272912}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &619610830
@@ -23025,6 +23151,7 @@ MonoBehaviour:
   meshFilter: {fileID: 664716644}
   mesh: {fileID: 0}
   meshCollider: {fileID: 664716642}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &665155730
@@ -23156,6 +23283,7 @@ MonoBehaviour:
   meshFilter: {fileID: 665155734}
   mesh: {fileID: 0}
   meshCollider: {fileID: 665155732}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &671139879
@@ -23465,6 +23593,7 @@ MonoBehaviour:
   meshFilter: {fileID: 676712180}
   mesh: {fileID: 0}
   meshCollider: {fileID: 676712178}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &680159393
@@ -23596,6 +23725,7 @@ MonoBehaviour:
   meshFilter: {fileID: 680159397}
   mesh: {fileID: 0}
   meshCollider: {fileID: 680159395}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &684075682
@@ -23727,6 +23857,7 @@ MonoBehaviour:
   meshFilter: {fileID: 684075686}
   mesh: {fileID: 0}
   meshCollider: {fileID: 684075684}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &692109899
@@ -24036,6 +24167,7 @@ MonoBehaviour:
   meshFilter: {fileID: 698091771}
   mesh: {fileID: 0}
   meshCollider: {fileID: 698091769}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &702346453
@@ -24167,6 +24299,7 @@ MonoBehaviour:
   meshFilter: {fileID: 702346457}
   mesh: {fileID: 0}
   meshCollider: {fileID: 702346455}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &705040310
@@ -24410,6 +24543,7 @@ MonoBehaviour:
   meshFilter: {fileID: 707695167}
   mesh: {fileID: 176907144}
   meshCollider: {fileID: 707695165}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &708767233
@@ -24616,6 +24750,7 @@ MonoBehaviour:
   meshFilter: {fileID: 709693219}
   mesh: {fileID: 0}
   meshCollider: {fileID: 709693217}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &711089144
@@ -25459,6 +25594,7 @@ MonoBehaviour:
   meshFilter: {fileID: 718755115}
   mesh: {fileID: 0}
   meshCollider: {fileID: 718755113}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &718994681
@@ -25946,6 +26082,7 @@ MonoBehaviour:
   meshFilter: {fileID: 725920775}
   mesh: {fileID: 0}
   meshCollider: {fileID: 725920773}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &733946855
@@ -26255,6 +26392,7 @@ MonoBehaviour:
   meshFilter: {fileID: 734339905}
   mesh: {fileID: 0}
   meshCollider: {fileID: 734339903}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &735061482
@@ -26564,6 +26702,7 @@ MonoBehaviour:
   meshFilter: {fileID: 739189764}
   mesh: {fileID: 0}
   meshCollider: {fileID: 739189762}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &751108510
@@ -26695,6 +26834,7 @@ MonoBehaviour:
   meshFilter: {fileID: 751108514}
   mesh: {fileID: 0}
   meshCollider: {fileID: 751108512}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!4 &751858290 stripped
@@ -27009,6 +27149,7 @@ MonoBehaviour:
   meshFilter: {fileID: 752433327}
   mesh: {fileID: 0}
   meshCollider: {fileID: 752433325}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &752786191
@@ -27140,6 +27281,7 @@ MonoBehaviour:
   meshFilter: {fileID: 752786195}
   mesh: {fileID: 0}
   meshCollider: {fileID: 752786193}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &759614179
@@ -27805,6 +27947,7 @@ MonoBehaviour:
   meshFilter: {fileID: 777370342}
   mesh: {fileID: 0}
   meshCollider: {fileID: 777370340}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &777911506
@@ -28190,6 +28333,7 @@ MonoBehaviour:
   meshFilter: {fileID: 782434077}
   mesh: {fileID: 0}
   meshCollider: {fileID: 782434075}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &782526268
@@ -28321,6 +28465,7 @@ MonoBehaviour:
   meshFilter: {fileID: 782526272}
   mesh: {fileID: 0}
   meshCollider: {fileID: 782526270}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &783874198
@@ -28452,6 +28597,7 @@ MonoBehaviour:
   meshFilter: {fileID: 783874202}
   mesh: {fileID: 0}
   meshCollider: {fileID: 783874200}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &788491080
@@ -28583,6 +28729,7 @@ MonoBehaviour:
   meshFilter: {fileID: 788491084}
   mesh: {fileID: 0}
   meshCollider: {fileID: 788491082}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &789311109
@@ -28892,6 +29039,7 @@ MonoBehaviour:
   meshFilter: {fileID: 793066846}
   mesh: {fileID: 0}
   meshCollider: {fileID: 793066844}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &793891970
@@ -29201,6 +29349,7 @@ MonoBehaviour:
   meshFilter: {fileID: 795172297}
   mesh: {fileID: 0}
   meshCollider: {fileID: 795172295}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &802705922
@@ -29332,6 +29481,7 @@ MonoBehaviour:
   meshFilter: {fileID: 802705926}
   mesh: {fileID: 0}
   meshCollider: {fileID: 802705924}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &803556922
@@ -29463,6 +29613,7 @@ MonoBehaviour:
   meshFilter: {fileID: 803556926}
   mesh: {fileID: 0}
   meshCollider: {fileID: 803556924}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &807756841
@@ -30128,6 +30279,7 @@ MonoBehaviour:
   meshFilter: {fileID: 829866528}
   mesh: {fileID: 0}
   meshCollider: {fileID: 829866526}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &831862507
@@ -30529,6 +30681,7 @@ MonoBehaviour:
   meshFilter: {fileID: 846675627}
   mesh: {fileID: 0}
   meshCollider: {fileID: 846675625}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &848555882
@@ -30660,6 +30813,7 @@ MonoBehaviour:
   meshFilter: {fileID: 848555886}
   mesh: {fileID: 0}
   meshCollider: {fileID: 848555884}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &852375503
@@ -31147,6 +31301,7 @@ MonoBehaviour:
   meshFilter: {fileID: 861939921}
   mesh: {fileID: 0}
   meshCollider: {fileID: 861939919}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &871158458
@@ -31357,6 +31512,7 @@ MonoBehaviour:
   meshFilter: {fileID: 872036860}
   mesh: {fileID: 0}
   meshCollider: {fileID: 872036858}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &874883524
@@ -31844,6 +32000,7 @@ MonoBehaviour:
   meshFilter: {fileID: 887341660}
   mesh: {fileID: 0}
   meshCollider: {fileID: 887341658}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &888262618
@@ -32153,6 +32310,7 @@ MonoBehaviour:
   meshFilter: {fileID: 911676471}
   mesh: {fileID: 0}
   meshCollider: {fileID: 911676469}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &917811114
@@ -32284,6 +32442,7 @@ MonoBehaviour:
   meshFilter: {fileID: 917811118}
   mesh: {fileID: 0}
   meshCollider: {fileID: 917811116}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &922571610
@@ -32415,6 +32574,7 @@ MonoBehaviour:
   meshFilter: {fileID: 922571614}
   mesh: {fileID: 0}
   meshCollider: {fileID: 922571612}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &924279767
@@ -32724,6 +32884,7 @@ MonoBehaviour:
   meshFilter: {fileID: 924814895}
   mesh: {fileID: 0}
   meshCollider: {fileID: 924814893}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &928647606
@@ -33236,6 +33397,7 @@ MonoBehaviour:
   meshFilter: {fileID: 930273966}
   mesh: {fileID: 0}
   meshCollider: {fileID: 930273964}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &931529469
@@ -33672,6 +33834,7 @@ MonoBehaviour:
   meshFilter: {fileID: 942016912}
   mesh: {fileID: 0}
   meshCollider: {fileID: 942016910}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &954368256
@@ -33803,6 +33966,7 @@ MonoBehaviour:
   meshFilter: {fileID: 954368260}
   mesh: {fileID: 0}
   meshCollider: {fileID: 954368258}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &962085927
@@ -34290,6 +34454,7 @@ MonoBehaviour:
   meshFilter: {fileID: 969737531}
   mesh: {fileID: 0}
   meshCollider: {fileID: 969737529}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &970219448
@@ -35133,6 +35298,7 @@ MonoBehaviour:
   meshFilter: {fileID: 973658966}
   mesh: {fileID: 1800304824}
   meshCollider: {fileID: 973658964}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &974455857
@@ -35264,6 +35430,7 @@ MonoBehaviour:
   meshFilter: {fileID: 974455861}
   mesh: {fileID: 0}
   meshCollider: {fileID: 974455859}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &980563211
@@ -35395,6 +35562,7 @@ MonoBehaviour:
   meshFilter: {fileID: 980563215}
   mesh: {fileID: 0}
   meshCollider: {fileID: 980563213}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &987596025
@@ -35526,6 +35694,7 @@ MonoBehaviour:
   meshFilter: {fileID: 987596029}
   mesh: {fileID: 0}
   meshCollider: {fileID: 987596027}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &990773822
@@ -35657,6 +35826,7 @@ MonoBehaviour:
   meshFilter: {fileID: 990773826}
   mesh: {fileID: 1693004478}
   meshCollider: {fileID: 990773824}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &993025101
@@ -35788,6 +35958,7 @@ MonoBehaviour:
   meshFilter: {fileID: 993025105}
   mesh: {fileID: 0}
   meshCollider: {fileID: 993025103}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &993326303
@@ -35919,6 +36090,7 @@ MonoBehaviour:
   meshFilter: {fileID: 993326307}
   mesh: {fileID: 0}
   meshCollider: {fileID: 993326305}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &993670400
@@ -36228,6 +36400,7 @@ MonoBehaviour:
   meshFilter: {fileID: 993816772}
   mesh: {fileID: 0}
   meshCollider: {fileID: 993816770}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &995173850
@@ -36359,6 +36532,7 @@ MonoBehaviour:
   meshFilter: {fileID: 995173854}
   mesh: {fileID: 0}
   meshCollider: {fileID: 995173852}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &998926882
@@ -37024,6 +37198,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1003576487}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1003576485}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1004040309
@@ -37333,6 +37508,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1004269237}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1004269235}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1006050081
@@ -37568,6 +37744,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1007871620}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1007871618}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1008885762
@@ -37953,6 +38130,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1013628560}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1013628558}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1020767171
@@ -38084,6 +38262,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1020767175}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1020767173}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1021138124
@@ -38646,6 +38825,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1027710914}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1027710912}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1031402996
@@ -39133,6 +39313,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1033883566}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1033883564}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1035734119
@@ -39620,6 +39801,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1039219226}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1039219224}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1045568263
@@ -40107,6 +40289,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1053606246}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1053606244}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1063083028
@@ -40238,6 +40421,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1063083032}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1063083030}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1063650146
@@ -40622,6 +40806,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1069449825}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1069449823}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1072321961
@@ -40931,6 +41116,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1073510125}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1073510123}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1075799895
@@ -41418,6 +41604,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1087695035}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1087695033}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1094350994
@@ -41727,6 +41914,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1098841822}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1098841820}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1100956748
@@ -42392,6 +42580,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1107706555}
   mesh: {fileID: 751876048}
   meshCollider: {fileID: 1107706553}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1107936743
@@ -43132,6 +43321,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1123644316}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1123644314}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1126146969
@@ -43975,6 +44165,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1147908166}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1147908164}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1153153431
@@ -44106,6 +44297,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1153153435}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1153153433}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1158189478
@@ -44237,6 +44429,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1158189482}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1158189480}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1165020190
@@ -45080,6 +45273,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1180221534}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1180221532}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1180301930
@@ -45211,6 +45405,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1180301934}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1180301932}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1183360017
@@ -45342,6 +45537,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1183360021}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1183360019}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1185672711
@@ -45473,6 +45669,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1185672715}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1185672713}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1186439497
@@ -45604,6 +45801,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1186439501}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1186439499}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1187285183
@@ -45735,6 +45933,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1187285187}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1187285185}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1191614535
@@ -46280,6 +46479,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1200696273}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1200696271}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1202547668
@@ -46589,6 +46789,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1203838965}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1203838963}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1211492786
@@ -46720,6 +46921,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1211492790}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1211492788}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1218008914
@@ -47919,6 +48121,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1239354640}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1239354638}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1242022987
@@ -48303,6 +48506,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1250460386}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1250460384}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1252295443
@@ -48968,6 +49172,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1269503179}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1269503177}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1270947754
@@ -49099,6 +49304,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1270947758}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1270947756}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1271259354
@@ -49408,6 +49614,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1277139826}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1277139824}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1280421323
@@ -49539,6 +49746,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1280421327}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1280421325}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1280511983
@@ -49881,6 +50089,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1282054741}
   mesh: {fileID: 1657682680}
   meshCollider: {fileID: 1282054739}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1286497854
@@ -50190,6 +50399,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1287833937}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1287833935}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1291999319
@@ -50321,6 +50531,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1291999323}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1291999321}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1292485385
@@ -50452,6 +50663,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1292485389}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1292485387}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1294783328
@@ -51117,6 +51329,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1301570234}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1301570232}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1307181274
@@ -51248,6 +51461,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1307181278}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1307181276}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1313720583
@@ -51557,6 +51771,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1319792393}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1319792391}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1322613725
@@ -51688,6 +51903,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1322613729}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1322613727}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1328737533
@@ -51819,6 +52035,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1328737537}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1328737535}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1331979571
@@ -51950,6 +52167,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1331979575}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1331979573}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1339717047
@@ -52081,6 +52299,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1339717051}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1339717049}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1351062675
@@ -52212,6 +52431,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1351062679}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1351062677}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1357090821
@@ -52953,6 +53173,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1358394144}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1358394142}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1362999462
@@ -53084,6 +53305,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1362999466}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1362999464}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1365461130
@@ -53290,6 +53512,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1369302325}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1369302323}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1369930504
@@ -54845,6 +55068,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1416661199}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1416661197}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1416719312
@@ -54976,6 +55200,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1416719316}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1416719314}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1426470519
@@ -55285,6 +55510,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1432727956}
   mesh: {fileID: 2091049691}
   meshCollider: {fileID: 1432727954}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1440299192
@@ -55772,6 +55998,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1442189115}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1442189113}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1442477647
@@ -56081,6 +56308,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1445170685}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1445170683}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1448283803
@@ -56212,6 +56440,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1448283807}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1448283805}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1448589654
@@ -56343,6 +56572,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1448589658}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1448589656}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1448805879
@@ -57299,6 +57529,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1480517343}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1480517341}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1480959368
@@ -57430,6 +57661,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1480959372}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1480959370}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1484314499
@@ -57561,6 +57793,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1484314503}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1484314501}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1485684618
@@ -58048,6 +58281,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1496974160}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1496974158}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1503442884
@@ -58179,6 +58413,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1503442888}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1503442886}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1509386349
@@ -58310,6 +58545,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1509386353}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1509386351}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1509976788
@@ -58441,6 +58677,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1509976792}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1509976790}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!114 &1515763913 stripped
@@ -58781,6 +59018,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1555865181}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1555865179}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1558707549
@@ -58912,6 +59150,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1558707553}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1558707551}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1560033433
@@ -59399,6 +59638,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1579156336}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1579156334}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1582452318
@@ -59530,6 +59770,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1582452322}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1582452320}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1587402850
@@ -60093,6 +60334,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1598455168}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1598455166}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1600737805
@@ -60224,6 +60466,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1600737809}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1600737807}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1603830360
@@ -60533,6 +60776,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1607904918}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1607904916}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1609624240
@@ -60664,6 +60908,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1609624244}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1609624242}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1618171224
@@ -60795,6 +61040,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1618171228}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1618171226}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1618534389
@@ -61104,6 +61350,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1621434622}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1621434620}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1623307321
@@ -61591,6 +61838,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1634027402}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1634027400}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1634856745
@@ -62078,6 +62326,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1639679267}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1639679265}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1642072214
@@ -62209,6 +62458,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1642072218}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1642072216}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1650860986
@@ -62949,6 +63199,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1658810174}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1658810172}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1659096134
@@ -63480,6 +63731,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1669887470}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1669887468}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1674192314
@@ -63789,6 +64041,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1690185133}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1690185131}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1690796014
@@ -64454,6 +64707,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1699698325}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1699698323}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1700506263
@@ -64585,6 +64839,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1700506267}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1700506265}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1700938576
@@ -65784,6 +66039,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1724642770}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1724642768}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1731549245
@@ -67339,6 +67595,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1757544283}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1757544281}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1759488313
@@ -67470,6 +67727,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1759488317}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1759488315}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1762361082
@@ -67601,6 +67859,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1762361086}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1762361084}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1763829520
@@ -67959,6 +68218,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1773606066}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1773606064}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1782098921
@@ -68090,6 +68350,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1782098925}
   mesh: {fileID: 777911506}
   meshCollider: {fileID: 1782098923}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1782521256
@@ -68221,6 +68482,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1782521260}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1782521258}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1783037379
@@ -68352,6 +68614,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1783037383}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1783037381}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1787218622
@@ -68839,6 +69102,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1794034036}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1794034034}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1799779052
@@ -68970,6 +69234,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1799779056}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1799779054}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1799967988
@@ -69279,6 +69544,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1800095435}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1800095433}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1800304824
@@ -69588,6 +69854,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1801725729}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1801725727}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1801909370
@@ -69897,6 +70164,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1804582920}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1804582918}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1812453782
@@ -70028,6 +70296,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1812453786}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1812453784}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1815507338
@@ -70159,6 +70428,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1815507342}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1815507340}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1817091271
@@ -70544,6 +70814,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1824672718}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1824672716}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1838266391
@@ -71110,6 +71381,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1850089344}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1850089342}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1857011659
@@ -71419,6 +71691,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1862488378}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1862488376}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1868914801
@@ -71550,6 +71823,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1868914805}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1868914803}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1871081637
@@ -72215,6 +72489,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1887889265}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1887889263}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1888877218
@@ -73058,6 +73333,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1920166195}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1920166193}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1921157503
@@ -73367,6 +73643,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1924533108}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1924533106}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1924890501
@@ -73498,6 +73775,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1924890505}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1924890503}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1928348428
@@ -73629,6 +73907,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1928348432}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1928348430}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1931903583
@@ -74116,6 +74395,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1945023209}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1945023207}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1946276544
@@ -74425,6 +74705,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1949008760}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1949008758}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1949035191
@@ -74556,6 +74837,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1949035195}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1949035193}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1950740235
@@ -74687,6 +74969,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1950740239}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1950740237}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1958626282
@@ -74818,6 +75101,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1958626286}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1958626284}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1959034484
@@ -74949,6 +75233,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1959034488}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1959034486}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1960106906
@@ -75436,6 +75721,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1965093468}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1965093466}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1966413437
@@ -75567,6 +75853,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1966413441}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1966413439}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1972345619
@@ -75698,6 +75985,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1972345623}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1972345621}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &1977661405
@@ -75829,6 +76117,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1977661409}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1977661407}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1978168979
@@ -76850,6 +77139,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1997555786}
   mesh: {fileID: 0}
   meshCollider: {fileID: 1997555784}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &1998610055
@@ -77159,6 +77449,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2000206447}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2000206445}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &2000397617
@@ -77646,6 +77937,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2001340651}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2001340649}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &2008430838
@@ -77777,6 +78069,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2008430842}
   mesh: {fileID: 629558381}
   meshCollider: {fileID: 2008430840}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &2009424042
@@ -78264,6 +78557,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2021299537}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2021299535}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &2033558321
@@ -78395,6 +78689,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2033558325}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2033558323}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &2044195432
@@ -78704,6 +78999,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2046650337}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2046650335}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &2047355382
@@ -78835,6 +79131,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2047355386}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2047355384}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &2047942892
@@ -78966,6 +79263,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2047942896}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2047942894}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &2051801455
@@ -79097,6 +79395,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2051801459}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2051801457}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &2054311385
@@ -79228,6 +79527,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2054311389}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2054311387}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &2060239650
@@ -79893,6 +80193,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2071985117}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2071985115}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1 &2086167540
@@ -80024,6 +80325,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2086167544}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2086167542}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &2091049691
@@ -80867,6 +81169,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2101997754}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2101997752}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &2104203617
@@ -81354,6 +81657,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2110437734}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2110437732}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!1001 &2111434826
@@ -81551,6 +81855,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2113586695}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2113586693}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &2113889543
@@ -81860,6 +82165,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2120358660}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2120358658}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &2122305416
@@ -82169,6 +82475,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2122912592}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2122912590}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &2126539344
@@ -82478,6 +82785,7 @@ MonoBehaviour:
   meshFilter: {fileID: 2131614760}
   mesh: {fileID: 0}
   meshCollider: {fileID: 2131614758}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
 --- !u!43 &2134842152
@@ -83026,3 +83334,4 @@ SceneRoots:
   - {fileID: 2111434826}
   - {fileID: 584695758}
   - {fileID: 1448805881}
+  - {fileID: 380934262}

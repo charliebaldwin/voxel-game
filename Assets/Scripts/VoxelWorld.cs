@@ -165,8 +165,8 @@ public partial class VoxelWorld : MonoBehaviour
             }
             
         }
-        else
-            Debug.Log("chunk outside bounds");
+        //else
+        //    Debug.Log("chunk outside bounds");
     }
 
     public void UnloadChunk(int2 coord)
@@ -175,8 +175,27 @@ public partial class VoxelWorld : MonoBehaviour
             loadedChunks.Remove(Chunks[coord.x, coord.y].UnloadChunk());
         } else
         {
-            Debug.Log("chunk outside bounds");
+           // Debug.Log("chunk outside bounds");
         }    
+    }
+
+    public void UnloadDistantChunks(int2 centerCoord, int dist)
+    {
+        List<VoxelChunk> chunksToUnload = new List<VoxelChunk>();
+        foreach (VoxelChunk c in loadedChunks)
+        {
+            Vector2 center = new Vector2(centerCoord.x, centerCoord.y);
+            Vector2 chunkPos = new Vector2(c.ChunkCoord.x, c.ChunkCoord.y);
+            if (Vector2.Distance(center, chunkPos) > dist)
+            {
+                chunksToUnload.Add(c);
+            }
+        }
+        foreach(VoxelChunk c in chunksToUnload)
+        {
+            UnloadChunk(c.ChunkCoord);
+        }
+        chunksToUnload.Clear();
     }
 
     public int2 debugChunkToUnload = new int2(0,0);

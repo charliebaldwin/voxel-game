@@ -81,6 +81,10 @@ public static class VoxelHelper
     {
         return VoxelWorld.Instance;
     }
+    public static VFXManager VFX()
+    {
+        return VFXManager.Instance;
+    }
 
     public static bool IsPosInGridBounds(Vector3Int pos, Vector3Int size)
     {
