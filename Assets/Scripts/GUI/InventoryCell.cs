@@ -7,7 +7,7 @@ public class InventoryCell : MonoBehaviour
     [SerializeField] private InventoryManager inventory;
     public void ClickCell()
     {
-        //Debug.Log($"clicked {gameObject.name}");
+        Debug.Log($"clicked {gameObject.name}");
         if (tile != null)
         { 
             if (inventory.PickupTile(this, tile))

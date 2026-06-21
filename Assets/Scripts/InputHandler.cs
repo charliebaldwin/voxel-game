@@ -10,22 +10,62 @@ public enum InputModes
 public class InputHandler : MonoBehaviour
 {
     public InputModes CurrentMode;
+    public PlayerInput Input;
 
     public PlayerController playerController;
     public PlayerView playerView;
     public InventoryManager inventory;
     public RadialMenu radialMenu;
 
-    public void OnMove(InputAction.CallbackContext context)
+    public void SetModeWorld(InputAction.CallbackContext context)
     {
-        switch (CurrentMode)
+        if (context.started)
         {
-            case InputModes.WORLD:
-                playerController.Move(context.ReadValue<Vector2>());
-                break;
-
+            CurrentMode = InputModes.WORLD;
+            Input.SwitchCurrentActionMap("World");
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+    }
+    public void SetModeInventory(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            CurrentMode = InputModes.INVENTORY;
+            Input.SwitchCurrentActionMap("Inventory");
+            Cursor.lockState= CursorLockMode.None;
+        }
+    }
+    public void SetModeRadial(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            CurrentMode = InputModes.RADIAL_MENU;
+            Input.SwitchCurrentActionMap("Radial");
+        }
+        else if (context.canceled)
+        {
+            CurrentMode = InputModes.WORLD;
+            Input.SwitchCurrentActionMap("World");
         }
     }
 
+    public void OnRadialKey(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            CurrentMode = InputModes.RADIAL_MENU;
+            Input.SwitchCurrentActionMap("Radial");
+        }
+        else if (context.canceled)
+        {
+            CurrentMode = InputModes.WORLD;
+            Input.SwitchCurrentActionMap("World");
+        }
+    }
+
+    public void Test()
+    {
+        Debug.Log("TEST!!!!");
+    }
 }
 

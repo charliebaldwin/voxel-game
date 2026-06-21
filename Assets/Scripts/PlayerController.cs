@@ -69,9 +69,9 @@ public class PlayerController : MonoBehaviour
         currentMoveSpeed = walkSpeed;
     }
 
-    public void Move(Vector2 inputVector)
+    public void OnMove(InputAction.CallbackContext context)
     {
-        moveInput = inputVector;
+        moveInput = context.ReadValue<Vector2>();
         handAnimator.SetBool("Walking", moveInput.SqrMagnitude() > 0f);
         //Debug.Log($"movement: {moveInput}");
     }
