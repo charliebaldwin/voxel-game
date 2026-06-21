@@ -302,6 +302,8 @@ MonoBehaviour:
   playerCam: {fileID: 6843547710664959715}
   cameraPivot: {fileID: 6122245305625610504}
   handPivot: {fileID: 3153916117657818466}
+  inventory: {fileID: 0}
+  fpInput: {fileID: 0}
   walkSpeed: 3
   sprintSpeed: 6
   jumpForce: 6
@@ -456,7 +458,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3153916117657818466}
   - component: {fileID: 5169377436148619620}
-  - component: {fileID: 6277950794279834453}
   - component: {fileID: 248211493945182255}
   m_Layer: 0
   m_Name: HandPivot
@@ -500,154 +501,13 @@ MonoBehaviour:
   Steps: 300
   VoxelCursor: {fileID: 0}
   PlayerInventory: {fileID: 0}
+  PlayerInventory2: {fileID: 0}
   UICubeMat: {fileID: 2100000, guid: 18d506c3bfbfa214fac62462c4b3e01e, type: 2}
   HandAnimator: {fileID: 248211493945182255}
   ItemMeshFilter: {fileID: 0}
   ItemMeshRenderer: {fileID: 0}
   NullMaterial: {fileID: 2100000, guid: 43608b840b0da9c419a449f6bd92966a, type: 2}
   NullMesh: {fileID: 1205814016665740986, guid: 45410d4dc870ce940a4c6efbeeea6639, type: 3}
---- !u!114 &6277950794279834453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5793974745253439579}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
-  m_Actions: {fileID: -944628639613478452, guid: ef669b18c752fa7409441bc8bc980374, type: 3}
-  m_NotificationBehavior: 2
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents:
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 1f3d9e98-c04a-4bd5-b7ce-f8b861833eb9
-    m_ActionName: 'FirstPerson/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 15ad6cd9-748f-4dab-8257-926af1cab860
-    m_ActionName: 'FirstPerson/Jump[/Keyboard/space]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5169377436148619620}
-        m_TargetAssemblyTypeName: ChunkRaycast, Assembly-CSharp
-        m_MethodName: OnPrimary
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 60ec1f16-6f71-4bee-a038-b77d66e75318
-    m_ActionName: 'FirstPerson/Primary[/Mouse/leftButton]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5169377436148619620}
-        m_TargetAssemblyTypeName: ChunkRaycast, Assembly-CSharp
-        m_MethodName: OnSecondary
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 6a9a75f4-cba2-44ac-bb8d-6b952dd71417
-    m_ActionName: 'FirstPerson/Secondary[/Mouse/rightButton]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 83f45a41-f84c-4068-bb06-bca3bd79e137
-    m_ActionName: 'FirstPerson/Aim[/Mouse/delta]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 372cb29c-500b-4001-9574-f96e1454992d
-    m_ActionName: 'FirstPerson/Sprint[/Keyboard/leftShift]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5169377436148619620}
-        m_TargetAssemblyTypeName: ChunkRaycast, Assembly-CSharp
-        m_MethodName: OnNumKey
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: dad7f475-bf78-4706-bf13-f06070af0b2f
-    m_ActionName: 'FirstPerson/NumKey[/Keyboard/1,/Keyboard/2,/Keyboard/3,/Keyboard/4,/Keyboard/5,/Keyboard/6,/Keyboard/7,/Keyboard/8,/Keyboard/9,/Keyboard/0]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5169377436148619620}
-        m_TargetAssemblyTypeName: ChunkRaycast, Assembly-CSharp
-        m_MethodName: OnNumKey
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 8fb56065-c2cf-4584-8dbb-6c1831d9976d
-    m_ActionName: 'FirstPerson/LockCursor[/Keyboard/r]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5169377436148619620}
-        m_TargetAssemblyTypeName: ChunkRaycast, Assembly-CSharp
-        m_MethodName: OnTertiary
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 6e475f89-0b1b-49a0-a985-19a5248378e1
-    m_ActionName: 'FirstPerson/Tertiary[/Mouse/middleButton]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5169377436148619620}
-        m_TargetAssemblyTypeName: ChunkRaycast, Assembly-CSharp
-        m_MethodName: OnScroll
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 6236e099-113d-43cb-81c8-dfdf057659ad
-    m_ActionName: 'FirstPerson/Scroll[/Mouse/scroll/down,/Mouse/scroll/up]'
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: FirstPerson
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!95 &248211493945182255
 Animator:
   serializedVersion: 7

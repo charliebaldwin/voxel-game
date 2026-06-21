@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VInspector.Libs;
+using static UnityEditor.Progress;
 using static VoxelHelper;
 public class PlayerView : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class PlayerView : MonoBehaviour
 
     public GameObject VoxelCursor;
     public Inventory PlayerInventory;
+    public InventoryManager PlayerInventory2;
     public Material UICubeMat;
     public Animator HandAnimator;
     public MeshFilter ItemMeshFilter;
@@ -35,6 +37,7 @@ public class PlayerView : MonoBehaviour
     private List<Vector3> colliderExitPoints = new List<Vector3>();
 
     private ItemType currentItemType;
+    private ItemData heldItem;
     private byte placedBlockShape = 1;
     private int placedBlockType = 1;
     private int hotbarSlot = 0;
@@ -50,7 +53,6 @@ public class PlayerView : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        SetTool(hotbarSlot);
     }
 
     private void OnDrawGizmos()
@@ -132,25 +134,30 @@ public class PlayerView : MonoBehaviour
         {
             hotbarSlot += context.ReadValue<float>().RoundToInt();
             hotbarSlot = hotbarSlot.Clamp(0, NUM_HOTBAR_SLOTS - 1);
-            //Debug.Log(hotbarSlot);
-            SetTool(hotbarSlot);
+            Debug.Log($"slot={hotbarSlot}");
+            PlayerInventory2.SelectHotbarSlot(hotbarSlot);
         }
     }
     #endregion
 
-    private void SetTool(int hotbarSlot)
+    public void UpdateEquippedItem(ItemData item)
     {
-        ItemData slotItem = PlayerInventory.SetSlot(hotbarSlot);
         HandAnimator.SetTrigger("Equip");
+        heldItem = item;
 
-        if (slotItem != null)
+
+    }
+
+    public void UpdateItemModel()
+    {
+        if (heldItem != null)
         {
-            currentItemType = slotItem.type;
-            placedBlockType = slotItem.blockID;
-            toolDamage = slotItem.toolDamage;
-            toolUseTime = slotItem.toolUseTime;
-            ItemMeshFilter.mesh = slotItem.mesh;
-            ItemMeshRenderer.material = slotItem.material;
+            currentItemType = heldItem.type;
+            placedBlockType = heldItem.blockID;
+            toolDamage = heldItem.toolDamage;
+            toolUseTime = heldItem.toolUseTime;
+            ItemMeshFilter.mesh = heldItem.mesh;
+            ItemMeshRenderer.material = heldItem.material;
         }
         else
         {
@@ -159,6 +166,12 @@ public class PlayerView : MonoBehaviour
             ItemMeshFilter.mesh = NullMesh;
             ItemMeshRenderer.material = NullMaterial;
         }
+    }
+
+    private void SetTool(int hotbarSlot)
+    {
+        ItemData slotItem = PlayerInventory2.SelectHotbarSlot(hotbarSlot);
+
     }
 
 

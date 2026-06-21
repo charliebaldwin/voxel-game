@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     public Camera playerCam;
     public Transform cameraPivot;
     public Transform handPivot;
+    public InventoryManager inventory;
+    public PlayerInput fpInput;
 
 
     [Foldout("Movement")]
@@ -67,9 +69,9 @@ public class PlayerController : MonoBehaviour
         currentMoveSpeed = walkSpeed;
     }
 
-    public void OnMove(InputAction.CallbackContext context)
+    public void Move(Vector2 inputVector)
     {
-        moveInput = context.ReadValue<Vector2>();
+        moveInput = inputVector;
         handAnimator.SetBool("Walking", moveInput.SqrMagnitude() > 0f);
         //Debug.Log($"movement: {moveInput}");
     }
@@ -104,8 +106,19 @@ public class PlayerController : MonoBehaviour
 
     public void ToggleCursorLock(InputAction.CallbackContext context)
     {
-        Cursor.lockState = 1 - Cursor.lockState;
-
+        if (context.started)
+        {
+            Cursor.lockState = 1 - Cursor.lockState;
+            if (Cursor.lockState == CursorLockMode.Locked)
+            {
+                inventory.Close();
+            }
+            else
+            {
+                inventory.Open();
+            }
+            //Debug.Log(Cursor.lockState);
+        }
     }
 
     void Update()

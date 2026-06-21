@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "name": "PlayerControls",
+    "name": "GlobalControls",
     "maps": [
         {
             "name": "FirstPerson",
