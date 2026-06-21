@@ -3,17 +3,44 @@
     "name": "GlobalControls",
     "maps": [
         {
-            "name": "FirstPerson",
+            "name": "Global",
             "id": "267fa0c2-d3e6-49cd-b272-aa54c2b2d792",
             "actions": [
                 {
-                    "name": "Move",
+                    "name": "Direction",
                     "type": "Value",
                     "id": "1f3d9e98-c04a-4bd5-b7ce-f8b861833eb9",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "MousePos",
+                    "type": "Value",
+                    "id": "83f45a41-f84c-4068-bb06-bca3bd79e137",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "MouseScroll",
+                    "type": "Value",
+                    "id": "6236e099-113d-43cb-81c8-dfdf057659ad",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Click",
+                    "type": "Button",
+                    "id": "60ec1f16-6f71-4bee-a038-b77d66e75318",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Jump",
@@ -25,43 +52,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Primary",
-                    "type": "Button",
-                    "id": "60ec1f16-6f71-4bee-a038-b77d66e75318",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Secondary",
-                    "type": "Button",
-                    "id": "6a9a75f4-cba2-44ac-bb8d-6b952dd71417",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Tertiary",
-                    "type": "Button",
-                    "id": "6e475f89-0b1b-49a0-a985-19a5248378e1",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Aim",
-                    "type": "Value",
-                    "id": "83f45a41-f84c-4068-bb06-bca3bd79e137",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "Sprint",
+                    "name": "Shift",
                     "type": "Value",
                     "id": "372cb29c-500b-4001-9574-f96e1454992d",
                     "expectedControlType": "Axis",
@@ -79,7 +70,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "LockCursor",
+                    "name": "OpenInventory",
                     "type": "Button",
                     "id": "8fb56065-c2cf-4584-8dbb-6c1831d9976d",
                     "expectedControlType": "",
@@ -88,13 +79,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Scroll",
-                    "type": "Value",
-                    "id": "6236e099-113d-43cb-81c8-dfdf057659ad",
-                    "expectedControlType": "Axis",
+                    "name": "OpenRadial",
+                    "type": "Button",
+                    "id": "abe59946-ac5d-4946-826e-1d87a3383450",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -105,7 +96,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "Direction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -116,7 +107,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "Direction",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -127,7 +118,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "Direction",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -138,7 +129,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "Direction",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -149,7 +140,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "Direction",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -160,7 +151,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "Direction",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -191,9 +182,9 @@
                     "id": "860e62bb-8912-4478-9bba-01eaab89ba9b",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "Scale",
                     "groups": "",
-                    "action": "Primary",
+                    "action": "Click",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -202,31 +193,53 @@
                     "id": "63afef1e-931c-47f5-9224-370b7c63a808",
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "Scale",
                     "groups": "",
-                    "action": "Primary",
+                    "action": "Click",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "133ce127-f5a9-42b5-bcd1-47cf714957eb",
-                    "path": "<Gamepad>/leftTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Secondary",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "52118502-b853-46db-bcd0-73654b4652a7",
+                    "id": "52bb7bfc-f6c0-47e9-9e24-5f40c07ee056",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "Scale(factor=2)",
                     "groups": "",
-                    "action": "Secondary",
+                    "action": "Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b6848876-d84c-4b10-9fce-03da6fdf6414",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "Scale(factor=2)",
+                    "groups": "",
+                    "action": "Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "47dcfd2a-9cf9-4c09-87f8-20fd7ec42cb7",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
+                    "processors": "Scale(factor=3)",
+                    "groups": "",
+                    "action": "Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ca4f6a8c-0a99-4575-a60d-e3c31acdceb5",
+                    "path": "<Gamepad>/rightStickPress",
+                    "interactions": "",
+                    "processors": "Scale(factor=3)",
+                    "groups": "",
+                    "action": "Click",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -237,7 +250,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Aim",
+                    "action": "MousePos",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -248,7 +261,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Aim",
+                    "action": "MousePos",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -259,7 +272,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Sprint",
+                    "action": "Shift",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -270,7 +283,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Sprint",
+                    "action": "Shift",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -391,18 +404,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "LockCursor",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "ff1fd43e-b887-44f7-9137-d5f6063c75f1",
-                    "path": "<Mouse>/middleButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Tertiary",
+                    "action": "OpenInventory",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -413,7 +415,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Scroll",
+                    "action": "MouseScroll",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -424,7 +426,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Scroll",
+                    "action": "MouseScroll",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -435,9 +437,48 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Scroll",
+                    "action": "MouseScroll",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "09beffdc-7637-468b-8987-dc74904af2ec",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenRadial",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "14d32ad4-f1cc-43c2-970c-618bb7c03e6c",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "7670d63d-6298-4b44-ac3a-0538d3bc2dc7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "56f13c9e-760f-4c97-9179-a5f1d48694fe",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

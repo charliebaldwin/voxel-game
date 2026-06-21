@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 
 public class InventoryManager : MonoBehaviour
 {
-    public PlayerInput input;
     public PlayerView viewController;
     public CanvasGroup canvasGroup;
     public GameObject hotbarCursor;
@@ -100,12 +99,17 @@ public class InventoryManager : MonoBehaviour
         mousePos = new Vector3(pos2D.x, pos2D.y, -5f);
         radial.SetAngle(pos2D);
     }
+    public void SetMousePos(Vector2 pos)
+    {
+        mousePos = new Vector3(pos.x, pos.y, -5f);
+
+    }
 
     public void Close()
     {
         //Debug.Log("inventory close");
         DropTileOnCell(lastCell);
-        input.enabled = false;
+       // input.enabled = false;
         canvasGroup.alpha = 0;
 
     }
@@ -113,7 +117,7 @@ public class InventoryManager : MonoBehaviour
     {
         //Debug.Log("inventory open");
         canvasGroup.alpha = 1;
-        input.enabled = true;
+        //input.enabled = true;
     }
 
     public void UpdateEquippedItem()

@@ -99,6 +99,20 @@ public class PlayerView : MonoBehaviour
             primaryDown = false;
         }
     }
+
+    public void StartPrimary ()
+    {
+        primaryDown = true;
+        if (!usingTool)
+        {
+            cr_toolUse = UseToolTimer();
+            StartCoroutine(cr_toolUse);
+        }
+    }
+    public void EndPrimary()
+    {
+        primaryDown = false;
+    }
     public void OnSecondary(InputAction.CallbackContext context)
     {
         if (context.started && Cursor.lockState == CursorLockMode.Locked && currentItemType == ItemType.Block)
@@ -111,12 +125,25 @@ public class PlayerView : MonoBehaviour
             }
         }
     }
+    public void StartSecondary()
+    {
+        if (!usingTool && currentItemType == ItemType.Block)
+        { 
+            cr_toolUse = PlaceBlockTimer();
+            StartCoroutine(cr_toolUse);
+          
+        }
+    }
     public void OnTertiary(InputAction.CallbackContext context)
     {
         if (context.started && Cursor.lockState == CursorLockMode.Locked)
         {
-            DoTertiary();
         }
+    }
+    public void StartTertiary()
+    {
+        DoTertiary();
+
     }
     public void OnNumKey(InputAction.CallbackContext context)
     {
@@ -128,6 +155,13 @@ public class PlayerView : MonoBehaviour
             UICubeMat.SetInteger("_BlockIndex", placedBlockType);
         }
     }
+    public void NumKey(int key)
+    {
+        placedBlockType = key;
+        placedBlockShape = (byte)math.clamp(placedBlockType, 1, 2);
+
+        UICubeMat.SetInteger("_BlockIndex", placedBlockType);
+    }
     public void OnScroll(InputAction.CallbackContext context)
     {
         if (context.started) 
@@ -137,6 +171,13 @@ public class PlayerView : MonoBehaviour
             Debug.Log($"slot={hotbarSlot}");
             PlayerInventory2.SelectHotbarSlot(hotbarSlot);
         }
+    }
+    public void Scroll(int delta)
+    {
+        hotbarSlot += delta;
+        hotbarSlot = hotbarSlot.Clamp(0, NUM_HOTBAR_SLOTS - 1);
+        Debug.Log($"slot={hotbarSlot}");
+        PlayerInventory2.SelectHotbarSlot(hotbarSlot);
     }
     #endregion
 

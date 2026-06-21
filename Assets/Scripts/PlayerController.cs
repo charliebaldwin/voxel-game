@@ -80,6 +80,11 @@ public class PlayerController : MonoBehaviour
         currentMoveSpeed = Mathf.Lerp(walkSpeed, sprintSpeed, context.ReadValue<float>());
         handAnimator.SetBool("Running", context.ReadValue<float>() > 0f);
     }
+    public void SetSprint(float sprintInput)
+    {
+        currentMoveSpeed = Mathf.Lerp(walkSpeed, sprintSpeed, sprintInput);
+        handAnimator.SetBool("Running", sprintInput > 0f);
+    }
     public void OnJump(InputAction.CallbackContext context)
     {
         if (charController.isGrounded)
@@ -89,19 +94,17 @@ public class PlayerController : MonoBehaviour
             velocity.y = jumpForce;
         }
     }
-
-    public void OnAim(InputAction.CallbackContext context)
+    public void Jump()
     {
-        if (Cursor.lockState == CursorLockMode.Locked)
-        {
-            Vector2 aimDelta = context.ReadValue<Vector2>();
 
+    }
 
-            cameraEuler.x -= aimDelta.y * lookSens;
-            cameraEuler.x = Mathf.Clamp(cameraEuler.x, -90f, 90f);
-            currentCameraLean = Mathf.Lerp(currentCameraLean, -1f * cameraLeanAmount * aimDelta.x, 6f * Time.deltaTime * cameraLeanSpeed);
-            transform.Rotate(transform.up, aimDelta.x * lookSens);
-        }
+    public void Aim(Vector2 inputVector)
+    {
+        cameraEuler.x -= inputVector.y * lookSens;
+        cameraEuler.x = Mathf.Clamp(cameraEuler.x, -90f, 90f);
+        currentCameraLean = Mathf.Lerp(currentCameraLean, -1f * cameraLeanAmount * inputVector.x, 6f * Time.deltaTime * cameraLeanSpeed);
+        transform.Rotate(transform.up, inputVector.x * lookSens);
     }
 
     public void ToggleCursorLock(InputAction.CallbackContext context)
