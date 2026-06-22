@@ -44,6 +44,7 @@ public class PlayerView : MonoBehaviour
     private float toolUseTime = DEFAULT_TOOL_USE_TIME;
     private byte toolDamage = DEFAULT_TOOL_DAMAGE;
     private bool primaryDown = false;
+    private bool secondaryDown = false;
     public static bool usingTool = false;
 
     private IEnumerator cr_toolUse = null;
@@ -103,12 +104,16 @@ public class PlayerView : MonoBehaviour
     {
         if (context.started && Cursor.lockState == CursorLockMode.Locked && currentItemType == ItemType.Block)
         {
+            secondaryDown = true;
             if (!usingTool)
             {
                 cr_toolUse = PlaceBlockTimer();
 
                 StartCoroutine(cr_toolUse);
             }
+        } else if (context.canceled)
+        {
+            secondaryDown = false;
         }
     }
     public void OnTertiary(InputAction.CallbackContext context)
@@ -210,9 +215,9 @@ public class PlayerView : MonoBehaviour
         HandAnimator.SetTrigger("Hit");
         HandAnimator.SetFloat("ToolSpeed", 1f / duration);
         yield return new WaitForSeconds(duration);
-        if (primaryDown)
+        if (secondaryDown)
         {
-            cr_toolUse = UseToolTimer();
+            cr_toolUse = PlaceBlockTimer();
             StartCoroutine(cr_toolUse);
         }
         else
@@ -249,7 +254,8 @@ public class PlayerView : MonoBehaviour
         {
             if (currentItemType == ItemType.Block)
             {
-                byte o = VoxelHelper.NormalToOrientation(lastHitInfo.hitNormal);
+                //byte o = VoxelHelper.NormalToOrientation(lastHitInfo.hitNormal);
+                byte o = VoxelHelper.NormalToOrientation(Vector3Int.up);
                 World().AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new VoxelData(placedBlockType, 0, o, placedBlockShape));
             }
         }

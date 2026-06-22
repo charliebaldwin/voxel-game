@@ -524,7 +524,7 @@
                 {
                     "name": "",
                     "id": "ef6b5e16-f450-4dbf-af92-5c71ffd3f9ac",
-                    "path": "<Mouse>/delta",
+                    "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

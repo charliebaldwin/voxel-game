@@ -469,7 +469,7 @@ public class VoxelChunk : MonoBehaviour
                     if (upVoxel.ID == Blocks.AIR)
                     {
                         // grow into dirt with random chance
-                        if (BlockRandomEvent(new int3(x, y, z), 0.01f))
+                        if (BlockRandomEvent(new int3(x, y, z), 0.04f))
                         {
                             World().SetVoxel(LocalToWorld(pos, ChunkCoord, Size3D), new VoxelData(Blocks.GRASS, voxel.Damage, voxel.Orientation));
 
@@ -483,7 +483,7 @@ public class VoxelChunk : MonoBehaviour
 
         if (Voxels[x, y, z].Damage > 0 && !PlayerView.usingTool)
         {
-            if (BlockRandomEvent(new int3(x, y, z), 0.003f))
+            if (BlockRandomEvent(new int3(x, y, z), 0.5f))
             {
                 voxel.Damage -= 1;
                 //SetBlock(LocalToWorld(new Vector3Int(x, y, z), ChunkCoord, Size3D), voxel);

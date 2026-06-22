@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: null
   type: 0
-  toolDamage: 0
-  toolUseTime: 1
+  toolDamage: 1
+  toolUseTime: 0.4
   blockID: -1
   sprite: {fileID: 0}
   mesh: {fileID: 1205814016665740986, guid: 45410d4dc870ce940a4c6efbeeea6639, type: 3}
   material: {fileID: 2100000, guid: 43608b840b0da9c419a449f6bd92966a, type: 2}
+  iconMaterial: {fileID: 0}

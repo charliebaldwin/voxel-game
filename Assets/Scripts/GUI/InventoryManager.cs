@@ -46,7 +46,8 @@ public class InventoryManager : MonoBehaviour
             {
                 ItemTile newItem = Instantiate(itemTilePrefab).GetComponent<ItemTile>();
                 newItem.ItemData = InitialItems[i];
-                newItem.transform.parent = InventoryCells[i].transform;
+                newItem.transform.SetParent(InventoryCells[i].transform, false);
+                //newItem.transform.parent = InventoryCells[i].transform;
                 newItem.transform.localPosition = Vector3.zero;
                 InventoryCells[i].FindTile();
                 newItem.InitializeTile();
@@ -112,7 +113,7 @@ public class InventoryManager : MonoBehaviour
             return tileToDrop;
         } else
         {
-            tileToDrop.AddCount(mouseTile.ItemCount);
+            tileToDrop.AddCount(cellTile.ItemCount);
             mouseTile = null;
             cell.ClearCell();
             return tileToDrop;
@@ -124,19 +125,15 @@ public class InventoryManager : MonoBehaviour
         Vector2 pos2D = context.ReadValue<Vector2>();
         //Debug.Log(pos2D);
         mousePos = new Vector3(pos2D.x, pos2D.y, -5f);
-<<<<<<< Updated upstream
-        radial.SetAngle(pos2D);
-=======
 
-       // radial.SetAngle(pos2D);
->>>>>>> Stashed changes
+
     }
 
     public void Close()
     {
         //Debug.Log("inventory close");
-        DropTileOnCell(lastCell);
-        input.enabled = false;
+        if (mouseTile != null)
+            lastCell.ClickCell();
         canvasGroup.alpha = 0;
 
     }
@@ -144,7 +141,6 @@ public class InventoryManager : MonoBehaviour
     {
         //Debug.Log("inventory open");
         canvasGroup.alpha = 1;
-        input.enabled = true;
     }
 
     public void UpdateEquippedItem()

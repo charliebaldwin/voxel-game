@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Stone Bricks
   type: 1
   toolDamage: 0
-  toolUseTime: 0.25
+  toolUseTime: 0.3
   blockID: 7
   sprite: {fileID: 21300000, guid: da3cd44d98804cd46a4dd9bd0476cfea, type: 3}
   mesh: {fileID: -8678823145569952518, guid: 649fbd93bd831a246a5d5c6ee74dc2a0, type: 3}
