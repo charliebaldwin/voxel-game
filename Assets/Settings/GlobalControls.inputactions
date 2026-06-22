@@ -3,7 +3,7 @@
     "name": "GlobalControls",
     "maps": [
         {
-            "name": "FirstPerson",
+            "name": "World",
             "id": "267fa0c2-d3e6-49cd-b272-aa54c2b2d792",
             "actions": [
                 {
@@ -79,7 +79,16 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "LockCursor",
+                    "name": "Scroll",
+                    "type": "Value",
+                    "id": "6236e099-113d-43cb-81c8-dfdf057659ad",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "InventoryKey",
                     "type": "Button",
                     "id": "8fb56065-c2cf-4584-8dbb-6c1831d9976d",
                     "expectedControlType": "",
@@ -88,13 +97,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Scroll",
-                    "type": "Value",
-                    "id": "6236e099-113d-43cb-81c8-dfdf057659ad",
-                    "expectedControlType": "Axis",
+                    "name": "RadialKey",
+                    "type": "Button",
+                    "id": "7c3ee390-f04a-4415-ba0c-c36da4190d05",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -391,7 +400,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "LockCursor",
+                    "action": "InventoryKey",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -438,8 +447,6 @@
                     "action": "Scroll",
                     "isComposite": false,
                     "isPartOfComposite": true
-<<<<<<< Updated upstream
-=======
                 },
                 {
                     "name": "",
@@ -517,7 +524,18 @@
                 {
                     "name": "",
                     "id": "ef6b5e16-f450-4dbf-af92-5c71ffd3f9ac",
-                    "path": "<Mouse>/{Point}",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MousePos",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "148482f9-2ac0-4405-9c27-6b93b58c9d98",
+                    "path": "<Gamepad>/rightStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -781,7 +799,6 @@
                     "action": "MousePos",
                     "isComposite": false,
                     "isPartOfComposite": false
->>>>>>> Stashed changes
                 }
             ]
         }

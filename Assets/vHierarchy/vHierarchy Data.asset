@@ -24,6 +24,7 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-2224048871189733559-2111434826
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-1006050081-0
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-1570171159-0
+        - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-1427414653-0
         values:
         - colorIndex: 0
           iconNameOrGuid: PreMatCube
@@ -47,6 +48,10 @@ MonoBehaviour:
           isColorRecursive: 0
         - colorIndex: 0
           iconNameOrGuid: DirectionalLight Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 5
+          iconNameOrGuid: StandaloneInputModule Icon
           isIconRecursive: 0
           isColorRecursive: 0
   bookmarks: []
