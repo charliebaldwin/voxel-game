@@ -44,11 +44,15 @@ public class InventoryCell : MonoBehaviour
         Destroy(tile.gameObject);
         tile = null;
     }
-    private void Awake()
+    public void FindTile()
     {
         if (tile == null)
         {
             tile = gameObject.GetComponentInChildren<ItemTile>();
         }
+    }
+    private void Awake()
+    {
+        FindTile();
     }
 }

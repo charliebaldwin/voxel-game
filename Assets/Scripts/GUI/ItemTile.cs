@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ItemTile : MonoBehaviour
 {
@@ -7,16 +8,24 @@ public class ItemTile : MonoBehaviour
     public int ItemID = 0;
     public ItemData ItemData;
     public TextMeshProUGUI countText;
+    private Image tileImage;
 
     private void Awake()
     {
+        tileImage = GetComponent<Image>();
         //countText = GetComponent<TextMeshProUGUI>();
+    }
+
+    public void InitializeTile()
+    {
+        tileImage.sprite = ItemData.sprite;
+        SetCount(ItemCount);
     }
 
     public void SetCount(int newCount)
     {
         ItemCount = newCount;
-        countText.text = ItemCount.ToString();
+        countText.text = ItemCount == 1 ? "" : ItemCount.ToString();
     }
     public void AddCount (int count)
     {

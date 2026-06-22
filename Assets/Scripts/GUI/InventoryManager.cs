@@ -1,5 +1,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,6 +14,10 @@ public class InventoryManager : MonoBehaviour
     public ItemData equippedItem;
     public ItemData nullItem;
     public RadialMenu radial;
+    public TextMeshProUGUI itemNameText;
+    public GameObject itemTilePrefab;
+
+    public List<ItemData> InitialItems = new List<ItemData>(60);
 
     private ItemTile mouseTile;
     private InventoryCell lastCell;
@@ -20,13 +26,32 @@ public class InventoryManager : MonoBehaviour
     private int hotbarSlot;
 
     private bool hotbarDirty = false;
-    
 
+
+    public List<InventoryCell> InventoryCells;
     public List<InventoryCell> HotbarCells;
 
     private void Awake()
     {
+        InventoryCells = GetComponentsInChildren<InventoryCell>().ToList<InventoryCell>();
         equippedItem = nullItem;
+        LoadInitialItems();
+    }
+
+    private void LoadInitialItems()
+    {
+        for (int i=0; i < InitialItems.Count; i++)
+        {
+            if (InitialItems[i] != null)
+            {
+                ItemTile newItem = Instantiate(itemTilePrefab).GetComponent<ItemTile>();
+                newItem.ItemData = InitialItems[i];
+                newItem.transform.parent = InventoryCells[i].transform;
+                newItem.transform.localPosition = Vector3.zero;
+                InventoryCells[i].FindTile();
+                newItem.InitializeTile();
+            }
+        }
     }
 
     public void LateUpdate()
@@ -80,7 +105,7 @@ public class InventoryManager : MonoBehaviour
 
         ItemTile tileToDrop = mouseTile;
 
-        if (cellTile.ItemID != mouseTile.ItemID)
+        if (cellTile.ItemData.blockID != mouseTile.ItemData.blockID)
         {
             mouseTile = null;
             PickupTile(lastCell, cellTile);
@@ -97,8 +122,14 @@ public class InventoryManager : MonoBehaviour
     public void OnMousePos(InputAction.CallbackContext context)
     {
         Vector2 pos2D = context.ReadValue<Vector2>();
+        //Debug.Log(pos2D);
         mousePos = new Vector3(pos2D.x, pos2D.y, -5f);
+<<<<<<< Updated upstream
         radial.SetAngle(pos2D);
+=======
+
+       // radial.SetAngle(pos2D);
+>>>>>>> Stashed changes
     }
 
     public void Close()
@@ -121,6 +152,7 @@ public class InventoryManager : MonoBehaviour
         ItemTile tile = HotbarCells[hotbarSlot].GetTile();
 
         if (tile != null) {
+            itemNameText.text = tile.ItemData.itemName;
             Debug.Log($"equipped: {equippedItem.itemName}, new: {tile.ItemData.itemName} (from slot {hotbarSlot})");
             if (equippedItem != tile.ItemData)
             {
@@ -129,6 +161,7 @@ public class InventoryManager : MonoBehaviour
             }
         } else
         {
+            itemNameText.text = "";
             Debug.Log($"equipped: {equippedItem.itemName}, new: nullItem (from slot {hotbarSlot})"); ;
             equippedItem = nullItem;
             viewController.UpdateEquippedItem(equippedItem);
