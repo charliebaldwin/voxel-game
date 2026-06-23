@@ -22094,6 +22094,10 @@ PrefabInstance:
       propertyPath: m_Radius
       value: 0.25
       objectReference: {fileID: 0}
+    - target: {fileID: 1670060081210582922, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      propertyPath: m_StepOffset
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 2742617686343426155, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_Layer
       value: 6

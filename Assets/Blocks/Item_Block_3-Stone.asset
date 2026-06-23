@@ -14,10 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: Stone Block
   type: 1
-  toolDamage: 0
-  toolUseTime: 0.3
   blockID: 3
+  toolDamage: 1
+  toolUseTime: 0.3
   sprite: {fileID: 21300000, guid: 4dc9dc50273671848ab717149fc1b52c, type: 3}
   mesh: {fileID: -8678823145569952518, guid: 649fbd93bd831a246a5d5c6ee74dc2a0, type: 3}
   material: {fileID: 2100000, guid: 4635045485610164daad5ba8bc740bb2, type: 2}
-  iconMaterial: {fileID: 0}
