@@ -59075,7 +59075,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 31388c822ffdad14fbe50b271579056b, type: 2}
   - {fileID: 11400000, guid: e1a5c6d4f4fb81e43a1e3a42d41d5605, type: 2}
   - {fileID: 11400000, guid: 52afdc3717e3734418098d79d5e2110b, type: 2}
-  - {fileID: 11400000, guid: f8571d48d04d00a4785eb4e4c41a1eeb, type: 2}
+  - {fileID: 11400000, guid: 42f8cc27fa913214e890fefa01b8d884, type: 2}
+  - {fileID: 11400000, guid: 36ab2e44841acdd478f16d880e8bb34c, type: 2}
+  - {fileID: 11400000, guid: fee33f16469b69241abadaa06b2e803c, type: 2}
   IDOFolderPath: Items
 --- !u!4 &1386501655
 Transform:
