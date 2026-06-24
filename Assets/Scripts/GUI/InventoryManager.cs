@@ -17,7 +17,7 @@ public class InventoryManager : MonoBehaviour
     public TextMeshProUGUI itemNameText;
     public GameObject itemTilePrefab;
 
-    public List<ItemData> InitialItems = new List<ItemData>(60);
+    public List<ItemDataObject> InitialItems = new List<ItemDataObject>(60);
 
     private ItemTile mouseTile;
     private InventoryCell lastCell;
@@ -45,7 +45,7 @@ public class InventoryManager : MonoBehaviour
             if (InitialItems[i] != null)
             {
                 ItemTile newItem = Instantiate(itemTilePrefab).GetComponent<ItemTile>();
-                newItem.ItemData = InitialItems[i];
+                newItem.Item = InitialItems[i].Data;
                 newItem.transform.SetParent(InventoryCells[i].transform, false);
                 //newItem.transform.parent = InventoryCells[i].transform;
                 newItem.transform.localPosition = Vector3.zero;
@@ -106,7 +106,7 @@ public class InventoryManager : MonoBehaviour
 
         ItemTile tileToDrop = mouseTile;
 
-        if (cellTile.ItemData.blockID != mouseTile.ItemData.blockID)
+        if (cellTile.Item.ItemID != mouseTile.Item.ItemID)
         {
             mouseTile = null;
             PickupTile(lastCell, cellTile);
@@ -148,17 +148,17 @@ public class InventoryManager : MonoBehaviour
         ItemTile tile = HotbarCells[hotbarSlot].GetTile();
 
         if (tile != null) {
-            itemNameText.text = tile.ItemData.itemName;
-            Debug.Log($"equipped: {equippedItem.itemName}, new: {tile.ItemData.itemName} (from slot {hotbarSlot})");
-            if (equippedItem != tile.ItemData)
+            itemNameText.text = tile.Item.Name;
+           // Debug.Log($"equipped: {equippedItem.Name}, new: {tile.Item.Name} (from slot {hotbarSlot})");
+            if (equippedItem.Name != tile.Item.Name)
             {
-                equippedItem = tile.ItemData;
+                equippedItem = tile.Item;
                 viewController.UpdateEquippedItem(equippedItem);
             }
         } else
         {
             itemNameText.text = "";
-            Debug.Log($"equipped: {equippedItem.itemName}, new: nullItem (from slot {hotbarSlot})"); ;
+           // Debug.Log($"equipped: {equippedItem.Name}, new: nullItem (from slot {hotbarSlot})"); ;
             equippedItem = nullItem;
             viewController.UpdateEquippedItem(equippedItem);
         }
@@ -174,7 +174,7 @@ public class InventoryManager : MonoBehaviour
             hotbarDirty = true;
             return equippedItem;
         }
-        return null;
+        return nullItem;
     }
 
     // Update is called once per frame

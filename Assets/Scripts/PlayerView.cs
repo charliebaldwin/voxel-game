@@ -20,8 +20,7 @@ public class PlayerView : MonoBehaviour
     
 
     public GameObject VoxelCursor;
-    public Inventory PlayerInventory;
-    public InventoryManager PlayerInventory2;
+    public InventoryManager PlayerInventory;
     public Material UICubeMat;
     public Animator HandAnimator;
     public MeshFilter ItemMeshFilter;
@@ -140,7 +139,7 @@ public class PlayerView : MonoBehaviour
             hotbarSlot += context.ReadValue<float>().RoundToInt();
             hotbarSlot = hotbarSlot.Clamp(0, NUM_HOTBAR_SLOTS - 1);
             Debug.Log($"slot={hotbarSlot}");
-            PlayerInventory2.SelectHotbarSlot(hotbarSlot);
+            PlayerInventory.SelectHotbarSlot(hotbarSlot);
         }
     }
     #endregion
@@ -155,27 +154,36 @@ public class PlayerView : MonoBehaviour
 
     public void UpdateItemModel()
     {
-        if (heldItem != null)
+       // currentItemType = heldItem.Type;
+
+        if (heldItem.Type == ItemType.Block)
         {
-            currentItemType = heldItem.type;
-            placedBlockType = heldItem.blockID;
-            toolDamage = heldItem.toolDamage;
-            toolUseTime = heldItem.toolUseTime;
-            ItemMeshFilter.mesh = heldItem.mesh;
-            ItemMeshRenderer.material = heldItem.material;
+            currentItemType = ItemType.Block;
+            BlockData block = new BlockData(heldItem);
+            placedBlockType = (int)block.BlockID;
+        }
+        else if (heldItem.Type == ItemType.Tool) 
+        {
+            currentItemType = ItemType.Tool;
+            ToolData tool = new ToolData(heldItem);
+            toolDamage = (byte)tool.Strength;
+            toolUseTime = tool.UseTime;
+
         }
         else
         {
+            currentItemType = ItemType.Null;
             toolDamage = 1;
             toolUseTime = DEFAULT_TOOL_USE_TIME;
-            ItemMeshFilter.mesh = NullMesh;
-            ItemMeshRenderer.material = NullMaterial;
+            placedBlockType = 0;
         }
+        ItemMeshFilter.mesh = heldItem.ViewmodelMesh;
+        ItemMeshRenderer.material = heldItem.ViewmodelMat;
     }
 
     private void SetTool(int hotbarSlot)
     {
-        ItemData slotItem = PlayerInventory2.SelectHotbarSlot(hotbarSlot);
+        ItemData slotItem = PlayerInventory.SelectHotbarSlot(hotbarSlot);
 
     }
 
@@ -256,7 +264,7 @@ public class PlayerView : MonoBehaviour
             {
                 //byte o = VoxelHelper.NormalToOrientation(lastHitInfo.hitNormal);
                 byte o = VoxelHelper.NormalToOrientation(Vector3Int.up);
-                World().AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new VoxelData(placedBlockType, 0, o, placedBlockShape));
+                World().AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(placedBlockType, 0, o, placedBlockShape));
             }
         }
     }
@@ -291,7 +299,7 @@ public class PlayerView : MonoBehaviour
                     if (currentItemType == ItemType.Block)
                     {
                         byte o = VoxelHelper.NormalToOrientation(lastHitInfo.hitNormal);
-                        VoxelWorld.Instance.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new VoxelData(placedBlockType, 0, o, placedBlockShape));
+                        VoxelWorld.Instance.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(placedBlockType, 0, o, placedBlockShape));
                     }
                     //Debug.Log($"normal: {hitData.hitNormal}"); 
                     break;

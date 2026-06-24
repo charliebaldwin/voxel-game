@@ -31,7 +31,7 @@ public class VoxelChunkGPU : MonoBehaviour
     public float NoiseThreshold = 0.5f;
 
     public int[,,] voxelData = new int[1, 1, 1];
-    public VoxelData[,,] voxels = new VoxelData[1, 1, 1];
+    public Voxel[,,] voxels = new Voxel[1, 1, 1];
 
 
     private void ComputeMesh(ComputeShader compute)

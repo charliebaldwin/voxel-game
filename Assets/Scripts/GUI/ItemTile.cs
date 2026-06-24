@@ -6,7 +6,7 @@ public class ItemTile : MonoBehaviour
 {
     public int ItemCount = 1;
     public int ItemID = 0;
-    public ItemData ItemData;
+    public ItemData Item;
     public TextMeshProUGUI countText;
     private Image tileImage;
 
@@ -18,7 +18,7 @@ public class ItemTile : MonoBehaviour
 
     public void InitializeTile()
     {
-        tileImage.sprite = ItemData.sprite;
+        tileImage.sprite = Item.GUIIcon;
         SetCount(ItemCount);
     }
 
