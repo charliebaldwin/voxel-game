@@ -36,7 +36,8 @@ public class PlayerView : MonoBehaviour
     private List<Vector3> colliderExitPoints = new List<Vector3>();
 
     private ItemType currentItemType;
-    private ItemData heldItem;
+    private Item heldItem;
+
     private byte placedBlockShape = 1;
     private int placedBlockType = 1;
     private int hotbarSlot = 0;
@@ -138,53 +139,49 @@ public class PlayerView : MonoBehaviour
         {
             hotbarSlot += context.ReadValue<float>().RoundToInt();
             hotbarSlot = hotbarSlot.Clamp(0, NUM_HOTBAR_SLOTS - 1);
-            Debug.Log($"slot={hotbarSlot}");
+            //Debug.Log($"slot={hotbarSlot}");
             PlayerInventory.SelectHotbarSlot(hotbarSlot);
         }
     }
     #endregion
 
-    public void UpdateEquippedItem(ItemData item)
+    public void UpdateEquippedItem(Item item)
     {
-        HandAnimator.SetTrigger("Equip");
+        if (heldItem != null && heldItem.ItemID != item.ItemID)
+            HandAnimator.SetTrigger("Equip");
         heldItem = item;
-
 
     }
 
     public void UpdateItemModel()
     {
-       // currentItemType = heldItem.Type;
-
-        if (heldItem.Type == ItemType.Block)
+        // currentItemType = heldItem.Type;
+        if (heldItem != null)
         {
-            currentItemType = ItemType.Block;
-            BlockData block = new BlockData(heldItem);
-            placedBlockType = (int)block.BlockID;
+            if (heldItem.Type == ItemType.Block)
+            {
+                currentItemType = ItemType.Block;
+                BlockData block = new BlockData(heldItem);
+                placedBlockType = (int)block.BlockID;
+            }
+            else if (heldItem.Type == ItemType.Tool)
+            {
+                currentItemType = ItemType.Tool;
+                ToolData tool = new ToolData(heldItem);
+                toolDamage = (byte)tool.Strength;
+                toolUseTime = tool.UseTime;
+                Debug.Log($"Tool: {tool.Strength}, {tool.UseTime}");
+            }
+            else
+            {
+                currentItemType = ItemType.Null;
+                toolDamage = 1;
+                toolUseTime = DEFAULT_TOOL_USE_TIME;
+                placedBlockType = 0;
+            }
+            ItemMeshFilter.mesh = heldItem.ViewmodelMesh;
+            ItemMeshRenderer.material = heldItem.ViewmodelMat;
         }
-        else if (heldItem.Type == ItemType.Tool) 
-        {
-            currentItemType = ItemType.Tool;
-            ToolData tool = new ToolData(heldItem);
-            toolDamage = (byte)tool.Strength;
-            toolUseTime = tool.UseTime;
-
-        }
-        else
-        {
-            currentItemType = ItemType.Null;
-            toolDamage = 1;
-            toolUseTime = DEFAULT_TOOL_USE_TIME;
-            placedBlockType = 0;
-        }
-        ItemMeshFilter.mesh = heldItem.ViewmodelMesh;
-        ItemMeshRenderer.material = heldItem.ViewmodelMat;
-    }
-
-    private void SetTool(int hotbarSlot)
-    {
-        ItemData slotItem = PlayerInventory.SelectHotbarSlot(hotbarSlot);
-
     }
 
 
@@ -200,10 +197,14 @@ public class PlayerView : MonoBehaviour
     private IEnumerator UseToolTimer()
     {
         usingTool = true;
-        float duration = toolUseTime;
-        DoPrimary();
+        ToolData tool = new ToolData(heldItem);
+        float duration = tool.UseTime;
+
+        DoPrimary((byte)tool.Strength);
+
         HandAnimator.SetTrigger("Hit");
         HandAnimator.SetFloat("ToolSpeed", 1f / duration);
+
         yield return new WaitForSeconds(duration);
         if (primaryDown)
         {
@@ -248,12 +249,12 @@ public class PlayerView : MonoBehaviour
 
     }
 
-    private void DoPrimary()
+    private void DoPrimary(byte damage)
     {
         if (lastHitInfo.didHit)
         {
             Vector3 normal = new Vector3(lastHitInfo.hitNormal.x, lastHitInfo.hitNormal.y, lastHitInfo.hitNormal.z);
-            World().DamageVoxel(lastHitInfo.voxelPos, lastHitInfo, toolDamage);
+            World().DamageVoxel(lastHitInfo.voxelPos, lastHitInfo, damage);
         }
     }
     private void DoSecondary()

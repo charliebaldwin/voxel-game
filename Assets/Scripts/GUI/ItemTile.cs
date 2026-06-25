@@ -1,12 +1,14 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class ItemTile : MonoBehaviour
 {
     public int ItemCount = 1;
-    public int ItemID = 0;
-    public ItemData Item;
+    public int ItemIDInt = 0;
+    public ItemStack Stack;
+    public Item Item;
     public TextMeshProUGUI countText;
     private Image tileImage;
 
@@ -19,17 +21,28 @@ public class ItemTile : MonoBehaviour
     public void InitializeTile()
     {
         tileImage.sprite = Item.GUIIcon;
-        SetCount(ItemCount);
+        Debug.Log($"initializing tile with item {Item.Name}");
+        UpdateCountText();
     }
 
     public void SetCount(int newCount)
     {
-        ItemCount = newCount;
-        countText.text = ItemCount == 1 ? "" : ItemCount.ToString();
+        int remainder = Stack.SetCount(newCount);
+        Debug.Log($"new count={newCount}, Remainder={remainder}");
+        UpdateCountText();
+    }
+    public int GetCount()
+    {
+        return Stack.Count;
+    }
+    public void UpdateCountText()
+    {
+        int count = Stack.Count;
+        countText.text = count == 1 ? "" : count.ToString();
     }
     public void AddCount (int count)
     {
-        SetCount(ItemCount + count);
+        SetCount(Stack.Count + count);
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

@@ -7,12 +7,25 @@ public class ItemRegistry : MonoBehaviour
 {
     public static ItemRegistry Instance;
     public List<ItemDataObject> ItemDataObjects;
-    public Dictionary<ItemID, ItemData> Items;
+    public Dictionary<ItemID, Item> Items;
     public string IDOFolderPath = "Items";
 
     private void Awake()
     {
+        SetInstance();
         PopulateDictionary();
+    }
+    private void SetInstance()
+    {
+        if (Instance != null && Instance != this) Destroy(this);
+        else Instance = this;
+    }
+
+    public static Item LookupItem(ItemID id)
+    {
+        Debug.Log($"looking up {id}");
+        Item result = Instance.Items[id];
+        return result;
     }
 
     [Button]
@@ -30,11 +43,11 @@ public class ItemRegistry : MonoBehaviour
     [Button]
     private void PopulateDictionary()
     {
-        Items = new Dictionary<ItemID, ItemData>();
+        Items = new Dictionary<ItemID, Item>();
         foreach (ItemDataObject ido in ItemDataObjects)
         {
             Debug.Log($"ItemDict: adding item - {ido.Data.Name} with ID {ido.Data.ItemID}");
-            ItemData data = ido.Data;
+            Item data = ido.Data;
             Items.Add(data.ItemID, data);
 
             Debug.Log(Items[data.ItemID]);

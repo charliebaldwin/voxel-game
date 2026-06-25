@@ -11,13 +11,13 @@ public class InventoryManager : MonoBehaviour
     public PlayerView viewController;
     public CanvasGroup canvasGroup;
     public GameObject hotbarCursor;
-    public ItemData equippedItem;
-    public ItemData nullItem;
+    public Item equippedItem;
+    public Item nullItem;
     public RadialMenu radial;
     public TextMeshProUGUI itemNameText;
     public GameObject itemTilePrefab;
 
-    public List<ItemDataObject> InitialItems = new List<ItemDataObject>(60);
+    public List<ItemStack> InitialStacks = new List<ItemStack>(60);
 
     private ItemTile mouseTile;
     private InventoryCell lastCell;
@@ -34,23 +34,34 @@ public class InventoryManager : MonoBehaviour
     private void Awake()
     {
         InventoryCells = GetComponentsInChildren<InventoryCell>().ToList<InventoryCell>();
+        nullItem = new Item();
         equippedItem = nullItem;
-        LoadInitialItems();
+        
+    }
+    private void Start()
+    {
+        LoadInitialStacks();
     }
 
-    private void LoadInitialItems()
+    private void LoadInitialStacks()
     {
-        for (int i=0; i < InitialItems.Count; i++)
+        InitialStacks.Add(new ItemStack(ItemID.Tool_IronPickaxe, 1));
+        for (int i=0; i < InitialStacks.Count; i++)
         {
-            if (InitialItems[i] != null)
+            if (InitialStacks[i] != null)
             {
-                ItemTile newItem = Instantiate(itemTilePrefab).GetComponent<ItemTile>();
-                newItem.Item = InitialItems[i].Data;
-                newItem.transform.SetParent(InventoryCells[i].transform, false);
-                //newItem.transform.parent = InventoryCells[i].transform;
-                newItem.transform.localPosition = Vector3.zero;
+                Item itemData = ItemRegistry.LookupItem(InitialStacks[i].ItemID);
+                Debug.Log(itemData.Name);
+
+                ItemTile newItemTile = Instantiate(itemTilePrefab).GetComponent<ItemTile>();
+
+                newItemTile.Stack = InitialStacks[i];
+                newItemTile.Item = itemData;
+                newItemTile.transform.SetParent(InventoryCells[i].transform, false);
+                newItemTile.transform.localPosition = Vector3.zero;
+
                 InventoryCells[i].FindTile();
-                newItem.InitializeTile();
+                newItemTile.InitializeTile();
             }
         }
     }
@@ -113,7 +124,7 @@ public class InventoryManager : MonoBehaviour
             return tileToDrop;
         } else
         {
-            tileToDrop.AddCount(cellTile.ItemCount);
+            tileToDrop.SetCount(tileToDrop.GetCount() + cellTile.GetCount());
             mouseTile = null;
             cell.ClearCell();
             return tileToDrop;
@@ -147,7 +158,7 @@ public class InventoryManager : MonoBehaviour
     {
         ItemTile tile = HotbarCells[hotbarSlot].GetTile();
 
-        if (tile != null) {
+        if (tile != null && equippedItem != null) {
             itemNameText.text = tile.Item.Name;
            // Debug.Log($"equipped: {equippedItem.Name}, new: {tile.Item.Name} (from slot {hotbarSlot})");
             if (equippedItem.Name != tile.Item.Name)
@@ -165,7 +176,7 @@ public class InventoryManager : MonoBehaviour
 
     }
 
-    public ItemData SelectHotbarSlot(int hotbarIndex)
+    public Item SelectHotbarSlot(int hotbarIndex)
     {
         if (hotbarIndex < HotbarCells.Count-1)
         {

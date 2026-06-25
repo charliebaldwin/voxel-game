@@ -2,8 +2,8 @@ using System;
 using System.Reflection;
 using UnityEngine;
 
-[Serializable]
-public class BlockData : ItemData
+//[Serializable]
+public class BlockData : Item
 {
     [Header("Block Info")]
 
@@ -18,7 +18,12 @@ public class BlockData : ItemData
         StackSize = 999;
         TextureIndex = (int)BlockID;
     }
-    public BlockData(ItemData parent)
+
+    public BlockData(string Name, ItemID ItemID, string Tooltip, int StackSize, ItemType Type, Sprite GUIIcon, Mesh ViewmodelMesh, Material ViewmodelMat) : base (Name, ItemID, Tooltip, StackSize, Type, GUIIcon, ViewmodelMesh, ViewmodelMat)
+    {
+
+    }
+    public BlockData(Item parent)
     {
         foreach (PropertyInfo property in parent.GetType().GetProperties())
         {

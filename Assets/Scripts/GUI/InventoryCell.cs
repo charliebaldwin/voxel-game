@@ -7,25 +7,25 @@ public class InventoryCell : MonoBehaviour
     [SerializeField] private InventoryManager inventory;
     public void ClickCell()
     {
-        Debug.Log($"clicked {gameObject.name}");
+        //Debug.Log($"clicked {gameObject.name}");
         if (tile != null)
         { 
             if (inventory.PickupTile(this, tile))
             {
                 tile = null;
-                Debug.Log("tile picked up by Inventory");
+                //Debug.Log("tile picked up by Inventory");
 
             }
             else
             {
                 tile = inventory.SwapTile(this, tile);
-                Debug.Log("tile swapped with Inventory");
+                //Debug.Log("tile swapped with Inventory");
             }
         }
         else
         {
             tile = inventory.DropTileOnCell(this);
-            Debug.Log("Inventory tile dropped on cell");
+           // Debug.Log("Inventory tile dropped on cell");
         }
         if (tile != null)
         {

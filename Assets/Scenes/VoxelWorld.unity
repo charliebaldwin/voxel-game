@@ -22234,7 +22234,7 @@ PrefabInstance:
     - target: {fileID: 5169377436148619620, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: PlayerInventory
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 604453305}
     - target: {fileID: 5169377436148619620, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: ItemMeshRenderer
       value: 
@@ -23052,70 +23052,40 @@ MonoBehaviour:
   viewController: {fileID: 584695760}
   canvasGroup: {fileID: 2027094522}
   hotbarCursor: {fileID: 1355110033}
+  equippedItem:
+    Name: Item
+    Type: 1
+    ItemID: 16
+    Tooltip: Item tooltip
+    StackSize: 999
+    GUIIcon: {fileID: 0}
+    ViewmodelMesh: {fileID: 0}
+    ViewmodelMat: {fileID: 0}
+    BlockID: 0
+    TextureIndex: 0
+    Strength: 0
+    UseTime: 0
+  nullItem:
+    Name: Item
+    Type: 1
+    ItemID: 16
+    Tooltip: Item tooltip
+    StackSize: 999
+    GUIIcon: {fileID: 0}
+    ViewmodelMesh: {fileID: 0}
+    ViewmodelMat: {fileID: 0}
+    BlockID: 0
+    TextureIndex: 0
+    Strength: 0
+    UseTime: 0
   radial: {fileID: 278506079}
   itemNameText: {fileID: 851035732}
   itemTilePrefab: {fileID: 4610219770441206596, guid: 7bdfec8a32177cb47a30a72f175adfc9, type: 3}
-  InitialItems:
-  - {fileID: 11400000, guid: 42f8cc27fa913214e890fefa01b8d884, type: 2}
-  - {fileID: 11400000, guid: 36ab2e44841acdd478f16d880e8bb34c, type: 2}
-  - {fileID: 11400000, guid: fee33f16469b69241abadaa06b2e803c, type: 2}
+  InitialStacks:
+  - {fileID: 11400000, guid: 10b30ca9750d5f14389fa04ead2bae27, type: 2}
+  - {fileID: 11400000, guid: 4c9cd72c1d5179745bd539f55ee03947, type: 2}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 11400000, guid: 156c5bc8778db584fbd8f14f690e4497, type: 2}
-  - {fileID: 11400000, guid: bd34f2a176466f94cb51d77280127dd0, type: 2}
-  - {fileID: 11400000, guid: 7e08cba591d724f42be760f9aafae793, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 4c9cd72c1d5179745bd539f55ee03947, type: 2}
   hasTile: 0
   InventoryCells: []
   HotbarCells:
@@ -59063,21 +59033,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemRegistry
   ItemDataObjects:
-  - {fileID: 11400000, guid: a7d596a10953c564fb91fc4ae2324dd8, type: 2}
-  - {fileID: 11400000, guid: a10e967abd9267d4aaa1e02fd5c8cc66, type: 2}
-  - {fileID: 11400000, guid: 156c5bc8778db584fbd8f14f690e4497, type: 2}
-  - {fileID: 11400000, guid: 7e08cba591d724f42be760f9aafae793, type: 2}
-  - {fileID: 11400000, guid: 966e7bbe460a83b4c9b443ff2317f52b, type: 2}
-  - {fileID: 11400000, guid: df08bca56f3cc8e46a70f94ba15b15a0, type: 2}
-  - {fileID: 11400000, guid: 59ee4a9b17e85824bb28bf78706315c4, type: 2}
-  - {fileID: 11400000, guid: bd34f2a176466f94cb51d77280127dd0, type: 2}
-  - {fileID: 11400000, guid: 6c5b1682ef2fe3d429d7627f37950f5b, type: 2}
-  - {fileID: 11400000, guid: 31388c822ffdad14fbe50b271579056b, type: 2}
-  - {fileID: 11400000, guid: e1a5c6d4f4fb81e43a1e3a42d41d5605, type: 2}
-  - {fileID: 11400000, guid: 52afdc3717e3734418098d79d5e2110b, type: 2}
-  - {fileID: 11400000, guid: 42f8cc27fa913214e890fefa01b8d884, type: 2}
-  - {fileID: 11400000, guid: 36ab2e44841acdd478f16d880e8bb34c, type: 2}
-  - {fileID: 11400000, guid: fee33f16469b69241abadaa06b2e803c, type: 2}
+  - {fileID: 11400000, guid: 606bf72dc3d6ea64992b2a93a6e6dd3f, type: 2}
+  - {fileID: 11400000, guid: 797bdd1cc59b72048947544c5802bccc, type: 2}
   IDOFolderPath: Items
 --- !u!4 &1386501655
 Transform:

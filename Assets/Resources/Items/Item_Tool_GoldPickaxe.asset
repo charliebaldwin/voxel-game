@@ -9,17 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e51f238fb91a2b458b9fe8d0087acf7, type: 3}
-  m_Name: Tool_GoldPickaxe
-  m_EditorClassIdentifier: Assembly-CSharp::ToolDataObject
+  m_Script: {fileID: 11500000, guid: a0448bd35bb5186438b06193dddf38b4, type: 3}
+  m_Name: Item_Tool_GoldPickaxe
+  m_EditorClassIdentifier: Assembly-CSharp::ItemDataObject
   Data:
     Name: Gold Pickaxe
+    Type: 2
     ItemID: 14
     Tooltip: Item tooltip
     StackSize: 1
-    Type: 2
     GUIIcon: {fileID: 21300000, guid: ba0ada4d08db2ab418c0c56d81517705, type: 3}
     ViewmodelMesh: {fileID: -1491930556405071566, guid: 8f5ae8c2efbb65145b09d5cd4e987b17, type: 3}
     ViewmodelMat: {fileID: 2100000, guid: 37f472fce9221394cb98e31d38e6603e, type: 2}
-    Strength: 6
-    UseTime: 0.35
+    BlockID: 0
+    TextureIndex: 0
+    Strength: 10
+    UseTime: 0.3

@@ -2,10 +2,10 @@ using System;
 using System.Reflection;
 using UnityEngine;
 
-[Serializable]
-public class ToolData : ItemData
+//[Serializable]
+public class ToolData : Item
 {
-    [Header("Block Info")]
+    [Header("Tool Info")]
 
     public int Strength;
     public float UseTime;
@@ -15,8 +15,11 @@ public class ToolData : ItemData
         //Strength = 0;
         StackSize = 1;
     }
+    public ToolData(string Name, ItemID ItemID, string Tooltip, int StackSize, ItemType Type, Sprite GUIIcon, Mesh ViewmodelMesh, Material ViewmodelMat) : base(Name, ItemID, Tooltip, StackSize, Type, GUIIcon, ViewmodelMesh, ViewmodelMat)
+    {
 
-    public ToolData(ItemData parent)
+    }
+    public ToolData(Item parent)
     {
         foreach (PropertyInfo property in parent.GetType().GetProperties())
         {

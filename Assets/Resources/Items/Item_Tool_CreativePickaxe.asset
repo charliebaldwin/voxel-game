@@ -9,17 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e51f238fb91a2b458b9fe8d0087acf7, type: 3}
-  m_Name: Tool_CreativePickaxe
-  m_EditorClassIdentifier: Assembly-CSharp::ToolDataObject
+  m_Script: {fileID: 11500000, guid: a0448bd35bb5186438b06193dddf38b4, type: 3}
+  m_Name: Item_Tool_CreativePickaxe
+  m_EditorClassIdentifier: Assembly-CSharp::ItemDataObject
   Data:
     Name: Creative Pickaxe
+    Type: 2
     ItemID: 15
     Tooltip: Item tooltip
     StackSize: 1
-    Type: 2
     GUIIcon: {fileID: 21300000, guid: 93c271b40a42bd9429db1114e0887b09, type: 3}
     ViewmodelMesh: {fileID: 171654353733398019, guid: 491346b1e7a4da04fae96258398d7b13, type: 3}
     ViewmodelMat: {fileID: 2100000, guid: a4513b78e11a5d346aab54ba19132225, type: 2}
-    Strength: 12
+    BlockID: 0
+    TextureIndex: 0
+    Strength: 20
     UseTime: 0.2

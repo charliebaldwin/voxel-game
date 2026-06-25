@@ -5,7 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ItemDataObject", menuName = "Scriptable Objects/ItemDataObject")]
 public class ItemDataObject : ScriptableObject
 {
-    public ItemData Data = new ItemData();
+    public Item Data = new Item();
+
     
     //public ItemDataStruct DataStruct = new ItemDataStruct();
 

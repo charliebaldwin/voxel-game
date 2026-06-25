@@ -90,8 +90,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemTile
   ItemCount: 1
-  ItemID: 0
-  ItemData: {fileID: 0}
+  ItemIDInt: 0
+  Stack: {fileID: 11400000, guid: 10b30ca9750d5f14389fa04ead2bae27, type: 2}
+  Item:
+    Name: Item
+    Type: 1
+    ItemID: 16
+    Tooltip: Item tooltip
+    StackSize: 999
+    GUIIcon: {fileID: 0}
+    ViewmodelMesh: {fileID: 0}
+    ViewmodelMat: {fileID: 0}
+    BlockID: 0
+    TextureIndex: 0
+    Strength: 0
+    UseTime: 0
   countText: {fileID: 8269616195356541909}
 --- !u!1 &8349854151184474042
 GameObject:
@@ -224,7 +237,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 164.43048, y: 0, z: 0, w: 0}
+  m_margin: {x: 1.2849731, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
