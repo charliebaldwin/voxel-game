@@ -22270,7 +22270,7 @@ PrefabInstance:
     - target: {fileID: 6486164264205090042, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: fpInput
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1659096136}
     - target: {fileID: 6486164264205090042, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: inventory
       value: 
@@ -23082,10 +23082,10 @@ MonoBehaviour:
   itemNameText: {fileID: 851035732}
   itemTilePrefab: {fileID: 4610219770441206596, guid: 7bdfec8a32177cb47a30a72f175adfc9, type: 3}
   InitialStacks:
-  - {fileID: 11400000, guid: 10b30ca9750d5f14389fa04ead2bae27, type: 2}
-  - {fileID: 11400000, guid: 4c9cd72c1d5179745bd539f55ee03947, type: 2}
-  - {fileID: 0}
-  - {fileID: 11400000, guid: 4c9cd72c1d5179745bd539f55ee03947, type: 2}
+  - ItemID: 2
+    Count: 10
+  - ItemID: 13
+    Count: 1
   hasTile: 0
   InventoryCells: []
   HotbarCells:
@@ -59034,6 +59034,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemRegistry
   ItemDataObjects:
   - {fileID: 11400000, guid: 606bf72dc3d6ea64992b2a93a6e6dd3f, type: 2}
+  - {fileID: 11400000, guid: fb6e6210effbae54d89b07b0e8b2f611, type: 2}
+  - {fileID: 11400000, guid: eab714ead4ea62547aa2d81fe71cabd2, type: 2}
+  - {fileID: 11400000, guid: 961583735d55efa40ab0f7fa0bb3c6cd, type: 2}
+  - {fileID: 11400000, guid: fdca2460e16383f40987dffc09785565, type: 2}
   - {fileID: 11400000, guid: 797bdd1cc59b72048947544c5802bccc, type: 2}
   IDOFolderPath: Items
 --- !u!4 &1386501655

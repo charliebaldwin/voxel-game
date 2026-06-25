@@ -1,7 +1,8 @@
+using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ItemStack", menuName = "Scriptable Objects/ItemStack")]
-public class ItemStack : ScriptableObject
+[Serializable]
+public class ItemStack
 {
     public ItemID ItemID;
     public int Count = 1;
