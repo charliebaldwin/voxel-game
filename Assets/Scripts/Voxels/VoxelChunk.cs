@@ -25,6 +25,7 @@ public class VoxelChunk : MonoBehaviour
 {
 
     private Voxel[,,] Voxels = new Voxel[1, 1, 1];
+    private Dictionary<Vector3Int, BlockEntityActor> BlockEntities;
 
     private Vector3Int Size3D = new Vector3Int(16,32,16);
     [ShowInInspector] public bool Loaded { get; private set; } = false;
@@ -107,6 +108,7 @@ public class VoxelChunk : MonoBehaviour
         meshCollider.enabled = false;
         meshRenderer.enabled = false;
         gameObject.SetActive(false);
+        BlockEntities = new Dictionary<Vector3Int, BlockEntityActor>();
     }
     public VoxelChunk LoadChunk()
     {
@@ -239,7 +241,7 @@ public class VoxelChunk : MonoBehaviour
     private void ComputeMeshAction(int x, int y, int z)
     {
         Voxel vox = Voxels[x, y, z];
-        if ((BlockShape)vox.Shape != BlockShape.Empty)
+        if ((BlockShape)vox.Shape != BlockShape.Empty && !BlockRegistry.LookupBlock(vox.BlockID).IsBlockEntity)
         {
             Vector3 pos = new Vector3(x, y, z);
 
@@ -247,7 +249,8 @@ public class VoxelChunk : MonoBehaviour
             for (int n = 0; n < 6; n++)
             {
                 Vector3Int dir = OrthoDirs[n].AlignYZ(vox.UpAxis, vox.ForwardAxis).ToVector();
-                neighbors[n] = (int)World().LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + dir, ChunkCoord, Size3D)).Shape;
+                BlockShape neighborShape = World().LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + dir, ChunkCoord, Size3D)).Shape;
+                neighbors[n] = (neighborShape == BlockShape.Solid) ? 1 : 0;
                 //neighbors[n] = (int)World().LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).Shape;
             }
             BlockModel model = new BlockModel(pos, t, neighbors, vox);
@@ -459,7 +462,7 @@ public class VoxelChunk : MonoBehaviour
                 {
                     if (Voxels[x, y + 1, z].BlockID != BlockID.Air)
                     {
-                        World().SetVoxel(LocalToWorld(pos, ChunkCoord, Size3D), new Voxel(BlockID.Dirt, voxel.Damage, voxel.Orientation));
+                        World().SetVoxel(LocalToWorld(pos, ChunkCoord, Size3D), new Voxel(BlockID.Dirt, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
                         meshDirty = true;
                     }
                 }
@@ -473,7 +476,7 @@ public class VoxelChunk : MonoBehaviour
                         // grow into dirt with random chance
                         if (BlockRandomEvent(new int3(x, y, z), 0.04f))
                         {
-                            World().SetVoxel(LocalToWorld(pos, ChunkCoord, Size3D), new Voxel(BlockID.Grass, voxel.Damage, voxel.Orientation));
+                            World().SetVoxel(LocalToWorld(pos, ChunkCoord, Size3D), new Voxel(BlockID.Grass, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
 
                             SetDirty();
                         }
@@ -503,7 +506,14 @@ public class VoxelChunk : MonoBehaviour
 
 
 
-
+    public void AddBlockEntity(BlockEntityActor entity, Vector3Int worldPos)
+    {
+        if (!BlockEntities.ContainsKey(worldPos))
+        {
+            entity.LoadEntity(worldPos);
+            BlockEntities.Add(worldPos, entity);
+        }
+    }
 
 
     private const int DAMAGE_THRESH = 12;
@@ -511,17 +521,22 @@ public class VoxelChunk : MonoBehaviour
     {
         Vector3Int localPos = WorldToLocal(worldPos, ChunkCoord, Size3D);
         Voxel voxel = LookupVoxel(localPos);
+        BlockData data = BlockRegistry.LookupBlock(voxel.BlockID);
 
-        voxel.Damage += damage;
-
-        //GameObject hitVFX = Instantiate(blockHitVFXPrefab, hitInfo.hitPos, Quaternion.identity);
-        //hitVFX.GetComponent<VFXObject>().InitVFX(voxel.ID, 0.5f, hitInfo.hitNormal);
         VFX().SpawnVFX(VFXType.BLOCK_DMG, hitInfo.hitPos, hitInfo.hitNormal, (int)voxel.BlockID);
 
-        if (voxel.Damage >= voxel.Toughness)
+        voxel.Damage += damage;
+        int toughness = data.Toughness;
+        if (voxel.Damage >= toughness)
         {
-            //GameObject breakVFX = Instantiate(blockBreakVFXPrefab, worldPos, Quaternion.identity);
-            //breakVFX.GetComponent<VFXObject>().InitVFX(voxel.ID, 1f);
+            if (data.IsBlockEntity)
+            {
+                if (BlockEntities.ContainsKey(worldPos))
+                {
+                    Destroy(BlockEntities[worldPos].gameObject);
+                    BlockEntities.Remove(worldPos);
+                }
+            }
             VFX().SpawnVFX(VFXType.BLOCK_BREAK, worldPos, Vector3.zero, (int)voxel.BlockID);
 
             voxel = new Voxel(BlockID.Air, 0, 0);

@@ -26,6 +26,7 @@ public partial class VoxelWorld : MonoBehaviour
     [SerializeField] private int2 InitialLoadedChunks = new int2(2, 2);
     [SerializeField] private WorldGenSettings GenerationSettings;
     [SerializeField] private GameObject ChunkPrefab;
+    [SerializeField] private GameObject BlockEntityPrefab;
     [EndFoldout]
 
     [Foldout("Data")]
@@ -276,24 +277,6 @@ public partial class VoxelWorld : MonoBehaviour
             }
         }
 
-        // grass
-        /**
-        for (int x = 0; x < Size3D.x; x++)
-        {
-            for (int z = 0; z < Size3D.z; z++)
-            {
-                for (int y = 0; y < Size3D.y; y++)
-                {
-                    if (Voxels[x, y, z].ID != Blocks.AIR && y < Size3D.y - 1)
-                    {
-                        if (Voxels[x, y + 1, z].ID == Blocks.AIR)
-                        {
-                            Voxels[x, y, z].ID = Blocks.GRASS;
-                        }
-                    }
-                }
-            }
-        }**/
         Loop3D(GenerateGrassAction);
 
         Vector3Int[] sphere = GetCoordinateSphere(new Vector3Int(20,12, 20), 10f);
@@ -396,10 +379,21 @@ public partial class VoxelWorld : MonoBehaviour
     {
         if (CheckWorldBounds(worldPos))
         {
-            Voxels[worldPos.x, worldPos.y, worldPos.z] = newVoxel;
+
+            BlockData data = BlockRegistry.LookupBlock(newVoxel.BlockID);
 
             int2 chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
             VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
+            Debug.Log($"World is placing block, id={data.BlockID}, isEntity={data.IsBlockEntity}");
+            if (data.IsBlockEntity)
+            {
+                BlockEntityActor entity = Instantiate(BlockEntityPrefab, chunk.transform).GetComponent<BlockEntityActor>();
+                entity.Data = BlockRegistry.LookupBlockEntity(data.BlockID);
+                newVoxel.Shape = BlockShape.BlockEntity;
+                chunk.AddBlockEntity(entity, worldPos);
+            }
+
+            Voxels[worldPos.x, worldPos.y, worldPos.z] = newVoxel;
             chunk.SetVoxel(worldPos, newVoxel);
         }
     }

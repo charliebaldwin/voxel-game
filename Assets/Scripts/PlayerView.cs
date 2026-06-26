@@ -129,7 +129,8 @@ public class PlayerView : MonoBehaviour
         if (context.started)
         { 
             //placedBlockType = Mathf.RoundToInt(context.ReadValue<float>());
-            //placedBlockShape = (byte)math.clamp(placedBlockType, 1, 2);
+            int num = context.ReadValue<float>().RoundToInt();
+            heldBlockShape = (BlockShape)num;
 
             //UICubeMat.SetInteger("_BlockIndex", placedBlockType);
         }

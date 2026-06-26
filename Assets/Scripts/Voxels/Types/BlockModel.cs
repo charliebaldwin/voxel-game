@@ -28,14 +28,72 @@ public class BlockModel
         int t = firstTriangle;
         int[] nb = neighbors;
 
+        Quaternion q = Quaternion.FromToRotation(Vector3.up, voxel.UpAxis.ToVector());
+        q *= Quaternion.FromToRotation(Vector3.forward, voxel.ForwardAxis.ToVector());
+        Matrix4x4 rotateMat = Matrix4x4.Rotate(q);
         switch (voxel.Shape)
         {
             case BlockShape.Empty:
                 break;
 
             case BlockShape.Solid:
-                Quaternion q = Quaternion.FromToRotation(Vector3.up, voxel.UpAxis.ToVector());
-                q *= Quaternion.FromToRotation(Vector3.forward, voxel.ForwardAxis.ToVector());
+
+                for (int n = 0; n < 6; n++) // iterate per face
+                {
+                    if ((BlockShape)nb[n] != BlockShape.Solid)
+                    {
+                        foreach (Vector3 v in GetFaceVerts(Directions[n]))
+                        {
+                            Vector3 newV = v;
+                            newV = rotateMat * v;
+                            vertList.Add(newV * 0.5f + blockPos);
+                        }
+
+                        Vector3 normal = Directions[n];
+                        for (int i = 0; i < 4; i++)
+                            normalList.Add(rotateMat * normal);
+
+                        foreach (Vector2 uv in GetFaceUVs(Directions[n]))
+                            uvList.Add(uv);
+
+                        Color c = new Color((int)voxel.BlockID, n, (float)voxel.Damage / (float)voxel.Toughness);
+                        colorList.AddRange(new Color[4] { c, c, c, c });
+
+                        for (int i = 0; i < 6; i++)
+                            triangleList.Add(t + Triangles[i]);
+
+                        t += 4;
+                    }
+                }
+                break;
+                /**
+                Quaternion q = Quaternion.identity;
+                int[] s = VoxelWorld.Instance.shuffle;
+                switch (voxel.Orientation)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        q = Quaternion.Euler(180f, 0f, 0f);
+                        nb = new int[6] { nb[0], nb[1], nb[3], nb[2], nb[5], nb[4] };
+                        break;
+                    case 2:
+                        q = Quaternion.Euler(0f, 0f, 90f);
+                        nb = new int[6] { nb[2], nb[3], nb[1], nb[0], nb[4], nb[5] };
+                        break;
+                    case 3:
+                        q = Quaternion.Euler(0f, 0f, -90f);
+                        nb = new int[6] { nb[3], nb[2], nb[0], nb[1], nb[4], nb[5] };
+                        break;
+                    case 4:
+                        q = Quaternion.Euler(-90f, 0f, 0f);
+                        nb = new int[6] { nb[0], nb[1], nb[5], nb[4], nb[2], nb[3] };
+                        break;
+                    case 5:
+                        q = Quaternion.Euler(90f, 0f, 0f);
+                        nb = new int[6] { nb[0], nb[1], nb[4], nb[5], nb[3], nb[2] };
+                        break;
+                }
                 Matrix4x4 rotateMat = Matrix4x4.Rotate(q);
 
                 for (int n = 0; n < 6; n++) // iterate per face
@@ -66,64 +124,7 @@ public class BlockModel
                     }
                 }
                 break;
-                //Quaternion q = Quaternion.identity;
-                //int[] s = VoxelWorld.Instance.shuffle;
-                //switch (voxel.Orientation)
-                //{
-                //    case 0:
-                //        break;
-                //    case 1:
-                //        q = Quaternion.Euler(180f, 0f, 0f);
-                //        nb = new int[6] { nb[0], nb[1], nb[3], nb[2], nb[5], nb[4] };
-                //        break;
-                //    case 2:
-                //        q = Quaternion.Euler(0f, 0f, 90f);
-                //        nb = new int[6] { nb[2], nb[3], nb[1], nb[0], nb[4], nb[5] };
-                //        break;
-                //    case 3:
-                //        q = Quaternion.Euler(0f, 0f, -90f);
-                //        nb = new int[6] { nb[3], nb[2], nb[0], nb[1], nb[4], nb[5] };
-                //        break;
-                //    case 4:
-                //        q = Quaternion.Euler(-90f, 0f, 0f);
-                //        nb = new int[6] { nb[0], nb[1], nb[5], nb[4], nb[2], nb[3] };
-                //        break;
-                //    case 5:
-                //        q = Quaternion.Euler(90f, 0f, 0f);
-                //        nb = new int[6] { nb[0], nb[1], nb[4], nb[5], nb[3], nb[2] };
-                //        break;
-                //}
-                //Matrix4x4 rotateMat = Matrix4x4.Rotate(q);
-
-                //for (int n = 0; n < 6; n++) // iterate per face
-                //{
-                //    if ((BlockShape)nb[n] != BlockShape.Solid)
-                //    {
-                //        foreach (Vector3 v in GetFaceVerts(Directions[n]))
-                //        {
-                //            Vector3 newV = v;
-                //            newV = rotateMat * v;
-                //            vertList.Add(newV * 0.5f + blockPos);
-                //        }
-
-                //        Vector3 normal = Directions[n];
-                //        for (int i = 0; i < 4; i++)
-                //            normalList.Add(rotateMat * normal);
-
-                //        foreach (Vector2 uv in GetFaceUVs(Directions[n]))
-                //            uvList.Add(uv);
-
-                //        Color c = new Color((int)voxel.BlockID, n, (float)voxel.Damage / (float)voxel.Toughness);
-                //        colorList.AddRange(new Color[4] { c, c, c, c });
-
-                //        for (int i = 0; i < 6; i++)
-                //            triangleList.Add(t + Triangles[i]);
-
-                //        t += 4;
-                //    }
-                //}
-                //break;
-
+                **/
             case BlockShape.HalfSlab:
                 for (int n = 0; n < 6; n++)
                 {
@@ -133,12 +134,13 @@ public class BlockModel
                         {
                             Vector3 slabV = v;
                             slabV.y = Mathf.Clamp(v.y, -1f, 0f);
+                            slabV = rotateMat * slabV;
                             vertList.Add(slabV * 0.5f + blockPos);
                         }
 
                         Vector3 normal = Directions[n];
                         for (int i = 0; i < 4; i++)
-                            normalList.Add(normal);
+                            normalList.Add(rotateMat * normal);
 
                         foreach (Vector2 uv in GetFaceUVs(Directions[n])) {
                             Vector2 slabUV = uv;

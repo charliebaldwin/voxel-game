@@ -15,6 +15,9 @@ public enum ItemID
     Block_Tiles_1x1,
     Block_Tiles_1x1_Smooth,
 
+    // BlockEntity
+    Block_Entity_Machine,
+
     // Tools
     Tool_IronPickaxe,
     Tool_GoldPickaxe,
