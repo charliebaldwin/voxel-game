@@ -30,27 +30,28 @@ public class PlayerView : MonoBehaviour
 
     private Vector3 debugRayStart;
     private Vector3 debugRayEnd;
-    private Vector3 hitVoxPos;
-    private bool didHitVox = false;
     private List<Vector3> colliderEnterPoints = new List<Vector3>();
     private List<Vector3> colliderExitPoints = new List<Vector3>();
+    private VoxelHitInfo lastHitInfo;
 
     // Held Item
     private ItemType currentItemType;
     private Item heldItem;
+    // held block
     private BlockID heldBlockID = BlockID.Air;
-    private byte heldBlockShape = 1;
-
-    private int hotbarSlot = 0;
+    private BlockShape heldBlockShape = BlockShape.Solid;
+    private float blockPlaceTime = DEFAULT_TOOL_USE_TIME;
+    // held tool
     private float toolUseTime = DEFAULT_TOOL_USE_TIME;
     private int toolDamage = DEFAULT_TOOL_DAMAGE;
+
+    // action status
     private bool primaryDown = false;
     private bool secondaryDown = false;
     public static bool usingTool = false;
+    private int hotbarSlot = 0;
+    private IEnumerator CO_useTool = null;
 
-    private IEnumerator cr_toolUse = null;
-
-    private VoxelHitInfo lastHitInfo;
 
 
 
@@ -73,11 +74,11 @@ public class PlayerView : MonoBehaviour
         }
 
 
-        if (didHitVox)
+        if (lastHitInfo.didHit)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(debugRayEnd, hitVoxPos);
-            Gizmos.DrawSphere(hitVoxPos, 1f);
+            Gizmos.DrawLine(debugRayEnd, lastHitInfo.hitPos);
+            Gizmos.DrawSphere(lastHitInfo.hitPos, 1f);
         }
     }
 
@@ -89,8 +90,8 @@ public class PlayerView : MonoBehaviour
             primaryDown = true;
             if (!usingTool)
             {
-                cr_toolUse = UseToolTimer();
-                StartCoroutine(cr_toolUse);
+                CO_useTool = UseToolTimer();
+                StartCoroutine(CO_useTool);
             }
         }
         else if (context.canceled)
@@ -105,13 +106,15 @@ public class PlayerView : MonoBehaviour
             secondaryDown = true;
             if (!usingTool)
             {
-                cr_toolUse = PlaceBlockTimer();
+                CO_useTool = PlaceBlockTimer();
 
-                StartCoroutine(cr_toolUse);
+                StartCoroutine(CO_useTool);
             }
         } else if (context.canceled)
         {
             secondaryDown = false;
+            usingTool = false;
+            StopCoroutine(CO_useTool);
         }
     }
     public void OnTertiary(InputAction.CallbackContext context)
@@ -160,15 +163,14 @@ public class PlayerView : MonoBehaviour
             {
                 currentItemType = ItemType.Block;
                 BlockData block = BlockRegistry.LookupBlock(heldItem.BlockID);
-               // placedBlockType = (int)block.BlockID;
+
+                heldBlockID = block.BlockID;
             }
             else if (heldItem.Type == ItemType.Tool)
             {
                 currentItemType = ItemType.Tool;
-                ToolData tool = new ToolData(heldItem);
-                toolDamage = (byte)tool.Strength;
-                toolUseTime = tool.UseTime;
-                Debug.Log($"Tool: {tool.Strength}, {tool.UseTime}");
+                toolDamage = heldItem.Strength;
+                toolUseTime = heldItem.UseTime;
             }
             else
             {
@@ -195,10 +197,9 @@ public class PlayerView : MonoBehaviour
     private IEnumerator UseToolTimer()
     {
         usingTool = true;
-        ToolData tool = new ToolData(heldItem);
-        float duration = tool.UseTime;
+        float duration = heldItem.UseTime;
 
-        DoPrimary((byte)tool.Strength);
+        DoPrimary((byte)heldItem.Strength);
 
         HandAnimator.SetTrigger("Hit");
         HandAnimator.SetFloat("ToolSpeed", 1f / duration);
@@ -206,8 +207,8 @@ public class PlayerView : MonoBehaviour
         yield return new WaitForSeconds(duration);
         if (primaryDown)
         {
-            cr_toolUse = UseToolTimer();
-            StartCoroutine(cr_toolUse);
+            CO_useTool = UseToolTimer();
+            StartCoroutine(CO_useTool);
         }
         else
         {
@@ -224,8 +225,8 @@ public class PlayerView : MonoBehaviour
         yield return new WaitForSeconds(duration);
         if (secondaryDown)
         {
-            cr_toolUse = PlaceBlockTimer();
-            StartCoroutine(cr_toolUse);
+            CO_useTool = PlaceBlockTimer();
+            StartCoroutine(CO_useTool);
         }
         else
         {
@@ -262,8 +263,15 @@ public class PlayerView : MonoBehaviour
             if (currentItemType == ItemType.Block)
             {
                 //byte o = VoxelHelper.NormalToOrientation(lastHitInfo.hitNormal);
-                byte o = VoxelHelper.NormalToOrientation(Vector3Int.up);
-                World().AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(heldBlockID, 0, o, heldBlockShape));
+                ////byte o = VoxelHelper.NormalToOrientation(Vector3Int.up);
+                //World().AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(heldBlockID, 0, o, heldBlockShape));
+
+                OrthoNormal up = OrthoNormal.FromVector(lastHitInfo.hitNormal);
+                OrthoNormal fwd = (up == OrthoNormal.forward || up == OrthoNormal.back) ? OrthoNormal.right : OrthoNormal.forward;
+                World().AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(heldBlockID, 0, heldBlockShape, up, fwd));
+
+                Debug.Log($"placed block, ID={heldBlockID}, shape={heldBlockShape}");
+
             }
         }
     }

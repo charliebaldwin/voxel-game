@@ -1,56 +1,5 @@
-using NUnit.Framework;
-using System.Collections.Generic;
 using UnityEngine;
 using static VoxelHelper;
-
-public struct Voxel 
-{
-    // instance data for voxels in world
-    public BlockID BlockID;
-    public byte Damage;
-    public byte Toughness;
-    public byte Orientation;
-    public byte BlockShape; // 0 = empty, 1 = full, 2 = slab, 3 = stairs
-
-    public Voxel(BlockID id, byte damage, byte orientation)
-    {
-        BlockID = id;
-        Damage = damage;
-        Orientation = orientation;
-        Toughness = 12;
-        BlockShape = 1;
-    }
-    public Voxel(BlockID id, byte damage, byte orientation, byte blockShape)
-    {
-        BlockID = id;
-        Damage = damage;
-        Orientation = orientation;
-        Toughness = 12;
-        BlockShape = blockShape;
-    }
-}
-
-
-
-public struct VoxelHitInfo
-{
-    public bool didHit;
-    public BlockID blockID;
-    public Voxel voxel;
-    public Vector3Int voxelPos;
-    public Vector3 hitPos;
-    public Vector3Int hitNormal;
-
-    public VoxelHitInfo(bool didHit)
-    {
-        this.didHit = didHit;
-        blockID = 0;
-        voxel = new Voxel();
-        voxelPos = Vector3Int.zero;
-        hitPos = Vector3.zero;
-        hitNormal = Vector3Int.up;
-    }
-}
 
 public class GreedyFace
 {
@@ -125,10 +74,4 @@ public class GreedyFace
 
         return newVerts;
     }
-}
-
-public struct FaceData
-{
-    public Vector3[] vertices;
-    public int[] triangles;
 }

@@ -239,14 +239,17 @@ public class VoxelChunk : MonoBehaviour
     private void ComputeMeshAction(int x, int y, int z)
     {
         Voxel vox = Voxels[x, y, z];
-        if ((BlockShapes)vox.BlockShape != BlockShapes.EMPTY)
+        if ((BlockShape)vox.Shape != BlockShape.Empty)
         {
             Vector3 pos = new Vector3(x, y, z);
 
             int[] neighbors = new int[6] { 0, 0, 0, 0, 0, 0 };
             for (int n = 0; n < 6; n++)
-                neighbors[n] = World().LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).BlockShape;
-
+            {
+                Vector3Int dir = OrthoDirs[n].AlignYZ(vox.UpAxis, vox.ForwardAxis).ToVector();
+                neighbors[n] = (int)World().LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + dir, ChunkCoord, Size3D)).Shape;
+                //neighbors[n] = (int)World().LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).Shape;
+            }
             BlockModel model = new BlockModel(pos, t, neighbors, vox);
             foreach (Vector3 v in model.vertices) vertices.Add(v);
             foreach (Vector3 n in model.normals) normals.Add(n);
@@ -454,7 +457,7 @@ public class VoxelChunk : MonoBehaviour
             case (BlockID.Grass):
                 if (y < Size3D.y - 1)
                 {
-                    if (Blocks.IsSolid(Voxels[x, y + 1, z]))
+                    if (Voxels[x, y + 1, z].BlockID != BlockID.Air)
                     {
                         World().SetVoxel(LocalToWorld(pos, ChunkCoord, Size3D), new Voxel(BlockID.Dirt, voxel.Damage, voxel.Orientation));
                         meshDirty = true;
@@ -465,7 +468,7 @@ public class VoxelChunk : MonoBehaviour
                 if (y < Size3D.y - 1)
                 {
                     Voxel upVoxel = LookupVoxel(pos + new Vector3Int(0, 1, 0));
-                    if (upVoxel.BlockID == Blocks.AIR)
+                    if (upVoxel.BlockID == BlockID.Air)
                     {
                         // grow into dirt with random chance
                         if (BlockRandomEvent(new int3(x, y, z), 0.04f))
@@ -521,8 +524,8 @@ public class VoxelChunk : MonoBehaviour
             //breakVFX.GetComponent<VFXObject>().InitVFX(voxel.ID, 1f);
             VFX().SpawnVFX(VFXType.BLOCK_BREAK, worldPos, Vector3.zero, (int)voxel.BlockID);
 
-            voxel = new Voxel(Blocks.AIR, 0, 0);
-            voxel.BlockShape = 0;
+            voxel = new Voxel(BlockID.Air, 0, 0);
+            voxel.Shape = 0;
         }
         World().SetVoxel(worldPos, voxel);
     }
@@ -715,7 +718,7 @@ public struct VoxelMesherJob : IJob
 
                         int[] neighbors = new int[6] { 0, 0, 0, 0, 0, 0 };
                         for (int n = 0; n < 6; n++)
-                            neighbors[n] = World().LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).BlockShape;
+                            neighbors[n] = (int)World().LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).Shape;
 
                         BlockModel model = new BlockModel(pos, t, neighbors, new Voxel(voxID, 0, 0));
                         foreach (Vector3 v in model.vertices)

@@ -7,7 +7,7 @@ public static class VoxelHelper
     public static int[] Triangles = new int[6] { 0, 1, 2, 0, 2, 3 };
 
     public static Vector3Int[] Directions = new Vector3Int[6] { Vector3Int.left, Vector3Int.right, Vector3Int.down, Vector3Int.up, Vector3Int.back, Vector3Int.forward };
-
+    public static OrthoNormal[] OrthoDirs = new OrthoNormal[6] { OrthoNormal.left, OrthoNormal.right, OrthoNormal.down, OrthoNormal.up, OrthoNormal.back, OrthoNormal.forward };
 
     private static Vector3 nx_ny_nz = new Vector3(-1f, -1f, -1f);
     private static Vector3 nx_ny_pz = new Vector3(-1f, -1f, 1f);

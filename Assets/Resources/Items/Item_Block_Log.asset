@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a0448bd35bb5186438b06193dddf38b4, type: 3}
-  m_Name: Item_Tool_CreativePickaxe
+  m_Name: Item_Block_Log
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataObject
   Data:
-    Name: Creative Pickaxe
-    Type: 2
-    ItemID: 15
+    Name: Log
+    Type: 3
+    ItemID: 5
     Tooltip: Item tooltip
-    StackSize: 1
-    GUIIcon: {fileID: 21300000, guid: 93c271b40a42bd9429db1114e0887b09, type: 3}
-    ViewmodelMesh: {fileID: 171654353733398019, guid: 491346b1e7a4da04fae96258398d7b13, type: 3}
-    ViewmodelMat: {fileID: 2100000, guid: a4513b78e11a5d346aab54ba19132225, type: 2}
-    BlockID: 0
-    TextureIndex: 0
-    Strength: 32
-    UseTime: 0.2
+    StackSize: 999
+    GUIIcon: {fileID: 21300000, guid: 878b7e8ac0f323a4f8fd94471d947324, type: 3}
+    ViewmodelMesh: {fileID: -8678823145569952518, guid: 649fbd93bd831a246a5d5c6ee74dc2a0, type: 3}
+    ViewmodelMat: {fileID: 2100000, guid: 4635045485610164daad5ba8bc740bb2, type: 2}
+    BlockID: 5
+    TextureIndex: 5
+    Strength: 1
+    UseTime: 1

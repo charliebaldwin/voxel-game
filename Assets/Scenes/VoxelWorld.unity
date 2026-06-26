@@ -18946,19 +18946,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlockRegistry
   BlockDataObjects:
-  - {fileID: 11400000, guid: a7d596a10953c564fb91fc4ae2324dd8, type: 2}
-  - {fileID: 11400000, guid: 7e08cba591d724f42be760f9aafae793, type: 2}
-  - {fileID: 11400000, guid: 156c5bc8778db584fbd8f14f690e4497, type: 2}
-  - {fileID: 11400000, guid: bd34f2a176466f94cb51d77280127dd0, type: 2}
-  - {fileID: 11400000, guid: 59ee4a9b17e85824bb28bf78706315c4, type: 2}
-  - {fileID: 11400000, guid: df08bca56f3cc8e46a70f94ba15b15a0, type: 2}
-  - {fileID: 11400000, guid: 966e7bbe460a83b4c9b443ff2317f52b, type: 2}
-  - {fileID: 11400000, guid: 6c5b1682ef2fe3d429d7627f37950f5b, type: 2}
-  - {fileID: 11400000, guid: a10e967abd9267d4aaa1e02fd5c8cc66, type: 2}
-  - {fileID: 11400000, guid: 52afdc3717e3734418098d79d5e2110b, type: 2}
-  - {fileID: 11400000, guid: e1a5c6d4f4fb81e43a1e3a42d41d5605, type: 2}
-  - {fileID: 11400000, guid: 31388c822ffdad14fbe50b271579056b, type: 2}
-  BDOFolderPath: Items/Blocks
+  - {fileID: 11400000, guid: 2c4b80b2f3849f54ca715d05621caeef, type: 2}
+  - {fileID: 11400000, guid: 5622611e8db8bfc40bcd226eb0c52381, type: 2}
+  - {fileID: 11400000, guid: 37fa5fc8f8e73544693f5a77a3b650da, type: 2}
+  - {fileID: 11400000, guid: d2251d6ec5128314687bee474b33acd0, type: 2}
+  - {fileID: 11400000, guid: 44cb5672a86ee0e438cfb4d10e25922f, type: 2}
+  - {fileID: 11400000, guid: 51d75b6299400874f9b0050611011f88, type: 2}
+  - {fileID: 11400000, guid: 39c48b26ae6634443a53b645a57e0627, type: 2}
+  - {fileID: 11400000, guid: 090a6346cda56184faa8ed9df2c24663, type: 2}
+  - {fileID: 11400000, guid: f5f1c245d440fd44a9f9f25630d633d8, type: 2}
+  BDOFolderPath: Blocks
 --- !u!4 &477280522
 Transform:
   m_ObjectHideFlags: 0
@@ -23086,6 +23083,12 @@ MonoBehaviour:
     Count: 10
   - ItemID: 13
     Count: 1
+  - ItemID: 15
+    Count: 1
+  - ItemID: 3
+    Count: 5
+  - ItemID: 5
+    Count: 5
   hasTile: 0
   InventoryCells: []
   HotbarCells:
