@@ -82,7 +82,7 @@ public class BlockModel
                         foreach (Vector2 uv in GetFaceUVs(Directions[n]))
                             uvList.Add(uv);
 
-                        Color c = new Color(voxel.ID, n, (float)voxel.Damage / (float)voxel.Toughness);
+                        Color c = new Color((int)voxel.BlockID, n, (float)voxel.Damage / (float)voxel.Toughness);
                         colorList.AddRange(new Color[4] { c, c, c, c });
 
                         for (int i = 0; i < 6; i++)
@@ -116,7 +116,7 @@ public class BlockModel
                             uvList.Add(slabUV);
                         }
 
-                        Color c = new Color(voxel.ID, n, (float)voxel.Damage / (float)voxel.Toughness);
+                        Color c = new Color((int)voxel.BlockID, n, (float)voxel.Damage / (float)voxel.Toughness);
                         colorList.AddRange(new Color[4] { c, c, c, c });
 
                         for (int i = 0; i < 6; i++)

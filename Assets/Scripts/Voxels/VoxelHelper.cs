@@ -196,7 +196,7 @@ public static class VoxelHelper
                 for (int z = 0; z < size.z; z++)
                 {
                     int id = flat[x + size.x * y + size.x * size.y * z];
-                    result[x, y, z] = new Voxel(id, 0, 0);
+                    result[x, y, z] = new Voxel((BlockID)id, 0, 0);
                 }
             }
         }

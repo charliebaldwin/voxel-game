@@ -6,23 +6,23 @@ using static VoxelHelper;
 public struct Voxel 
 {
     // instance data for voxels in world
-    public int ID;
+    public BlockID BlockID;
     public byte Damage;
     public byte Toughness;
     public byte Orientation;
     public byte BlockShape; // 0 = empty, 1 = full, 2 = slab, 3 = stairs
 
-    public Voxel(int id, byte damage, byte orientation)
+    public Voxel(BlockID id, byte damage, byte orientation)
     {
-        ID = id;
+        BlockID = id;
         Damage = damage;
         Orientation = orientation;
         Toughness = 12;
         BlockShape = 1;
     }
-    public Voxel(int id, byte damage, byte orientation, byte blockShape)
+    public Voxel(BlockID id, byte damage, byte orientation, byte blockShape)
     {
-        ID = id;
+        BlockID = id;
         Damage = damage;
         Orientation = orientation;
         Toughness = 12;
@@ -35,7 +35,7 @@ public struct Voxel
 public struct VoxelHitInfo
 {
     public bool didHit;
-    public int blockID;
+    public BlockID blockID;
     public Voxel voxel;
     public Vector3Int voxelPos;
     public Vector3 hitPos;

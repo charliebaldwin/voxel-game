@@ -35,14 +35,15 @@ public class PlayerView : MonoBehaviour
     private List<Vector3> colliderEnterPoints = new List<Vector3>();
     private List<Vector3> colliderExitPoints = new List<Vector3>();
 
+    // Held Item
     private ItemType currentItemType;
     private Item heldItem;
+    private BlockID heldBlockID = BlockID.Air;
+    private byte heldBlockShape = 1;
 
-    private byte placedBlockShape = 1;
-    private int placedBlockType = 1;
     private int hotbarSlot = 0;
     private float toolUseTime = DEFAULT_TOOL_USE_TIME;
-    private byte toolDamage = DEFAULT_TOOL_DAMAGE;
+    private int toolDamage = DEFAULT_TOOL_DAMAGE;
     private bool primaryDown = false;
     private bool secondaryDown = false;
     public static bool usingTool = false;
@@ -51,10 +52,7 @@ public class PlayerView : MonoBehaviour
 
     private VoxelHitInfo lastHitInfo;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-    }
+
 
     private void OnDrawGizmos()
     {
@@ -127,10 +125,10 @@ public class PlayerView : MonoBehaviour
     {
         if (context.started)
         { 
-            placedBlockType = Mathf.RoundToInt(context.ReadValue<float>());
-            placedBlockShape = (byte)math.clamp(placedBlockType, 1, 2);
+            //placedBlockType = Mathf.RoundToInt(context.ReadValue<float>());
+            //placedBlockShape = (byte)math.clamp(placedBlockType, 1, 2);
 
-            UICubeMat.SetInteger("_BlockIndex", placedBlockType);
+            //UICubeMat.SetInteger("_BlockIndex", placedBlockType);
         }
     }
     public void OnScroll(InputAction.CallbackContext context)
@@ -161,8 +159,8 @@ public class PlayerView : MonoBehaviour
             if (heldItem.Type == ItemType.Block)
             {
                 currentItemType = ItemType.Block;
-                BlockData block = new BlockData(heldItem);
-                placedBlockType = (int)block.BlockID;
+                BlockData block = BlockRegistry.LookupBlock(heldItem.BlockID);
+               // placedBlockType = (int)block.BlockID;
             }
             else if (heldItem.Type == ItemType.Tool)
             {
@@ -177,7 +175,7 @@ public class PlayerView : MonoBehaviour
                 currentItemType = ItemType.Null;
                 toolDamage = 1;
                 toolUseTime = DEFAULT_TOOL_USE_TIME;
-                placedBlockType = 0;
+                heldBlockID = 0;
             }
             ItemMeshFilter.mesh = heldItem.ViewmodelMesh;
             ItemMeshRenderer.material = heldItem.ViewmodelMat;
@@ -265,7 +263,7 @@ public class PlayerView : MonoBehaviour
             {
                 //byte o = VoxelHelper.NormalToOrientation(lastHitInfo.hitNormal);
                 byte o = VoxelHelper.NormalToOrientation(Vector3Int.up);
-                World().AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(placedBlockType, 0, o, placedBlockShape));
+                World().AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(heldBlockID, 0, o, heldBlockShape));
             }
         }
     }
@@ -294,13 +292,13 @@ public class PlayerView : MonoBehaviour
                     break;
                 case 1:
                     Vector3 normal = new Vector3(lastHitInfo.hitNormal.x, lastHitInfo.hitNormal.y, lastHitInfo.hitNormal.z);
-                    VoxelWorld.Instance.DamageVoxel(lastHitInfo.voxelPos, lastHitInfo, toolDamage);
+                    VoxelWorld.Instance.DamageVoxel(lastHitInfo.voxelPos, lastHitInfo, (byte)toolDamage);
                     break;
                 case 2:
                     if (currentItemType == ItemType.Block)
                     {
                         byte o = VoxelHelper.NormalToOrientation(lastHitInfo.hitNormal);
-                        VoxelWorld.Instance.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(placedBlockType, 0, o, placedBlockShape));
+                        VoxelWorld.Instance.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(heldBlockID, 0, o, heldBlockShape));
                     }
                     //Debug.Log($"normal: {hitData.hitNormal}"); 
                     break;

@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Minimal Scene Blur Config
   m_EditorClassIdentifier: 
   mode: 1
-  radius: 1.96125
+  radius: 4
   iteration: 4
-  strength: 31.38
+  strength: 64
   referenceResolution: {x: 1920, y: 1080}
   matchWidthOrHeight: 0
-  useStrength: 0
+  useStrength: 1

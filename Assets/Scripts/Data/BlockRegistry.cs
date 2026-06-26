@@ -12,7 +12,21 @@ public class BlockRegistry : MonoBehaviour
 
     private void Awake()
     {
+        SetInstance();
+        PopulateDictionary();
+    }
 
+    private void SetInstance()
+    {
+        if (Instance != null && Instance != this) Destroy(this);
+        else Instance = this;
+    }
+
+    public static BlockData LookupBlock(BlockID id)
+    {
+        Debug.Log($"looking up {id}");
+        BlockData result = Instance.Blocks[id];
+        return result;
     }
 
     [Button]
@@ -26,8 +40,8 @@ public class BlockRegistry : MonoBehaviour
         }
         foreach (BlockDataObject bdo in bdoArray)
         {
-            BlockDataObjects[(int)bdo.Data.ItemID] = bdo;
-            Debug.Log($"{bdo.Data.ItemID} - {bdo.Data.Name}");
+            BlockDataObjects[(int)bdo.Data.BlockID] = bdo;
+            //Debug.Log($"{bdo.Data.ItemID} - {bdo.Data.Name}");
         }
     }
 

@@ -266,11 +266,11 @@ public partial class VoxelWorld : MonoBehaviour
                 {
                     if (y < h)
                     {
-                        Voxels[x, y, z] = new Voxel(Blocks.DIRT, 0, orientation, 1);
+                        Voxels[x, y, z] = new Voxel(BlockID.Dirt, 0, orientation, 1);
                     }
                     else
                     {
-                        Voxels[x, y, z] = new Voxel(Blocks.AIR, 0, 0, 0);
+                        Voxels[x, y, z] = new Voxel(BlockID.Air, 0, 0, 0);
                     }
                 }
             }
@@ -299,16 +299,16 @@ public partial class VoxelWorld : MonoBehaviour
         Vector3Int[] sphere = GetCoordinateSphere(new Vector3Int(20,12, 20), 10f);
         foreach (Vector3Int p in sphere)
         {
-            Voxels[p.x, p.y, p.z] = new Voxel(Blocks.STONE, 0, 0, 1);
+            Voxels[p.x, p.y, p.z] = new Voxel(BlockID.Stone, 0, 0, 1);
             Voxels[p.x,p.y, p.z].Toughness = 24;
         }
     }
 
     private void GenerateGrassAction(int x, int y, int z)
     {
-        if (Voxels[x, y, z].ID != Blocks.AIR && y < ChunkSize.y - 1) {
-            if (Voxels[x, y + 1, z].ID == Blocks.AIR) {
-                Voxels[x, y, z].ID = Blocks.GRASS;
+        if (Voxels[x, y, z].BlockID != Blocks.AIR && y < ChunkSize.y - 1) {
+            if (Voxels[x, y + 1, z].BlockID == Blocks.AIR) {
+                Voxels[x, y, z].BlockID = BlockID.Grass;
             }
         }
     }
@@ -382,7 +382,7 @@ public partial class VoxelWorld : MonoBehaviour
     }
     public void AddVoxel(Vector3 worldPos, Voxel voxel)
     {
-        if (voxel.ID == 0) voxel.BlockShape = 0;
+        if (voxel.BlockID == 0) voxel.BlockShape = 0;
 
         int2 chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
         VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y];
@@ -456,13 +456,13 @@ public partial class VoxelWorld : MonoBehaviour
             DEBUGTraversalPosList.Add(stepPos);
 
             Voxel hitVoxel = LookupVoxel(stepPos);
-            if (hitVoxel.ID > Blocks.AIR)
+            if (hitVoxel.BlockID > Blocks.AIR)
             {
                 DEBUGTraversalColorList.Add(Color.white);
 
                 VoxelHitInfo hitData = new VoxelHitInfo(true);
                 hitData.hitNormal = hitNormal;
-                hitData.blockID = hitVoxel.ID;
+                hitData.blockID = hitVoxel.BlockID;
                 hitData.voxelPos = stepPos;
                 hitData.hitPos = pos + t * dir;
                 
@@ -470,7 +470,7 @@ public partial class VoxelWorld : MonoBehaviour
 
                 return hitData;
             }
-            else if (hitVoxel.ID == Blocks.INVALID)
+            else if (hitVoxel.BlockID == BlockID.Invalid)
                 return new VoxelHitInfo(false);
             else
                 DEBUGTraversalColorList.Add(new Color(Mathf.Abs(hitNormal.x), Mathf.Abs(hitNormal.y), Mathf.Abs(hitNormal.z)));
