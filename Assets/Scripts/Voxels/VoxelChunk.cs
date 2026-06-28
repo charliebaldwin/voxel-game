@@ -123,6 +123,11 @@ public class VoxelChunk : MonoBehaviour
         ChunkMesh();
 
         meshCollider.enabled = true;
+
+        foreach(KeyValuePair<Vector3Int, BlockEntityActor> entity in BlockEntities)
+        {
+            entity.Value.LoadEntity();
+        }
         return this;
     }
     public VoxelChunk UnloadChunk()
@@ -131,6 +136,12 @@ public class VoxelChunk : MonoBehaviour
         meshCollider.enabled = false;
         meshRenderer.enabled = false;
         meshFilter.sharedMesh.Clear();
+
+        foreach (KeyValuePair<Vector3Int, BlockEntityActor> entity in BlockEntities)
+        {
+            entity.Value.UnloadEntity();
+        }
+
         gameObject.SetActive(false);
 
 
@@ -510,7 +521,8 @@ public class VoxelChunk : MonoBehaviour
     {
         if (!BlockEntities.ContainsKey(worldPos))
         {
-            entity.LoadEntity(worldPos);
+            entity.SetPosition(worldPos);
+            entity.LoadEntity();
             BlockEntities.Add(worldPos, entity);
         }
     }

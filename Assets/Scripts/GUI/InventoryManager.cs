@@ -45,7 +45,7 @@ public class InventoryManager : MonoBehaviour
 
     private void LoadInitialStacks()
     {
-        InitialStacks.Add(new ItemStack(ItemID.Tool_IronPickaxe, 1));
+        InitialStacks.Add(new ItemStack(ItemID.Tool_Pickaxe_Iron, 1));
         for (int i=0; i < InitialStacks.Count; i++)
         {
             if (InitialStacks[i] != null)

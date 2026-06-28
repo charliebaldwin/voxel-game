@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_Pickaxe-Gold
+  m_Name: M_Axe_Iron
   m_Shader: {fileID: -6465566751694194690, guid: 2ed3d8ac38f070548809b5f563409be5, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -82,15 +82,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Tex_Color:
-        m_Texture: {fileID: 2800000, guid: c3f956cfeca8d064d801b65df8bc3241, type: 3}
+        m_Texture: {fileID: 2800000, guid: e744b0a2bc4fca742866c2c5b9ff8d07, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Tex_Emission:
-        m_Texture: {fileID: 2800000, guid: 067fee68b1b1d5d48b3268337ed102cc, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Tex_MetalSmooth:
-        m_Texture: {fileID: 2800000, guid: 4362773882799cc449e55983ab7c8287, type: 3}
+        m_Texture: {fileID: 2800000, guid: 067fee68b1b1d5d48b3268337ed102cc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:

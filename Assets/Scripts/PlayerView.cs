@@ -160,12 +160,15 @@ public class PlayerView : MonoBehaviour
         // currentItemType = heldItem.Type;
         if (heldItem != null)
         {
+            ItemMeshFilter.mesh = heldItem.ViewmodelMesh;
+            ItemMeshRenderer.material = heldItem.ViewmodelMat;
             if (heldItem.Type == ItemType.Block)
             {
                 currentItemType = ItemType.Block;
                 BlockData block = BlockRegistry.LookupBlock(heldItem.BlockID);
 
                 heldBlockID = block.BlockID;
+                ItemMeshRenderer.material.SetInt("_TextureIndex", (int)block.BlockID);
             }
             else if (heldItem.Type == ItemType.Tool)
             {
@@ -180,8 +183,7 @@ public class PlayerView : MonoBehaviour
                 toolUseTime = DEFAULT_TOOL_USE_TIME;
                 heldBlockID = 0;
             }
-            ItemMeshFilter.mesh = heldItem.ViewmodelMesh;
-            ItemMeshRenderer.material = heldItem.ViewmodelMat;
+
         }
     }
 

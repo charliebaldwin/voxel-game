@@ -13,6 +13,7 @@ public class ItemRegistry : MonoBehaviour
     private void Awake()
     {
         SetInstance();
+        LoadObjectsFromPath();
         PopulateDictionary();
     }
     private void SetInstance()
@@ -35,7 +36,7 @@ public class ItemRegistry : MonoBehaviour
         ItemDataObjects = new List<ItemDataObject>(idoArray.Length);
         foreach (ItemDataObject ido in idoArray)
         {
-            Debug.Log($"Loading IDO {ido.Data.Name} with ID {ido.Data.ItemID}");
+            //Debug.Log($"Loading IDO {ido.Data.Name} with ID {ido.Data.ItemID}");
             ItemDataObjects.Add(ido);
         }
     }
@@ -46,11 +47,11 @@ public class ItemRegistry : MonoBehaviour
         Items = new Dictionary<ItemID, Item>();
         foreach (ItemDataObject ido in ItemDataObjects)
         {
-            Debug.Log($"ItemDict: adding item - {ido.Data.Name} with ID {ido.Data.ItemID}");
+            //Debug.Log($"ItemDict: adding item - {ido.Data.Name} with ID {ido.Data.ItemID}");
             Item data = ido.Data;
             Items.Add(data.ItemID, data);
 
-            Debug.Log(Items[data.ItemID]);
+            //Debug.Log(Items[data.ItemID]);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VInspector;
@@ -92,5 +93,21 @@ public class BlockRegistry : MonoBehaviour
         return result;
     }
 
-#endregion
+
+    public static int LookupToughness(BlockID id)
+    {
+        return LookupBlock(id).Toughness;
+    }
+    public static bool IsValidTool(BlockID id, ToolType tool)
+    {
+        return LookupBlock(id).ValidTools.Contains(tool);
+    }
+    public static bool IsIdealTool(BlockID id, ToolType tool)
+    {
+        return LookupBlock(id).IdealTools.Contains(tool);
+    }
+
+
+
+    #endregion
 }

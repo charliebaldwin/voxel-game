@@ -24,6 +24,7 @@ public class Item
     [Header("Tool Data")]
     public int Strength;
     public float UseTime;
+    public ToolType ToolType= ToolType.None;
 
     public Item()
     {
@@ -44,16 +45,4 @@ public class Item
 
 }
 
-[CreateAssetMenu(fileName = "Item_", menuName = "Scriptable Objects/ItemDataObject")]
-public class ItemDataObject : ScriptableObject
-{
-    public Item Data = new Item();
-}
 
-public enum ItemType : byte
-{
-    Null,
-    Default,
-    Tool,
-    Block,
-}

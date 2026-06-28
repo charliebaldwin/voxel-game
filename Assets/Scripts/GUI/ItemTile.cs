@@ -21,14 +21,14 @@ public class ItemTile : MonoBehaviour
     public void InitializeTile()
     {
         tileImage.sprite = Item.GUIIcon;
-        Debug.Log($"initializing tile with item {Item.Name}");
+        //Debug.Log($"initializing tile with item {Item.Name}");
         UpdateCountText();
     }
 
     public void SetCount(int newCount)
     {
         int remainder = Stack.SetCount(newCount);
-        Debug.Log($"new count={newCount}, Remainder={remainder}");
+        //Debug.Log($"new count={newCount}, Remainder={remainder}");
         UpdateCountText();
     }
     public int GetCount()

@@ -19,9 +19,11 @@ public enum ItemID
     Block_Entity_Machine,
 
     // Tools
-    Tool_IronPickaxe,
-    Tool_GoldPickaxe,
-    Tool_CreativePickaxe,
+    Tool_Pickaxe_Iron,
+    Tool_Pickaxe_Gold,
+    Tool_Pickaxe_Creative,
+    Tool_Axe_Iron,
+    Tool_Sword,
 
 
     // NullItem
