@@ -4,6 +4,7 @@ using static UnityEngine.Analytics.IAnalytic;
 
 public static class VoxelHelper
 {
+    #region MESHING
     public static int[] Triangles = new int[6] { 0, 1, 2, 0, 2, 3 };
 
     public static Vector3Int[] Directions = new Vector3Int[6] { Vector3Int.left, Vector3Int.right, Vector3Int.down, Vector3Int.up, Vector3Int.back, Vector3Int.forward };
@@ -76,6 +77,7 @@ public static class VoxelHelper
         else
             return 0;
     }
+    #endregion
 
     public static VoxelWorld World()
     {
@@ -111,21 +113,20 @@ public static class VoxelHelper
 
         return edges;
     }
-    public static int2 FindContainingChunk(Vector3Int worldPos, Vector3Int size)
+    public static Vector3Int FindContainingChunk(Vector3Int worldPos, Vector3Int size)
     {
-        int2 chunkCoord = new int2(Mathf.FloorToInt(worldPos.x / size.x), Mathf.FloorToInt(worldPos.z / size.z));
+        Vector3Int chunkCoord = new Vector3Int(Mathf.FloorToInt(worldPos.x / size.x), 0, Mathf.FloorToInt(worldPos.z / size.z));
         return chunkCoord;
     }
 
-    public static Vector3Int LocalToWorld(Vector3Int localPos, int2 chunkCoord, Vector3Int size)
+    public static Vector3Int LocalToWorld(Vector3Int localPos, Vector3Int chunkCoord, Vector3Int size)
     {
-        Vector3Int worldPos = new Vector3Int(localPos.x + chunkCoord.x * size.x, localPos.y, localPos.z + chunkCoord.y * size.z);
+        Vector3Int worldPos = new Vector3Int(localPos.x + chunkCoord.x * size.x, localPos.y + chunkCoord.y * size.y, localPos.z + chunkCoord.z * size.z);
         return worldPos;
     }
-    public static Vector3Int WorldToLocal(Vector3Int worldPos, int2 chunkPos, Vector3Int size)
+    public static Vector3Int WorldToLocal(Vector3Int worldPos, Vector3Int chunkPos, Vector3Int size)
     {
-
-        Vector3Int localPos = worldPos - new Vector3Int(chunkPos.x * size.x, 0, chunkPos.y * size.z);
+        Vector3Int localPos = worldPos - new Vector3Int(chunkPos.x * size.x, chunkPos.y * size.y, chunkPos.z * size.z);
         return localPos;
     }
     public static Vector3Int SnapToGrid(Vector3 floatPos)

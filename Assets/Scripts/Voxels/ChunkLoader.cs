@@ -8,14 +8,14 @@ using static VoxelHelper;
 
 public class ChunkLoader : MonoBehaviour
 {
-    int2 currentChunkPos = new int2(0, 0);
+    Vector3Int currentChunkPos = Vector3Int.zero;
     public int RenderDistance = 6;
     
     void Update()
     {
-        int2 chunkPos = FindContainingChunk(SnapToGrid(transform.position), World().ChunkSize);
+        Vector3Int chunkPos = FindContainingChunk(SnapToGrid(transform.position), World().ChunkSize);
 
-        if (chunkPos.x != currentChunkPos.x || chunkPos.y != currentChunkPos.y)
+        if (chunkPos.x != currentChunkPos.x || chunkPos.z != currentChunkPos.z)
         {
             //Debug.Log($"ChunkPos = {chunkPos}");
             World().LoadChunkSpread(chunkPos, RenderDistance);
