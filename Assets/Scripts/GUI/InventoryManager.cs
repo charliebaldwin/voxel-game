@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class InventoryManager : MonoBehaviour
@@ -26,6 +27,9 @@ public class InventoryManager : MonoBehaviour
     private int hotbarSlot;
 
     private bool hotbarDirty = false;
+
+    private ItemTile hoveredTile;
+    public RectTransform hoverWindow;
 
 
     public List<InventoryCell> InventoryCells;
@@ -146,12 +150,15 @@ public class InventoryManager : MonoBehaviour
         if (mouseTile != null)
             lastCell.ClickCell();
         canvasGroup.alpha = 0;
+        hoverWindow.GetComponent<CanvasGroup>().alpha = 0f;
+        hoveredTile = null;
 
     }
     public void Open()
     {
         //Debug.Log("inventory open");
         canvasGroup.alpha = 1;
+
     }
 
     public void UpdateEquippedItem()
@@ -188,11 +195,26 @@ public class InventoryManager : MonoBehaviour
         return nullItem;
     }
 
+    public void StartCellHover(InventoryCell cell)
+    {
+        hoverWindow.GetComponent<CanvasGroup>().alpha = 1.0f;
+        hoveredTile = cell.GetTile();
+    }
+    public void EndCellHover(InventoryCell cell)
+    {
+        hoverWindow.GetComponent<CanvasGroup>().alpha = 0f;
+        hoveredTile = null;
+    }
+
     // Update is called once per frame
     void Update()
     {
         if (mouseTile != null) { 
             mouseTile.transform.position = mousePos;
+        }
+        if (hoveredTile != null)
+        {
+            hoverWindow.transform.position = mousePos;
         }
     }
 }

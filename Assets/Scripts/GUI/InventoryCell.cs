@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class InventoryCell : MonoBehaviour
 {
@@ -55,4 +56,21 @@ public class InventoryCell : MonoBehaviour
     {
         FindTile();
     }
+
+    private void Update()
+    {
+    }
+
+    void OnMouseOver()
+    {
+        Debug.Log("hover started");
+        if (tile != null)
+            inventory.StartCellHover(this);
+    }
+    void OnMouseExit()
+    {
+        if (tile != null)
+            inventory.EndCellHover(this);
+    }
+
 }
