@@ -61,13 +61,13 @@ public class InventoryCell : MonoBehaviour
     {
     }
 
-    void OnMouseOver()
+    public void OnHoverBegin()
     {
         Debug.Log("hover started");
         if (tile != null)
             inventory.StartCellHover(this);
     }
-    void OnMouseExit()
+    public void OnHoverEnd()
     {
         if (tile != null)
             inventory.EndCellHover(this);

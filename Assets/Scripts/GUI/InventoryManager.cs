@@ -30,6 +30,7 @@ public class InventoryManager : MonoBehaviour
 
     private ItemTile hoveredTile;
     public RectTransform hoverWindow;
+    public HoverWindow HoverWindow;
 
 
     public List<InventoryCell> InventoryCells;
@@ -45,6 +46,7 @@ public class InventoryManager : MonoBehaviour
     private void Start()
     {
         LoadInitialStacks();
+        Close();
     }
 
     private void LoadInitialStacks()
@@ -150,7 +152,7 @@ public class InventoryManager : MonoBehaviour
         if (mouseTile != null)
             lastCell.ClickCell();
         canvasGroup.alpha = 0;
-        hoverWindow.GetComponent<CanvasGroup>().alpha = 0f;
+        HoverWindow.HideWindow();
         hoveredTile = null;
 
     }
@@ -197,12 +199,14 @@ public class InventoryManager : MonoBehaviour
 
     public void StartCellHover(InventoryCell cell)
     {
-        hoverWindow.GetComponent<CanvasGroup>().alpha = 1.0f;
         hoveredTile = cell.GetTile();
+        HoverWindow.SetItemText(hoveredTile.Item);
+        HoverWindow.ShowWindow();
+
     }
     public void EndCellHover(InventoryCell cell)
     {
-        hoverWindow.GetComponent<CanvasGroup>().alpha = 0f;
+        HoverWindow.HideWindow();
         hoveredTile = null;
     }
 
@@ -214,7 +218,7 @@ public class InventoryManager : MonoBehaviour
         }
         if (hoveredTile != null)
         {
-            hoverWindow.transform.position = mousePos;
+            hoverWindow.transform.position = mousePos + Vector3.forward * 0.3f;
         }
     }
 }
