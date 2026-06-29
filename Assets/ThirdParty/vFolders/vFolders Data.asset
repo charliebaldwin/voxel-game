@@ -19,6 +19,8 @@ MonoBehaviour:
     - 8a8fc29b4d367fe42a9994f045b61581
     - fdfbd7ea63877574a9f523fb6f20542e
     - 964b42d870088374691bba7e7ce2a28c
+    - 5cb6a841987d44140af8374ebcc14dd9
+    - 777a314699c7b8540a61d4a4f09b3162
     values:
     - iconNameOrGuid: Prefab Icon
       colorIndex: 0
@@ -37,6 +39,14 @@ MonoBehaviour:
       isIconRecursive: 0
       isColorRecursive: 0
     - iconNameOrGuid: PrefabModel Icon
+      colorIndex: 0
+      isIconRecursive: 0
+      isColorRecursive: 0
+    - iconNameOrGuid: RawImage Icon
+      colorIndex: 0
+      isIconRecursive: 0
+      isColorRecursive: 0
+    - iconNameOrGuid: Font Icon
       colorIndex: 0
       isIconRecursive: 0
       isColorRecursive: 0

@@ -25,6 +25,10 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-1006050081-0
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-1570171159-0
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-1427414653-0
+        - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-5793974745253439579-584695758
+        - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-2000432733-0
+        - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-604453303-0
+        - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-1659096134-0
         values:
         - colorIndex: 0
           iconNameOrGuid: PreMatCube
@@ -51,6 +55,22 @@ MonoBehaviour:
           isIconRecursive: 0
           isColorRecursive: 0
         - colorIndex: 5
+          iconNameOrGuid: StandaloneInputModule Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 0
+          iconNameOrGuid: PreMatCube
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 0
+          iconNameOrGuid: Canvas Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 0
+          iconNameOrGuid: PreMatCube
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 0
           iconNameOrGuid: StandaloneInputModule Icon
           isIconRecursive: 0
           isColorRecursive: 0

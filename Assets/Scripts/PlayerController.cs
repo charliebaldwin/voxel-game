@@ -153,6 +153,8 @@ public class PlayerController : MonoBehaviour
         cameraEuler.z = currentCameraLean;
         cameraPivot.localEulerAngles = cameraEuler;
 
+        DebugPanel.PlayerPosition = transform.position;
+
     }
 
 

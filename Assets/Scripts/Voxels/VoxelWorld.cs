@@ -464,12 +464,16 @@ public partial class VoxelWorld : MonoBehaviour
                 DEBUGTraversalColorList.Add(Color.white);
 
                 VoxelHitInfo hitData = new VoxelHitInfo(true);
+                hitData.voxel = hitVoxel;
                 hitData.hitNormal = hitNormal;
                 hitData.blockID = hitVoxel.BlockID;
                 hitData.voxelPos = stepPos;
                 hitData.hitPos = pos + t * dir;
+                hitData.chunkPos = FindContainingChunk(stepPos, ChunkSize);
+                hitData.localVoxelPos = WorldToLocal(stepPos, hitData.chunkPos, ChunkSize);
                 
                 DEBUGWorldHitPoint = hitData.hitPos;
+                DebugPanel.LastHitInfo = hitData;
 
                 return hitData;
             }

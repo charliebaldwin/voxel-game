@@ -27,6 +27,7 @@ public class PlayerView : MonoBehaviour
     public MeshRenderer ItemMeshRenderer;
     public Material NullMaterial;
     public Mesh NullMesh;
+    
 
     private Vector3 debugRayStart;
     private Vector3 debugRayEnd;
@@ -53,33 +54,17 @@ public class PlayerView : MonoBehaviour
     private IEnumerator CO_useTool = null;
 
 
-
-
-    private void OnDrawGizmos()
+    private void Start()
     {
-        Gizmos.color = Color.white;
-        Gizmos.DrawLine(debugRayStart, debugRayEnd);
+        UpdateEquippedItem(ItemRegistry.LookupItem(ItemID.NullItem));
+        UpdateItemModel();
+    }
+    void Update()
+    {
+        RaycastWorld();
+        //DoRaycast3(0);
+        //HandAnimator = GetComponent<Animator>();
 
-        Gizmos.color = Color.blue;
-        foreach (Vector3 p in colliderEnterPoints)
-        {
-            Gizmos.DrawSphere(p, 0.25f);
-        }
-
-        Gizmos.color = Color.red;
-        foreach (Vector3 p in colliderExitPoints)
-        {
-            Gizmos.DrawCube(p, new Vector3(0.5f, 0.5f, 0.5f));
-
-        }
-
-
-        if (lastHitInfo.didHit)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(debugRayEnd, lastHitInfo.hitPos);
-            Gizmos.DrawSphere(lastHitInfo.hitPos, 1f);
-        }
     }
 
     #region Input Handlers
@@ -152,6 +137,7 @@ public class PlayerView : MonoBehaviour
         if (heldItem != null && heldItem.ItemID != item.ItemID)
             HandAnimator.SetTrigger("Equip");
         heldItem = item;
+        DebugPanel.EquippedItem = item;
 
     }
 
@@ -187,16 +173,6 @@ public class PlayerView : MonoBehaviour
         }
     }
 
-
-    // Update is called once per frame
-    void Update()
-    {
-        RaycastWorld();
-        //DoRaycast3(0);
-        //HandAnimator = GetComponent<Animator>();
-
-    }
-
     private IEnumerator UseToolTimer()
     {
         usingTool = true;
@@ -221,7 +197,7 @@ public class PlayerView : MonoBehaviour
     private IEnumerator PlaceBlockTimer()
     {
         usingTool = true;
-        float duration = toolUseTime;
+        float duration = blockPlaceTime;
         DoSecondary();
         HandAnimator.SetTrigger("Hit");
         HandAnimator.SetFloat("ToolSpeed", 1f / duration);
@@ -321,6 +297,33 @@ public class PlayerView : MonoBehaviour
         else
         {
             VoxelCursor.SetActive(false);
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.white;
+        Gizmos.DrawLine(debugRayStart, debugRayEnd);
+
+        Gizmos.color = Color.blue;
+        foreach (Vector3 p in colliderEnterPoints)
+        {
+            Gizmos.DrawSphere(p, 0.25f);
+        }
+
+        Gizmos.color = Color.red;
+        foreach (Vector3 p in colliderExitPoints)
+        {
+            Gizmos.DrawCube(p, new Vector3(0.5f, 0.5f, 0.5f));
+
+        }
+
+
+        if (lastHitInfo.didHit)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(debugRayEnd, lastHitInfo.hitPos);
+            Gizmos.DrawSphere(lastHitInfo.hitPos, 1f);
         }
     }
 }

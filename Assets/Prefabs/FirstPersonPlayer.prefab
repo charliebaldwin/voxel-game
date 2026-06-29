@@ -443,6 +443,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 372cb29c-500b-4001-9574-f96e1454992d
     m_ActionName: 'FirstPerson/Sprint[/Keyboard/leftShift]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6e475f89-0b1b-49a0-a985-19a5248378e1
+    m_ActionName: 'FirstPerson/Tertiary[/Mouse/middleButton]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: dad7f475-bf78-4706-bf13-f06070af0b2f
+    m_ActionName: 'FirstPerson/NumKey[/Keyboard/1,/Keyboard/2,/Keyboard/3,/Keyboard/4,/Keyboard/5,/Keyboard/6,/Keyboard/7,/Keyboard/8,/Keyboard/9,/Keyboard/0]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8fb56065-c2cf-4584-8dbb-6c1831d9976d
+    m_ActionName: 'FirstPerson/LockCursor[/Keyboard/e]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6236e099-113d-43cb-81c8-dfdf057659ad
+    m_ActionName: 'FirstPerson/Scroll[/Mouse/scroll/down,/Mouse/scroll/up]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: FirstPerson
@@ -501,7 +517,6 @@ MonoBehaviour:
   Steps: 300
   VoxelCursor: {fileID: 0}
   PlayerInventory: {fileID: 0}
-  PlayerInventory2: {fileID: 0}
   UICubeMat: {fileID: 2100000, guid: 18d506c3bfbfa214fac62462c4b3e01e, type: 2}
   HandAnimator: {fileID: 248211493945182255}
   ItemMeshFilter: {fileID: 0}
@@ -649,7 +664,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5831429810673869784}
   - {fileID: 3153916117657818466}
+  - {fileID: 5831429810673869784}
   m_Father: {fileID: 3736821807430417006}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
