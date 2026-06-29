@@ -19,6 +19,8 @@ public partial class VoxelWorld : MonoBehaviour
 {
     public static VoxelWorld Instance { get; private set; }
 
+    public int DEBUG_CoCount = 0;
+
     [Foldout("World Settings")]
     public Vector3Int ChunkSize = new Vector3Int(8, 8, 8);
     [SerializeField] private Vector3Int WorldSize = new Vector3Int(32, 1, 32);
@@ -54,7 +56,8 @@ public partial class VoxelWorld : MonoBehaviour
 
     private void Awake()
     {
-        SetInstance();
+        //SetInstance();
+
     }
 
     void Start()
@@ -76,7 +79,7 @@ public partial class VoxelWorld : MonoBehaviour
         SetInstance();
         Initialized = true;
 
-        for(int i=transform.childCount-1; i>=0; i--)
+        for (int i = transform.childCount - 1; i >= 0; i--)
         {
             if (Application.isPlaying)
                 GameObject.Destroy(transform.GetChild(i).gameObject);
@@ -100,7 +103,7 @@ public partial class VoxelWorld : MonoBehaviour
         }
     }
 
-
+    #region CHUNK MANAGEMENT
     public void AddChunk(Vector3Int pos)
     {
         if (Chunks[pos.x, pos.z] == null)
@@ -114,27 +117,28 @@ public partial class VoxelWorld : MonoBehaviour
             MinMaxAABB bounds = new MinMaxAABB(new float3(pos.x * ChunkSize.x, 0f, pos.z * ChunkSize.z), new float3((pos.x + 1) * ChunkSize.x, ChunkSize.y, (pos.z + 1) * ChunkSize.z));
 
             Voxel[,,] chunkData = new Voxel[ChunkSize.x, ChunkSize.y, ChunkSize.z];
-  
+
             for (int x = 0; x < ChunkSize.x; x++)
             {
                 for (int y = 0; y < ChunkSize.y; y++)
                 {
                     for (int z = 0; z < ChunkSize.z; z++)
                     {
-                        Voxel v = LookupVoxel(new Vector3Int(x + pos.x * ChunkSize.x, y, z + pos.z * ChunkSize.z));
+                        //Voxel v = LookupVoxelWorld(new Vector3Int(x + pos.x * ChunkSize.x, y, z + pos.z * ChunkSize.z));
+                        Voxel v = Voxels[x + pos.x * ChunkSize.x, y, z + pos.z * ChunkSize.z];
                         chunkData[x, y, z] = v;
                     }
                 }
             }
             newChunk.InitializeChunk(ChunkSize, pos);
             newChunk.FillVoxelData(chunkData);
-            if (pos.x<=InitialLoadedChunks.x && pos.z <= InitialLoadedChunks.y)
+            if (pos.x <= InitialLoadedChunks.x && pos.z <= InitialLoadedChunks.y)
                 LoadChunk(pos);
         }
 
-        for(int x=0; x<WorldSize.x; x++) {
-            for (int z=0; z<WorldSize.z;z++) {
-                if (Chunks[x,z] != null)
+        for (int x = 0; x < WorldSize.x; x++) {
+            for (int z = 0; z < WorldSize.z; z++) {
+                if (Chunks[x, z] != null)
                     Chunks[x, z].FindNeighbors();
             }
         }
@@ -143,8 +147,9 @@ public partial class VoxelWorld : MonoBehaviour
     public void LoadChunk(Vector3Int coord)
     {
         if (IsChunkCoordInBounds(coord)) {
-            if (!Chunks[coord.x, coord.z].Loaded)
-                loadedChunks.Add(Chunks[coord.x, coord.z].LoadChunk());
+            if (Chunks[coord.x, coord.z] != null) 
+                if (!Chunks[coord.x, coord.z].Loaded)
+                    loadedChunks.Add(Chunks[coord.x, coord.z].LoadChunk());
         } else
         {
             Debug.Log("chunk outside bounds");
@@ -164,20 +169,14 @@ public partial class VoxelWorld : MonoBehaviour
                 LoadChunkSpread(coord + Vector3Int.back, spreadDist);
                 LoadChunkSpread(coord + Vector3Int.forward, spreadDist);
             }
-            
         }
-        //else
-        //    Debug.Log("chunk outside bounds");
     }
 
     public void UnloadChunk(Vector3Int coord)
     {
         if (IsChunkCoordInBounds(coord)) {
             loadedChunks.Remove(Chunks[coord.x, coord.z].UnloadChunk());
-        } else
-        {
-           // Debug.Log("chunk outside bounds");
-        }    
+        } 
     }
 
     public void UnloadDistantChunks(Vector3Int centerCoord, int dist)
@@ -186,38 +185,41 @@ public partial class VoxelWorld : MonoBehaviour
         foreach (VoxelChunk c in loadedChunks)
         {
             Vector2 center = new Vector2(centerCoord.x, centerCoord.z);
-            Vector2 chunkPos = new Vector2(c.ChunkCoord.x, c.ChunkCoord.y);
+            Vector2 chunkPos = new Vector2(c.ChunkCoord.x, c.ChunkCoord.z);
             if (Vector2.Distance(center, chunkPos) > dist)
             {
                 chunksToUnload.Add(c);
             }
         }
-        foreach(VoxelChunk c in chunksToUnload)
+        foreach (VoxelChunk c in chunksToUnload)
         {
             UnloadChunk(c.ChunkCoord);
         }
         chunksToUnload.Clear();
     }
-
-    public Vector3Int debugChunkToUnload = Vector3Int.zero;
-    [Button(name="DebugUnloadChunk")]
-    public void DebugUnloadChunk()
+    public VoxelChunk GetContainingChunk(Vector3Int worldPos)
     {
-        UnloadChunk(debugChunkToUnload);
+        Vector3Int chunkCoord = new Vector3Int(Mathf.FloorToInt(worldPos.x / WorldSize.x), 0, Mathf.FloorToInt(worldPos.z / WorldSize.z));
+        if (IsChunkCoordInBounds(chunkCoord))
+        {
+            return Chunks[chunkCoord.x, chunkCoord.z];
+        }
+        return null;
     }
-
     public VoxelChunk GetChunk(Vector3Int chunkCoord)
     {
-        if (chunkCoord.x >= 0 && chunkCoord.z >= 0 && chunkCoord.x < WorldSize.x &&  chunkCoord.z < WorldSize.z)
+        //if (chunkCoord.x >= 0 && chunkCoord.z >= 0 && chunkCoord.x < WorldSize.x && chunkCoord.z < WorldSize.z)
+        if (IsChunkCoordInBounds(chunkCoord))
         {
             if (Chunks[chunkCoord.x, chunkCoord.z] != null)
                 return Chunks[chunkCoord.x, chunkCoord.z];
             else
                 return null;
-        } 
+        }
         else
-            return null;       
+            return null;
     }
+    #endregion
 
     private void Loop3D(Action<int, int, int> loopFunction)
     {
@@ -262,28 +264,23 @@ public partial class VoxelWorld : MonoBehaviour
                 float h = noise * GenerationSettings.HeightRange + GenerationSettings.HeightOffset;
                 h = h + (noise2 * GenerationSettings.HeightRange * 4);
 
-
                 for (int y = 0; y < Size3D.y; y++)
                 {
                     if (y < h)
-                    {
                         Voxels[x, y, z] = new Voxel(BlockID.Dirt, 0, orientation, BlockShape.Solid);
-                    }
                     else
-                    {
                         Voxels[x, y, z] = new Voxel(BlockID.Air, 0, 0, BlockShape.Empty);
-                    }
                 }
             }
         }
 
         Loop3D(GenerateGrassAction);
 
-        Vector3Int[] sphere = GetCoordinateSphere(new Vector3Int(20,12, 20), 10f);
+        Vector3Int[] sphere = GetCoordinateSphere(new Vector3Int(20, 12, 20), 10f);
         foreach (Vector3Int p in sphere)
         {
             Voxels[p.x, p.y, p.z] = new Voxel(BlockID.Stone, 0, 0, BlockShape.Solid);
-            Voxels[p.x,p.y, p.z].Toughness = 24;
+            Voxels[p.x, p.y, p.z].Toughness = 24;
         }
     }
 
@@ -299,11 +296,11 @@ public partial class VoxelWorld : MonoBehaviour
     private Vector3Int[] GetCoordinateCuboid(Vector3Int cornerPos, Vector3Int size)
     {
         List<Vector3Int> points = new List<Vector3Int>();
-        for (int x = 0;x < size.x; x++)
+        for (int x = 0; x < size.x; x++)
         {
-            for (int y=0;y < size.y; y++)
+            for (int y = 0; y < size.y; y++)
             {
-                for (int z=0;z < size.z; z++)
+                for (int z = 0; z < size.z; z++)
                 {
                     points.Add(cornerPos + new Vector3Int(x, y, z));
                 }
@@ -339,25 +336,32 @@ public partial class VoxelWorld : MonoBehaviour
 
     private IEnumerator BlockUpdateCO()
     {
-        for (int i = 0; i < loadedChunks.Count; i++) {
-            loadedChunks[i].BlockUpdate();
+        List<VoxelChunk> tempLoadedChunks = loadedChunks;
+        for (int i = 0; i < tempLoadedChunks.Count; i++) {
+            tempLoadedChunks[i].BlockUpdate();
             //Debug.Log($"chunk {loadedChunks[i].ChunkCoord} updated");
             yield return new WaitForSeconds(BlockUpdateDelay);
         }
 
-        blockUpdate_co = BlockUpdateCO();
+        //StopCoroutine(blockUpdate_co);
+        //blockUpdate_co = BlockUpdateCO();
         StartCoroutine(blockUpdate_co);
     }
 
 
-    public Voxel LookupVoxel(Vector3Int worldPos)
+    public Voxel LookupVoxelWorld(Vector3Int worldPos)
     {
         Vector3Int chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
-
         if (CheckWorldBounds(worldPos))
-            return Voxels[worldPos.x, worldPos.y, worldPos.z];
-        else
-            return new Voxel(0, 0, 0);
+        {
+            VoxelChunk chunk = GetContainingChunk(worldPos);
+            if (chunk != null)
+            {
+                return chunk.GetVoxel(worldPos);
+            }
+            //return Voxels[worldPos.x, worldPos.y, worldPos.z];
+        }
+        return new Voxel(BlockID.Invalid, 0, 0);
     }
     public void DamageVoxel(Vector3 worldPos, VoxelHitInfo hitInfo, byte damage)
     {
@@ -386,7 +390,9 @@ public partial class VoxelWorld : MonoBehaviour
 
             Vector3Int chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
             VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.z];
-            Debug.Log($"World is placing block, id={data.BlockID}, isEntity={data.IsBlockEntity}");
+            
+            //Debug.Log($"World is placing block, id={data.BlockID}, isEntity={data.IsBlockEntity}");
+            
             if (data.IsBlockEntity)
             {
                 BlockEntityActor entity = Instantiate(BlockEntityPrefab, chunk.transform).GetComponent<BlockEntityActor>();
@@ -451,7 +457,8 @@ public partial class VoxelWorld : MonoBehaviour
         {
             DEBUGTraversalPosList.Add(stepPos);
 
-            Voxel hitVoxel = LookupVoxel(stepPos);
+            Voxel hitVoxel = LookupVoxelWorld(stepPos);
+
             if (hitVoxel.BlockID > BlockID.Air)
             {
                 DEBUGTraversalColorList.Add(Color.white);

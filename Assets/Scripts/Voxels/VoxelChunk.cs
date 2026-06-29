@@ -258,7 +258,7 @@ public class VoxelChunk : MonoBehaviour
             for (int n = 0; n < 6; n++)
             {
                 Vector3Int dir = OrthoDirs[n].AlignYZ(vox.UpAxis, vox.ForwardAxis).ToVector();
-                BlockShape neighborShape = World().LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + dir, ChunkCoord, Size3D)).Shape;
+                BlockShape neighborShape = World().LookupVoxelWorld(LocalToWorld(new Vector3Int(x, y, z) + dir, ChunkCoord, Size3D)).Shape;
                 neighbors[n] = (neighborShape == BlockShape.Solid) ? 1 : 0;
                 //neighbors[n] = (int)World().LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).Shape;
             }
@@ -274,8 +274,8 @@ public class VoxelChunk : MonoBehaviour
 
     private bool GetVoxelFaceVisible(Vector3Int pos, Vector3Int faceDirection)
     {
-        Voxel thisVoxel = World().LookupVoxel(LocalToWorld(pos, ChunkCoord, Size3D));
-        Voxel neighborVoxel = World().LookupVoxel(LocalToWorld(pos + faceDirection, ChunkCoord, Size3D));
+        Voxel thisVoxel = World().LookupVoxelWorld(LocalToWorld(pos, ChunkCoord, Size3D));
+        Voxel neighborVoxel = World().LookupVoxelWorld(LocalToWorld(pos + faceDirection, ChunkCoord, Size3D));
         return neighborVoxel.BlockID == 0 && thisVoxel.BlockID > 0;
     }
     #endregion
@@ -305,7 +305,8 @@ public class VoxelChunk : MonoBehaviour
             case (BlockID.Dirt):
                 if (y < Size3D.y - 1)
                 {
-                    Voxel upVoxel = World().LookupVoxel(LocalToWorldPos((pos + new Vector3Int(0, 1, 0))));
+                    //Voxel upVoxel = World().LookupVoxel(LocalToWorldPos((pos + new Vector3Int(0, 1, 0))));
+                    Voxel upVoxel = GetVoxelLocal(pos + Vector3Int.up);
                     if (upVoxel.BlockID == BlockID.Air)
                     {
                         // grow into dirt with random chance
@@ -346,10 +347,14 @@ public class VoxelChunk : MonoBehaviour
         Vector3Int localPos = WorldToLocal(worldPos, ChunkCoord, Size3D);
         return Voxels[localPos.x, localPos.y, localPos.z];
     }
+    public Voxel GetVoxelLocal(Vector3Int localPos)
+    {
+        return Voxels[localPos.x, localPos.y, localPos.z];
+    }
 
     public Voxel LookupWorldVoxel(Vector3Int localPos)
     {
-        return World().LookupVoxel(LocalToWorldPos(localPos));
+        return World().LookupVoxelWorld(LocalToWorldPos(localPos));
     }
 
     public Vector3Int LocalToWorldPos(Vector3Int localPos)

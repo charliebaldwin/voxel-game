@@ -50,7 +50,7 @@ public struct VoxelMesherJob : IJob
 
                         int[] neighbors = new int[6] { 0, 0, 0, 0, 0, 0 };
                         for (int n = 0; n < 6; n++)
-                            neighbors[n] = (int)World().LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).Shape;
+                            neighbors[n] = (int)World().LookupVoxelWorld(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).Shape;
 
                         BlockModel model = new BlockModel(pos, t, neighbors, new Voxel(voxID, 0, 0));
                         foreach (Vector3 v in model.vertices)
