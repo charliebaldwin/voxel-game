@@ -155,8 +155,8 @@ public class InventoryManager : MonoBehaviour
         if (mouseTile != null)
             lastCell.ClickCell();
         canvasGroup.alpha = 0;
-        HoverWindow.HideWindow();
-        hoveredTile = null;
+        //HoverWindow.HideWindow();
+       // hoveredTile = null;
 
     }
     public void Open()
@@ -183,7 +183,7 @@ public class InventoryManager : MonoBehaviour
             itemNameText.text = "";
            // Debug.Log($"equipped: {equippedItem.Name}, new: nullItem (from slot {hotbarSlot})"); ;
             equippedItem = nullItem;
-            viewController.UpdateEquippedItem(equippedItem);
+            //viewController.UpdateEquippedItem(equippedItem);
         }
 
     }
@@ -202,15 +202,15 @@ public class InventoryManager : MonoBehaviour
 
     public void StartCellHover(InventoryCell cell)
     {
-        hoveredTile = cell.GetTile();
-        HoverWindow.SetItemText(hoveredTile.GetItemData());
-        HoverWindow.ShowWindow();
+        //hoveredTile = cell.GetTile();
+        //HoverWindow.SetItemText(hoveredTile.GetItemData());
+       // HoverWindow.ShowWindow();
 
     }
     public void EndCellHover(InventoryCell cell)
     {
-        HoverWindow.HideWindow();
-        hoveredTile = null;
+       // HoverWindow.HideWindow();
+       // hoveredTile = null;
     }
 
     public TooltipPreset GetTooltipPreset(ItemRarity rarity)
@@ -226,7 +226,7 @@ public class InventoryManager : MonoBehaviour
         }
         if (hoveredTile != null)
         {
-            hoverWindow.transform.position = mousePos + Vector3.forward * 0.3f;
+           // hoverWindow.transform.position = mousePos + Vector3.forward * 0.3f;
         }
     }
 }

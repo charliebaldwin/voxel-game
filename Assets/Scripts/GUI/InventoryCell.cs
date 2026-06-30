@@ -7,10 +7,11 @@ public class InventoryCell : MonoBehaviour
     [SerializeField] private ItemTile tile;
     [SerializeField] private InventoryManager inventory;
     [SerializeField] private Tooltip tooltip;
+    [SerializeField] private RectTransform tileContainer;
     private void Awake()
     {
         FindTile();
-        tooltip = GetComponent<Tooltip>();
+        tooltip = GetComponentInChildren<Tooltip>();
     }
     public void FindTile()
     {
@@ -45,7 +46,7 @@ public class InventoryCell : MonoBehaviour
         }
         if (tile != null)
         {
-            tile.transform.SetParent(transform);
+            tile.transform.SetParent(tileContainer);
             tile.transform.localPosition = Vector3.zero;
         }
         UpdateTooltip();

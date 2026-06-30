@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 256, y: 0}
+  m_SizeDelta: {x: 0, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1827940486477989608
 CanvasRenderer:
@@ -64,7 +64,7 @@ MonoBehaviour:
   targetGradient: {fileID: 0}
   objectType: 1
   colorID: Text_Body
-  fontID: Lexend Light
+  fontID: Body
   gradientID: 
   spriteID: 
   useCustomColor: 0
@@ -129,8 +129,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Description here
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: b0ccac5f0d24d7c4bac6f73c7e22ace6, type: 2}
-  m_sharedMaterial: {fileID: 8892177534408891622, guid: b0ccac5f0d24d7c4bac6f73c7e22ace6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9cfeff32dc8bab5429a5fbefbae08d97, type: 2}
+  m_sharedMaterial: {fileID: -3648741888798621235, guid: 9cfeff32dc8bab5429a5fbefbae08d97, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -154,20 +154,20 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: -24.77
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: 26.27
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -193,7 +193,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 10, y: 2.12, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -322,8 +322,8 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: 22
-  m_PreferredHeight: 22
+  m_PreferredWidth: 50
+  m_PreferredHeight: 50
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -421,7 +421,7 @@ MonoBehaviour:
   targetGradient: {fileID: 0}
   objectType: 1
   colorID: Rarity_Common
-  fontID: Lexend Bold
+  fontID: Title
   gradientID: 
   spriteID: 
   useCustomColor: 0
@@ -484,10 +484,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Title here
+  m_text: 'Gold Pickaxe
+
+'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 108ed4187a5e54948ae1553dfb2e66aa, type: 2}
-  m_sharedMaterial: {fileID: -1737242653038343440, guid: 108ed4187a5e54948ae1553dfb2e66aa, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: afef91ff4f1d7214a8edd160164061e6, type: 2}
+  m_sharedMaterial: {fileID: 597536911153180408, guid: afef91ff4f1d7214a8edd160164061e6, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -511,15 +513,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 80
+  m_fontSizeBase: 80
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -550,7 +552,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 5, z: -1023.4453, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -589,10 +591,10 @@ RectTransform:
   - {fileID: 3917910699623733799}
   m_Father: {fileID: 1591939791162549003}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -1.2000122, y: -107.5}
+  m_SizeDelta: {x: -57.6, y: 170}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &184521310817380856
 MonoBehaviour:
@@ -612,11 +614,11 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 0
+  m_Spacing: -2
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
@@ -632,7 +634,7 @@ GameObject:
   - component: {fileID: 1209974628422414733}
   - component: {fileID: 4380582020431297582}
   - component: {fileID: 1232890731749012881}
-  - component: {fileID: 6439842937521448100}
+  - component: {fileID: 9221450909187097559}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -681,7 +683,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: {fileID: 11400000, guid: abf862877ce41244cb7a5b1b8831299f, type: 2}
-  targetGraphic: {fileID: 6439842937521448100}
+  targetGraphic: {fileID: 9221450909187097559}
   targetText: {fileID: 0}
   targetGradient: {fileID: 0}
   objectType: 0
@@ -749,7 +751,7 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &6439842937521448100
+--- !u!114 &9221450909187097559
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -758,9 +760,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4248520516174356559}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 000d98cb17947fd458b36c27f5472af5, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Evo.UI::Evo.UI.ProceduralRect
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.14117648, g: 0.15686275, b: 0.17254902, a: 1}
   m_RaycastTarget: 1
@@ -769,175 +771,16 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  sprite: {fileID: 0}
-  scaleMode: 1
-  raycastMode: 1
-  clipMethod: 0
-  clipOrigin: 0
-  clipAmount: 1
-  clipClockwise: 1
-  fillCenter: 1
-  softness: 0
-  fillColorMode: 0
-  fillColor: {r: 1, g: 1, b: 1, a: 1}
-  fillGradient:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  fillGradientAngle: 0
-  fillGradientZoom: 1
-  fillGradientReverse: 0
-  outlineWidth: 0
-  outlineColorMode: 1
-  outlineColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  outlineGradient:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  outlineGradientAngle: 0
-  outlineGradientZoom: 1
-  outlineGradientReverse: 0
-  radiusMode: 1
-  independentCorners: 0
-  squircleCorners: 1
-  cornerRadius: {x: 90.1, y: 90.1, z: 90.1, w: 90.1}
-  radiusSyncMode: 0
-  radiusSyncTarget: {fileID: 0}
-  innerShadowOffset: {x: 0, y: 0}
-  innerShadowSize: 0
-  innerShadowSoftness: 0
-  innerShadowColorMode: 1
-  innerShadowColor: {r: 0, g: 0, b: 0, a: 0.5}
-  innerShadowGradient:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  innerShadowGradientAngle: 0
-  innerShadowGradientZoom: 1
-  innerShadowGradientReverse: 0
-  outerShadowOffset: {x: 0, y: 0}
-  outerShadowSize: 0
-  outerShadowSoftness: 0
-  outerShadowColorMode: 1
-  outerShadowColor: {r: 0, g: 0, b: 0, a: 0.5}
-  outerShadowGradient:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  outerShadowGradientAngle: 0
-  outerShadowGradientZoom: 1
-  outerShadowGradientReverse: 0
-  embeddedShader: {fileID: 4800000, guid: b7598b26455755d49879b2d607c81dcf, type: 3}
-  graphicFoldout: 1
-  fillFoldout: 1
-  outlineFoldout: 0
-  cornerRadiusFoldout: 1
-  innerShadowFoldout: 0
-  outerShadowFoldout: 0
+  m_Sprite: {fileID: 21300000, guid: c4824d6e79df3094696241c548724925, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &5522925556100278261
 GameObject:
   m_ObjectHideFlags: 0
@@ -978,8 +821,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 387.5, y: -115}
+  m_SizeDelta: {x: 1200, y: 245}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4370084859135340074
 MonoBehaviour:
@@ -1014,8 +857,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 2
-  m_VerticalFit: 2
+  m_HorizontalFit: 0
+  m_VerticalFit: 0
 --- !u!114 &4964287495663965527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1023,7 +866,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5522925556100278261}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
   m_Name: 
@@ -1085,7 +928,7 @@ GameObject:
   - component: {fileID: 408049976008939684}
   - component: {fileID: 276461100151249364}
   - component: {fileID: 7249664409899870752}
-  - component: {fileID: 8398181920420849589}
+  - component: {fileID: 2380268626912512005}
   m_Layer: 5
   m_Name: Border
   m_TagString: Untagged
@@ -1133,7 +976,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: {fileID: 11400000, guid: abf862877ce41244cb7a5b1b8831299f, type: 2}
-  targetGraphic: {fileID: 8398181920420849589}
+  targetGraphic: {fileID: 2380268626912512005}
   targetText: {fileID: 0}
   targetGradient: {fileID: 0}
   objectType: 0
@@ -1181,7 +1024,7 @@ MonoBehaviour:
   referencesFoldout: 1
   settingsFoldout: 1
   interactionFoldout: 0
---- !u!114 &8398181920420849589
+--- !u!114 &2380268626912512005
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1190,9 +1033,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6492778837718375796}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 000d98cb17947fd458b36c27f5472af5, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Evo.UI::Evo.UI.ProceduralRect
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 1}
   m_RaycastTarget: 1
@@ -1201,175 +1044,16 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  sprite: {fileID: 0}
-  scaleMode: 1
-  raycastMode: 1
-  clipMethod: 0
-  clipOrigin: 0
-  clipAmount: 1
-  clipClockwise: 1
-  fillCenter: 0
-  softness: 0
-  fillColorMode: 0
-  fillColor: {r: 1, g: 1, b: 1, a: 1}
-  fillGradient:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  fillGradientAngle: 0
-  fillGradientZoom: 1
-  fillGradientReverse: 0
-  outlineWidth: 6.82
-  outlineColorMode: 0
-  outlineColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  outlineGradient:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  outlineGradientAngle: 0
-  outlineGradientZoom: 1
-  outlineGradientReverse: 0
-  radiusMode: 0
-  independentCorners: 0
-  squircleCorners: 0
-  cornerRadius: {x: 0, y: 0, z: 0, w: 0}
-  radiusSyncMode: 1
-  radiusSyncTarget: {fileID: 0}
-  innerShadowOffset: {x: 0, y: 0}
-  innerShadowSize: 0
-  innerShadowSoftness: 0
-  innerShadowColorMode: 1
-  innerShadowColor: {r: 0, g: 0, b: 0, a: 0.5}
-  innerShadowGradient:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  innerShadowGradientAngle: 0
-  innerShadowGradientZoom: 1
-  innerShadowGradientReverse: 0
-  outerShadowOffset: {x: 0, y: 0}
-  outerShadowSize: 0
-  outerShadowSoftness: 0
-  outerShadowColorMode: 1
-  outerShadowColor: {r: 0, g: 0, b: 0, a: 0.5}
-  outerShadowGradient:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  outerShadowGradientAngle: 0
-  outerShadowGradientZoom: 1
-  outerShadowGradientReverse: 0
-  embeddedShader: {fileID: 4800000, guid: b7598b26455755d49879b2d607c81dcf, type: 3}
-  graphicFoldout: 1
-  fillFoldout: 1
-  outlineFoldout: 1
-  cornerRadiusFoldout: 1
-  innerShadowFoldout: 1
-  outerShadowFoldout: 0
+  m_Sprite: {fileID: 21300000, guid: 679c3236fac436e468cf63aaa49ee01a, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &7007462164840196972
 GameObject:
   m_ObjectHideFlags: 0
@@ -1564,7 +1248,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 256, y: 0}
+  m_SizeDelta: {x: 0, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1187227421526358966
 MonoBehaviour:
@@ -1584,7 +1268,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
-  m_Spacing: 8
+  m_Spacing: 18
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1

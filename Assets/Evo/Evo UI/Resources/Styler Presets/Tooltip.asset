@@ -51,12 +51,10 @@ MonoBehaviour:
   - itemID: Text_Body
     colorValue: {r: 1, g: 1, b: 1, a: 1}
   fontItems:
-  - itemID: Lexend Regular
-    fontAsset: {fileID: 11400000, guid: ee54e8a4f4bad4b42afdd78ce3a78664, type: 2}
-  - itemID: Lexend Light
-    fontAsset: {fileID: 11400000, guid: b0ccac5f0d24d7c4bac6f73c7e22ace6, type: 2}
-  - itemID: Lexend Bold
-    fontAsset: {fileID: 11400000, guid: 108ed4187a5e54948ae1553dfb2e66aa, type: 2}
+  - itemID: Body
+    fontAsset: {fileID: 11400000, guid: 9cfeff32dc8bab5429a5fbefbae08d97, type: 2}
+  - itemID: Title
+    fontAsset: {fileID: 11400000, guid: afef91ff4f1d7214a8edd160164061e6, type: 2}
   gradientItems: []
   spriteItems: []
   updateMode: 1
