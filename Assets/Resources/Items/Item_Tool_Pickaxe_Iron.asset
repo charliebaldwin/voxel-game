@@ -18,9 +18,11 @@ MonoBehaviour:
     ItemID: 14
     Tooltip: Item tooltip
     StackSize: 1
+    Rarity: 1
     GUIIcon: {fileID: 21300000, guid: 846241de0d5b0bb40b5c1edac12346b7, type: 3}
     ViewmodelMesh: {fileID: 8573983735195795733, guid: 4fbafe63c35ef3b48a71dadd48faefe7, type: 3}
     ViewmodelMat: {fileID: 2100000, guid: 9278495cef1f3d04bbdb519446267ef9, type: 2}
+    TooltipIcon: {fileID: 21300000, guid: 953e97af493262b48a344f2f8acdd1da, type: 3}
     BlockID: 0
     TextureIndex: 0
     Strength: 6

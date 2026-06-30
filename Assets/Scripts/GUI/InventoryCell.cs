@@ -1,11 +1,26 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Evo.UI;
 
 public class InventoryCell : MonoBehaviour
 {
     [SerializeField] private ItemTile tile;
-
     [SerializeField] private InventoryManager inventory;
+    [SerializeField] private Tooltip tooltip;
+    private void Awake()
+    {
+        FindTile();
+        tooltip = GetComponent<Tooltip>();
+    }
+    public void FindTile()
+    {
+        if (tile == null)
+        {
+            tile = gameObject.GetComponentInChildren<ItemTile>();
+        }
+        UpdateTooltip();
+    }
+
     public void ClickCell()
     {
         //Debug.Log($"clicked {gameObject.name}");
@@ -33,6 +48,7 @@ public class InventoryCell : MonoBehaviour
             tile.transform.SetParent(transform);
             tile.transform.localPosition = Vector3.zero;
         }
+        UpdateTooltip();
     }
 
     public ItemTile GetTile()
@@ -44,21 +60,24 @@ public class InventoryCell : MonoBehaviour
     {
         Destroy(tile.gameObject);
         tile = null;
-    }
-    public void FindTile()
-    {
-        if (tile == null)
-        {
-            tile = gameObject.GetComponentInChildren<ItemTile>();
-        }
-    }
-    private void Awake()
-    {
-        FindTile();
+        UpdateTooltip();
     }
 
-    private void Update()
+
+    private void UpdateTooltip()
     {
+        if (tile == null )
+        {
+            tooltip.enabled = false;
+        } else
+        {
+            Item item = tile.GetItemData();
+            tooltip.enabled = true;
+            tooltip.tooltipPreset = inventory.GetTooltipPreset(item.Rarity).gameObject;
+            tooltip.title = item.Name;
+            tooltip.description = item.Tooltip;
+            tooltip.icon = item.TooltipIcon;
+        }
     }
 
     public void OnHoverBegin()

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3087550351459380226}
   - component: {fileID: 7646442814755844888}
   - component: {fileID: 4812903215887742920}
+  - component: {fileID: 6192867745986634655}
   m_Layer: 5
   m_Name: Inv_Cell
   m_TagString: Untagged
@@ -62,6 +63,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryCell
   tile: {fileID: 0}
   inventory: {fileID: 0}
+  tooltip: {fileID: 6192867745986634655}
 --- !u!114 &3087550351459380226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,7 +77,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Evo.UI::Evo.UI.ProceduralRect
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2264151, g: 0.2264151, b: 0.2264151, a: 1}
+  m_Color: {r: 0.2264151, g: 0.2264151, b: 0.2264151, a: 0.4392157}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -91,8 +93,8 @@ MonoBehaviour:
   clipClockwise: 1
   fillCenter: 1
   softness: 0
-  fillColorMode: 0
-  fillColor: {r: 1, g: 1, b: 1, a: 1}
+  fillColorMode: 1
+  fillColor: {r: 0, g: 0, b: 0, a: 0.85882354}
   fillGradient:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}
@@ -247,7 +249,7 @@ MonoBehaviour:
   embeddedShader: {fileID: 4800000, guid: b7598b26455755d49879b2d607c81dcf, type: 3}
   graphicFoldout: 1
   fillFoldout: 1
-  outlineFoldout: 0
+  outlineFoldout: 1
   cornerRadiusFoldout: 1
   innerShadowFoldout: 0
   outerShadowFoldout: 0
@@ -263,7 +265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0f503d8a54a79b428dfbcb4448abeac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Evo.UI::Evo.UI.StylerObject
-  preset: {fileID: 11400000, guid: c6c9a77557a8c8249b1fcef5dc5c29a6, type: 2}
+  preset: {fileID: 11400000, guid: abf862877ce41244cb7a5b1b8831299f, type: 2}
   targetGraphic: {fileID: 3087550351459380226}
   targetText: {fileID: 0}
   targetGradient: {fileID: 0}
@@ -470,3 +472,70 @@ MonoBehaviour:
   navigationFoldout: 0
   referencesFoldout: 0
   eventsFoldout: 1
+--- !u!114 &6192867745986634655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7060647758088366276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d8e447c9cf19a04cb21d02bc46c3bd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Evo.UI::Evo.UI.Tooltip
+  tooltipPreset: {fileID: 5522925556100278261, guid: 96fe01f5c2f2b774888ef390fdaf2850, type: 3}
+  icon: {fileID: 21300000, guid: c335f3f06ff1baf40a74cbafc91ca9fe, type: 3}
+  title: Tooltip
+  description: 'This is a tool
+
+    tip'
+  followCursor: 0
+  is3DObject: 0
+  maxWidth: 400
+  showDelay: 0
+  movementSmoothing: 0
+  animationType: 3
+  animationDuration: 0.1
+  animationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  scaleFrom: 0.7
+  slideOffset: {x: -40, y: 0}
+  offsetPosition: 8
+  customOffset: {x: 10, y: 10}
+  offsetDistance: 75
+  screenEdgePadding: 10
+  tooltipCanvas: {fileID: 0}
+  customContent: {fileID: 0}
+  onShow:
+    m_PersistentCalls:
+      m_Calls: []
+  onHide:
+    m_PersistentCalls:
+      m_Calls: []
+  contentFoldout: 1
+  settingsFoldout: 1
+  referencesFoldout: 0
+  eventsFoldout: 0

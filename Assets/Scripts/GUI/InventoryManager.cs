@@ -1,3 +1,4 @@
+using Evo.UI;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,10 @@ public class InventoryManager : MonoBehaviour
     public List<InventoryCell> InventoryCells;
     public List<InventoryCell> HotbarCells;
 
+    public List<TooltipPreset> tooltipPresets;
+
+
+
     private void Awake()
     {
         InventoryCells = GetComponentsInChildren<InventoryCell>().ToList<InventoryCell>();
@@ -60,9 +65,7 @@ public class InventoryManager : MonoBehaviour
                 Debug.Log(itemData.Name);
 
                 ItemTile newItemTile = Instantiate(itemTilePrefab).GetComponent<ItemTile>();
-
                 newItemTile.Stack = InitialStacks[i];
-                newItemTile.Item = itemData;
                 newItemTile.transform.SetParent(InventoryCells[i].transform, false);
                 newItemTile.transform.localPosition = Vector3.zero;
 
@@ -123,7 +126,7 @@ public class InventoryManager : MonoBehaviour
 
         ItemTile tileToDrop = mouseTile;
 
-        if (cellTile.Item.ItemID != mouseTile.Item.ItemID)
+        if (cellTile.GetItemData().ItemID != mouseTile.GetItemData().ItemID)
         {
             mouseTile = null;
             PickupTile(lastCell, cellTile);
@@ -168,11 +171,11 @@ public class InventoryManager : MonoBehaviour
         ItemTile tile = HotbarCells[hotbarSlot].GetTile();
 
         if (tile != null && equippedItem != null) {
-            itemNameText.text = tile.Item.Name;
+            itemNameText.text = tile.GetItemData().Name;
            // Debug.Log($"equipped: {equippedItem.Name}, new: {tile.Item.Name} (from slot {hotbarSlot})");
-            if (equippedItem.Name != tile.Item.Name)
+            if (equippedItem.Name != tile.GetItemData().Name)
             {
-                equippedItem = tile.Item;
+                equippedItem = tile.GetItemData();
                 viewController.UpdateEquippedItem(equippedItem);
             }
         } else
@@ -200,7 +203,7 @@ public class InventoryManager : MonoBehaviour
     public void StartCellHover(InventoryCell cell)
     {
         hoveredTile = cell.GetTile();
-        HoverWindow.SetItemText(hoveredTile.Item);
+        HoverWindow.SetItemText(hoveredTile.GetItemData());
         HoverWindow.ShowWindow();
 
     }
@@ -208,6 +211,11 @@ public class InventoryManager : MonoBehaviour
     {
         HoverWindow.HideWindow();
         hoveredTile = null;
+    }
+
+    public TooltipPreset GetTooltipPreset(ItemRarity rarity)
+    {
+        return tooltipPresets[(int)rarity];
     }
 
     // Update is called once per frame

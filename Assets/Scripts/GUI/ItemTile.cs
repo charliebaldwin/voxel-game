@@ -8,7 +8,6 @@ public class ItemTile : MonoBehaviour
     public int ItemCount = 1;
     public int ItemIDInt = 0;
     public ItemStack Stack;
-    public Item Item;
     public TextMeshProUGUI countText;
     private Image tileImage;
 
@@ -20,7 +19,7 @@ public class ItemTile : MonoBehaviour
 
     public void InitializeTile()
     {
-        tileImage.sprite = Item.GUIIcon;
+        tileImage.sprite = GetItemData().GUIIcon;
         //Debug.Log($"initializing tile with item {Item.Name}");
         UpdateCountText();
     }
@@ -43,6 +42,11 @@ public class ItemTile : MonoBehaviour
     public void AddCount (int count)
     {
         SetCount(Stack.Count + count);
+    }
+
+    public Item GetItemData()
+    {
+        return ItemRegistry.LookupItem(Stack.ItemID);
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

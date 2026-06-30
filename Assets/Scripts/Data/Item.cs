@@ -10,12 +10,14 @@ public class Item
     public ItemID ItemID = ItemID.NullItem;
     public string Tooltip = "Item tooltip";
     public int StackSize = 999;
+    public ItemRarity Rarity = ItemRarity.Common;
+
 
     [Header("Rendering")]
     public Sprite GUIIcon;
     public Mesh ViewmodelMesh;
     public Material ViewmodelMat;
-
+    public Sprite TooltipIcon;
 
     [Header("Block Data")]
     public BlockID BlockID;

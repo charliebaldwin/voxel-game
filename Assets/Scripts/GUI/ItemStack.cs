@@ -6,7 +6,16 @@ public class ItemStack
 {
     public ItemID ItemID;
     public int Count = 1;
+    public ItemStack(ItemID id, int count)
+    {
+        ItemID = id;
+        Count = count;
+    }
 
+    public Item GetItemData()
+    {
+        return ItemRegistry.LookupItem(ItemID);
+    }
     public int SetCount(int newCount)
     {
         int max = ItemRegistry.LookupItem(ItemID).StackSize;
@@ -22,9 +31,6 @@ public class ItemStack
             return remainder;
         }
     }
-    public ItemStack(ItemID id, int count)
-    {
-        ItemID = id;
-        Count = count;
-    }
+
+
 }
