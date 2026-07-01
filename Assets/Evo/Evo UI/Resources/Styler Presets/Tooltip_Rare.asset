@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42939178eadba994ab57405394a12e26, type: 3}
+  m_Name: Tooltip_Rare
+  m_EditorClassIdentifier: 
+  audioItems:
+  - itemID: Hover SFX
+    audioAsset: {fileID: 8300000, guid: dd9ee4ce18edbc34191b74119ac21f4f, type: 3}
+  - itemID: Click SFX
+    audioAsset: {fileID: 8300000, guid: 503de6bf0c32f134f96d4a92662f3e45, type: 3}
+  - itemID: Notification SFX
+    audioAsset: {fileID: 8300000, guid: 04ee76c723465b54196cedac182ba2c1, type: 3}
+  colorItems:
+  - itemID: Primary
+    colorValue: {r: 0.2264151, g: 0.2264151, b: 0.2264151, a: 0.4392157}
+  - itemID: Primary (Soft)
+    colorValue: {r: 1, g: 1, b: 1, a: 0.039215688}
+  - itemID: Primary (Tint)
+    colorValue: {r: 1, g: 1, b: 1, a: 0.19607843}
+  - itemID: Secondary
+    colorValue: {r: 0.9056604, g: 0.9056604, b: 0.9056604, a: 0.67058825}
+  - itemID: Accent
+    colorValue: {r: 0.32807237, g: 0.543103, b: 0.72955966, a: 0.5411765}
+  - itemID: Accent (Soft)
+    colorValue: {r: 0.3921569, g: 0.7058824, b: 1, a: 0.05882353}
+  - itemID: Accent (Tint)
+    colorValue: {r: 0.3921569, g: 0.7058824, b: 1, a: 0.29411766}
+  - itemID: Background
+    colorValue: {r: 0.14117648, g: 0.15686275, b: 0.17254902, a: 1}
+  - itemID: Background (Dim)
+    colorValue: {r: 0.07058824, g: 0.08627451, b: 0.101960786, a: 1}
+  - itemID: Background (Tint)
+    colorValue: {r: 0.14117648, g: 0.15686275, b: 0.17254902, a: 0.60784316}
+  - itemID: Rarity
+    colorValue: {r: 0.75481325, g: 0.31760997, b: 1, a: 1}
+  - itemID: Text_Body
+    colorValue: {r: 1, g: 1, b: 1, a: 1}
+  fontItems:
+  - itemID: Body
+    fontAsset: {fileID: 11400000, guid: b0ccac5f0d24d7c4bac6f73c7e22ace6, type: 2}
+  - itemID: Title
+    fontAsset: {fileID: 11400000, guid: 108ed4187a5e54948ae1553dfb2e66aa, type: 2}
+  gradientItems: []
+  spriteItems: []
+  updateMode: 1
+  audioFoldout: 1
+  colorFoldout: 1
+  fontFoldout: 1
+  spriteFoldout: 0
+  gradientFoldout: 0
+  settingsFoldout: 1

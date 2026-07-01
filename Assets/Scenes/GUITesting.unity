@@ -27593,6 +27593,11 @@ MonoBehaviour:
   - {fileID: 4370084859135340074, guid: 4e5eeef71959c3c4f96c59cf2a309e08, type: 3}
   - {fileID: 4370084859135340074, guid: 4e5eeef71959c3c4f96c59cf2a309e08, type: 3}
   - {fileID: 4370084859135340074, guid: 4e5eeef71959c3c4f96c59cf2a309e08, type: 3}
+  tooltipStylerPresets:
+  - {fileID: 11400000, guid: abf862877ce41244cb7a5b1b8831299f, type: 2}
+  - {fileID: 11400000, guid: 09d7c56dce90e9b459a7639234c97239, type: 2}
+  - {fileID: 11400000, guid: d4c6f88275e49d048a141f58cb9df491, type: 2}
+  - {fileID: 11400000, guid: 5993d2ab3de31c149a32174b2db89137, type: 2}
 --- !u!1 &1763371880
 GameObject:
   m_ObjectHideFlags: 0

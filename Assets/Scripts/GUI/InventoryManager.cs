@@ -38,6 +38,7 @@ public class InventoryManager : MonoBehaviour
     public List<InventoryCell> HotbarCells;
 
     public List<TooltipPreset> tooltipPresets;
+    public List<StylerPreset> tooltipStylerPresets;
 
 
 
@@ -213,9 +214,9 @@ public class InventoryManager : MonoBehaviour
        // hoveredTile = null;
     }
 
-    public TooltipPreset GetTooltipPreset(ItemRarity rarity)
+    public StylerPreset GetTooltipPreset(ItemRarity rarity)
     {
-        return tooltipPresets[(int)rarity];
+        return tooltipStylerPresets[(int)rarity];
     }
 
     // Update is called once per frame

@@ -27,7 +27,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5000255106420984894}
   m_Father: {fileID: 4965357240358132769}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -47,6 +48,7 @@ GameObject:
   - component: {fileID: 6787987741430023752}
   - component: {fileID: 2628886437989902920}
   - component: {fileID: 7491259182202459597}
+  - component: {fileID: 6659295669338436406}
   m_Layer: 5
   m_Name: Inventory_Cell
   m_TagString: Untagged
@@ -90,8 +92,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryCell
   tile: {fileID: 0}
   inventory: {fileID: 0}
-  tooltip: {fileID: 1890381590691219471}
   tileContainer: {fileID: 4538322871541261089}
+  tooltip: {fileID: 1890381590691219471}
+  interactive: {fileID: 0}
 --- !u!225 &2628886437989902920
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -186,12 +189,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6787987741430023752}
-        m_TargetAssemblyTypeName: InventoryCell, Assembly-CSharp
-        m_MethodName: ClickCell
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -274,6 +277,166 @@ MonoBehaviour:
   navigationFoldout: 1
   referencesFoldout: 0
   eventsFoldout: 1
+--- !u!114 &6659295669338436406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2053513020120930589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fa7af513dc2ead449991695979b47a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Evo.UI::Evo.UI.UIAnimator
+  animationGroups:
+  - label: ClickDown
+    trigger: 4
+    animations:
+    - type: 2
+      enabled: 1
+      duration: 0
+      delay: 0
+      easeType: 5
+      loop: 0
+      yoyo: 0
+      animateFromCurrentValue: 0
+      isExpanded: 1
+      fadeFrom: 0
+      fadeTo: 1
+      scaleFrom: {x: 0, y: 0, z: 0}
+      scaleTo: {x: 1, y: 1, z: 1}
+      slideFrom: {x: 0, y: 0, z: 0}
+      slideTo: {x: 0, y: -10, z: 0}
+      rotateFrom: 0
+      rotateTo: 360
+      punchIntensity: 0.2
+      shakeIntensity: 10
+      bounceHeight: 30
+      colorFrom: {r: 1, g: 1, b: 1, a: 1}
+      colorTo: {r: 1, g: 1, b: 1, a: 1}
+    onGroupStart:
+      m_PersistentCalls:
+        m_Calls: []
+    onGroupEnd:
+      m_PersistentCalls:
+        m_Calls: []
+    isExpanded: 1
+    eventsExpanded: 0
+  - label: ClickUp
+    trigger: 5
+    animations:
+    - type: 2
+      enabled: 1
+      duration: 0
+      delay: 0
+      easeType: 5
+      loop: 0
+      yoyo: 0
+      animateFromCurrentValue: 0
+      isExpanded: 1
+      fadeFrom: 0
+      fadeTo: 1
+      scaleFrom: {x: 0, y: 0, z: 0}
+      scaleTo: {x: 1, y: 1, z: 1}
+      slideFrom: {x: 0, y: -5, z: 0}
+      slideTo: {x: 0, y: 0, z: 0}
+      rotateFrom: 0
+      rotateTo: 360
+      punchIntensity: 0.2
+      shakeIntensity: 10
+      bounceHeight: 30
+      colorFrom: {r: 1, g: 1, b: 1, a: 1}
+      colorTo: {r: 1, g: 1, b: 1, a: 1}
+    onGroupStart:
+      m_PersistentCalls:
+        m_Calls: []
+    onGroupEnd:
+      m_PersistentCalls:
+        m_Calls: []
+    isExpanded: 1
+    eventsExpanded: 0
+  - label: HoverDown
+    trigger: 2
+    animations:
+    - type: 2
+      enabled: 1
+      duration: 0
+      delay: 0
+      easeType: 0
+      loop: 0
+      yoyo: 0
+      animateFromCurrentValue: 1
+      isExpanded: 1
+      fadeFrom: 0
+      fadeTo: 1
+      scaleFrom: {x: 0, y: 0, z: 0}
+      scaleTo: {x: 1, y: 1, z: 1}
+      slideFrom: {x: 0, y: 0, z: 0}
+      slideTo: {x: 0, y: -5, z: 0}
+      rotateFrom: 0
+      rotateTo: 360
+      punchIntensity: 0.2
+      shakeIntensity: 10
+      bounceHeight: 30
+      colorFrom: {r: 1, g: 1, b: 1, a: 1}
+      colorTo: {r: 1, g: 1, b: 1, a: 1}
+    onGroupStart:
+      m_PersistentCalls:
+        m_Calls: []
+    onGroupEnd:
+      m_PersistentCalls:
+        m_Calls: []
+    isExpanded: 1
+    eventsExpanded: 0
+  - label: HoverUp
+    trigger: 3
+    animations:
+    - type: 2
+      enabled: 1
+      duration: 0
+      delay: 0
+      easeType: 5
+      loop: 0
+      yoyo: 0
+      animateFromCurrentValue: 1
+      isExpanded: 1
+      fadeFrom: 0
+      fadeTo: 1
+      scaleFrom: {x: 0, y: 0, z: 0}
+      scaleTo: {x: 1, y: 1, z: 1}
+      slideFrom: {x: 0, y: -5, z: 0}
+      slideTo: {x: 0, y: 0, z: 0}
+      rotateFrom: 0
+      rotateTo: 360
+      punchIntensity: 0.2
+      shakeIntensity: 10
+      bounceHeight: 30
+      colorFrom: {r: 1, g: 1, b: 1, a: 1}
+      colorTo: {r: 1, g: 1, b: 1, a: 1}
+    onGroupStart:
+      m_PersistentCalls:
+        m_Calls: []
+    onGroupEnd:
+      m_PersistentCalls:
+        m_Calls: []
+    isExpanded: 1
+    eventsExpanded: 0
+  rectTransform: {fileID: 4538322871541261089}
+  canvasGroup: {fileID: 0}
+  image: {fileID: 0}
+  text: {fileID: 0}
+  useUnscaledTime: 0
+  onAnimationStart:
+    m_PersistentCalls:
+      m_Calls: []
+  onAnimationEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  groupFoldout: 1
+  referencesFoldout: 1
+  settingsFoldout: 0
+  eventsFoldout: 0
 --- !u!1 &2316494117937142545
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,7 +486,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d8e447c9cf19a04cb21d02bc46c3bd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Evo.UI::Evo.UI.Tooltip
-  tooltipPreset: {fileID: 5522925556100278261, guid: 66a3f5828c6c5d0449e43afc6acfe221, type: 3}
+  tooltipPreset: {fileID: 5522925556100278261, guid: 4e5eeef71959c3c4f96c59cf2a309e08, type: 3}
   icon: {fileID: 0}
   title: 
   description: 
@@ -468,7 +631,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4039624790586389691}
+  m_Father: {fileID: 4538322871541261089}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -496,7 +659,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.33, g: 0.33, b: 0.33, a: 1}
+  m_Color: {r: 0.33333334, g: 0.33333334, b: 0.33333334, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -520,17 +683,17 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2446373387490867478}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0f503d8a54a79b428dfbcb4448abeac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preset: {fileID: 11400000, guid: 62d3d5000dc484241a42d255128f3aa7, type: 2}
+  preset: {fileID: 11400000, guid: e2c8ce0e3be92ba47b703f09e0040c7d, type: 2}
   targetGraphic: {fileID: 687229460625806654}
   targetText: {fileID: 0}
   targetGradient: {fileID: 0}
   objectType: 0
-  colorID: Primary (Soft)
+  colorID: Border
   fontID: Inter - Thin
   gradientID: 
   spriteID: 
@@ -574,6 +737,57 @@ MonoBehaviour:
   referencesFoldout: 1
   settingsFoldout: 1
   interactionFoldout: 1
+--- !u!1 &3048220377554748163
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6021717266275388508}
+  - component: {fileID: 1940559157155877282}
+  m_Layer: 5
+  m_Name: ShadowMask
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6021717266275388508
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3048220377554748163}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2657741589021384855}
+  m_Father: {fileID: 4039624790586389691}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 2.5}
+  m_SizeDelta: {x: 0, y: 5}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1940559157155877282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3048220377554748163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RectMask2D
+  m_Padding: {x: 0, y: 25, z: 0, w: 0}
+  m_Softness: {x: 0, y: 0}
 --- !u!1 &4741041584327668587
 GameObject:
   m_ObjectHideFlags: 0
@@ -605,12 +819,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4039624790586389691}
+  m_Father: {fileID: 6021717266275388508}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -5}
-  m_SizeDelta: {x: -10, y: -10}
+  m_AnchoredPosition: {x: 0, y: -7.5}
+  m_SizeDelta: {x: 0, y: -15}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5418314552474396038
 CanvasRenderer:
@@ -633,7 +847,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.0754717, g: 0.0754717, b: 0.0754717, a: 1}
+  m_Color: {r: 0.08627451, g: 0.08627451, b: 0.08627451, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -657,17 +871,17 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4741041584327668587}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0f503d8a54a79b428dfbcb4448abeac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preset: {fileID: 11400000, guid: 62d3d5000dc484241a42d255128f3aa7, type: 2}
+  preset: {fileID: 11400000, guid: e2c8ce0e3be92ba47b703f09e0040c7d, type: 2}
   targetGraphic: {fileID: 8090859398945813767}
   targetText: {fileID: 0}
   targetGradient: {fileID: 0}
   objectType: 0
-  colorID: Primary (Soft)
+  colorID: Shadow
   fontID: Inter - Thin
   gradientID: 
   spriteID: 
@@ -742,8 +956,7 @@ RectTransform:
   m_Children:
   - {fileID: 3888858582386176870}
   - {fileID: 7744626916157350914}
-  - {fileID: 2657741589021384855}
-  - {fileID: 5000255106420984894}
+  - {fileID: 6021717266275388508}
   m_Father: {fileID: 4965357240358132769}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -782,6 +995,7 @@ GameObject:
   - component: {fileID: 7744626916157350914}
   - component: {fileID: 4398077236564444767}
   - component: {fileID: 7812749914091869148}
+  - component: {fileID: 5906845658822927851}
   m_Layer: 5
   m_Name: Fill
   m_TagString: Untagged
@@ -805,8 +1019,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -7.5}
+  m_SizeDelta: {x: 0, y: -15}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4398077236564444767
 CanvasRenderer:
@@ -829,7 +1043,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.15723258, g: 0.15723258, b: 0.15723258, a: 1}
+  m_Color: {r: 0.14901961, g: 0.14901961, b: 0.14901961, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -846,6 +1060,67 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5906845658822927851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8849299504783920402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0f503d8a54a79b428dfbcb4448abeac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Evo.UI::Evo.UI.StylerObject
+  preset: {fileID: 11400000, guid: e2c8ce0e3be92ba47b703f09e0040c7d, type: 2}
+  targetGraphic: {fileID: 7812749914091869148}
+  targetText: {fileID: 0}
+  targetGradient: {fileID: 0}
+  objectType: 0
+  colorID: Base
+  fontID: Inter - Thin
+  gradientID: 
+  spriteID: 
+  useCustomColor: 0
+  overrideAlpha: 0
+  alphaOverride: 1
+  enableInteraction: 0
+  interactableObject: {fileID: 0}
+  enableColorInteraction: 1
+  disabledColor:
+    stylerID: Primary
+    color: {r: 1, g: 1, b: 1, a: 1}
+  normalColor:
+    stylerID: Primary
+    color: {r: 1, g: 1, b: 1, a: 1}
+  highlightedColor:
+    stylerID: Primary
+    color: {r: 1, g: 1, b: 1, a: 1}
+  pressedColor:
+    stylerID: Primary
+    color: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor:
+    stylerID: Primary
+    color: {r: 1, g: 1, b: 1, a: 1}
+  enableFontInteraction: 0
+  disabledFont:
+    stylerID: Regular
+    font: {fileID: 0}
+  normalFont:
+    stylerID: Regular
+    font: {fileID: 0}
+  highlightedFont:
+    stylerID: Regular
+    font: {fileID: 0}
+  pressedFont:
+    stylerID: Regular
+    font: {fileID: 0}
+  selectedFont:
+    stylerID: Regular
+    font: {fileID: 0}
+  referencesFoldout: 1
+  settingsFoldout: 1
+  interactionFoldout: 1
 --- !u!1 &9123080008464233770
 GameObject:
   m_ObjectHideFlags: 0
@@ -881,8 +1156,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -5}
-  m_SizeDelta: {x: 0, y: 10}
+  m_AnchoredPosition: {x: 0, y: -15}
+  m_SizeDelta: {x: 0, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8314970183770688816
 CanvasRenderer:
@@ -905,7 +1180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 1}
+  m_Color: {r: 0.2509804, g: 0.2509804, b: 0.2509804, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -929,17 +1204,17 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9123080008464233770}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0f503d8a54a79b428dfbcb4448abeac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preset: {fileID: 11400000, guid: 62d3d5000dc484241a42d255128f3aa7, type: 2}
+  preset: {fileID: 11400000, guid: e2c8ce0e3be92ba47b703f09e0040c7d, type: 2}
   targetGraphic: {fileID: 3175631978894002898}
   targetText: {fileID: 0}
   targetGradient: {fileID: 0}
   objectType: 0
-  colorID: Primary (Soft)
+  colorID: Underlay
   fontID: Inter - Thin
   gradientID: 
   spriteID: 

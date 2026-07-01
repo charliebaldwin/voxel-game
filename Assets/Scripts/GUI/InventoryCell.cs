@@ -6,12 +6,16 @@ public class InventoryCell : MonoBehaviour
 {
     [SerializeField] private ItemTile tile;
     [SerializeField] private InventoryManager inventory;
-    [SerializeField] private Tooltip tooltip;
     [SerializeField] private RectTransform tileContainer;
+    [SerializeField] private Tooltip tooltip;
+    [SerializeField] private Interactive interactive;
+    
     private void Awake()
     {
         FindTile();
         tooltip = GetComponentInChildren<Tooltip>();
+        interactive = GetComponent<Interactive>();
+        interactive.onPointerDown.AddListener(ClickCell);
     }
     public void FindTile()
     {
@@ -74,10 +78,15 @@ public class InventoryCell : MonoBehaviour
         {
             Item item = tile.GetItemData();
             tooltip.enabled = true;
-            tooltip.tooltipPreset = inventory.GetTooltipPreset(item.Rarity).gameObject;
+            tooltip.GetComponent<StylerObject>().Preset = inventory.GetTooltipPreset(item.Rarity);
+            tooltip.GetComponent<StylerObject>().UpdateStyler();
+            Debug.Log($"rarity={item.Rarity} ({inventory.GetTooltipPreset(item.Rarity).name})");
+            //tooltip.tooltipPreset = inventory.GetTooltipPreset(item.Rarity).gameObject;
             tooltip.title = item.Name;
             tooltip.description = item.Tooltip;
             tooltip.icon = item.TooltipIcon;
+
+
         }
     }
 

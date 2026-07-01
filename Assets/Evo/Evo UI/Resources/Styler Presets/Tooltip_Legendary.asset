@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42939178eadba994ab57405394a12e26, type: 3}
-  m_Name: Tooltip
+  m_Name: Tooltip_Legendary
   m_EditorClassIdentifier: 
   audioItems:
   - itemID: Hover SFX
@@ -40,21 +40,15 @@ MonoBehaviour:
     colorValue: {r: 0.07058824, g: 0.08627451, b: 0.101960786, a: 1}
   - itemID: Background (Tint)
     colorValue: {r: 0.14117648, g: 0.15686275, b: 0.17254902, a: 0.60784316}
-  - itemID: Rarity_Common
-    colorValue: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 1}
-  - itemID: Rarity_Uncommon
-    colorValue: {r: 0.26432887, g: 0.8490566, b: 0.43882188, a: 1}
-  - itemID: Rarity_Rare
-    colorValue: {r: 0.41333053, g: 0.3238992, b: 1, a: 1}
-  - itemID: Rarity_Legendary
-    colorValue: {r: 1, g: 0.040880322, b: 0.32116672, a: 1}
+  - itemID: Rarity
+    colorValue: {r: 1, g: 0, b: 0.30406237, a: 1}
   - itemID: Text_Body
     colorValue: {r: 1, g: 1, b: 1, a: 1}
   fontItems:
   - itemID: Body
-    fontAsset: {fileID: 11400000, guid: 9cfeff32dc8bab5429a5fbefbae08d97, type: 2}
+    fontAsset: {fileID: 11400000, guid: b0ccac5f0d24d7c4bac6f73c7e22ace6, type: 2}
   - itemID: Title
-    fontAsset: {fileID: 11400000, guid: afef91ff4f1d7214a8edd160164061e6, type: 2}
+    fontAsset: {fileID: 11400000, guid: 108ed4187a5e54948ae1553dfb2e66aa, type: 2}
   gradientItems: []
   spriteItems: []
   updateMode: 1
