@@ -9,17 +9,17 @@ public class ItemTile : MonoBehaviour
     public int ItemIDInt = 0;
     public ItemStack Stack;
     public TextMeshProUGUI countText;
-    private Image tileImage;
+    public Image ItemImage;
 
     private void Awake()
     {
-        tileImage = GetComponent<Image>();
+        //ItemImage = GetComponent<Image>();
         //countText = GetComponent<TextMeshProUGUI>();
     }
 
     public void InitializeTile()
     {
-        tileImage.sprite = GetItemData().GUIIcon;
+        ItemImage.sprite = GetItemData().GUIIcon;
         //Debug.Log($"initializing tile with item {Item.Name}");
         UpdateCountText();
     }

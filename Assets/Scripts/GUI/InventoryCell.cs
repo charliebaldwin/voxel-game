@@ -16,6 +16,7 @@ public class InventoryCell : MonoBehaviour
         tooltip = GetComponentInChildren<Tooltip>();
         interactive = GetComponent<Interactive>();
         interactive.onPointerDown.AddListener(ClickCell);
+        UpdateTooltip();
     }
     public void FindTile()
     {
@@ -61,6 +62,17 @@ public class InventoryCell : MonoBehaviour
         return tile;
     }
 
+    public void GiveTile(ItemTile newTile)
+    {
+        if (tile == null)
+        {
+            newTile.transform.SetParent(tileContainer, false);
+            newTile.transform.localPosition = Vector3.zero;
+            newTile.InitializeTile();
+            FindTile();
+        }
+    }
+
     public void ClearCell()
     {
         Destroy(tile.gameObject);
@@ -78,10 +90,7 @@ public class InventoryCell : MonoBehaviour
         {
             Item item = tile.GetItemData();
             tooltip.enabled = true;
-            tooltip.GetComponent<StylerObject>().Preset = inventory.GetTooltipPreset(item.Rarity);
-            tooltip.GetComponent<StylerObject>().UpdateStyler();
-            Debug.Log($"rarity={item.Rarity} ({inventory.GetTooltipPreset(item.Rarity).name})");
-            //tooltip.tooltipPreset = inventory.GetTooltipPreset(item.Rarity).gameObject;
+            tooltip.tooltipPreset = inventory.GetTooltipPreset(item.Rarity).gameObject;
             tooltip.title = item.Name;
             tooltip.description = item.Tooltip;
             tooltip.icon = item.TooltipIcon;
@@ -94,7 +103,10 @@ public class InventoryCell : MonoBehaviour
     {
         Debug.Log("hover started");
         if (tile != null)
+        {
+            tooltip.Show();
             inventory.StartCellHover(this);
+        }
     }
     public void OnHoverEnd()
     {

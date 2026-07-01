@@ -67,11 +67,9 @@ public class InventoryManager : MonoBehaviour
 
                 ItemTile newItemTile = Instantiate(itemTilePrefab).GetComponent<ItemTile>();
                 newItemTile.Stack = InitialStacks[i];
-                newItemTile.transform.SetParent(InventoryCells[i].transform, false);
-                newItemTile.transform.localPosition = Vector3.zero;
+                
 
-                InventoryCells[i].FindTile();
-                newItemTile.InitializeTile();
+                InventoryCells[i].GiveTile(newItemTile);
             }
         }
     }
@@ -184,7 +182,7 @@ public class InventoryManager : MonoBehaviour
             itemNameText.text = "";
            // Debug.Log($"equipped: {equippedItem.Name}, new: nullItem (from slot {hotbarSlot})"); ;
             equippedItem = nullItem;
-            //viewController.UpdateEquippedItem(equippedItem);
+            viewController.UpdateEquippedItem(equippedItem);
         }
 
     }
@@ -214,9 +212,9 @@ public class InventoryManager : MonoBehaviour
        // hoveredTile = null;
     }
 
-    public StylerPreset GetTooltipPreset(ItemRarity rarity)
+    public TooltipPreset GetTooltipPreset(ItemRarity rarity)
     {
-        return tooltipStylerPresets[(int)rarity];
+        return tooltipPresets[(int)rarity];
     }
 
     // Update is called once per frame
