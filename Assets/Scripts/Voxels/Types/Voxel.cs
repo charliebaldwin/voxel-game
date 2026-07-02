@@ -44,4 +44,6 @@ public struct Voxel
         UpAxis = upAxis;
         ForwardAxis = fwdAxis;
     }
+
+
 }

@@ -20,6 +20,7 @@ public class InventoryManager : MonoBehaviour
     public GameObject itemTilePrefab;
 
     public List<ItemStack> InitialStacks = new List<ItemStack>(60);
+    public List<ItemStack> InitialHotbarStacks = new List<ItemStack>(9);
 
     private ItemTile mouseTile;
     private InventoryCell lastCell;
@@ -57,7 +58,7 @@ public class InventoryManager : MonoBehaviour
 
     private void LoadInitialStacks()
     {
-        InitialStacks.Add(new ItemStack(ItemID.Tool_Pickaxe_Iron, 1));
+        //InitialStacks.Add(new ItemStack(ItemID.Tool_Pickaxe_Iron, 1));
         for (int i=0; i < InitialStacks.Count; i++)
         {
             if (InitialStacks[i] != null)
@@ -67,9 +68,21 @@ public class InventoryManager : MonoBehaviour
 
                 ItemTile newItemTile = Instantiate(itemTilePrefab).GetComponent<ItemTile>();
                 newItemTile.Stack = InitialStacks[i];
-                
 
                 InventoryCells[i].GiveTile(newItemTile);
+            }
+        }
+        for (int i = 0; i < InitialHotbarStacks.Count; i++)
+        {
+            if (InitialHotbarStacks[i] != null)
+            {
+                Item itemData = ItemRegistry.LookupItem(InitialStacks[i].ItemID);
+                Debug.Log(itemData.Name);
+
+                ItemTile newItemTile = Instantiate(itemTilePrefab).GetComponent<ItemTile>();
+                newItemTile.Stack = InitialStacks[i];
+
+                HotbarCells[i].GiveTile(newItemTile);
             }
         }
     }

@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using Unity.Mathematics;
 using Unity.Mathematics.Geometry;
+using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.Splines;
+using UnityEngine.Timeline;
 using UnityEngine.VFX;
 using VFolders.Libs;
 using VInspector;
@@ -52,6 +54,7 @@ public partial class VoxelWorld : MonoBehaviour
     public byte orientation = 5;
     [EndFoldout]
 
+    static readonly ProfilerMarker marker = new ProfilerMarker("Voxel Generation");
 
 
     private void Awake()
@@ -252,6 +255,8 @@ public partial class VoxelWorld : MonoBehaviour
 
     private void GenerateVoxelsCPU(Vector3Int Size3D)
     {
+        marker.Begin();
+
         Voxels = new Voxel[Size3D.x, Size3D.y, Size3D.z];
         for (int x = 0; x < Size3D.x; x++)
         {
@@ -282,6 +287,7 @@ public partial class VoxelWorld : MonoBehaviour
             Voxels[p.x, p.y, p.z] = new Voxel(BlockID.Stone, 0, 0, BlockShape.Solid);
             Voxels[p.x, p.y, p.z].Toughness = 24;
         }
+        marker.End();
     }
 
     private void GenerateGrassAction(int x, int y, int z)

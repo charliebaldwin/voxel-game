@@ -3996,6 +3996,38 @@ PrefabInstance:
       propertyPath: viewController
       value: 
       objectReference: {fileID: 584695760}
+    - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
+      propertyPath: InitialStacks.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
+      propertyPath: InitialHotbarStacks.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
+      propertyPath: InitialStacks.Array.data[1].Count
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
+      propertyPath: InitialStacks.Array.data[1].ItemID
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
+      propertyPath: InitialHotbarStacks.Array.data[0].Count
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
+      propertyPath: InitialHotbarStacks.Array.data[1].Count
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
+      propertyPath: InitialHotbarStacks.Array.data[0].ItemID
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
+      propertyPath: InitialHotbarStacks.Array.data[1].ItemID
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 6337647151361779227, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

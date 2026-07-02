@@ -84,13 +84,13 @@ public class VoxelChunk : MonoBehaviour
     }
     private void LateUpdate()
     {
-        if (jobActive)
-        {
-            if (handle.IsCompleted)
-            {
-                FinishChunkJob();
-            }
-        }
+        //if (jobActive)
+        //{
+        //    if (handle.IsCompleted)
+        //    {
+        //        FinishChunkJob();
+        //    }
+        //}
 
     }
 
@@ -200,33 +200,6 @@ public class VoxelChunk : MonoBehaviour
         triangles = new List<int>();
         colors = new List<Color>();
         t = 0;
-        /**
-        // get model data for each voxel
-        for (int z = 0; z < Size3D.z; z++) {
-            for (int y = 0; y < Size3D.y; y++) {
-                for (int x = 0; x < Size3D.x; x++) {
-
-                    VoxelData vox = voxels[x, y, z];
-                    if ((BlockShapes)vox.BlockShape != BlockShapes.EMPTY)
-                    {
-                        Vector3 pos = new Vector3(x, y, z);
-
-                        int[] neighbors = new int[6] { 0, 0, 0, 0, 0, 0 };
-                        for (int n = 0; n < 6; n++)
-                            neighbors[n] = World().LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).BlockShape;
-
-                        BlockModel model = new BlockModel(pos, t, neighbors, vox);
-                        foreach (Vector3 v in model.vertices) vertices.Add(v);
-                        foreach (Vector3 n in model.normals) normals.Add(n);
-                        foreach (Vector2 uv in model.uvs) uvs.Add(uv);
-                        foreach (Color c in model.colors) colors.Add(c);
-                        foreach (int tri in model.triangles) triangles.Add(tri);
-                        t = model.lastT;
-                    }
-                }
-            }
-        }
-        **/
 
         Loop3D(ComputeMeshAction);
 
@@ -255,14 +228,17 @@ public class VoxelChunk : MonoBehaviour
             Vector3 pos = new Vector3(x, y, z);
 
             int[] neighbors = new int[6] { 0, 0, 0, 0, 0, 0 };
+            Voxel[] neighborVoxels = new Voxel[6];
             for (int n = 0; n < 6; n++)
             {
                 Vector3Int dir = OrthoDirs[n].AlignYZ(vox.UpAxis, vox.ForwardAxis).ToVector();
-                BlockShape neighborShape = World().LookupVoxelWorld(LocalToWorld(new Vector3Int(x, y, z) + dir, ChunkCoord, Size3D)).Shape;
+                Voxel neighbor = World().LookupVoxelWorld(LocalToWorld(new Vector3Int(x, y, z) + dir, ChunkCoord, Size3D));
+                BlockShape neighborShape = neighbor.Shape;
                 neighbors[n] = (neighborShape == BlockShape.Solid) ? 1 : 0;
+                neighborVoxels[n] = neighbor;
                 //neighbors[n] = (int)World().LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).Shape;
             }
-            BlockModel model = new BlockModel(pos, t, neighbors, vox);
+            BlockModel model = new BlockModel(pos, t, neighbors, vox, neighborVoxels);
             foreach (Vector3 v in model.vertices) vertices.Add(v);
             foreach (Vector3 n in model.normals) normals.Add(n);
             foreach (Vector2 uv in model.uvs) uvs.Add(uv);
@@ -491,7 +467,7 @@ public class VoxelChunk : MonoBehaviour
         }
     }
 
-
+    /**
     private void DispatchChunkJob()
     {
         verticesResult = new NativeArray<Vector3>(30000,Allocator.TempJob);
@@ -546,7 +522,7 @@ public class VoxelChunk : MonoBehaviour
 
         jobActive = false;
     }
-
+    **/
     private void GreedyMesh()
     {
         List<Vector3> vertices = new List<Vector3>();
@@ -717,7 +693,7 @@ public class VoxelChunk : MonoBehaviour
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
     }
-
+    
 }
 
 
