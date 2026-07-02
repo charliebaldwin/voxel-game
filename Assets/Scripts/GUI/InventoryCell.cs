@@ -101,7 +101,7 @@ public class InventoryCell : MonoBehaviour
 
     public void OnHoverBegin()
     {
-        Debug.Log("hover started");
+        //Debug.Log("hover started");
         if (tile != null)
         {
             tooltip.Show();
