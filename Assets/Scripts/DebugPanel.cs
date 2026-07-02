@@ -15,6 +15,7 @@ public class DebugPanel : MonoBehaviour
     public TextMeshProUGUI FPSText;
     public TextMeshProUGUI ItemNameText;
     public TextMeshProUGUI HitBlockIDText;
+    public TextMeshProUGUI HitVoxelShapeText;
     public TextMeshProUGUI HitLocalVoxelText;
     public TextMeshProUGUI HitWorldVoxelText;
     public TextMeshProUGUI HitChunkText;
@@ -61,6 +62,7 @@ public class DebugPanel : MonoBehaviour
                 if (LastHitInfo.didHit)
                 {
                     HitBlockIDText.text = LastHitInfo.voxel.BlockID.ToString();
+                    HitVoxelShapeText.text = $"({LastHitInfo.voxel.Shape.ToString()})";
                     HitLocalVoxelText.text = LastHitInfo.localVoxelPos.ToString();
                     HitWorldVoxelText.text = LastHitInfo.voxelPos.ToString();
                     HitChunkText.text = $"[{LastHitInfo.chunkPos.x}, {LastHitInfo.chunkPos.z}]";

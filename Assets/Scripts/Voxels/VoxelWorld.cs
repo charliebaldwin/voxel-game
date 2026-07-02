@@ -459,13 +459,43 @@ public partial class VoxelWorld : MonoBehaviour
         Vector3Int stepPos = start;
         Vector3Int hitNormal = new Vector3Int(0,0,0);
         float t = 0f;
+        bool didHit = false;
+
+        // LOOP
         for (int i = 0; i < maxDepth; i++)
         {
             DEBUGTraversalPosList.Add(stepPos);
 
             Voxel hitVoxel = LookupVoxelWorld(stepPos);
 
-            if (hitVoxel.BlockID > BlockID.Air)
+            // hit full block
+            if (hitVoxel.Shape == BlockShape.Solid)
+            {
+                didHit = true;
+            }
+
+            // hit half slab
+            else if (hitVoxel.Shape == BlockShape.HalfSlab)
+            {
+                Vector3 localHitPos = (pos + t * dir) - stepPos;
+
+                Vector3 absTMaxSlab = new Vector3(Mathf.Abs(tMax.x), Mathf.Abs(tMax.y), Mathf.Abs(tMax.z));
+                float slope = Mathf.Max(tMax.y - tMax.x, tMax.y - tMax.z);
+                Debug.Log($"tmax.y={tMax.y}, stepY={stepY}, dir.y={dir.y}, localHitPos.y={localHitPos.y}");
+                if (localHitPos.y < 0)
+                {
+                    didHit = true;
+                }
+                else if(localHitPos.y + dir.y < 0)
+                {
+                    hitNormal = Vector3Int.up;
+                    didHit = true;
+                }
+
+            }
+
+            // HIT
+            if (didHit)
             {
                 DEBUGTraversalColorList.Add(Color.white);
 
@@ -482,13 +512,16 @@ public partial class VoxelWorld : MonoBehaviour
                 DebugPanel.LastHitInfo = hitData;
 
                 return hitData;
+        
             }
             else if (hitVoxel.BlockID == BlockID.Invalid)
                 return new VoxelHitInfo(false);
             else
                 DEBUGTraversalColorList.Add(new Color(Mathf.Abs(hitNormal.x), Mathf.Abs(hitNormal.y), Mathf.Abs(hitNormal.z)));
+            
 
-            Vector3 absTMax = new Vector3(Mathf.Abs(tMax.x), Mathf.Abs(tMax.y), Mathf.Abs(tMax.z)); 
+            // going through air
+            Vector3 absTMax = new Vector3(Mathf.Abs(tMax.x), Mathf.Abs(tMax.y), Mathf.Abs(tMax.z));
             if (absTMax.x < absTMax.y && absTMax.x < absTMax.z) // tMax.X is the lowest, an YZ cell boundary plane is nearest.
             {
                 stepPos.x += stepX;

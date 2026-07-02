@@ -220,6 +220,9 @@ public class PlayerView : MonoBehaviour
         {
             VoxelCursor.transform.position = lastHitInfo.voxelPos;
             VoxelCursor.transform.forward = lastHitInfo.hitNormal;
+            if (lastHitInfo.voxel.Shape == BlockShape.HalfSlab)
+                VoxelCursor.transform.position += Vector3.down * 0.5f;
+
             VoxelCursor.SetActive(true);
         }
         else
