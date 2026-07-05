@@ -24,7 +24,7 @@ public class ItemRegistry : MonoBehaviour
 
     public static Item LookupItem(ItemID id)
     {
-        Debug.Log($"looking up {id}");
+        //Debug.Log($"looking up {id}");
         Item result = Instance.Items[id];
         return result;
     }

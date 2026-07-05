@@ -303,6 +303,28 @@ MonoBehaviour:
       bounceHeight: 30
       colorFrom: {r: 1, g: 1, b: 1, a: 1}
       colorTo: {r: 1, g: 1, b: 1, a: 1}
+    - type: 7
+      enabled: 0
+      duration: 0
+      delay: 0
+      easeType: 5
+      loop: 0
+      yoyo: 0
+      animateFromCurrentValue: 1
+      isExpanded: 1
+      fadeFrom: 0
+      fadeTo: 1
+      scaleFrom: {x: 0, y: 0, z: 0}
+      scaleTo: {x: 1, y: 1, z: 1}
+      slideFrom: {x: 0, y: 0, z: 0}
+      slideTo: {x: 0, y: 0, z: 0}
+      rotateFrom: 0
+      rotateTo: 360
+      punchIntensity: 0.2
+      shakeIntensity: 10
+      bounceHeight: 30
+      colorFrom: {r: 1, g: 1, b: 1, a: 1}
+      colorTo: {r: 1, g: 1, b: 1, a: 1}
     onGroupStart:
       m_PersistentCalls:
         m_Calls: []
@@ -336,6 +358,28 @@ MonoBehaviour:
       bounceHeight: 30
       colorFrom: {r: 1, g: 1, b: 1, a: 1}
       colorTo: {r: 1, g: 1, b: 1, a: 1}
+    - type: 7
+      enabled: 0
+      duration: 0
+      delay: 0
+      easeType: 5
+      loop: 0
+      yoyo: 0
+      animateFromCurrentValue: 1
+      isExpanded: 1
+      fadeFrom: 0
+      fadeTo: 1
+      scaleFrom: {x: 0, y: 0, z: 0}
+      scaleTo: {x: 1, y: 1, z: 1}
+      slideFrom: {x: 0, y: 0, z: 0}
+      slideTo: {x: 0, y: 0, z: 0}
+      rotateFrom: 0
+      rotateTo: 360
+      punchIntensity: 0.2
+      shakeIntensity: 10
+      bounceHeight: 30
+      colorFrom: {r: 1, g: 1, b: 1, a: 1}
+      colorTo: {r: 0.3372549, g: 0.3372549, b: 0.3372549, a: 1}
     onGroupStart:
       m_PersistentCalls:
         m_Calls: []
@@ -1168,7 +1212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2509804, g: 0.2509804, b: 0.2509804, a: 1}
+  m_Color: {r: 0.165, g: 0.165, b: 0.165, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

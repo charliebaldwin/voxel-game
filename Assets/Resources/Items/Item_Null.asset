@@ -26,5 +26,5 @@ MonoBehaviour:
     BlockID: -1
     TextureIndex: 0
     Strength: 0
-    UseTime: 0
+    UseTime: 1
     ToolType: 0

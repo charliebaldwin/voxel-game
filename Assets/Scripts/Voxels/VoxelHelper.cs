@@ -45,17 +45,17 @@ public static class VoxelHelper
     {
 
         if (normal == Vector3Int.left)
-            return new Vector2[4] { u0v1, u0v0, u1v0, u1v1, };
+            return new Vector2[4] { u1v1, u1v0, u0v0, u0v1, };
         else if (normal == Vector3Int.right)
-            return new Vector2[4] { u1v0, u1v1, u0v1, u0v0, };
+            return new Vector2[4] { u0v0, u0v1, u1v1, u1v0, };
         else if (normal == Vector3Int.down)
-            return new Vector2[4] { u0v1, u0v0, u1v0, u1v1, };
+            return new Vector2[4] { u1v1, u1v0, u0v0, u0v1, };
         else if (normal == Vector3Int.up)
-            return new Vector2[4] { u1v0, u1v1, u0v1, u0v0, };
+            return new Vector2[4] { u0v0, u0v1, u1v1, u1v0, };
         else if (normal == Vector3Int.back)
-            return new Vector2[4] { u0v1, u0v0, u1v0, u1v1, };
+            return new Vector2[4] { u1v1, u1v0, u0v0, u0v1, };
         else if (normal == Vector3Int.forward)
-            return new Vector2[4] { u1v0, u1v1, u0v1, u0v0, };
+            return new Vector2[4] { u0v0, u0v1, u1v1, u1v0, };
         else
             return null;
     }

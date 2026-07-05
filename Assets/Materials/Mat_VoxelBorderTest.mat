@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mat_Voxel
-  m_Shader: {fileID: -6465566751694194690, guid: 68bb890b9f844e14586d5b41dbd959dd, type: 3}
+  m_Name: Mat_VoxelBorderTest
+  m_Shader: {fileID: -6465566751694194690, guid: eb8c748ed0bc12842a28f5a540ab0c0b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -93,7 +93,11 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_64b6263ec078420d9dc8ff1fbf5bc49a_Texture_1_Texture2D:
+    - _SampleTexture2D_5ea4592fe2934ef294eef120113256fb_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: b503888fd4170b944bbdc715dca6a9cd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_9f82f032fa584743a624a2af072d616d_Texture_1_Texture2D:
         m_Texture: {fileID: 2800000, guid: 3bcd5321ed31fd340bd14e36d606ecc1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}

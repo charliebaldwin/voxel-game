@@ -228,7 +228,8 @@ public class PlayerController : MonoBehaviour
         if (lastHitInfo.didHit)
         {
             BlockData block = BlockRegistry.LookupBlock(id);
-            OrthoNormal up = block.CanChangeUpAxis ? OrthoNormal.FromVector(lastHitInfo.hitNormal) : OrthoNormal.up;
+            OrthoNormal up = OrthoNormal.FromVector(lastHitInfo.hitNormal);
+            if (!block.CanChangeUpAxis && heldBlockShape == BlockShape.Solid) up = OrthoNormal.up;
             OrthoNormal fwd = (up == OrthoNormal.forward || up == OrthoNormal.back) ? OrthoNormal.right : OrthoNormal.forward;
             world.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(id, 0, heldBlockShape, up, fwd));
 

@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8e1eeeaa7fba944fb8e39c0af65b268, type: 3}
   m_Name: TranslucentImageBlurSource
   m_EditorClassIdentifier: LeTai.TranslucentImage.UniversalRP::LeTai.Asset.TranslucentImage.UniversalRP.TranslucentImageBlurSource
-  m_Active: 1
+  m_Active: 0
   renderOrder: 0
   canvasDisappearWorkaround: 0
 --- !u!114 &7833122117494664109

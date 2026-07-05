@@ -47,18 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd09311d58c1f44bb43a7989836bc93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Size3D: {x: 8, y: 8, z: 8}
-  Loaded: 1
-  ChunkCoord:
-    x: 0
-    y: 0
-  NoiseTranslate: {x: 0, y: 0, z: 0}
-  NoiseScale: 0.04
-  NoiseThreshold: 1
-  Compute: {fileID: 7200000, guid: 562654af9f1c3b846bbfbc6a73588e80, type: 3}
+  meshFilter: {fileID: 0}
+  mesh: {fileID: 0}
+  meshCollider: {fileID: 0}
+  meshRenderer: {fileID: 0}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
-  BufferReadDelay: 0
 --- !u!33 &131667949381789334
 MeshFilter:
   m_ObjectHideFlags: 0

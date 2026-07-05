@@ -310,7 +310,7 @@ public class VoxelChunk : MonoBehaviour
 
         if (Voxels[x, y, z].Damage > 0 && !PlayerView.usingTool)
         {
-            if (BlockRandomEvent(new int3(x, y, z), 0.5f))
+            if (BlockRandomEvent(new int3(x, y, z), 0.05f))
             {
                 voxel.Damage -= 1;
                 //SetBlock(LocalToWorld(new Vector3Int(x, y, z), ChunkCoord, Size3D), voxel);

@@ -38,6 +38,12 @@ public class BlockModel
                 break;
 
             case BlockShape.Solid:
+                int air_nX = nbVoxels[0].BlockID == BlockID.Air ? 1 : 0;
+                int air_pX = nbVoxels[1].BlockID == BlockID.Air ? 1 : 0;
+                int air_nY = nbVoxels[2].BlockID == BlockID.Air ? 1 : 0;
+                int air_pY = nbVoxels[3].BlockID == BlockID.Air ? 1 : 0;
+                int air_nZ = nbVoxels[4].BlockID == BlockID.Air ? 1 : 0;
+                int air_pZ = nbVoxels[5].BlockID == BlockID.Air ? 1 : 0;
                 for (int n = 0; n < 6; n++) // iterate per face
                 {
                     //if ((BlockShape)nb[n] != BlockShape.Solid)
@@ -57,7 +63,49 @@ public class BlockModel
                         foreach (Vector2 uv in GetFaceUVs(Directions[n]))
                             uvList.Add(uv);
 
-                        Color c = new Color((int)voxel.BlockID, n, (float)voxel.Damage / (float)voxel.Toughness);
+                        int borderIndex = 0;
+
+                        switch (n)
+                        {
+                            case 0: // -X
+                                borderIndex += 1 * air_pY;
+                                borderIndex += 2 * air_pZ;
+                                borderIndex += 4 * air_nY;
+                                borderIndex += 8 * air_nZ;
+                                break;
+                            case 1: // +X
+                                borderIndex += 1 * air_pY;
+                                borderIndex += 2 * air_nZ;
+                                borderIndex += 4 * air_nY;
+                                borderIndex += 8 * air_pZ;
+                                break;
+                            case 2: // -Y
+                                borderIndex += 1 * air_nX;
+                                borderIndex += 2 * air_pZ;
+                                borderIndex += 4 * air_pX;
+                                borderIndex += 8 * air_nZ;
+                                break;
+                            case 3: // +Y
+                                borderIndex += 1 * air_nX;
+                                borderIndex += 2 * air_nZ;
+                                borderIndex += 4 * air_pX;
+                                borderIndex += 8 * air_pZ;
+                                break;
+                            case 4: // -Z
+                                borderIndex += 1 * air_pY;
+                                borderIndex += 2 * air_nX;
+                                borderIndex += 4 * air_nY;
+                                borderIndex += 8 * air_pX;
+                                break;
+                            case 5: // +Z
+                                borderIndex += 1 * air_pY;
+                                borderIndex += 2 * air_pX;
+                                borderIndex += 4 * air_nY;
+                                borderIndex += 8 * air_nX;
+                                break;
+                        }
+
+                        Color c = new Color((int)voxel.BlockID, n, (float)voxel.Damage / (float)voxel.Toughness, borderIndex);
                         colorList.AddRange(new Color[4] { c, c, c, c });
 
                         for (int i = 0; i < 6; i++)
@@ -173,7 +221,7 @@ public class BlockModel
                 OrthoNormal dir = dirFromNb.Flip();
                 OrthoNormal slabBottom = nbVoxel.UpAxis.Flip();
                 bool match = dir.IsEqual(slabBottom);
-                Debug.Log($"dir to nb: {dir}, slab bottom dir: {slabBottom}, match: {match}");
+                //Debug.Log($"dir to nb: {dir}, slab bottom dir: {slabBottom}, match: {match}");
                 return match;
         }
 

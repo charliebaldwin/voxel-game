@@ -9299,7 +9299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 244bf4910cfeab84db54e1ad33ca85f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlockRegistry
-  BDOFolderPath: Blocks
+  BDOFolderPath: Items/Blocks
   BlockDataObjects:
   - {fileID: 11400000, guid: 2c4b80b2f3849f54ca715d05621caeef, type: 2}
   - {fileID: 11400000, guid: 5622611e8db8bfc40bcd226eb0c52381, type: 2}
@@ -10839,7 +10839,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 25.94
+      value: 45.940002
       objectReference: {fileID: 0}
     - target: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_LocalPosition.z
@@ -10873,6 +10873,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3778170652943410819, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      propertyPath: field of view
+      value: 65
+      objectReference: {fileID: 0}
+    - target: {fileID: 4012988247841787298, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      propertyPath: RenderDistance
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4722012122128813788, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_Name
       value: Player
@@ -10889,6 +10897,10 @@ PrefabInstance:
       propertyPath: PlayerInventory
       value: 
       objectReference: {fileID: 1517987119}
+    - target: {fileID: 5554024159035658828, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6486164264205090042, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: Inventory
       value: 
@@ -10897,6 +10909,26 @@ PrefabInstance:
       propertyPath: VoxelCursor
       value: 
       objectReference: {fileID: 2111434827}
+    - target: {fileID: 6843547710664959715, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      propertyPath: field of view
+      value: 85
+      objectReference: {fileID: 0}
+    - target: {fileID: 6843547710664959715, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 63
+      objectReference: {fileID: 0}
+    - target: {fileID: 7279078477348974875, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      propertyPath: m_RenderPostProcessing
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9152045591692853636, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      propertyPath: m_Cameras.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9152045591692853636, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      propertyPath: 'm_Cameras.Array.data[0]'
+      value: 
+      objectReference: {fileID: 929656772}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18727,6 +18759,11 @@ MonoBehaviour:
   meshRenderer: {fileID: 929484456}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
+--- !u!20 &929656772 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 3778170652943410819, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+  m_PrefabInstance: {fileID: 584695758}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &931529469
 GameObject:
   m_ObjectHideFlags: 0
@@ -34320,8 +34357,8 @@ MonoBehaviour:
     m_ActionName: 'FirstPerson/LockCursor[/Keyboard/r]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 584695760}
-        m_TargetAssemblyTypeName: ChunkRaycast, Assembly-CSharp
+      - m_Target: {fileID: 1515763913}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
         m_MethodName: OnTertiary
         m_Mode: 0
         m_Arguments:

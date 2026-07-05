@@ -45,6 +45,7 @@ public partial class VoxelWorld : MonoBehaviour
 
     public float BlockUpdateDelay = 0.05f;
     private IEnumerator blockUpdate_co;
+    private IEnumerator chunkLoad_co;
 
     [Foldout("Debug")]
     private List<Vector3Int> DEBUGTraversalPosList = new List<Vector3Int>();
@@ -97,12 +98,22 @@ public partial class VoxelWorld : MonoBehaviour
 
         loadedChunks = new List<VoxelChunk>();
         Chunks = new VoxelChunk[WorldSize.x, WorldSize.z];
-        for (int x = 0; x < InitialChunks.x; x++)
+        for (int x = 0; x < WorldSize.x; x++)
         {
-            for (int z = 0; z < InitialChunks.y; z++)
+            for (int z = 0; z < WorldSize.z; z++)
             {
                 AddChunk(new Vector3Int(x, 0, z));
             }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (chunksToLoad.Count > 0 && chunkLoad_co == null)
+        {
+            chunkLoad_co = LoadChunkCO();
+            StartCoroutine(chunkLoad_co);
+            //LoadLastQueuedChunk();
         }
     }
 
@@ -147,6 +158,36 @@ public partial class VoxelWorld : MonoBehaviour
         }
     }
 
+    private List<VoxelChunk> chunksToLoad = new List<VoxelChunk>();
+    public void EnqueueChunk (Vector3Int coord)
+    {
+        if (IsChunkCoordInBounds(coord))
+        {
+            VoxelChunk c = Chunks[coord.x, coord.z];
+            if (c != null && !c.Loaded && !loadedChunks.Contains(c) && !chunksToLoad.Contains(c))
+                chunksToLoad.Add(Chunks[coord.x, coord.z]);
+        }
+        else
+            Debug.Log("chunk outside bounds");
+    }
+    public void LoadLastQueuedChunk()
+    {
+        VoxelChunk chunk = chunksToLoad.RemoveLast(); 
+        loadedChunks.Add(chunk.LoadChunk());
+    }
+    private IEnumerator LoadChunkCO()
+    {
+        Debug.Log($"starting chunk loading co, count={chunksToLoad.Count}");
+        List<VoxelChunk> chunksToLoadCopy = chunksToLoad;
+        for (int i = 0; i < chunksToLoadCopy.Count; i++)
+        {
+            loadedChunks.Add(chunksToLoadCopy[i].LoadChunk());
+            yield return new WaitForSeconds(0.1f);
+        }
+        chunksToLoad = new List<VoxelChunk>();
+        chunkLoad_co = null;
+    }
+
     public void LoadChunk(Vector3Int coord)
     {
         if (IsChunkCoordInBounds(coord)) {
@@ -163,7 +204,9 @@ public partial class VoxelWorld : MonoBehaviour
 
         if (IsChunkCoordInBounds(coord))
         {
-            LoadChunk(coord);
+            //LoadChunk(coord);
+            EnqueueChunk(coord);
+            //Debug.Log($"spreading into {coord}");
             if (spreadDist > 0)
             {
                 spreadDist -= 1;
@@ -202,7 +245,7 @@ public partial class VoxelWorld : MonoBehaviour
     }
     public VoxelChunk GetContainingChunk(Vector3Int worldPos)
     {
-        Vector3Int chunkCoord = new Vector3Int(Mathf.FloorToInt(worldPos.x / WorldSize.x), 0, Mathf.FloorToInt(worldPos.z / WorldSize.z));
+        Vector3Int chunkCoord = new Vector3Int(Mathf.FloorToInt(worldPos.x / ChunkSize.x), 0, Mathf.FloorToInt(worldPos.z / ChunkSize.z));
         if (IsChunkCoordInBounds(chunkCoord))
         {
             return Chunks[chunkCoord.x, chunkCoord.z];
@@ -272,7 +315,7 @@ public partial class VoxelWorld : MonoBehaviour
                 for (int y = 0; y < Size3D.y; y++)
                 {
                     if (y < h)
-                        Voxels[x, y, z] = new Voxel(BlockID.Dirt, 0, orientation, BlockShape.Solid);
+                        Voxels[x, y, z] = new Voxel(BlockID.Stone, 0, orientation, BlockShape.Solid);
                     else
                         Voxels[x, y, z] = new Voxel(BlockID.Air, 0, 0, BlockShape.Empty);
                 }
@@ -292,9 +335,19 @@ public partial class VoxelWorld : MonoBehaviour
 
     private void GenerateGrassAction(int x, int y, int z)
     {
-        if (Voxels[x, y, z].BlockID != BlockID.Air && y < ChunkSize.y - 1) {
+        if (Voxels[x, y, z].BlockID == BlockID.Stone && y < ChunkSize.y - 1) {
             if (Voxels[x, y + 1, z].BlockID == BlockID.Air) {
                 Voxels[x, y, z].BlockID = BlockID.Grass;
+            }
+        }
+        if (Voxels[x, y, z].BlockID == BlockID.Stone && y < ChunkSize.y - 2) {
+            if (Voxels[x, y + 2, z].BlockID == BlockID.Air) {
+                Voxels[x, y, z].BlockID = BlockID.Dirt;
+            }
+        }
+        if (Voxels[x, y, z].BlockID == BlockID.Stone && y < ChunkSize.y - 3) {
+            if (Voxels[x, y + 3, z].BlockID == BlockID.Air) {
+                Voxels[x, y, z].BlockID = BlockID.Dirt;
             }
         }
     }
