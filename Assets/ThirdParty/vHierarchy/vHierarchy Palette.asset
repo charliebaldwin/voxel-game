@@ -80,5 +80,13 @@ MonoBehaviour:
     customIcons: []
     enabled: 1
   - builtinIcons: []
+    customIcons:
+    - MyRegistries
+    - SceneLayersToggle
+    - AnimationClip Icon
+    - SpriteAtlasAsset Icon
+    - FlareLayer Icon
+    enabled: 1
+  - builtinIcons: []
     customIcons: []
     enabled: 1

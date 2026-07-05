@@ -26,6 +26,8 @@ public class DebugPanel : MonoBehaviour
     public TextMeshProUGUI PlayerWorldVoxelText;
     public TextMeshProUGUI PlayerChunkText;
     public TextMeshProUGUI PlayerPositionText;
+    public TextMeshProUGUI PlayerFacingFloatText;
+    public TextMeshProUGUI PlayerFacingIntText;
 
     [Header("Variables")]
     public static Item EquippedItem;
@@ -34,6 +36,7 @@ public class DebugPanel : MonoBehaviour
     public static Vector3Int PlayerLocalVoxel;
     public static Vector3Int PlayerWorldVoxel;
     public static Vector3Int PlayerChunk;
+    public static Vector3 PlayerForward;
 
     
     public void TogglePanel(InputAction.CallbackContext context)
@@ -88,6 +91,11 @@ public class DebugPanel : MonoBehaviour
                 PlayerWorldVoxelText.text = PlayerWorldVoxel.ToString();
                 PlayerLocalVoxelText.text = PlayerLocalVoxel.ToString();
                 PlayerChunkText.text = $"[{PlayerChunk.x}, {PlayerChunk.z}]";
+                PlayerFacingFloatText.text = PlayerForward.ToString();
+                int x = (int)Mathf.Sign(PlayerForward.x);
+                int y = (int)Mathf.Sign(PlayerForward.y);
+                int z = (int)Mathf.Sign(PlayerForward.z);
+                PlayerFacingIntText.text = $"({x}, {y}, {z})";
 
                 updateCounter = 0f;
             }

@@ -17,7 +17,7 @@ public class BlockModel
 
     public int lastT;
 
-    public BlockModel(Vector3 pos, int firstTriangle, int[] neighbors, Voxel voxel, Voxel[] neighborVoxels)
+    public BlockModel(Vector3 pos, int firstTriangle, Voxel voxel, Voxel[] neighborVoxels)
     {
         blockPos = pos;
         List<Vector3> vertList = new List<Vector3>();
@@ -26,7 +26,7 @@ public class BlockModel
         List<Color> colorList = new List<Color>();
         List<int> triangleList = new List<int>();
         int t = firstTriangle;
-        int[] nb = neighbors;
+        //int[] nb = neighbors;
         Voxel[] nbVoxels = neighborVoxels;
 
         Quaternion q = Quaternion.FromToRotation(Vector3.up, voxel.UpAxis.ToVector());

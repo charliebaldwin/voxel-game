@@ -10,6 +10,8 @@ public class BlockData
 
     public ToolType[] ValidTools;
     public ToolType[] IdealTools;
+
+    public bool CanChangeUpAxis = false;
 }
 
 

@@ -6,11 +6,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using VInspector.Libs;
 
 public class InventoryManager : MonoBehaviour
 {
-    public PlayerInput input;
-    public PlayerView viewController;
+    public PlayerController Player;
     public CanvasGroup canvasGroup;
     public GameObject hotbarCursor;
     public Item equippedItem;
@@ -40,6 +40,8 @@ public class InventoryManager : MonoBehaviour
 
     public List<TooltipPreset> tooltipPresets;
     public List<StylerPreset> tooltipStylerPresets;
+
+    public const int NUM_HOTBAR_SLOTS = 10;
 
 
 
@@ -160,6 +162,15 @@ public class InventoryManager : MonoBehaviour
 
 
     }
+    public void OnScroll(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            int newHotbarSlot = (hotbarSlot + context.ReadValue<float>().RoundToInt()).Clamp(0, NUM_HOTBAR_SLOTS - 1);
+            SelectHotbarSlot(newHotbarSlot);
+            //Debug.Log($"slot={hotbarSlot}");
+        }
+    }
 
     public void Close()
     {
@@ -184,18 +195,18 @@ public class InventoryManager : MonoBehaviour
 
         if (tile != null && equippedItem != null) {
             itemNameText.text = tile.GetItemData().Name;
-           // Debug.Log($"equipped: {equippedItem.Name}, new: {tile.Item.Name} (from slot {hotbarSlot})");
             if (equippedItem.Name != tile.GetItemData().Name)
             {
                 equippedItem = tile.GetItemData();
-                viewController.UpdateEquippedItem(equippedItem);
+                Player.SetEquippedItem(equippedItem.ItemID);
+                //viewController.UpdateEquippedItem(equippedItem);
             }
         } else
         {
             itemNameText.text = "";
-           // Debug.Log($"equipped: {equippedItem.Name}, new: nullItem (from slot {hotbarSlot})"); ;
             equippedItem = nullItem;
-            viewController.UpdateEquippedItem(equippedItem);
+            Player.SetEquippedItem(equippedItem.ItemID);
+            //viewController.UpdateEquippedItem(equippedItem);
         }
 
     }
@@ -207,6 +218,8 @@ public class InventoryManager : MonoBehaviour
             hotbarCursor.transform.position = HotbarCells[hotbarIndex].transform.position;
             hotbarSlot = hotbarIndex;
             hotbarDirty = true;
+            UpdateEquippedItem();
+
             return equippedItem;
         }
         return nullItem;

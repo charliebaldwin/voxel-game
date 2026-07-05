@@ -64,6 +64,7 @@ public class PlayerView : MonoBehaviour
         RaycastWorld();
         //DoRaycast3(0);
         //HandAnimator = GetComponent<Animator>();
+        DebugPanel.PlayerForward = transform.forward;
 
     }
 
@@ -247,8 +248,8 @@ public class PlayerView : MonoBehaviour
                 //byte o = VoxelHelper.NormalToOrientation(lastHitInfo.hitNormal);
                 ////byte o = VoxelHelper.NormalToOrientation(Vector3Int.up);
                 //World().AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(heldBlockID, 0, o, heldBlockShape));
-
-                OrthoNormal up = OrthoNormal.FromVector(lastHitInfo.hitNormal);
+                BlockData block = BlockRegistry.LookupBlock(heldBlockID);
+                OrthoNormal up = block.CanChangeUpAxis ? OrthoNormal.FromVector(lastHitInfo.hitNormal) : OrthoNormal.up;
                 OrthoNormal fwd = (up == OrthoNormal.forward || up == OrthoNormal.back) ? OrthoNormal.right : OrthoNormal.forward;
                 World().AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(heldBlockID, 0, heldBlockShape, up, fwd));
 

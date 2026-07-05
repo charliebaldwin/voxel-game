@@ -25,7 +25,7 @@ MonoBehaviour:
   - itemID: Border
     colorValue: {r: 0.33333334, g: 0.33333334, b: 0.33333334, a: 1}
   - itemID: Underlay
-    colorValue: {r: 0.2509804, g: 0.2509804, b: 0.2509804, a: 1}
+    colorValue: {r: 0.165, g: 0.165, b: 0.165, a: 1}
   - itemID: Shadow
     colorValue: {r: 0.08627451, g: 0.08627451, b: 0.08627451, a: 1}
   fontItems:
