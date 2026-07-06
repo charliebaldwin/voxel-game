@@ -37,6 +37,7 @@ public class VoxelChunk : MonoBehaviour
     private VoxelChunk neighborNZ;
     private VoxelChunk neighborPZ;
 
+    private List<Vector3Int> activeVoxels = new List<Vector3Int>();
 
 
     private bool meshDirty = true;
@@ -153,6 +154,8 @@ public class VoxelChunk : MonoBehaviour
     public void FillVoxelData(Voxel[,,] newVoxels)
     {
         Voxels = newVoxels;
+        activeVoxels = new List<Vector3Int>();
+        Loop3D(FillActiveVoxelsAction);
     }
 
     public void FindNeighbors()
@@ -270,7 +273,8 @@ public class VoxelChunk : MonoBehaviour
     #region BLOCK UPDATE
     public void BlockUpdate()
     {
-        Loop3D(BlockUpdateAction);
+        BlockUpdateFast();
+        //Loop3D(BlockUpdateAction);
     }
     private void BlockUpdateAction(int  x, int y, int z)
     {
@@ -320,6 +324,86 @@ public class VoxelChunk : MonoBehaviour
         }
     }
 
+    private void FillActiveVoxelsAction(int x, int y, int z)
+    {
+        if (Voxels[x,y,z].BlockID != BlockID.Air)
+            activeVoxels.Add(new Vector3Int(x, y, z));
+    }
+
+    private void BlockUpdateFast()
+    {
+        if (activeVoxels.Count > 0)
+        {
+            Debug.Log($"updating chunk {ChunkCoord}- there are {activeVoxels.Count} voxels to check");
+            Vector3Int[] tempActiveVoxels = new Vector3Int[activeVoxels.Count];
+            activeVoxels.CopyTo(tempActiveVoxels);
+            foreach (Vector3Int pos in tempActiveVoxels)
+            {
+                if (IsPosInGridBounds(pos, Size3D))
+                {
+                    Voxel voxel = Voxels[pos.x, pos.y, pos.z];
+                    BlockID voxelID = voxel.BlockID;
+                    switch (voxelID)
+                    {
+                        case (BlockID.Air):
+                            activeVoxels.Remove(pos);
+                            break;
+                        case (BlockID.Grass):
+                            if (pos.y < Size3D.y - 1)
+                            {
+                                if (Voxels[pos.x, pos.y + 1, pos.z].BlockID != BlockID.Air)
+                                {
+                                    world.SetVoxel(LocalToWorld(pos, ChunkCoord, Size3D), new Voxel(BlockID.Dirt, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
+                                    meshDirty = true;
+                                }
+
+                            }
+                            if (voxel.Damage <= 0) activeVoxels.Remove(pos);
+                            break;
+                        case (BlockID.Dirt):
+                            if (pos.y < Size3D.y - 1)
+                            {
+                                //Voxel upVoxel = World().LookupVoxel(LocalToWorldPos((pos + new Vector3Int(0, 1, 0))));
+                                Voxel upVoxel = GetVoxelLocal(pos + Vector3Int.up);
+                                if (upVoxel.BlockID == BlockID.Air)
+                                {
+                                    // grow into dirt with random chance
+                                    if (BlockRandomEvent(new int3(pos.x, pos.y, pos.z), 0.04f))
+                                    {
+                                        world.SetVoxel(LocalToWorld(pos, ChunkCoord, Size3D), new Voxel(BlockID.Grass, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
+                                        if (voxel.Damage <= 0) activeVoxels.Remove(pos);
+                                        SetDirty();
+                                    }
+                                }
+                                else
+                                {
+                                    if (voxel.Damage <= 0) activeVoxels.Remove(pos);
+                                }
+                            }
+                            break;
+                        default:
+                            if (voxel.Damage <= 0) activeVoxels.Remove(pos);
+                            break;
+                    }
+                    if (voxel.Damage > 0 && !PlayerView.usingTool)
+                    {
+                        if (BlockRandomEvent(new int3(pos.x, pos.y, pos.z), 0.1f))
+                        {
+                            voxel.Damage -= 1;
+                            world.SetVoxel(LocalToWorld(new Vector3Int(pos.x, pos.y, pos.z), ChunkCoord, Size3D), voxel);
+                            if (voxel.Damage <= 0) activeVoxels.Remove(pos);
+                            SetDirty();
+                        }
+                    }
+                }
+                else
+                {
+                    activeVoxels.Remove(pos);
+                }
+            }
+        }
+    }
+
     private bool BlockRandomEvent(int3 pos, float probability)
     {
         int seed = (pos.x + Size3D.x * pos.y + Size3D.x * Size3D.y * pos.z) + (1000*ChunkCoord.x + 10000*ChunkCoord.y) + (Time.frameCount % 10000);
@@ -357,7 +441,7 @@ public class VoxelChunk : MonoBehaviour
     #endregion
 
     #region MODIFY VOXELS
-    public void SetVoxel(Vector3Int worldPos, BlockID blockID)
+    public void SetVoxel(Vector3Int worldPos, BlockID blockID) // DEPRECATED
     {
         Vector3Int localPos = WorldToLocal(worldPos, ChunkCoord, Size3D);
         if (IsPosInGridBounds(localPos, Size3D)) { 
@@ -381,6 +465,13 @@ public class VoxelChunk : MonoBehaviour
 
             }
         }
+        activeVoxels.Add(localPos);
+        activeVoxels.Add(localPos + Vector3Int.left);
+        activeVoxels.Add(localPos + Vector3Int.right);
+        activeVoxels.Add(localPos + Vector3Int.down);
+        activeVoxels.Add(localPos + Vector3Int.up);
+        activeVoxels.Add(localPos + Vector3Int.back);
+        activeVoxels.Add(localPos + Vector3Int.forward);
     }
     public void SetVoxel(Vector3Int worldPos, Voxel voxelData)
     {
@@ -408,6 +499,13 @@ public class VoxelChunk : MonoBehaviour
 
             }
         }
+        activeVoxels.Add(localPos);
+        activeVoxels.Add(localPos + Vector3Int.left);
+        activeVoxels.Add(localPos + Vector3Int.right);
+        activeVoxels.Add(localPos + Vector3Int.down);
+        activeVoxels.Add(localPos + Vector3Int.up);
+        activeVoxels.Add(localPos + Vector3Int.back);
+        activeVoxels.Add(localPos + Vector3Int.forward);
     }
     public void AddBlockEntity(BlockEntityActor entity, Vector3Int worldPos)
     {

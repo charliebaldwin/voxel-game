@@ -395,15 +395,16 @@ public partial class VoxelWorld : MonoBehaviour
 
     private IEnumerator BlockUpdateCO()
     {
+        Debug.Log($"world is starting chunk update, there are {loadedChunks.Count} loaded chunks");
         List<VoxelChunk> tempLoadedChunks = loadedChunks;
         for (int i = 0; i < tempLoadedChunks.Count; i++) {
             tempLoadedChunks[i].BlockUpdate();
             //Debug.Log($"chunk {loadedChunks[i].ChunkCoord} updated");
             yield return new WaitForSeconds(BlockUpdateDelay);
         }
-
+        Debug.Log($"world chunk update finished");
         //StopCoroutine(blockUpdate_co);
-        //blockUpdate_co = BlockUpdateCO();
+        blockUpdate_co = BlockUpdateCO();
         StartCoroutine(blockUpdate_co);
     }
 

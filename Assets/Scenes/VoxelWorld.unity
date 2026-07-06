@@ -8866,7 +8866,7 @@ MonoBehaviour:
   BlockPlacementMask:
     serializedVersion: 2
     m_Bits: 64
-  BlockUpdateDelay: 0.1
+  BlockUpdateDelay: 0.01
   shuffle: 030000000200000000000000010000000400000005000000
   orientation: 0
 --- !u!1 &434099614
@@ -10835,11 +10835,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1670060081210582922, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_Height
-      value: 4
+      value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 1670060081210582922, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_Radius
-      value: 0.4
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10915,11 +10915,11 @@ PrefabInstance:
       objectReference: {fileID: 1517987119}
     - target: {fileID: 6486164264205090042, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: jumpForce
-      value: 12
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6486164264205090042, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: walkSpeed
-      value: 6
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6486164264205090042, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: VoxelCursor
@@ -10927,7 +10927,7 @@ PrefabInstance:
       objectReference: {fileID: 2111434827}
     - target: {fileID: 6486164264205090042, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: sprintSpeed
-      value: 12
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6843547710664959715, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: field of view
