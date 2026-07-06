@@ -228,8 +228,12 @@ public class BlockModel
         return false;
     }
     public bool DoAdjacentIDsMatch(BlockID id1, BlockID id2) {
-        if (id1 == BlockID.Grass || id1 == BlockID.Dirt)
+        if (id1 == BlockID.Dirt)
+            return id2 == BlockID.Grass || id2 == BlockID.Dirt || id2 == BlockID.Log;
+        if (id1 == BlockID.Grass)
             return id2 == BlockID.Grass || id2 == BlockID.Dirt;
+        if (id1 == BlockID.Log)
+            return id2 == BlockID.Dirt || id2 == BlockID.Leaves || id2 == BlockID.Log;
         return id1 == id2;
     }
 }

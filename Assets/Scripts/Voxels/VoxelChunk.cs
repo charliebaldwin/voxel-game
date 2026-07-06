@@ -237,28 +237,29 @@ public class VoxelChunk : MonoBehaviour
 
     private void ComputeMeshAction(int x, int y, int z)
     {
-        voxelMarker.Begin();
         Voxel vox = Voxels[x, y, z];
-        if ((BlockShape)vox.Shape != BlockShape.Empty && !BlockRegistry.LookupBlock(vox.BlockID).IsBlockEntity)
-        {
-            Vector3 pos = new Vector3(x, y, z);
+        if (vox.BlockID == BlockID.Air || vox.BlockID == BlockID.Machine) return;
+        voxelMarker.Begin();
+        //if ((BlockShape)vox.Shape != BlockShape.Empty && !BlockRegistry.LookupBlock(vox.BlockID).IsBlockEntity )
+        //{
+        Vector3 pos = new Vector3(x, y, z);
 
-            Voxel[] neighborVoxels = new Voxel[6];
-            for (int n = 0; n < 6; n++)
-            {
-                Vector3Int dir = OrthoDirs[n].AlignYZ(vox.UpAxis, vox.ForwardAxis).ToVector();
-                Voxel neighbor = world.LookupVoxelWorld(LocalToWorld(new Vector3Int(x, y, z) + dir, ChunkCoord, Size3D));
-                neighborVoxels[n] = neighbor;
-                //neighbors[n] = (int)world.LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).Shape;
-            }
-            BlockModel model = new BlockModel(pos, t, vox, neighborVoxels);
-            foreach (Vector3 v in model.vertices) vertices.Add(v);
-            foreach (Vector3 n in model.normals) normals.Add(n);
-            foreach (Vector2 uv in model.uvs) uvs.Add(uv);
-            foreach (Color c in model.colors) colors.Add(c);
-            foreach (int tri in model.triangles) triangles.Add(tri);
-            t = model.lastT;
+        Voxel[] neighborVoxels = new Voxel[6];
+        for (int n = 0; n < 6; n++)
+        {
+            Vector3Int dir = OrthoDirs[n].AlignYZ(vox.UpAxis, vox.ForwardAxis).ToVector();
+            Voxel neighbor = world.LookupVoxelWorld(LocalToWorld(new Vector3Int(x, y, z) + dir, ChunkCoord, Size3D));
+            neighborVoxels[n] = neighbor;
+            //neighbors[n] = (int)world.LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).Shape;
         }
+        BlockModel model = new BlockModel(pos, t, vox, neighborVoxels);
+        foreach (Vector3 v in model.vertices) vertices.Add(v);
+        foreach (Vector3 n in model.normals) normals.Add(n);
+        foreach (Vector2 uv in model.uvs) uvs.Add(uv);
+        foreach (Color c in model.colors) colors.Add(c);
+        foreach (int tri in model.triangles) triangles.Add(tri);
+            t = model.lastT;
+        //}
         voxelMarker.End();
     }
 

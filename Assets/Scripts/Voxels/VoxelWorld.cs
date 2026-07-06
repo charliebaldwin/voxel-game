@@ -37,6 +37,7 @@ public partial class VoxelWorld : MonoBehaviour
     [ShowInInspector] private Voxel[,,] Voxels;
     [ShowInInspector] private VoxelChunk[,] Chunks;
     private List<VoxelChunk> loadedChunks;
+    public VoxelStructure tempStructure;
     [EndFoldout]
 
     public bool Initialized = false;
@@ -330,6 +331,9 @@ public partial class VoxelWorld : MonoBehaviour
             Voxels[p.x, p.y, p.z] = new Voxel(BlockID.Stone, 0, 0, BlockShape.Solid);
             Voxels[p.x, p.y, p.z].Toughness = 24;
         }
+
+        LoadStructure(tempStructure);
+
         marker.End();
     }
 
@@ -350,6 +354,35 @@ public partial class VoxelWorld : MonoBehaviour
                 Voxels[x, y, z].BlockID = BlockID.Dirt;
             }
         }
+        if (Voxels[x, y, z].BlockID == BlockID.Air && y > 0)
+        {
+            if (Voxels[x, y - 1, z].BlockID == BlockID.Grass)
+            {
+                float noise = Perlin.Fbm(x * 0.5f, z * 0.5f, 2);
+                if (noise > 0.3f)
+                {
+                    Voxels[x, y, z] = new Voxel(BlockID.Log, 0, 0);
+                    Voxels[x, y+1, z] = new Voxel(BlockID.Log, 0, 0); // dangerous
+                    Voxels[x, y + 2, z] = new Voxel(BlockID.Log, 0, 0);
+                    Voxels[x, y + 3, z] = new Voxel(BlockID.Leaves, 0, 0);
+                    //Voxels[x, y + 3, z+1] = new Voxel(BlockID.Leaves, 0, 0);
+                    //Voxels[x, y + 3, z-1] = new Voxel(BlockID.Leaves, 0, 0);
+                    //Voxels[x+1, y + 3, z] = new Voxel(BlockID.Leaves, 0, 0);
+                    //Voxels[x-1, y + 3, z] = new Voxel(BlockID.Leaves, 0, 0);
+
+                }
+            }
+        }
+    }
+
+    private void LoadStructure(VoxelStructure structure)
+    {
+        Dictionary<Vector3Int, Voxel> structureVoxels = structure.GetStructureVoxels();
+        foreach(KeyValuePair<Vector3Int, Voxel> v in structureVoxels)
+        {
+            Voxels[v.Key.x, v.Key.y, v.Key.z] = v.Value;
+        }
+        Destroy(structure.gameObject);
     }
 
     private Vector3Int[] GetCoordinateCuboid(Vector3Int cornerPos, Vector3Int size)
