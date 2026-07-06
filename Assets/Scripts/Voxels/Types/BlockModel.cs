@@ -38,12 +38,12 @@ public class BlockModel
                 break;
 
             case BlockShape.Solid:
-                int air_nX = nbVoxels[0].BlockID == BlockID.Air ? 1 : 0;
-                int air_pX = nbVoxels[1].BlockID == BlockID.Air ? 1 : 0;
-                int air_nY = nbVoxels[2].BlockID == BlockID.Air ? 1 : 0;
-                int air_pY = nbVoxels[3].BlockID == BlockID.Air ? 1 : 0;
-                int air_nZ = nbVoxels[4].BlockID == BlockID.Air ? 1 : 0;
-                int air_pZ = nbVoxels[5].BlockID == BlockID.Air ? 1 : 0;
+                int air_nX = !DoAdjacentIDsMatch(nbVoxels[0].BlockID, voxel.BlockID) ? 1 : 0;
+                int air_pX = !DoAdjacentIDsMatch(nbVoxels[1].BlockID, voxel.BlockID) ? 1 : 0;
+                int air_nY = !DoAdjacentIDsMatch(nbVoxels[2].BlockID, voxel.BlockID) ? 1 : 0;
+                int air_pY = !DoAdjacentIDsMatch(nbVoxels[3].BlockID, voxel.BlockID) ? 1 : 0;
+                int air_nZ = !DoAdjacentIDsMatch(nbVoxels[4].BlockID, voxel.BlockID) ? 1 : 0;
+                int air_pZ = !DoAdjacentIDsMatch(nbVoxels[5].BlockID, voxel.BlockID) ? 1 : 0;
                 for (int n = 0; n < 6; n++) // iterate per face
                 {
                     //if ((BlockShape)nb[n] != BlockShape.Solid)
@@ -226,5 +226,10 @@ public class BlockModel
         }
 
         return false;
+    }
+    public bool DoAdjacentIDsMatch(BlockID id1, BlockID id2) {
+        if (id1 == BlockID.Grass || id1 == BlockID.Dirt)
+            return id2 == BlockID.Grass || id2 == BlockID.Dirt;
+        return id1 == id2;
     }
 }
