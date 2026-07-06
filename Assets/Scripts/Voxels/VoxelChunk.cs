@@ -335,7 +335,7 @@ public class VoxelChunk : MonoBehaviour
     {
         if (activeVoxels.Count > 0)
         {
-            Debug.Log($"updating chunk {ChunkCoord}- there are {activeVoxels.Count} voxels to check");
+            //Debug.Log($"updating chunk {ChunkCoord}- there are {activeVoxels.Count} voxels to check");
             Vector3Int[] tempActiveVoxels = new Vector3Int[activeVoxels.Count];
             activeVoxels.CopyTo(tempActiveVoxels);
             foreach (Vector3Int pos in tempActiveVoxels)

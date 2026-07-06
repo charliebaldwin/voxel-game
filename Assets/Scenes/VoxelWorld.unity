@@ -11158,7 +11158,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1670060081210582922, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_Height
-      value: 1.7
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1670060081210582922, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_Radius
@@ -11212,6 +11212,10 @@ PrefabInstance:
       propertyPath: RenderDistance
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 4332070277492633877, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dd3c045e85d0dcb429c5dd628d78fcd9, type: 2}
     - target: {fileID: 4722012122128813788, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_Name
       value: Player
@@ -11247,7 +11251,7 @@ PrefabInstance:
     - target: {fileID: 6486164264205090042, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: VoxelCursor
       value: 
-      objectReference: {fileID: 2111434827}
+      objectReference: {fileID: 2111434829}
     - target: {fileID: 6486164264205090042, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: sprintSpeed
       value: 8
@@ -22397,6 +22401,11 @@ MonoBehaviour:
   meshRenderer: {fileID: 1067502591}
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
+--- !u!23 &1072350842 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5259839621045974662, guid: 6a3e7080de040b94fa0d445f7d1ff344, type: 3}
+  m_PrefabInstance: {fileID: 2111434826}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1083528602
 GameObject:
   m_ObjectHideFlags: 0
@@ -42963,13 +42972,32 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2224048871189733559, guid: 6a3e7080de040b94fa0d445f7d1ff344, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2111434829}
   m_SourcePrefab: {fileID: 100100000, guid: 6a3e7080de040b94fa0d445f7d1ff344, type: 3}
 --- !u!1 &2111434827 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2224048871189733559, guid: 6a3e7080de040b94fa0d445f7d1ff344, type: 3}
   m_PrefabInstance: {fileID: 2111434826}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2111434829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2111434827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a5ab8c60e6c6de4c9fbd098c08bf4ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoxelCursor
+  CursorMaterial: {fileID: 2100000, guid: 9474499ea0395cb4f8d94778d386b43c, type: 2}
+  MeshRenderer: {fileID: 1072350842}
+  BlockColor: {r: 0, g: 0.8679245, b: 0.6480818, a: 1}
+  ToolColor: {r: 1, g: 0, b: 0.25023413, a: 1}
 --- !u!1 &2111597567
 GameObject:
   m_ObjectHideFlags: 0

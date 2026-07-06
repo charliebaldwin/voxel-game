@@ -14,7 +14,8 @@ public class PlayerController : MonoBehaviour
     public Camera Camera;
     public PlayerViewmodel Viewmodel;
     public InventoryManager Inventory;
-    public GameObject VoxelCursor;
+    public GameObject VoxelCursor2;
+    public VoxelCursor VoxelCursor;
     [EndFoldout]
     private VoxelWorld world;
 
@@ -202,17 +203,7 @@ public class PlayerController : MonoBehaviour
     private void RaycastWorld()
     {
         lastHitInfo = world.VoxelTraversal(CameraPivot.position, CameraPivot.forward, AimDistance);
-        if (lastHitInfo.didHit)
-        {
-            VoxelCursor.transform.position = lastHitInfo.voxelPos;
-            VoxelCursor.transform.forward = lastHitInfo.hitNormal;
-            if (lastHitInfo.voxel.Shape == BlockShape.HalfSlab)
-                VoxelCursor.transform.position += Vector3.down * 0.5f;
-
-            VoxelCursor.SetActive(true);
-        }
-        else
-            VoxelCursor.SetActive(false);
+        VoxelCursor.MoveCursor(lastHitInfo, equippedItem.Type);
     }
 
     private void DamageVoxel(int damage)
