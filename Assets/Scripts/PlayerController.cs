@@ -74,6 +74,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         world = VoxelWorld.Instance;
+        equippedItem = ItemRegistry.LookupItem(ItemID.NullItem);
     }
 
     void Update()

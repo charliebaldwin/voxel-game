@@ -19,10 +19,12 @@ public class VoxelCursor : MonoBehaviour
                 transform.position += hit.hitNormal;
 
             //VoxelCursor.SetActive(true);
+            MeshRenderer.enabled = true;
+
         }
         else
         {
-            //VoxelCursor.SetActive(false);
+            MeshRenderer.enabled = false;
         }
         //MeshRenderer.material.SetColor("_Color", Color.red);
 
