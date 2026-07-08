@@ -491,7 +491,7 @@ public partial class VoxelWorld : MonoBehaviour
                 BlockEntityActor entity = Instantiate(BlockEntityPrefab, chunk.transform).GetComponent<BlockEntityActor>();
                 entity.Data = BlockRegistry.LookupBlockEntity(data.BlockID);
                 newVoxel.Shape = BlockShape.BlockEntity;
-                chunk.AddBlockEntity(entity, worldPos);
+                chunk.AddBlockEntity(entity, worldPos, newVoxel);
             }
 
             Voxels[worldPos.x, worldPos.y, worldPos.z] = newVoxel;
@@ -556,7 +556,7 @@ public partial class VoxelWorld : MonoBehaviour
             Voxel hitVoxel = LookupVoxelWorld(stepPos);
 
             // hit full block
-            if (hitVoxel.Shape == BlockShape.Solid)
+            if (hitVoxel.Shape == BlockShape.Solid || hitVoxel.Shape != BlockShape.HalfSlab && hitVoxel.Shape != BlockShape.Empty)
             {
                 didHit = true;
             }

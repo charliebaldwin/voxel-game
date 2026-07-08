@@ -22,15 +22,15 @@ public class OrthoNormal
     }
     public OrthoNormal(Vector3 vec)
     {
-        x = (sbyte)vec.x.RoundToInt();
-        y = (sbyte)vec.y.RoundToInt();
-        z = (sbyte)vec.z.RoundToInt();
+        x = (sbyte)Mathf.Clamp(vec.x, -1f, 1f).RoundToInt();
+        y = (sbyte)Mathf.Clamp(vec.y, -1f, 1f).RoundToInt();
+        z = (sbyte)Mathf.Clamp(vec.z, -1f, 1f).RoundToInt();
     }
     public OrthoNormal(Vector3Int vec)
     {
-        x = (sbyte)vec.x;
-        y = (sbyte)vec.y;
-        z = (sbyte)vec.z;
+        x = (sbyte)Mathf.Clamp(vec.x, -1, 1);
+        y = (sbyte)Mathf.Clamp(vec.y, -1, 1);
+        z = (sbyte)Mathf.Clamp(vec.z, -1, 1);
     }
 
     #endregion

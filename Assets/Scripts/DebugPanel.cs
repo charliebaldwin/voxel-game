@@ -37,6 +37,7 @@ public class DebugPanel : MonoBehaviour
     public static Vector3Int PlayerWorldVoxel;
     public static Vector3Int PlayerChunk;
     public static Vector3 PlayerForward;
+    public static OrthoNormal PlayerForwardOrtho;
 
     
     public void TogglePanel(InputAction.CallbackContext context)
@@ -92,10 +93,7 @@ public class DebugPanel : MonoBehaviour
                 PlayerLocalVoxelText.text = PlayerLocalVoxel.ToString();
                 PlayerChunkText.text = $"[{PlayerChunk.x}, {PlayerChunk.z}]";
                 PlayerFacingFloatText.text = PlayerForward.ToString();
-                int x = (int)Mathf.Sign(PlayerForward.x);
-                int y = (int)Mathf.Sign(PlayerForward.y);
-                int z = (int)Mathf.Sign(PlayerForward.z);
-                PlayerFacingIntText.text = $"({x}, {y}, {z})";
+                PlayerFacingIntText.text = PlayerForwardOrtho.ToString();
 
                 updateCounter = 0f;
             }

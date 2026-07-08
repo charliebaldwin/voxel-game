@@ -508,11 +508,13 @@ public class VoxelChunk : MonoBehaviour
         activeVoxels.Add(localPos + Vector3Int.back);
         activeVoxels.Add(localPos + Vector3Int.forward);
     }
-    public void AddBlockEntity(BlockEntityActor entity, Vector3Int worldPos)
+    public void AddBlockEntity(BlockEntityActor entity, Vector3Int worldPos, Voxel voxel)
     {
         if (!BlockEntities.ContainsKey(worldPos))
         {
-            entity.SetPosition(worldPos);
+            entity.VoxelData = voxel;
+            entity.VoxelPosition = worldPos;
+            entity.SetPosition();
             entity.LoadEntity();
             BlockEntities.Add(worldPos, entity);
         }
