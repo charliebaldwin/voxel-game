@@ -28,7 +28,8 @@ namespace Evo.UI
             Color,
             Font,
             Sprite,
-            Gradient
+            Gradient,
+            TextStyle
         }
 
         /// <summary>
@@ -95,6 +96,56 @@ namespace Evo.UI
         }
 
         /// <summary>
+        /// Used to specify Text Style values and overrides.
+        /// </summary>
+        [System.Serializable]
+        public class TextStyleItem
+        {
+            public string itemID;
+
+            [Tooltip("Override TMP text size settings.")]
+            public bool applySize = false;
+            [Min(0f)] public float fontSize = 36f;
+            public bool enableAutoSizing = false;
+            [Min(0f)] public float fontSizeMin = 18f;
+            [Min(0f)] public float fontSizeMax = 72f;
+            public float characterWidthAdjustment = 0f;
+            public float lineSpacingAdjustment = 0f;
+
+            [Tooltip("Override TMP alignment settings.")]
+            public bool applyAlignment = false;
+            public TextAlignmentOptions alignment = TextAlignmentOptions.TopLeft;
+
+            [Tooltip("Override TMP wrapping and overflow settings.")]
+            public bool applyWrappingAndOverflow = false;
+            public bool enableWordWrapping = true;
+            public TextOverflowModes overflowMode = TextOverflowModes.Overflow;
+
+            [Tooltip("Override TMP spacing settings.")]
+            public bool applySpacing = false;
+            public float characterSpacing = 0f;
+            public float wordSpacing = 0f;
+            public float lineSpacing = 0f;
+            public float paragraphSpacing = 0f;
+
+            [Tooltip("Override TMP margin settings.")]
+            public bool applyMargin = false;
+            public Vector4 margin = Vector4.zero;
+
+            [Tooltip("Override TMP font style settings.")]
+            public bool applyFontStyle = false;
+            public FontStyles fontStyle = FontStyles.Normal;
+
+#if UNITY_EDITOR
+            [System.NonSerialized] public bool isExpanded = true;
+#endif
+            public TextStyleItem(string id = "")
+            {
+                itemID = id;
+            }
+        }
+
+        /// <summary>
         /// Used to specify Sprite values and optional Image Component overrides. 
         /// </summary>
         [System.Serializable]
@@ -145,9 +196,9 @@ namespace Evo.UI
         /// Gets the default preset. 
         /// Prioritizes the preset defined in the config file. Falls back to default.
         /// </summary>
-        public static StylerPreset GetDefaultPreset(bool generateLog = true)
+        public static StylerPreset GetDefaultPreset(bool generateLog = true, bool bypassCache = false)
         {
-            if (cachedDefaultPreset != null)
+            if (!bypassCache && cachedDefaultPreset != null)
                 return cachedDefaultPreset;
 
             // Try to load from config

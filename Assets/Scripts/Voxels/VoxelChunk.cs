@@ -60,7 +60,7 @@ public class VoxelChunk : MonoBehaviour
 
 
     private JobHandle handle;
-    private bool jobActive = false;
+    //private bool jobActive = false;
     public NativeArray<Vector3> verticesResult;
     public NativeArray<Vector3> normalsResult;
     public NativeArray<Vector2> uvsResult;

@@ -19,6 +19,7 @@ namespace Evo.UI
         SerializedProperty objectType;
         SerializedProperty colorID;
         SerializedProperty fontID;
+        SerializedProperty textStyleID;
         SerializedProperty spriteID;
         SerializedProperty gradientID;
         SerializedProperty useCustomColor;
@@ -56,6 +57,7 @@ namespace Evo.UI
             objectType = serializedObject.FindProperty("objectType");
             colorID = serializedObject.FindProperty("colorID");
             fontID = serializedObject.FindProperty("fontID");
+            textStyleID = serializedObject.FindProperty("textStyleID");
             spriteID = serializedObject.FindProperty("spriteID");
             gradientID = serializedObject.FindProperty("gradientID");
             useCustomColor = serializedObject.FindProperty("useCustomColor");
@@ -82,10 +84,7 @@ namespace Evo.UI
             EvoEditorGUI.RegisterEditor(this);
         }
 
-        void OnDisable()
-        {
-            EvoEditorGUI.UnregisterEditor(this);
-        }
+        void OnDisable() => EvoEditorGUI.UnregisterEditor(this);
 
         public override void OnInspectorGUI()
         {
@@ -118,10 +117,15 @@ namespace Evo.UI
                 EvoEditorGUI.BeginContainer();
                 {
                     EvoEditorGUI.DrawProperty(preset, "Styler Preset", "The preset containing style definitions.", true, true, true);
-                    if (objectType.enumValueIndex == (int)StylerObject.ObjectType.Graphic) { EvoEditorGUI.DrawProperty(targetGraphic, "Target Graphic", null, false, true, true); }
-                    else if (objectType.enumValueIndex == (int)StylerObject.ObjectType.TMPText) { EvoEditorGUI.DrawProperty(targetText, "Target Text", null, false, true, true); }
-                    else if (objectType.enumValueIndex == (int)StylerObject.ObjectType.Image) { EvoEditorGUI.DrawProperty(targetGraphic, "Target Image", null, false, true, true); }
-                    else if (objectType.enumValueIndex == (int)StylerObject.ObjectType.Gradient) { EvoEditorGUI.DrawProperty(targetGradient, "Target Gradient", "", false, true, true); }
+                 
+                    if (objectType.enumValueIndex == (int)StylerObject.ObjectType.Graphic)
+                        EvoEditorGUI.DrawProperty(targetGraphic, "Target Graphic", null, false, true, true);
+                    else if (objectType.enumValueIndex == (int)StylerObject.ObjectType.TMPText)
+                        EvoEditorGUI.DrawProperty(targetText, "Target Text", null, false, true, true);
+                    else if (objectType.enumValueIndex == (int)StylerObject.ObjectType.Image)
+                        EvoEditorGUI.DrawProperty(targetGraphic, "Target Image", null, false, true, true);
+                    else if (objectType.enumValueIndex == (int)StylerObject.ObjectType.Gradient)
+                        EvoEditorGUI.DrawProperty(targetGradient, "Target Gradient", "", false, true, true);
                 }
                 EvoEditorGUI.EndContainer();
             }
@@ -144,11 +148,18 @@ namespace Evo.UI
 
                     // Draw fields
                     if (objectType.enumValueIndex == (int)StylerObject.ObjectType.TMPText)
+                    {
                         StylerEditor.DrawItemDropdown(preset, fontID, Styler.ItemType.Font, "Font ID", true, true, true);
+                        StylerEditor.DrawItemDropdown(preset, textStyleID, Styler.ItemType.TextStyle, "Text Style ID", true, true, true);
+                    }
                     else if (objectType.enumValueIndex == (int)StylerObject.ObjectType.Image)
+                    {
                         StylerEditor.DrawItemDropdown(preset, spriteID, Styler.ItemType.Sprite, "Sprite ID", true, true, true);
+                    }
                     else if (isGradient)
+                    {
                         StylerEditor.DrawItemDropdown(preset, gradientID, Styler.ItemType.Gradient, "Gradient ID", false, true, true);
+                    }
 
                     GUI.enabled = !useCustomColor.boolValue && !enableInteraction.boolValue;
 
@@ -296,14 +307,9 @@ namespace Evo.UI
 
                 // If preset is assigned, use dropdown
                 if (preset.objectReferenceValue != null && !useCustomColor.boolValue)
-                {
                     StylerEditor.DrawItemDropdown(preset, stylerID, Styler.ItemType.Color, stateNames[i], !isLastItem);
-                }
                 else
-                {
-                    // Fallback to custom color field when preset is missing
                     EvoEditorGUI.DrawProperty(color, stateNames[i], null, !isLastItem, true);
-                }
             }
         }
 
@@ -332,14 +338,9 @@ namespace Evo.UI
 
                 // If preset is assigned, use dropdown
                 if (preset.objectReferenceValue != null)
-                {
                     StylerEditor.DrawItemDropdown(preset, stylerID, Styler.ItemType.Font, stateNames[i], !isLastItem);
-                }
                 else
-                {
-                    // Fallback to custom font field when preset is missing
                     EvoEditorGUI.DrawProperty(font, stateNames[i], null, !isLastItem, true);
-                }
             }
         }
     }

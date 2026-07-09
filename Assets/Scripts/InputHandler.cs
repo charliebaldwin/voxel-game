@@ -17,23 +17,38 @@ public class InputHandler : MonoBehaviour
     public InventoryManager inventory;
     public RadialMenu radialMenu;
 
+    public string WorldModeLabel = "World";
+    public string GUIModeLabel = "UI";
+
     public void SetModeWorld(InputAction.CallbackContext context)
     {
         if (context.started)
         {
             CurrentMode = InputModes.WORLD;
-            Input.SwitchCurrentActionMap("World");
+            Input.SwitchCurrentActionMap(WorldModeLabel);
             Cursor.lockState = CursorLockMode.Locked;
         }
+    }
+    public void SetModeWorld()
+    {
+        CurrentMode = InputModes.WORLD;
+        Input.SwitchCurrentActionMap(WorldModeLabel);
+        Cursor.lockState = CursorLockMode.Locked;
     }
     public void SetModeInventory(InputAction.CallbackContext context)
     {
         if (context.started)
         {
             CurrentMode = InputModes.INVENTORY;
-            Input.SwitchCurrentActionMap("Inventory");
+            Input.SwitchCurrentActionMap(GUIModeLabel);
             Cursor.lockState= CursorLockMode.None;
         }
+    }
+    public void SetModeInventory()
+    {
+        CurrentMode = InputModes.INVENTORY;
+        Input.SwitchCurrentActionMap(GUIModeLabel);
+        Cursor.lockState = CursorLockMode.None;
     }
     public void SetModeRadial(InputAction.CallbackContext context)
     {

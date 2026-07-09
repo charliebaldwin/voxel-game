@@ -11,7 +11,8 @@ namespace Evo.UI
         static string objectPath;
         static bool isPathCached;
 
-        const int MenuOrder = 7;
+        const int TopMenuOrder = 7;
+        const int MenuOrder = 20;
         const string MenuPrefix = "GameObject/Evo UI/";
 
         static void GetObjectPath()
@@ -96,7 +97,7 @@ namespace Evo.UI
             return canvas;
         }
 
-        static void CreateObject(string path)
+        static GameObject CreateObject(string path)
         {
             GetObjectPath();
             string fullPath = objectPath + path + ".prefab";
@@ -105,7 +106,7 @@ namespace Evo.UI
             if (!File.Exists(fullPath))
             {
                 EditorUtility.DisplayDialog("Evo UI", $"Prefab not found at: {fullPath}\nPlease check your Evo UI installation.", "OK");
-                return;
+                return null;
             }
 
             GameObject clone = Instantiate(AssetDatabase.LoadAssetAtPath(fullPath, typeof(GameObject)), Vector3.zero, Quaternion.identity) as GameObject;
@@ -116,6 +117,8 @@ namespace Evo.UI
  
             Undo.RegisterCreatedObjectUndo(clone, $"Create {clone.name}");
             Selection.activeObject = clone;
+
+            return clone;
         }
 
         [MenuItem(MenuPrefix + "Animated/Counter", false, MenuOrder)]
@@ -331,14 +334,32 @@ namespace Evo.UI
         [MenuItem(MenuPrefix + "Spinner/Radial", false, MenuOrder)]
         static void CreateSpinnerR() => CreateObject("Spinner/Spinner (Radial)");
 
-        [MenuItem(MenuPrefix + "Styler Objects/Image", false, MenuOrder)]
-        static void CreateStylerObjImage() => CreateObject("Styler Objects/Image");
+        [MenuItem(MenuPrefix + "Styler Objects/Image", false, TopMenuOrder)]
+        static void CreateStylerObjImage()
+        {
+            GameObject obj = CreateObject("Styler Objects/Image");
+           
+            if (obj != null && obj.TryGetComponent(out StylerObject stObj))
+                stObj.Preset = Styler.GetDefaultPreset(false, true);
+        }
 
-        [MenuItem(MenuPrefix + "Styler Objects/Procedural Rect", false, MenuOrder)]
-        static void CreateStylerObjPR() => CreateObject("Styler Objects/Procedural Rect");
+        [MenuItem(MenuPrefix + "Styler Objects/Procedural Rect", false, TopMenuOrder)]
+        static void CreateStylerObjPR()
+        {
+            GameObject obj = CreateObject("Styler Objects/Procedural Rect");
+            
+            if (obj != null && obj.TryGetComponent(out StylerObject stObj))
+                stObj.Preset = Styler.GetDefaultPreset(false, true);
+        }
 
-        [MenuItem(MenuPrefix + "Styler Objects/TMP Text", false, MenuOrder)]
-        static void CreateStylerObjTMP() => CreateObject("Styler Objects/TMP Text");
+        [MenuItem(MenuPrefix + "Styler Objects/TMP Text", false, TopMenuOrder)]
+        static void CreateStylerObjTMP()
+        {
+            GameObject obj = CreateObject("Styler Objects/TMP Text");
+            
+            if (obj != null && obj.TryGetComponent(out StylerObject stObj))
+                stObj.Preset = Styler.GetDefaultPreset(false, true);
+        }
 
         [MenuItem(MenuPrefix + "Switch/Default", false, MenuOrder)]
         static void CreateSwitch() => CreateObject("Switch/Switch");

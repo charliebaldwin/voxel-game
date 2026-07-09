@@ -8,7 +8,7 @@ namespace Evo.UI
     [DisallowMultipleComponent]
     [HelpURL(Constants.HelpUrl + "ui-elements/tooltip")]
     [AddComponentMenu("Evo/UI/UI Elements/Tooltip")]
-    public class Tooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class Tooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
     {
         [EvoHeader("Content", Constants.CustomEditorID)]
         public GameObject tooltipPreset;
@@ -142,6 +142,18 @@ namespace Evo.UI
         }
 
         public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!is3DObject)
+                Hide();
+        }
+
+        public void OnSelect(BaseEventData eventData)
+        {
+            if (!is3DObject)
+                Show();
+        }
+
+        public void OnDeselect(BaseEventData eventData)
         {
             if (!is3DObject)
                 Hide();

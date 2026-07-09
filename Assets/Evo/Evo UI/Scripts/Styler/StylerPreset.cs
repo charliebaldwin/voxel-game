@@ -33,6 +33,9 @@ namespace Evo.UI
             new Styler.FontItem("Bold", null)
         };
 
+        [EvoHeader("Text Style", Constants.CustomEditorID)]
+        public List<Styler.TextStyleItem> textStyleItems = new() { };
+
         [EvoHeader("Gradient", Constants.CustomEditorID)]
         public List<Styler.GradientItem> gradientItems = new() { };
 
@@ -40,6 +43,7 @@ namespace Evo.UI
         public List<Styler.SpriteItem> spriteItems = new() { };
 
         [EvoHeader("Settings", Constants.CustomEditorID)]
+        [Tooltip("Default update mode for all StylerObjects using this preset.")]
         public Styler.UpdateMode updateMode = Styler.UpdateMode.Adaptive;
 
         /// <summary>
@@ -121,6 +125,33 @@ namespace Evo.UI
         {
             TryGetFont(itemID, out TMP_FontAsset font);
             return font;
+        }
+
+        /// <summary>
+        /// Try get the full text style item definition from the preset. Returns false if ID is missing.
+        /// </summary>
+        public bool TryGetTextStyleItem(string itemID, out Styler.TextStyleItem textStyleItem)
+        {
+            for (int i = 0; i < textStyleItems.Count; i++)
+            {
+                if (textStyleItems[i].itemID == itemID)
+                {
+                    textStyleItem = textStyleItems[i];
+                    return true;
+                }
+            }
+
+            textStyleItem = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Get the full text style item definition from the preset.
+        /// </summary>
+        public Styler.TextStyleItem GetTextStyleItem(string itemID)
+        {
+            TryGetTextStyleItem(itemID, out Styler.TextStyleItem textStyleItem);
+            return textStyleItem;
         }
 
         /// <summary>
@@ -341,6 +372,23 @@ namespace Evo.UI
         }
 
         /// <summary>
+        /// Add a text style item to the preset.
+        /// </summary>
+        public void AddTextStyle(string itemID)
+        {
+            for (int i = 0; i < textStyleItems.Count; i++)
+            {
+                if (textStyleItems[i].itemID == itemID)
+                {
+                    Debug.LogWarning($"Text style item with ID '{itemID}' already exists.", this);
+                    return;
+                }
+            }
+
+            textStyleItems.Add(new Styler.TextStyleItem(itemID));
+        }
+
+        /// <summary>
         /// Add a sprite item to the preset.
         /// </summary>
         public void AddSprite(string itemID, Sprite sprite)
@@ -426,6 +474,23 @@ namespace Evo.UI
         }
 
         /// <summary>
+        /// Remove a text style item from the preset.
+        /// </summary>
+        public bool RemoveTextStyle(string itemID)
+        {
+            for (int i = 0; i < textStyleItems.Count; i++)
+            {
+                if (textStyleItems[i].itemID == itemID)
+                {
+                    textStyleItems.RemoveAt(i);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Remove a sprite item from the preset.
         /// </summary>
         public bool RemoveSprite(string itemID)
@@ -463,6 +528,7 @@ namespace Evo.UI
         [HideInInspector] public bool audioFoldout = false;
         [HideInInspector] public bool colorFoldout = false;
         [HideInInspector] public bool fontFoldout = false;
+        [HideInInspector] public bool textStyleFoldout = false;
         [HideInInspector] public bool spriteFoldout = false;
         [HideInInspector] public bool gradientFoldout = false;
         [HideInInspector] public bool settingsFoldout = false;

@@ -11335,6 +11335,10 @@ PrefabInstance:
       propertyPath: sprintSpeed
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 6486164264205090042, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
+      propertyPath: GUIController
+      value: 
+      objectReference: {fileID: 1006050086}
     - target: {fileID: 6843547710664959715, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: field of view
       value: 85
@@ -20940,11 +20944,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1006050085}
+  - component: {fileID: 1006050086}
   - component: {fileID: 1006050084}
   - component: {fileID: 1006050083}
   - component: {fileID: 1006050082}
   m_Layer: 5
-  m_Name: UI
+  m_Name: GUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21037,6 +21042,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1006050086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1006050081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ba4d918453cf284786c35367cd7ea1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GUIController
+  Inventory: {fileID: 1517987119}
+  Popup: {fileID: 1561100741}
+  InputHandler: {fileID: 1659096137}
 --- !u!1 &1006587049
 GameObject:
   m_ObjectHideFlags: 0
@@ -35221,22 +35241,10 @@ MonoBehaviour:
     m_ActionName: 'FirstPerson/NumKey[/Keyboard/1,/Keyboard/2,/Keyboard/3,/Keyboard/4,/Keyboard/5,/Keyboard/6,/Keyboard/7,/Keyboard/8,/Keyboard/9,/Keyboard/0]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1659096137}
-        m_TargetAssemblyTypeName: InputHandler, Assembly-CSharp
-        m_MethodName: SetModeInventory
+      - m_Target: {fileID: 1006050086}
+        m_TargetAssemblyTypeName: GUIController, Assembly-CSharp
+        m_MethodName: OnOpenInventory
         m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1517987119}
-        m_TargetAssemblyTypeName: InventoryManager, Assembly-CSharp
-        m_MethodName: Open
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -35301,21 +35309,9 @@ MonoBehaviour:
     m_ActionName: 'Inventory/MousePos[/Mouse/delta]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1517987119}
-        m_TargetAssemblyTypeName: InventoryManager, Assembly-CSharp
-        m_MethodName: Close
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1659096137}
-        m_TargetAssemblyTypeName: InputHandler, Assembly-CSharp
-        m_MethodName: SetModeWorld
+      - m_Target: {fileID: 1006050086}
+        m_TargetAssemblyTypeName: GUIController, Assembly-CSharp
+        m_MethodName: OnExit
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -35418,6 +35414,8 @@ MonoBehaviour:
   playerView: {fileID: 584695760}
   inventory: {fileID: 1517987119}
   radialMenu: {fileID: 278506079}
+  WorldModeLabel: World
+  GUIModeLabel: GUI
 --- !u!1 &1666703128
 GameObject:
   m_ObjectHideFlags: 0

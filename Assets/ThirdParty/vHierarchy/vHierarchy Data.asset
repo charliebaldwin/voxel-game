@@ -37,7 +37,6 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-931529469-0
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-380934260-0
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-871158458-0
-        - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-1021138124-0
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-2858390961903986114-857006287
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-4578329678978708041-857006287
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-671703955603392978-857006287
@@ -508,7 +507,6 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-8101350911130268810-857006287
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-2927967338434521657-857006287
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-2999632417479095692-857006287
-        - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-278506077-0
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-1609232340-0
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-1123444939-0
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-69969303-0
@@ -582,7 +580,7 @@ MonoBehaviour:
           iconNameOrGuid: PreMatCube
           isIconRecursive: 0
           isColorRecursive: 0
-        - colorIndex: 6
+        - colorIndex: 1
           iconNameOrGuid: Canvas Icon
           isIconRecursive: 0
           isColorRecursive: 0
@@ -594,8 +592,8 @@ MonoBehaviour:
           iconNameOrGuid: StandaloneInputModule Icon
           isIconRecursive: 0
           isColorRecursive: 0
-        - colorIndex: 6
-          iconNameOrGuid: MeshCollider Icon
+        - colorIndex: 5
+          iconNameOrGuid: 
           isIconRecursive: 0
           isColorRecursive: 0
         - colorIndex: 0
@@ -616,14 +614,6 @@ MonoBehaviour:
           isColorRecursive: 0
         - colorIndex: 0
           iconNameOrGuid: StandaloneInputModule Icon
-          isIconRecursive: 0
-          isColorRecursive: 0
-        - colorIndex: 6
-          iconNameOrGuid: 
-          isIconRecursive: 0
-          isColorRecursive: 0
-        - colorIndex: 6
-          iconNameOrGuid: 
           isIconRecursive: 0
           isColorRecursive: 0
         - colorIndex: 6

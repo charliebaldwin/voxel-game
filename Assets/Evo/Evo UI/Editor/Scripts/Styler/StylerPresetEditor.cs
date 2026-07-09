@@ -14,6 +14,7 @@ namespace Evo.UI
         SerializedProperty audioItems;
         SerializedProperty colorItems;
         SerializedProperty fontItems;
+        SerializedProperty textStyleItems;
         SerializedProperty gradientItems;
         SerializedProperty spriteItems;
         SerializedProperty updateMode;
@@ -29,6 +30,7 @@ namespace Evo.UI
             audioItems = serializedObject.FindProperty("audioItems");
             colorItems = serializedObject.FindProperty("colorItems");
             fontItems = serializedObject.FindProperty("fontItems");
+            textStyleItems = serializedObject.FindProperty("textStyleItems");
             gradientItems = serializedObject.FindProperty("gradientItems");
             spriteItems = serializedObject.FindProperty("spriteItems");
             updateMode = serializedObject.FindProperty("updateMode");
@@ -45,11 +47,7 @@ namespace Evo.UI
             isFallbackPreset = !string.IsNullOrEmpty(resourcePath) && resourcePath.Replace('\\', '/') == Constants.StylerFallbackPath;
         }
 
-        void OnDisable()
-        {
-            // Unregister from hover repaints
-            EvoEditorGUI.UnregisterEditor(this);
-        }
+        void OnDisable() => EvoEditorGUI.UnregisterEditor(this);
 
         public override void OnInspectorGUI()
         {
@@ -69,10 +67,13 @@ namespace Evo.UI
             DrawAudioItems();
             DrawColorItems();
             DrawFontItems();
+            DrawTextStyleItems();
             DrawGradientItems();
             DrawSpriteItems();
             DrawSettings();
-            if (!isFallbackPreset) { DrawSetDefault(); }
+
+            if (!isFallbackPreset)
+                DrawSetDefault();
 
             EvoEditorGUI.EndCenteredInspector();
             serializedObject.ApplyModifiedProperties();
@@ -85,8 +86,10 @@ namespace Evo.UI
             if (EvoEditorGUI.DrawFoldout(ref spTarget.audioFoldout, "Audio", EvoEditorGUI.GetIcon("UI_Audio")))
             {
                 EvoEditorGUI.BeginContainer();
+                
                 DrawItemList(audioItems, Styler.ItemType.Audio);
                 GUILayout.Space(2);
+               
                 if (EvoEditorGUI.DrawButton("New Audio", "Add", height: 20, iconSize: 8, revertBackgroundColor: true))
                 {
                     audioItems.arraySize++;
@@ -96,6 +99,7 @@ namespace Evo.UI
                     newItem.isExpanded = true;
                     EditorUtility.SetDirty(spTarget);
                 }
+
                 EvoEditorGUI.EndContainer();
             }
 
@@ -110,8 +114,10 @@ namespace Evo.UI
             if (EvoEditorGUI.DrawFoldout(ref spTarget.colorFoldout, "Color", EvoEditorGUI.GetIcon("UI_Style")))
             {
                 EvoEditorGUI.BeginContainer();
+                
                 DrawItemList(colorItems, Styler.ItemType.Color);
                 GUILayout.Space(2);
+                
                 if (EvoEditorGUI.DrawButton("New Color", "Add", height: 20, iconSize: 8, revertBackgroundColor: true))
                 {
                     colorItems.arraySize++;
@@ -121,6 +127,7 @@ namespace Evo.UI
                     newItem.isExpanded = true;
                     EditorUtility.SetDirty(spTarget);
                 }
+
                 EvoEditorGUI.EndContainer();
             }
 
@@ -135,8 +142,10 @@ namespace Evo.UI
             if (EvoEditorGUI.DrawFoldout(ref spTarget.fontFoldout, "Font", EvoEditorGUI.GetIcon("UI_Text")))
             {
                 EvoEditorGUI.BeginContainer();
+                
                 DrawItemList(fontItems, Styler.ItemType.Font);
                 GUILayout.Space(2);
+                
                 if (EvoEditorGUI.DrawButton("New Font", "Add", height: 20, iconSize: 8, revertBackgroundColor: true))
                 {
                     fontItems.arraySize++;
@@ -146,6 +155,40 @@ namespace Evo.UI
                     newItem.isExpanded = true;
                     EditorUtility.SetDirty(spTarget);
                 }
+
+                EvoEditorGUI.EndContainer();
+            }
+
+            EvoEditorGUI.EndVerticalBackground();
+            EvoEditorGUI.AddFoldoutSpace();
+        }
+
+        void DrawTextStyleItems()
+        {
+            EvoEditorGUI.BeginVerticalBackground();
+
+            if (EvoEditorGUI.DrawFoldout(ref spTarget.textStyleFoldout, "Text Style", EvoEditorGUI.GetIcon("UI_TextStyle")))
+            {
+                EvoEditorGUI.BeginContainer();
+                
+                DrawItemList(textStyleItems, Styler.ItemType.TextStyle);
+                GUILayout.Space(2);
+                
+                if (EvoEditorGUI.DrawButton("New Text Style", "Add", height: 20, iconSize: 8, revertBackgroundColor: true))
+                {
+                    textStyleItems.arraySize++;
+                    var newItem = textStyleItems.GetArrayElementAtIndex(textStyleItems.arraySize - 1);
+                    newItem.FindPropertyRelative("itemID").stringValue = $"Text Style {textStyleItems.arraySize}";
+                    newItem.FindPropertyRelative("applySize").boolValue = false;
+                    newItem.FindPropertyRelative("applyAlignment").boolValue = false;
+                    newItem.FindPropertyRelative("applyWrappingAndOverflow").boolValue = false;
+                    newItem.FindPropertyRelative("applySpacing").boolValue = false;
+                    newItem.FindPropertyRelative("applyMargin").boolValue = false;
+                    newItem.FindPropertyRelative("applyFontStyle").boolValue = false;
+                    newItem.isExpanded = true;
+                    EditorUtility.SetDirty(spTarget);
+                }
+
                 EvoEditorGUI.EndContainer();
             }
 
@@ -160,8 +203,10 @@ namespace Evo.UI
             if (EvoEditorGUI.DrawFoldout(ref spTarget.spriteFoldout, "Sprite", EvoEditorGUI.GetIcon("UI_Sprite")))
             {
                 EvoEditorGUI.BeginContainer();
+                
                 DrawItemList(spriteItems, Styler.ItemType.Sprite);
                 GUILayout.Space(2);
+               
                 if (EvoEditorGUI.DrawButton("New Sprite", "Add", height: 20, iconSize: 8, revertBackgroundColor: true))
                 {
                     spriteItems.arraySize++;
@@ -171,6 +216,7 @@ namespace Evo.UI
                     newItem.isExpanded = true;
                     EditorUtility.SetDirty(spTarget);
                 }
+
                 EvoEditorGUI.EndContainer();
             }
 
@@ -185,8 +231,10 @@ namespace Evo.UI
             if (EvoEditorGUI.DrawFoldout(ref spTarget.gradientFoldout, "Gradient", EvoEditorGUI.GetIcon("UI_Gradient")))
             {
                 EvoEditorGUI.BeginContainer();
+               
                 DrawItemList(gradientItems, Styler.ItemType.Gradient);
                 GUILayout.Space(2);
+                
                 if (EvoEditorGUI.DrawButton("New Gradient", "Add", height: 20, iconSize: 8, revertBackgroundColor: true))
                 {
                     gradientItems.arraySize++;
@@ -195,6 +243,7 @@ namespace Evo.UI
                     newItem.isExpanded = true;
                     EditorUtility.SetDirty(spTarget);
                 }
+
                 EvoEditorGUI.EndContainer();
             }
 
@@ -211,11 +260,13 @@ namespace Evo.UI
                 EvoEditorGUI.BeginContainer();
                 {
                     EvoEditorGUI.BeginVerticalBackground(true);
-                    EvoEditorGUI.DrawProperty(updateMode, "Update Mode", "Default update mode for all StylerObjects using this preset.", false, false);
+                    EvoEditorGUI.DrawProperty(updateMode, "Update Mode", updateMode.tooltip, false, false);
                     EvoEditorGUI.BeginContainer(4);
-                    string description = null;
-                    if (updateMode.enumValueIndex == 0) { description = "Styler objects are updated in the editor and on every change at runtime."; }
-                    else if (updateMode.enumValueIndex == 1) { description = "Styler objects are always updated in the editor and whenever the object is enabled at runtime."; }
+
+                    string description = updateMode.enumValueIndex == 0
+                        ? "Styler objects are updated in the editor and on every change at runtime."
+                        : "Styler objects are always updated in the editor and whenever the object is enabled at runtime.";
+                    
                     GUILayout.Space(2);
                     EvoEditorGUI.DrawInfoBox(description);
                     EvoEditorGUI.EndContainer();
@@ -322,6 +373,130 @@ namespace Evo.UI
                         SerializedProperty fontAsset = item.FindPropertyRelative("fontAsset");
                         EvoEditorGUI.DrawProperty(fontAsset, "Font Asset", "The font asset for this item.", false);
                     }
+                    else if (itemType == Styler.ItemType.TextStyle)
+                    {
+                        SerializedProperty applyFontStyle = item.FindPropertyRelative("applyFontStyle");
+                        EvoEditorGUI.BeginVerticalBackground();
+                        {
+                            EvoEditorGUI.DrawToggle(applyFontStyle, "Apply Font Style", applyFontStyle.tooltip, false, revertColor: true, bypassNormalBackground: true);
+                            if (applyFontStyle.boolValue)
+                            {
+                                EvoEditorGUI.BeginContainer(4, compactHeader: true);
+                                {
+                                    GUILayout.Space(1);
+                                    EvoEditorGUI.DrawProperty(item.FindPropertyRelative("fontStyle"), "Font Style", null, false, true, true);
+                                }
+                                EvoEditorGUI.EndContainer();
+                            }
+                        }
+                        EvoEditorGUI.EndVerticalBackground();
+                        EvoEditorGUI.AddLayoutSpace();
+
+                        SerializedProperty applySize = item.FindPropertyRelative("applySize");
+                        EvoEditorGUI.BeginVerticalBackground();
+                        { 
+                            EvoEditorGUI.DrawToggle(applySize, "Apply Size", applySize.tooltip, false, revertColor: true, bypassNormalBackground: true);
+                            if (applySize.boolValue)
+                            {
+                                EvoEditorGUI.BeginContainer(4, compactHeader: true);
+                                {
+                                    GUILayout.Space(1);
+                                    SerializedProperty enableAutoSizing = item.FindPropertyRelative("enableAutoSizing");
+                                    EvoEditorGUI.DrawToggle(enableAutoSizing, "Auto Size", null, true, true, true);
+
+                                    if (enableAutoSizing.boolValue)
+                                    {
+                                        EvoEditorGUI.DrawProperty(item.FindPropertyRelative("fontSizeMin"), "Min Size", null, true, true, true);
+                                        EvoEditorGUI.DrawProperty(item.FindPropertyRelative("fontSizeMax"), "Max Size", null, true, true, true);
+                                        EvoEditorGUI.DrawProperty(item.FindPropertyRelative("characterWidthAdjustment"), "WD%", null, true, true, true);
+                                        EvoEditorGUI.DrawProperty(item.FindPropertyRelative("lineSpacingAdjustment"), "Line", null, false, true, true);
+                                    }
+                                    else
+                                    {
+                                        EvoEditorGUI.DrawProperty(item.FindPropertyRelative("fontSize"), "Font Size", null, false, true, true);
+                                    }
+                                }
+                                EvoEditorGUI.EndContainer();
+                            }
+                        }
+                        EvoEditorGUI.EndVerticalBackground();
+                        EvoEditorGUI.AddLayoutSpace();
+
+                        SerializedProperty applyAlignment = item.FindPropertyRelative("applyAlignment");
+                        EvoEditorGUI.BeginVerticalBackground();
+                        {
+                            EvoEditorGUI.DrawToggle(applyAlignment, "Apply Alignment", applyAlignment.tooltip, false, revertColor: true, bypassNormalBackground: true);
+                            if (applyAlignment.boolValue)
+                            {
+                                EvoEditorGUI.BeginContainer(4, compactHeader: true);
+                                {
+                                    GUILayout.Space(1);
+                                    EvoEditorGUI.BeginVerticalBackground(true);
+                                    EvoEditorGUI.AddLayoutSpace();
+                                    EditorGUILayout.PropertyField(item.FindPropertyRelative("alignment"), new GUIContent(""));
+                                    EvoEditorGUI.EndVerticalBackground();
+
+                                }
+                                EvoEditorGUI.EndContainer();
+                            }
+                        }
+                        EvoEditorGUI.EndVerticalBackground();
+                        EvoEditorGUI.AddLayoutSpace();
+
+                                                SerializedProperty applySpacing = item.FindPropertyRelative("applySpacing");
+                        EvoEditorGUI.BeginVerticalBackground();
+                        {
+                            EvoEditorGUI.DrawToggle(applySpacing, "Apply Spacing", applySpacing.tooltip, false, revertColor: true, bypassNormalBackground: true);
+                            if (applySpacing.boolValue)
+                            {
+                                EvoEditorGUI.BeginContainer(4,compactHeader: true);
+                                {
+                                    GUILayout.Space(1);
+                                    EvoEditorGUI.DrawProperty(item.FindPropertyRelative("characterSpacing"), "Character", null, true, true, true);
+                                    EvoEditorGUI.DrawProperty(item.FindPropertyRelative("wordSpacing"), "Word", null, true, true, true);
+                                    EvoEditorGUI.DrawProperty(item.FindPropertyRelative("lineSpacing"), "Line", null, true, true, true);
+                                    EvoEditorGUI.DrawProperty(item.FindPropertyRelative("paragraphSpacing"), "Paragraph", null, false, true, true);
+                                }
+                                EvoEditorGUI.EndContainer();
+                            }
+                        }
+                        EvoEditorGUI.EndVerticalBackground();
+                        EvoEditorGUI.AddLayoutSpace();
+
+                        SerializedProperty applyWrappingAndOverflow = item.FindPropertyRelative("applyWrappingAndOverflow");
+                        EvoEditorGUI.BeginVerticalBackground();
+                        {
+                            EvoEditorGUI.DrawToggle(applyWrappingAndOverflow, "Apply Wrapping & Overflow", applyWrappingAndOverflow.tooltip, false, revertColor: true, bypassNormalBackground: true);
+                            if (applyWrappingAndOverflow.boolValue)
+                            {
+                                EvoEditorGUI.BeginContainer(4, compactHeader: true);
+                                {
+                                    GUILayout.Space(1);
+                                    EvoEditorGUI.DrawToggle(item.FindPropertyRelative("enableWordWrapping"), "Word Wrapping", null, true, true, true);
+                                    EvoEditorGUI.DrawProperty(item.FindPropertyRelative("overflowMode"), "Overflow", null, false, true, true);
+                                }
+                                EvoEditorGUI.EndContainer();
+                            }
+                        }
+                        EvoEditorGUI.EndVerticalBackground();
+                        EvoEditorGUI.AddLayoutSpace();
+
+                        SerializedProperty applyMargin = item.FindPropertyRelative("applyMargin");
+                        EvoEditorGUI.BeginVerticalBackground();
+                        {
+                            EvoEditorGUI.DrawToggle(applyMargin, "Apply Margin", applyMargin.tooltip, false, revertColor: true, bypassNormalBackground: true);
+                            if (applyMargin.boolValue)
+                            {
+                                EvoEditorGUI.BeginContainer(4, compactHeader: true);
+                                {
+                                    GUILayout.Space(1);
+                                    EvoEditorGUI.DrawArrayProperty(item.FindPropertyRelative("margin"), "Margin", null, false, true, true);
+                                }
+                                EvoEditorGUI.EndContainer();
+                            }
+                        }
+                        EvoEditorGUI.EndVerticalBackground();
+                    }
                     else if (itemType == Styler.ItemType.Gradient)
                     {
                         SerializedProperty gradientValue = item.FindPropertyRelative("gradientValue");
@@ -341,7 +516,7 @@ namespace Evo.UI
 
                             if (applySettings.boolValue)
                             {
-                                EvoEditorGUI.BeginContainer(compactHeader: true);
+                                EvoEditorGUI.BeginContainer(4, compactHeader: true);
                                 {
                                     GUILayout.Space(1);
 
@@ -515,24 +690,12 @@ namespace Evo.UI
             isFallbackPreset = !string.IsNullOrEmpty(resourcePath) && resourcePath.Replace('\\', '/') == Constants.StylerFallbackPath;
         }
 
-        bool IsCurrentPresetDefault()
-        {
-            TextAsset config = Resources.Load<TextAsset>(Constants.StylerConfigPath);
-            if (config == null) { return false; }
-
-            string path = AssetDatabase.GetAssetPath(spTarget);
-            string resourcePath = GetResourcePath(path);
-
-            // Trim to handle potential whitespace or line endings in the text file
-            return config.text.Trim() == resourcePath;
-        }
-
         string GetResourcePath(string assetPath)
         {
             if (string.IsNullOrEmpty(assetPath))
                 return null;
 
-            // We need the path relative to Resources for the config file content
+            // Need the path relative to Resources for the config file content
             int resourcesIndex = assetPath.LastIndexOf("/Resources/");
             if (resourcesIndex == -1) { return null; }
 

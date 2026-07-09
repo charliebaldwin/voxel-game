@@ -31,6 +31,9 @@ namespace Evo.UI
                 case Styler.ItemType.Font:
                     baseOptions = stylerPresetValue.fontItems.Select(item => item.itemID).ToArray();
                     break;
+                case Styler.ItemType.TextStyle:
+                    baseOptions = stylerPresetValue.textStyleItems.Select(item => item.itemID).ToArray();
+                    break;
                 case Styler.ItemType.Sprite:
                     baseOptions = stylerPresetValue.spriteItems.Select(item => item.itemID).ToArray();
                     break;
@@ -43,10 +46,11 @@ namespace Evo.UI
             {
                 string[] options;
 
-                // Add "None" option for Audio and "Transparent" for Color
-                if (itemType == Styler.ItemType.Audio || itemType == Styler.ItemType.Color)
+                // Add "None" option for specific items
+                if (itemType == Styler.ItemType.Audio || itemType == Styler.ItemType.Color || itemType == Styler.ItemType.TextStyle 
+                    || itemType == Styler.ItemType.Sprite)
                 {
-                    string firstOption = itemType == Styler.ItemType.Audio ? "None" : "None (Transparent)";
+                    string firstOption = itemType == Styler.ItemType.Color ? "None (Transparent)" : "None";
 
                     // Create options array with special first option
                     options = new string[baseOptions.Length + 1];
@@ -54,10 +58,7 @@ namespace Evo.UI
                     System.Array.Copy(baseOptions, 0, options, 1, baseOptions.Length);
 
                     // Find current selection index
-                    if (string.IsNullOrEmpty(currentValue))
-                    {
-                        selectedIndex = 0; // Empty string = Transparent/None option
-                    }
+                    if (string.IsNullOrEmpty(currentValue)) { selectedIndex = 0; } // Empty string = Transparent/None option       
                     else
                     {
                         bool found = false;
@@ -112,14 +113,18 @@ namespace Evo.UI
                 int newSelectedIndex = EvoEditorGUI.DrawDropdown(selectedIndex, options, label, addSpace, customBackground, revertColor, labelWidth);
                 if (EditorGUI.EndChangeCheck())
                 {
-                    if ((itemType == Styler.ItemType.Audio || itemType == Styler.ItemType.Color) && newSelectedIndex == 0)
+                    if ((itemType == Styler.ItemType.Audio || itemType == Styler.ItemType.Color || itemType == Styler.ItemType.TextStyle 
+                        || itemType == Styler.ItemType.Sprite) && newSelectedIndex == 0)
                     {
                         stylerProperty.stringValue = "";
                     }
                     else if (newSelectedIndex < options.Length)
                     {
                         string newValue = options[newSelectedIndex];
-                        if (newValue.EndsWith(" (Missing)")) { newValue = newValue.Replace(" (Missing)", ""); }
+
+                        if (newValue.EndsWith(" (Missing)"))
+                            newValue = newValue.Replace(" (Missing)", "");
+
                         stylerProperty.stringValue = newValue;
                     }
                 }
@@ -144,6 +149,7 @@ namespace Evo.UI
             if (stylingSource.enumValueIndex != 0)
             {
                 EvoEditorGUI.AddLayoutSpace();
+
                 if (colorFields != null)
                 {
                     EvoEditorGUI.BeginVerticalBackground(true);
@@ -156,18 +162,15 @@ namespace Evo.UI
                             SerializedProperty stylerID = mapping.FindPropertyRelative("stylerID");
 
                             if (stylingSource.enumValueIndex == 2 && stylerPreset.objectReferenceValue != null)
-                            {
                                 DrawItemDropdown(stylerPreset, stylerID, Styler.ItemType.Color, mapping.displayName, i < colorFields.Length - 1);
-                            }
                             else
-                            {
                                 EvoEditorGUI.DrawProperty(color, mapping.displayName, null, i < colorFields.Length - 1, true);
-                            }
                         }
                     }
                     EvoEditorGUI.EndContainer();
                     EvoEditorGUI.EndVerticalBackground(fontFields != null);
                 }
+
                 if (fontFields != null)
                 {
                     EvoEditorGUI.BeginVerticalBackground(true);
@@ -180,13 +183,9 @@ namespace Evo.UI
                             SerializedProperty stylerID = mapping.FindPropertyRelative("stylerID");
 
                             if (stylingSource.enumValueIndex == 2 && stylerPreset.objectReferenceValue != null)
-                            {
                                 DrawItemDropdown(stylerPreset, stylerID, Styler.ItemType.Font, mapping.displayName, i < fontFields.Length - 1);
-                            }
                             else
-                            {
                                 EvoEditorGUI.DrawProperty(font, mapping.displayName, null, i < fontFields.Length - 1, true);
-                            }
                         }
                     }
                     EvoEditorGUI.EndContainer();
@@ -194,7 +193,8 @@ namespace Evo.UI
                 }
             }
 
-            if (addSpace) { EvoEditorGUI.AddLayoutSpace(); }
+            if (addSpace)
+                EvoEditorGUI.AddLayoutSpace();
         }
     }
 }

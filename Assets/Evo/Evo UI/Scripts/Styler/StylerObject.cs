@@ -25,6 +25,7 @@ namespace Evo.UI
         public ObjectType objectType = ObjectType.Graphic;
         public string colorID = "Primary";
         public string fontID = "Regular";
+        public string textStyleID = "";
         public string gradientID = "";
         public string spriteID = "";
         [Tooltip("Set a current color instead of getting from the preset.")]
@@ -88,6 +89,7 @@ namespace Evo.UI
         // Cache
         readonly List<string> cachedColorIDs = new();
         readonly List<string> cachedFontIDs = new();
+        readonly List<string> cachedTextStyleIDs = new();
         readonly List<string> cachedGradientIDs = new();
         readonly List<string> cachedSpriteIDs = new();
         [System.NonSerialized] Gradient cachedGradientCopy;
@@ -236,7 +238,7 @@ namespace Evo.UI
             {
                 if (string.IsNullOrEmpty(mapping.stylerID))
                     return currentFont;
-                
+
                 if (preset.TryGetFont(mapping.stylerID, out TMP_FontAsset baseFont))
                     return baseFont;
 
@@ -301,6 +303,72 @@ namespace Evo.UI
             };
         }
 
+        void ApplyTextStyleSettings(TMP_Text targetText, Styler.TextStyleItem item)
+        {
+            if (targetText == null || item == null)
+                return;
+
+            if (item.applySize)
+            {
+                if (targetText.enableAutoSizing != item.enableAutoSizing)
+                    targetText.enableAutoSizing = item.enableAutoSizing;
+
+                if (!item.enableAutoSizing && targetText.fontSize != item.fontSize) { targetText.fontSize = item.fontSize; }
+                else
+                {
+                    if (targetText.fontSizeMin != item.fontSizeMin)
+                        targetText.fontSizeMin = item.fontSizeMin;
+
+                    if (targetText.fontSizeMax != item.fontSizeMax)
+                        targetText.fontSizeMax = item.fontSizeMax;
+
+                    if (targetText.characterWidthAdjustment != item.characterWidthAdjustment)
+                        targetText.characterWidthAdjustment = item.characterWidthAdjustment;
+
+                    if (targetText.lineSpacingAdjustment != item.lineSpacingAdjustment)
+                        targetText.lineSpacingAdjustment = item.lineSpacingAdjustment;
+                }
+            }
+
+            if (item.applyAlignment && targetText.alignment != item.alignment)
+                targetText.alignment = item.alignment;
+
+            if (item.applyWrappingAndOverflow)
+            {
+#if UNITY_6000_0_OR_NEWER
+                TextWrappingModes targetWrapMode = item.enableWordWrapping ? TextWrappingModes.Normal : TextWrappingModes.NoWrap;
+                if (targetText.textWrappingMode != targetWrapMode)
+                    targetText.textWrappingMode = targetWrapMode;
+#else
+                if (targetText.enableWordWrapping != item.enableWordWrapping)
+                    targetText.enableWordWrapping = item.enableWordWrapping;
+#endif
+                if (targetText.overflowMode != item.overflowMode)
+                    targetText.overflowMode = item.overflowMode;
+            }
+
+            if (item.applySpacing)
+            {
+                if (targetText.characterSpacing != item.characterSpacing)
+                    targetText.characterSpacing = item.characterSpacing;
+
+                if (targetText.wordSpacing != item.wordSpacing)
+                    targetText.wordSpacing = item.wordSpacing;
+              
+                if (targetText.lineSpacing != item.lineSpacing)
+                    targetText.lineSpacing = item.lineSpacing;
+               
+                if (targetText.paragraphSpacing != item.paragraphSpacing)
+                    targetText.paragraphSpacing = item.paragraphSpacing;
+            }
+
+            if (item.applyMargin && targetText.margin != item.margin)
+                targetText.margin = item.margin;
+
+            if (item.applyFontStyle && targetText.fontStyle != item.fontStyle)
+                targetText.fontStyle = item.fontStyle;
+        }
+
         void ApplySpriteSettings(Image targetImage, Styler.SpriteItem item)
         {
             if (targetImage == null)
@@ -313,16 +381,28 @@ namespace Evo.UI
 
             if (item != null && item.applyImageSettings)
             {
-                if (targetImage.type != item.imageType) { targetImage.type = item.imageType; }
-                if (targetImage.preserveAspect != item.preserveAspect) { targetImage.preserveAspect = item.preserveAspect; }
-                if (targetImage.pixelsPerUnitMultiplier != item.pixelsPerUnitMultiplier) { targetImage.pixelsPerUnitMultiplier = item.pixelsPerUnitMultiplier; }
+                if (targetImage.type != item.imageType)
+                    targetImage.type = item.imageType;
+               
+                if (targetImage.preserveAspect != item.preserveAspect)
+                    targetImage.preserveAspect = item.preserveAspect;
+
+                if (targetImage.pixelsPerUnitMultiplier != item.pixelsPerUnitMultiplier)
+                    targetImage.pixelsPerUnitMultiplier = item.pixelsPerUnitMultiplier;
 
                 if (item.imageType == Image.Type.Filled)
                 {
-                    if (targetImage.fillMethod != item.fillMethod) { targetImage.fillMethod = item.fillMethod; }
-                    if (targetImage.fillOrigin != item.fillOrigin) { targetImage.fillOrigin = item.fillOrigin; }
-                    if (targetImage.fillAmount != item.fillAmount) { targetImage.fillAmount = item.fillAmount; }
-                    if (targetImage.fillClockwise != item.fillClockwise) { targetImage.fillClockwise = item.fillClockwise; }
+                    if (targetImage.fillMethod != item.fillMethod)
+                        targetImage.fillMethod = item.fillMethod;
+                    
+                    if (targetImage.fillOrigin != item.fillOrigin)
+                        targetImage.fillOrigin = item.fillOrigin;
+
+                    if (targetImage.fillAmount != item.fillAmount)
+                        targetImage.fillAmount = item.fillAmount;
+
+                    if (targetImage.fillClockwise != item.fillClockwise)
+                        targetImage.fillClockwise = item.fillClockwise;
                 }
             }
         }
@@ -364,17 +444,21 @@ namespace Evo.UI
                 return;
             }
 
-            // Handle Fonts & Sprites
+            // Handle Fonts, Text Styles & Sprites
             if (objectType == ObjectType.TMPText && targetText != null)
             {
                 TMP_FontAsset currentFont = targetText.font;
                 TMP_FontAsset targetFont = GetTargetFont(currentFont);
+                
                 if (targetFont != null && targetText.font != targetFont)
                     targetText.font = targetFont;
+
+                if (!string.IsNullOrEmpty(textStyleID) && preset != null && preset.TryGetTextStyleItem(textStyleID, out var textStyleItem))
+                    ApplyTextStyleSettings(targetText, textStyleItem);
             }
             else if (preset != null && objectType == ObjectType.Image && targetGraphic is Image targetImage)
             {
-                if (preset.TryGetSpriteItem(spriteID, out var spriteItem))
+                if (!string.IsNullOrEmpty(spriteID) && preset.TryGetSpriteItem(spriteID, out var spriteItem))
                     ApplySpriteSettings(targetImage, spriteItem);
             }
 
@@ -430,6 +514,19 @@ namespace Evo.UI
             return cachedFontIDs;
         }
 
+        public List<string> GetAvailableTextStyleIDs()
+        {
+            cachedTextStyleIDs.Clear();
+
+            if (preset == null)
+                return cachedTextStyleIDs;
+
+            for (int i = 0; i < preset.textStyleItems.Count; i++)
+                cachedTextStyleIDs.Add(preset.textStyleItems[i].itemID);
+
+            return cachedTextStyleIDs;
+        }
+
         public List<string> GetAvailableSpriteIDs()
         {
             cachedSpriteIDs.Clear();
@@ -482,6 +579,9 @@ namespace Evo.UI
             {
                 if (preset.fontItems.Count > 0 && preset.fontItems[0] != null)
                     fontID = preset.fontItems[0].itemID;
+
+                if (preset.textStyleItems.Count > 0 && preset.textStyleItems[0] != null)
+                    textStyleID = preset.textStyleItems[0].itemID;
 
                 if (preset.colorItems.Count > 0 && preset.colorItems[0] != null)
                     colorID = preset.colorItems[0].itemID;

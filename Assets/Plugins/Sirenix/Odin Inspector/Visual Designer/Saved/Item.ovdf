@@ -1,0 +1,16 @@
+OVDF v1.1
+Item, Assembly-CSharp
+
+# $M68sxzn3GoVvEPNFoNFCZk
+Position: $root:12
++ [Sirenix.OdinInspector.ShowIfGroupAttribute]
+	VisibleIf = "Type"
+
+# Strength
+Position: $M68sxzn3GoVvEPNFoNFCZk:0
+
+# UseTime
+Position: $M68sxzn3GoVvEPNFoNFCZk:1
+
+# ToolType
+Position: $M68sxzn3GoVvEPNFoNFCZk:2

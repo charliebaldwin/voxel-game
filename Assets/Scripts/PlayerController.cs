@@ -14,8 +14,8 @@ public class PlayerController : MonoBehaviour
     public Camera Camera;
     public PlayerViewmodel Viewmodel;
     public InventoryManager Inventory;
-    public GameObject VoxelCursor2;
     public VoxelCursor VoxelCursor;
+    public GUIController GUIController;
     [EndFoldout]
     private VoxelWorld world;
 
@@ -219,7 +219,8 @@ public class PlayerController : MonoBehaviour
         if (context.started && hitBlockEntity != null)
         {
             Debug.Log($"{hitBlockEntity.name}");
-            tempPopup.alpha = 1f-tempPopup.alpha;
+            GUIController.OpenPopup();
+            
         }
     }
     #endregion

@@ -59,20 +59,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: {fileID: 11400000, guid: 62d3d5000dc484241a42d255128f3aa7, type: 2}
-  targetGraphic: {fileID: 0}
+  targetImage: {fileID: 0}
   targetText: {fileID: 5240991569492230722}
-  targetGradient: {fileID: 0}
   objectType: 1
   colorID: Primary
   fontID: Inter - Regular
-  gradientID: 
-  spriteID: 
   useCustomColor: 0
   overrideAlpha: 0
   alphaOverride: 1
   enableInteraction: 0
   interactableObject: {fileID: 0}
-  enableColorInteraction: 1
   disabledColor:
     stylerID: Primary
     color: {r: 1, g: 1, b: 1, a: 1}
@@ -88,22 +84,6 @@ MonoBehaviour:
   selectedColor:
     stylerID: Primary
     color: {r: 1, g: 1, b: 1, a: 1}
-  enableFontInteraction: 0
-  disabledFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  normalFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  highlightedFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  pressedFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  selectedFont:
-    stylerID: Regular
-    font: {fileID: 0}
   referencesFoldout: 1
   settingsFoldout: 1
   interactionFoldout: 1
@@ -165,7 +145,6 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
-  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -259,20 +238,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: {fileID: 11400000, guid: 62d3d5000dc484241a42d255128f3aa7, type: 2}
-  targetGraphic: {fileID: 1394084549434432161}
+  targetImage: {fileID: 1394084549434432161}
   targetText: {fileID: 0}
-  targetGradient: {fileID: 0}
   objectType: 0
   colorID: Accent
   fontID: Inter - Thin
-  gradientID: 
-  spriteID: 
   useCustomColor: 0
   overrideAlpha: 0
   alphaOverride: 1
   enableInteraction: 0
   interactableObject: {fileID: 0}
-  enableColorInteraction: 1
   disabledColor:
     stylerID: Primary
     color: {r: 1, g: 1, b: 1, a: 1}
@@ -288,22 +263,6 @@ MonoBehaviour:
   selectedColor:
     stylerID: Primary
     color: {r: 1, g: 1, b: 1, a: 1}
-  enableFontInteraction: 0
-  disabledFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  normalFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  highlightedFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  pressedFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  selectedFont:
-    stylerID: Regular
-    font: {fileID: 0}
   referencesFoldout: 1
   settingsFoldout: 1
   interactionFoldout: 1
@@ -416,20 +375,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: {fileID: 11400000, guid: 62d3d5000dc484241a42d255128f3aa7, type: 2}
-  targetGraphic: {fileID: 0}
+  targetImage: {fileID: 0}
   targetText: {fileID: 5439594458061833285}
-  targetGradient: {fileID: 0}
   objectType: 1
   colorID: Accent
   fontID: Inter - Regular
-  gradientID: 
-  spriteID: 
   useCustomColor: 0
   overrideAlpha: 0
   alphaOverride: 1
   enableInteraction: 0
   interactableObject: {fileID: 0}
-  enableColorInteraction: 1
   disabledColor:
     stylerID: Primary
     color: {r: 1, g: 1, b: 1, a: 1}
@@ -445,22 +400,6 @@ MonoBehaviour:
   selectedColor:
     stylerID: Primary
     color: {r: 1, g: 1, b: 1, a: 1}
-  enableFontInteraction: 0
-  disabledFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  normalFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  highlightedFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  pressedFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  selectedFont:
-    stylerID: Regular
-    font: {fileID: 0}
   referencesFoldout: 1
   settingsFoldout: 1
   interactionFoldout: 1
@@ -522,7 +461,6 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
-  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -711,20 +649,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: {fileID: 11400000, guid: 62d3d5000dc484241a42d255128f3aa7, type: 2}
-  targetGraphic: {fileID: 1845831632079619104}
+  targetImage: {fileID: 1845831632079619104}
   targetText: {fileID: 0}
-  targetGradient: {fileID: 0}
   objectType: 0
   colorID: Background
   fontID: Inter - Thin
-  gradientID: 
-  spriteID: 
   useCustomColor: 0
   overrideAlpha: 0
   alphaOverride: 1
   enableInteraction: 0
   interactableObject: {fileID: 0}
-  enableColorInteraction: 1
   disabledColor:
     stylerID: Primary
     color: {r: 1, g: 1, b: 1, a: 1}
@@ -740,22 +674,6 @@ MonoBehaviour:
   selectedColor:
     stylerID: Primary
     color: {r: 1, g: 1, b: 1, a: 1}
-  enableFontInteraction: 0
-  disabledFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  normalFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  highlightedFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  pressedFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  selectedFont:
-    stylerID: Regular
-    font: {fileID: 0}
   referencesFoldout: 1
   settingsFoldout: 1
   interactionFoldout: 1
@@ -1004,20 +922,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: {fileID: 11400000, guid: 62d3d5000dc484241a42d255128f3aa7, type: 2}
-  targetGraphic: {fileID: 3216038484397543294}
+  targetImage: {fileID: 3216038484397543294}
   targetText: {fileID: 0}
-  targetGradient: {fileID: 0}
   objectType: 0
   colorID: Primary (Soft)
   fontID: Inter - Thin
-  gradientID: 
-  spriteID: 
   useCustomColor: 0
   overrideAlpha: 0
   alphaOverride: 0.05
   enableInteraction: 0
   interactableObject: {fileID: 0}
-  enableColorInteraction: 1
   disabledColor:
     stylerID: Primary
     color: {r: 0, g: 0, b: 0, a: 0}
@@ -1033,22 +947,6 @@ MonoBehaviour:
   selectedColor:
     stylerID: Primary
     color: {r: 0, g: 0, b: 0, a: 0}
-  enableFontInteraction: 0
-  disabledFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  normalFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  highlightedFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  pressedFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  selectedFont:
-    stylerID: Regular
-    font: {fileID: 0}
   referencesFoldout: 1
   settingsFoldout: 1
   interactionFoldout: 0
@@ -1142,20 +1040,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: {fileID: 11400000, guid: 62d3d5000dc484241a42d255128f3aa7, type: 2}
-  targetGraphic: {fileID: 1355265248056453692}
+  targetImage: {fileID: 1355265248056453692}
   targetText: {fileID: 0}
-  targetGradient: {fileID: 0}
   objectType: 0
   colorID: Background (Dim)
   fontID: Inter - Thin
-  gradientID: 
-  spriteID: 
   useCustomColor: 0
   overrideAlpha: 1
   alphaOverride: 0.5
   enableInteraction: 0
   interactableObject: {fileID: 0}
-  enableColorInteraction: 1
   disabledColor:
     stylerID: Primary
     color: {r: 1, g: 1, b: 1, a: 1}
@@ -1171,22 +1065,6 @@ MonoBehaviour:
   selectedColor:
     stylerID: Primary
     color: {r: 1, g: 1, b: 1, a: 1}
-  enableFontInteraction: 0
-  disabledFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  normalFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  highlightedFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  pressedFont:
-    stylerID: Regular
-    font: {fileID: 0}
-  selectedFont:
-    stylerID: Regular
-    font: {fileID: 0}
   referencesFoldout: 1
   settingsFoldout: 1
   interactionFoldout: 1

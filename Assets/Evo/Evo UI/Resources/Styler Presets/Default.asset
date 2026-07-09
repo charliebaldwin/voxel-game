@@ -59,12 +59,14 @@ MonoBehaviour:
     fontAsset: {fileID: 11400000, guid: 961c0212f9d0c3d4da8c1a034e9a13bf, type: 2}
   - itemID: Inter - Black
     fontAsset: {fileID: 11400000, guid: 4be21f40c8e9ed149abd8691e94e799d, type: 2}
+  textStyleItems: []
   gradientItems: []
   spriteItems: []
   updateMode: 0
   audioFoldout: 0
   colorFoldout: 0
   fontFoldout: 0
+  textStyleFoldout: 0
   spriteFoldout: 0
   gradientFoldout: 0
   settingsFoldout: 0
