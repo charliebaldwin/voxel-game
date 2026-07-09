@@ -146,8 +146,8 @@ SubShader {
         
 		// Auto-patched TMP includes
         // (These will be actively modified by the SoftMaskTMP_PathPatcher script)
-		#include "../../../TextMesh Pro/Shaders/TMPro_Properties.cginc"
-		#include "../../../TextMesh Pro/Shaders/TMPro.cginc"
+		#include "../../../../TextMesh Pro/Shaders/TMPro_Properties.cginc"
+		#include "../../../../TextMesh Pro/Shaders/TMPro.cginc"
         
         #include "SoftMask.cginc"
 

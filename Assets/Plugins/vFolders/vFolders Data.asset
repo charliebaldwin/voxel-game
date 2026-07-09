@@ -21,9 +21,15 @@ MonoBehaviour:
     - 964b42d870088374691bba7e7ce2a28c
     - 5cb6a841987d44140af8374ebcc14dd9
     - 777a314699c7b8540a61d4a4f09b3162
-    - aac0be9227f1c254599f23f6fa5d631b
+    - 65c18d699fcadad459bc3e16558c2bd2
     - 709f11a7f3c4041caa4ef136ea32d874
     - 9fc1b31eba46f98418ae5ee01d786a13
+    - aac0be9227f1c254599f23f6fa5d631b
+    - 762edfd7b07d0234683a7363f84f98c8
+    - 7db84c72b2408b24da5a225550b562ff
+    - 109ccfb08b9fd4bf5a9d8deee2ace2ed
+    - dd2b9e231b0ec4a9f97e258072ae2b33
+    - f42d0374f4587401395165a2788ee07c
     values:
     - iconNameOrGuid: Prefab Icon
       colorIndex: 0
@@ -63,6 +69,30 @@ MonoBehaviour:
       isColorRecursive: 0
     - iconNameOrGuid: Texture Icon
       colorIndex: 0
+      isIconRecursive: 0
+      isColorRecursive: 0
+    - iconNameOrGuid: 
+      colorIndex: 1
+      isIconRecursive: 0
+      isColorRecursive: 0
+    - iconNameOrGuid: 
+      colorIndex: 1
+      isIconRecursive: 0
+      isColorRecursive: 0
+    - iconNameOrGuid: 
+      colorIndex: 1
+      isIconRecursive: 0
+      isColorRecursive: 0
+    - iconNameOrGuid: 
+      colorIndex: 1
+      isIconRecursive: 0
+      isColorRecursive: 0
+    - iconNameOrGuid: 
+      colorIndex: 1
+      isIconRecursive: 0
+      isColorRecursive: 0
+    - iconNameOrGuid: 
+      colorIndex: 1
       isIconRecursive: 0
       isColorRecursive: 0
   bookmarks: []
