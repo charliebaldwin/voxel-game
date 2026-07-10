@@ -31,7 +31,7 @@ public class InputHandler : MonoBehaviour
         if (context.started)
         {
             CurrentMode = InputModes.INVENTORY;
-            Input.SwitchCurrentActionMap("Inventory");
+            Input.SwitchCurrentActionMap("UI");
             Cursor.lockState= CursorLockMode.None;
         }
     }
