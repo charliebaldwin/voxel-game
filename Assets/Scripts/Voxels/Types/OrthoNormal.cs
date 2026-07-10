@@ -1,5 +1,5 @@
 using UnityEngine;
-using VInspector.Libs;
+//using VInspector.Libs;
 
 public class OrthoNormal
 {
@@ -22,9 +22,9 @@ public class OrthoNormal
     }
     public OrthoNormal(Vector3 vec)
     {
-        x = (sbyte)vec.x.RoundToInt();
-        y = (sbyte)vec.y.RoundToInt();
-        z = (sbyte)vec.z.RoundToInt();
+        x = (sbyte)Mathf.RoundToInt(vec.x);
+        y = (sbyte)Mathf.RoundToInt(vec.y);
+        z = (sbyte)Mathf.RoundToInt(vec.z);
     }
     public OrthoNormal(Vector3Int vec)
     {
@@ -42,7 +42,7 @@ public class OrthoNormal
     }
     public static OrthoNormal FromVector(Vector3 vec)
     {
-        return new OrthoNormal((sbyte)vec.x.RoundToInt(), (sbyte)vec.y.RoundToInt(), (sbyte)vec.z.RoundToInt());
+        return new OrthoNormal((sbyte)Mathf.RoundToInt(vec.x), (sbyte)Mathf.RoundToInt(vec.y), (sbyte)Mathf.RoundToInt(vec.z));
     }
     public static OrthoNormal FromVector(Vector3Int vec)
     {

@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using VInspector.Libs;
-using static UnityEditor.Progress;
+//using VInspector.Libs;
+//using static UnityEditor.Progress;
 using static VoxelHelper;
 public class PlayerView : MonoBehaviour
 {
@@ -115,7 +115,7 @@ public class PlayerView : MonoBehaviour
         if (context.started)
         { 
             //placedBlockType = Mathf.RoundToInt(context.ReadValue<float>());
-            int num = context.ReadValue<float>().RoundToInt();
+            int num = Mathf.RoundToInt(context.ReadValue<float>());
             heldBlockShape = (BlockShape)num;
 
             //UICubeMat.SetInteger("_BlockIndex", placedBlockType);
@@ -125,8 +125,8 @@ public class PlayerView : MonoBehaviour
     {
         if (context.started) 
         {
-            hotbarSlot += context.ReadValue<float>().RoundToInt();
-            hotbarSlot = hotbarSlot.Clamp(0, NUM_HOTBAR_SLOTS - 1);
+            hotbarSlot += Mathf.RoundToInt(context.ReadValue<float>());
+            hotbarSlot = Mathf.Clamp(hotbarSlot, 0, NUM_HOTBAR_SLOTS - 1);
             //Debug.Log($"slot={hotbarSlot}");
             PlayerInventory.SelectHotbarSlot(hotbarSlot);
         }
@@ -216,7 +216,7 @@ public class PlayerView : MonoBehaviour
 
     private void RaycastWorld()
     {
-        lastHitInfo = VoxelWorld.Instance.VoxelTraversal(transform.position, transform.forward, AimDistance.CeilToInt());
+        lastHitInfo = VoxelWorld.Instance.VoxelTraversal(transform.position, transform.forward, Mathf.CeilToInt(AimDistance));
         if (lastHitInfo.didHit)
         {
             VoxelCursor.transform.position = lastHitInfo.voxelPos;

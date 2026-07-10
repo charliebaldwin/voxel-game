@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
 using VInspector;
-using VInspector.Libs;
+//using VInspector.Libs;
 
 public class SplineVoxelizer : MonoBehaviour
 {
@@ -26,19 +26,19 @@ public class SplineVoxelizer : MonoBehaviour
             float3 splineTan = SplineCutter.EvaluateTangent(t);
             float3 splineUp = SplineCutter.EvaluateUpVector(t);
 
-            Vector3 tangent = new Vector3(splineTan.x.Round(), splineTan.y.Round(), splineTan.z.Round());
-            Vector3 up = new Vector3(splineUp.x.Round(), splineUp.y.Round(), splineUp.z.Round());   
+            Vector3 tangent = new Vector3(Mathf.Round(splineTan.x), Mathf.Round(splineTan.y), Mathf.Round(splineTan.z));
+            Vector3 up = new Vector3(Mathf.Round(splineUp.x), Mathf.Round(splineUp.y), Mathf.Round(splineUp.z));   
             Vector3 normal = Vector3.Cross(tangent, up).normalized;
-            normal = new Vector3(normal.x.Round(), normal.y.Round(), normal.z.Round());
+            normal = new Vector3(Mathf.Round(normal.x), Mathf.Round(normal.y), Mathf.Round(normal.z));
 
 
-            Vector3Int voxel = new Vector3Int(splinePos.x.RoundToInt(), splinePos.y.RoundToInt(), splinePos.z.RoundToInt());
+            Vector3Int voxel = new Vector3Int(Mathf.RoundToInt(splinePos.x), Mathf.RoundToInt(splinePos.y), Mathf.RoundToInt(splinePos.z));
             if (!SplineVoxels.Contains(voxel)) {
                 SplineVoxels.Add(voxel);
-                SplineVoxels.Add(voxel + new Vector3Int(up.x.RoundToInt(), up.y.RoundToInt(), up.z.RoundToInt()));
-                SplineVoxels.Add(voxel - new Vector3Int(up.x.RoundToInt(), up.y.RoundToInt(), up.z.RoundToInt()));
-                SplineVoxels.Add(voxel + new Vector3Int(normal.x.RoundToInt(), normal.y.RoundToInt(), normal.z.RoundToInt()));
-                SplineVoxels.Add(voxel - new Vector3Int(normal.x.RoundToInt(), normal.y.RoundToInt(), normal.z.RoundToInt()));
+                SplineVoxels.Add(voxel + new Vector3Int(Mathf.RoundToInt(up.x), Mathf.RoundToInt(up.y), Mathf.RoundToInt(up.z)));
+                SplineVoxels.Add(voxel - new Vector3Int(Mathf.RoundToInt(up.x), Mathf.RoundToInt(up.y), Mathf.RoundToInt(up.z)));
+                SplineVoxels.Add(voxel + new Vector3Int(Mathf.RoundToInt(normal.x), Mathf.RoundToInt(normal.y), Mathf.RoundToInt(normal.z)));
+                SplineVoxels.Add(voxel - new Vector3Int(Mathf.RoundToInt(normal.x), Mathf.RoundToInt(normal.y), Mathf.RoundToInt(normal.z)));
             }
         }
         return SplineVoxels;

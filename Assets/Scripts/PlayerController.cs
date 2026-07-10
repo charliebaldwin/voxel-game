@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VInspector;
-using VInspector.Libs;
+//using VInspector.Libs;
 
 public class PlayerController : MonoBehaviour
 {
@@ -192,7 +192,7 @@ public class PlayerController : MonoBehaviour
     {
         if (context.started)
         {
-            int num = context.ReadValue<float>().RoundToInt();
+            int num = Mathf.RoundToInt(context.ReadValue<float>());
             heldBlockShape = (BlockShape)num;
         }
     }

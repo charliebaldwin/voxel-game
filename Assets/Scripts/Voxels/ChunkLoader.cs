@@ -3,7 +3,7 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using VInspector;
-using VInspector.Libs;
+//using VInspector.Libs;
 using static VoxelHelper;
 
 public class ChunkLoader : MonoBehaviour

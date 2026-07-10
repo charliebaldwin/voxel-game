@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.Splines;
 using UnityEngine.Timeline;
 using UnityEngine.VFX;
-using VFolders.Libs;
+//using VFolders.Libs;
 using VInspector;
 using static Perlin;
 using static UnityEngine.Analytics.IAnalytic;
@@ -173,7 +173,9 @@ public partial class VoxelWorld : MonoBehaviour
     }
     public void LoadLastQueuedChunk()
     {
-        VoxelChunk chunk = chunksToLoad.RemoveLast(); 
+
+        VoxelChunk chunk = chunksToLoad[-1]; //.RemoveLast();
+        chunksToLoad.RemoveAt(-1);
         loadedChunks.Add(chunk.LoadChunk());
     }
     private IEnumerator LoadChunkCO()
@@ -406,7 +408,7 @@ public partial class VoxelWorld : MonoBehaviour
     private float tempSphereRadius;
     private Vector3Int[] GetCoordinateSphere(Vector3Int center, float radius)
     {
-        Vector3Int corner = new Vector3Int(radius.CeilToInt(), radius.CeilToInt(), radius.CeilToInt());
+        Vector3Int corner = new Vector3Int(Mathf.CeilToInt(radius), Mathf.CeilToInt(radius), Mathf.CeilToInt(radius));
         tempSpherePoints = new List<Vector3Int>();
         tempSphereRadius = radius;
         tempSphereCenter = center;

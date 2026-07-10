@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using VInspector.Libs;
+//using VInspector.Libs;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -166,7 +166,7 @@ public class InventoryManager : MonoBehaviour
     {
         if (context.started)
         {
-            int newHotbarSlot = (hotbarSlot + context.ReadValue<float>().RoundToInt()).Clamp(0, NUM_HOTBAR_SLOTS - 1);
+            int newHotbarSlot = (hotbarSlot + Mathf.Clamp(Mathf.RoundToInt(context.ReadValue<float>()), 0, NUM_HOTBAR_SLOTS - 1));
             SelectHotbarSlot(newHotbarSlot);
             //Debug.Log($"slot={hotbarSlot}");
         }
