@@ -50,7 +50,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ColorTextureArray:
-        m_Texture: {fileID: 18700000, guid: 5eed6f197d94b1d4681c8de73aa2974b, type: 3}
+        m_Texture: {fileID: 18700000, guid: c4d16cc5080750347aabd87e1e32586b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DamageTexture:

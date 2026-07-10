@@ -9247,15 +9247,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e55df7c589bc5dc4a95df630c28d767f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VoxelWorld
-  DEBUG_CoCount: 0
   ChunkSize: {x: 16, y: 64, z: 16}
-  WorldSize: {x: 16, y: 1, z: 16}
-  InitialChunks:
-    x: 16
-    y: 16
-  InitialLoadedChunks:
-    x: 2
-    y: 2
+  WorldSize: {x: 32, y: 1, z: 32}
   GenerationSettings: {fileID: 11400000, guid: e52c9537dfcd47a4587e2d4038385333, type: 2}
   ChunkPrefab: {fileID: 3265665669344878959, guid: afa5dac21cadea249be601a26864fbd9, type: 3}
   BlockEntityPrefab: {fileID: 9103259098748796145, guid: 61317f3ca09daa74295fdc38b5a1e193, type: 3}
@@ -11245,7 +11238,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 45.940002
+      value: 56
       objectReference: {fileID: 0}
     - target: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_LocalPosition.z
@@ -28353,23 +28346,125 @@ MonoBehaviour:
     Type: 2
     BlockID: 0
     TextureIndex: 0
-    Strength: 0
-    UseTime: 0
+    BlockData:
+      BlockID: 0
+      Toughness: 6
+      IsBlockEntity: 0
+      ValidTools: 
+      IdealTools: 
+      CanChangeUpAxis: 0
+    Strength: 4
+    UseTime: 0.5
     ToolType: 0
-  - Name: Item
+  - Name: Gold Pickaxe
     ItemID: 15
-    Tooltip: Item tooltip
+    Tooltip: A gold pickaxe
     StackSize: 1
-    Rarity: 0
+    Rarity: 1
     GUIIcon: {fileID: 1521646291, guid: 2b8dd6e29b3f1114fb947f3313f3373f, type: 3}
-    ViewmodelMesh: {fileID: 0}
-    ViewmodelMat: {fileID: 0}
+    ViewmodelMesh: {fileID: -1491930556405071566, guid: 8f5ae8c2efbb65145b09d5cd4e987b17, type: 3}
+    ViewmodelMat: {fileID: 2100000, guid: 37f472fce9221394cb98e31d38e6603e, type: 2}
     TooltipIcon: {fileID: 0}
-    Type: 1
+    Type: 3
     BlockID: 0
     TextureIndex: 0
-    Strength: 0
-    UseTime: 0
+    BlockData:
+      BlockID: 0
+      Toughness: 6
+      IsBlockEntity: 0
+      ValidTools: 
+      IdealTools: 
+      CanChangeUpAxis: 0
+    Strength: 6
+    UseTime: 0.35
+    ToolType: 0
+  - Name: Creative Pickaxe
+    ItemID: 16
+    Tooltip: The best pickaxe
+    StackSize: 1
+    Rarity: 3
+    GUIIcon: {fileID: 1205587606, guid: 2b8dd6e29b3f1114fb947f3313f3373f, type: 3}
+    ViewmodelMesh: {fileID: 171654353733398019, guid: 491346b1e7a4da04fae96258398d7b13, type: 3}
+    ViewmodelMat: {fileID: 2100000, guid: a4513b78e11a5d346aab54ba19132225, type: 2}
+    TooltipIcon: {fileID: 0}
+    Type: 2
+    BlockID: 0
+    TextureIndex: 0
+    BlockData:
+      BlockID: 0
+      Toughness: 6
+      IsBlockEntity: 0
+      ValidTools: 
+      IdealTools: 
+      CanChangeUpAxis: 0
+    Strength: 20
+    UseTime: 0.2
+    ToolType: 0
+  - Name: Grass Block
+    ItemID: 1
+    Tooltip: A block of grassy dirt
+    StackSize: 999
+    Rarity: 0
+    GUIIcon: {fileID: 1404578019, guid: 68a035836e904954eb79f97d34414980, type: 3}
+    ViewmodelMesh: {fileID: 8308663131422070708, guid: 649fbd93bd831a246a5d5c6ee74dc2a0, type: 3}
+    ViewmodelMat: {fileID: 2100000, guid: ffc8fdf8fff77be4c8429b284f0c4c28, type: 2}
+    TooltipIcon: {fileID: 0}
+    Type: 3
+    BlockID: 1
+    TextureIndex: 1
+    BlockData:
+      BlockID: 0
+      Toughness: 6
+      IsBlockEntity: 0
+      ValidTools: 
+      IdealTools: 
+      CanChangeUpAxis: 0
+    Strength: 1
+    UseTime: 1
+    ToolType: 0
+  - Name: Dirt Block
+    ItemID: 2
+    Tooltip: A block of dirt
+    StackSize: 999
+    Rarity: 0
+    GUIIcon: {fileID: 688482407, guid: 68a035836e904954eb79f97d34414980, type: 3}
+    ViewmodelMesh: {fileID: 8308663131422070708, guid: 649fbd93bd831a246a5d5c6ee74dc2a0, type: 3}
+    ViewmodelMat: {fileID: 2100000, guid: ffc8fdf8fff77be4c8429b284f0c4c28, type: 2}
+    TooltipIcon: {fileID: 0}
+    Type: 3
+    BlockID: 2
+    TextureIndex: 2
+    BlockData:
+      BlockID: 2
+      Toughness: 6
+      IsBlockEntity: 0
+      ValidTools: 020301
+      IdealTools: 01
+      CanChangeUpAxis: 0
+    Strength: 1
+    UseTime: 1
+    ToolType: 0
+  - Name: Stone Block
+    ItemID: 3
+    Tooltip: A block of stone
+    StackSize: 999
+    Rarity: 0
+    GUIIcon: {fileID: 1193367744, guid: 68a035836e904954eb79f97d34414980, type: 3}
+    ViewmodelMesh: {fileID: 8308663131422070708, guid: 649fbd93bd831a246a5d5c6ee74dc2a0, type: 3}
+    ViewmodelMat: {fileID: 2100000, guid: ffc8fdf8fff77be4c8429b284f0c4c28, type: 2}
+    TooltipIcon: {fileID: 0}
+    Type: 3
+    BlockID: 3
+    TextureIndex: 3
+    BlockData:
+      BlockID: 0
+      Toughness: 6
+      IsBlockEntity: 0
+      ValidTools: 
+      IdealTools: 
+      CanChangeUpAxis: 0
+    Strength: 1
+    UseTime: 1
     ToolType: 0
 --- !u!4 &1386501655
 Transform:

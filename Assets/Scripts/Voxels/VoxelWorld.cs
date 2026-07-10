@@ -21,13 +21,10 @@ public partial class VoxelWorld : MonoBehaviour
 {
     public static VoxelWorld Instance { get; private set; }
 
-    public int DEBUG_CoCount = 0;
-
     [Foldout("World Settings")]
     public Vector3Int ChunkSize = new Vector3Int(8, 8, 8);
     [SerializeField] private Vector3Int WorldSize = new Vector3Int(32, 1, 32);
-    [SerializeField] private int2 InitialChunks = new int2(4, 4);
-    [SerializeField] private int2 InitialLoadedChunks = new int2(2, 2);
+    //[SerializeField] private int2 InitialLoadedChunks = new int2(2, 2);
     [SerializeField] private WorldGenSettings GenerationSettings;
     [SerializeField] private GameObject ChunkPrefab;
     [SerializeField] private GameObject BlockEntityPrefab;
@@ -69,7 +66,7 @@ public partial class VoxelWorld : MonoBehaviour
     {
         InitializeWorld();
         blockUpdate_co = BlockUpdateCO();
-        StartCoroutine(blockUpdate_co);
+        //StartCoroutine(blockUpdate_co);
     }
 
     private void SetInstance()
@@ -93,9 +90,9 @@ public partial class VoxelWorld : MonoBehaviour
         }
 
         Vector3Int worldVoxelSize = new Vector3Int(ChunkSize.x * WorldSize.x, ChunkSize.y * WorldSize.y, ChunkSize.z * WorldSize.z);
-        GenerateVoxelsCPU(worldVoxelSize);
-        // Debug.Log($"voxels size={worldVoxelSize}");
-
+        //GenerateVoxelsCPU(worldVoxelSize);
+        VoxelGenerator generator = new VoxelGenerator(worldVoxelSize, GenerationSettings);
+        Voxels = generator.GetGeneratedVoxels();
 
         loadedChunks = new List<VoxelChunk>();
         Chunks = new VoxelChunk[WorldSize.x, WorldSize.z];
@@ -147,8 +144,8 @@ public partial class VoxelWorld : MonoBehaviour
             }
             newChunk.InitializeChunk(ChunkSize, pos);
             newChunk.FillVoxelData(chunkData);
-            if (pos.x <= InitialLoadedChunks.x && pos.z <= InitialLoadedChunks.y)
-                LoadChunk(pos);
+            //if (pos.x <= InitialLoadedChunks.x && pos.z <= InitialLoadedChunks.y)
+            //    LoadChunk(pos);
         }
 
         for (int x = 0; x < WorldSize.x; x++) {
@@ -354,25 +351,25 @@ public partial class VoxelWorld : MonoBehaviour
                 Voxels[x, y, z].BlockID = BlockID.Dirt;
             }
         }
-        if (Voxels[x, y, z].BlockID == BlockID.Air && y > 0)
-        {
-            if (Voxels[x, y - 1, z].BlockID == BlockID.Grass)
-            {
-                float noise = Perlin.Fbm(x * 0.5f, z * 0.5f, 2);
-                if (noise > 0.3f)
-                {
-                    Voxels[x, y, z] = new Voxel(BlockID.Log, 0, 0);
-                    Voxels[x, y+1, z] = new Voxel(BlockID.Log, 0, 0); // dangerous
-                    Voxels[x, y + 2, z] = new Voxel(BlockID.Log, 0, 0);
-                    Voxels[x, y + 3, z] = new Voxel(BlockID.Leaves, 0, 0);
-                    //Voxels[x, y + 3, z+1] = new Voxel(BlockID.Leaves, 0, 0);
-                    //Voxels[x, y + 3, z-1] = new Voxel(BlockID.Leaves, 0, 0);
-                    //Voxels[x+1, y + 3, z] = new Voxel(BlockID.Leaves, 0, 0);
-                    //Voxels[x-1, y + 3, z] = new Voxel(BlockID.Leaves, 0, 0);
+        //if (Voxels[x, y, z].BlockID == BlockID.Air && y > 0)
+        //{
+        //    if (Voxels[x, y - 1, z].BlockID == BlockID.Grass)
+        //    {
+        //        float noise = Perlin.Fbm(x * 0.5f, z * 0.5f, 2);
+        //        if (noise > 0.3f)
+        //        {
+        //            Voxels[x, y, z] = new Voxel(BlockID.Log, 0, 0);
+        //            Voxels[x, y+1, z] = new Voxel(BlockID.Log, 0, 0); // dangerous
+        //            Voxels[x, y + 2, z] = new Voxel(BlockID.Log, 0, 0);
+        //            Voxels[x, y + 3, z] = new Voxel(BlockID.Leaves, 0, 0);
+        //            //Voxels[x, y + 3, z+1] = new Voxel(BlockID.Leaves, 0, 0);
+        //            //Voxels[x, y + 3, z-1] = new Voxel(BlockID.Leaves, 0, 0);
+        //            //Voxels[x+1, y + 3, z] = new Voxel(BlockID.Leaves, 0, 0);
+        //            //Voxels[x-1, y + 3, z] = new Voxel(BlockID.Leaves, 0, 0);
 
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
     }
 
     private void LoadStructure(VoxelStructure structure)

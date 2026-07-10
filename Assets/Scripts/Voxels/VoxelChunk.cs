@@ -327,8 +327,10 @@ public class VoxelChunk : MonoBehaviour
 
     private void FillActiveVoxelsAction(int x, int y, int z)
     {
-        if (Voxels[x,y,z].BlockID != BlockID.Air)
+        if (Voxels[x, y, z].BlockID != BlockID.Air )
+        {
             activeVoxels.Add(new Vector3Int(x, y, z));
+        }
     }
 
     private void BlockUpdateFast()

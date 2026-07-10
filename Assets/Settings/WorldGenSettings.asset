@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 941c2c4fad0eadb4a9bb0107601d2756, type: 3}
   m_Name: WorldGenSettings
   m_EditorClassIdentifier: Assembly-CSharp::WorldGenSettings
-  NoiseScale: 0.05
+  NoiseScale: 0.02
   NoiseOctaves: 4
-  HeightRange: 12
-  HeightOffset: 20
+  HeightRange: 16
+  HeightOffset: 36

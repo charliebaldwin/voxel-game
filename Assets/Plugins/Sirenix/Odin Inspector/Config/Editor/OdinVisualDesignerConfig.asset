@@ -16,5 +16,6 @@ MonoBehaviour:
   - TypeBinding: Sirenix.OdinInspector.IndentAttribute, Sirenix.OdinInspector.Attributes
   - TypeBinding: Sirenix.OdinInspector.PropertySpaceAttribute, Sirenix.OdinInspector.Attributes
   - TypeBinding: Sirenix.OdinInspector.PreviewFieldAttribute, Sirenix.OdinInspector.Attributes
+  - TypeBinding: Sirenix.OdinInspector.ToggleLeftAttribute, Sirenix.OdinInspector.Attributes
   savePath: Assets/Plugins/Sirenix/Odin Inspector/Visual Designer/Saved
   searchPathRoots: []

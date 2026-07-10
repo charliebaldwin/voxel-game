@@ -30,6 +30,7 @@ MonoBehaviour:
     - 109ccfb08b9fd4bf5a9d8deee2ace2ed
     - dd2b9e231b0ec4a9f97e258072ae2b33
     - f42d0374f4587401395165a2788ee07c
+    - 0d47d7045331fbf41956517327c057b3
     values:
     - iconNameOrGuid: Prefab Icon
       colorIndex: 0
@@ -39,7 +40,7 @@ MonoBehaviour:
       colorIndex: 0
       isIconRecursive: 0
       isColorRecursive: 0
-    - iconNameOrGuid: cs Script Icon
+    - iconNameOrGuid: 
       colorIndex: 7
       isIconRecursive: 0
       isColorRecursive: 0
@@ -59,7 +60,7 @@ MonoBehaviour:
       colorIndex: 0
       isIconRecursive: 0
       isColorRecursive: 0
-    - iconNameOrGuid: 
+    - iconNameOrGuid: PrefabModel Icon
       colorIndex: 1
       isIconRecursive: 0
       isColorRecursive: 0
@@ -93,6 +94,10 @@ MonoBehaviour:
       isColorRecursive: 0
     - iconNameOrGuid: 
       colorIndex: 1
+      isIconRecursive: 0
+      isColorRecursive: 0
+    - iconNameOrGuid: Mesh Icon
+      colorIndex: 0
       isIconRecursive: 0
       isColorRecursive: 0
   bookmarks: []
