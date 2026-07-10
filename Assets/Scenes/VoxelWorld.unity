@@ -20971,7 +20971,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 255
 --- !u!114 &1006050083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28340,6 +28340,37 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 797bdd1cc59b72048947544c5802bccc, type: 2}
   - {fileID: 11400000, guid: e93766be1adf8694f9a1b4ee51725c0e, type: 2}
   IDOFolderPath: Items
+  ItemList:
+  - Name: Iron Pickaxe
+    ItemID: 14
+    Tooltip: An iron pickaxe
+    StackSize: 1
+    Rarity: 0
+    GUIIcon: {fileID: 1199246195, guid: 2b8dd6e29b3f1114fb947f3313f3373f, type: 3}
+    ViewmodelMesh: {fileID: 8573983735195795733, guid: 4fbafe63c35ef3b48a71dadd48faefe7, type: 3}
+    ViewmodelMat: {fileID: 2100000, guid: 9278495cef1f3d04bbdb519446267ef9, type: 2}
+    TooltipIcon: {fileID: 0}
+    Type: 2
+    BlockID: 0
+    TextureIndex: 0
+    Strength: 0
+    UseTime: 0
+    ToolType: 0
+  - Name: Item
+    ItemID: 15
+    Tooltip: Item tooltip
+    StackSize: 1
+    Rarity: 0
+    GUIIcon: {fileID: 1521646291, guid: 2b8dd6e29b3f1114fb947f3313f3373f, type: 3}
+    ViewmodelMesh: {fileID: 0}
+    ViewmodelMat: {fileID: 0}
+    TooltipIcon: {fileID: 0}
+    Type: 1
+    BlockID: 0
+    TextureIndex: 0
+    Strength: 0
+    UseTime: 0
+    ToolType: 0
 --- !u!4 &1386501655
 Transform:
   m_ObjectHideFlags: 0

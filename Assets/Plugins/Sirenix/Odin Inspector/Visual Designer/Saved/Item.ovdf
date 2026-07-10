@@ -1,16 +1,135 @@
 OVDF v1.1
 Item, Assembly-CSharp
 
-# $M68sxzn3GoVvEPNFoNFCZk
-Position: $root:12
-+ [Sirenix.OdinInspector.ShowIfGroupAttribute]
+# "Block Data"
+Position: $CTK6F628eBns3E2vtZpX29:1
+* [Sirenix.OdinInspector.ShowIfGroupAttribute]
 	VisibleIf = "Type"
 
+# "Tool Data"
+Position: $CTK6F628eBns3E2vtZpX29:0
+* [Sirenix.OdinInspector.ShowIfGroupAttribute]
+	VisibleIf = "Type"
+
+# $7uQSbqtxVgQ3Xucv4WUCSq
+Position: $root:1
++ [Sirenix.OdinInspector.VerticalGroupAttribute]
+	GroupName = "Info"
+
+# $14Ro413o3Z7N8z323hfNms
+Position: $root:3
++ [Sirenix.OdinInspector.VerticalGroupAttribute]
+	GroupName = "Viewmodel"
+
+# $NQ7G2DX1mTXGiVCGjkGjWP
+Position: $root:2
++ [Sirenix.OdinInspector.VerticalGroupAttribute]
+	GroupName = "Type Data"
+
+# $CTK6F628eBns3E2vtZpX29
+Position: $NQ7G2DX1mTXGiVCGjkGjWP:1
++ [Sirenix.OdinInspector.FoldoutGroupAttribute]
+	GroupName = "Type Data"
+
 # Strength
-Position: $M68sxzn3GoVvEPNFoNFCZk:0
+Position: "Tool Data":1
++ [Sirenix.OdinInspector.IndentAttribute]
++ [Sirenix.OdinInspector.PropertySpaceAttribute]
++ [Sirenix.OdinInspector.PropertyRangeAttribute]
+	Max = 20
 
 # UseTime
-Position: $M68sxzn3GoVvEPNFoNFCZk:1
+Position: "Tool Data":2
++ [Sirenix.OdinInspector.IndentAttribute]
++ [UnityEngine.RangeAttribute]
+	max = 1
 
 # ToolType
-Position: $M68sxzn3GoVvEPNFoNFCZk:2
+Position: "Tool Data":0
++ [Sirenix.OdinInspector.IndentAttribute]
+
+# TextureIndex
+Position: "Block Data":1
++ [Sirenix.OdinInspector.IndentAttribute]
+
+# BlockID
+Position: "Block Data":0
++ [Sirenix.OdinInspector.IndentAttribute]
++ [Sirenix.OdinInspector.EnumPagingAttribute]
+
+# Type
+Position: $NQ7G2DX1mTXGiVCGjkGjWP:0
++ [Sirenix.OdinInspector.EnumToggleButtonsAttribute]
++ [Sirenix.OdinInspector.HideLabelAttribute]
+* [Sirenix.OdinInspector.TitleAttribute]
+	Title = "Type"
+	HorizontalLine = False
+	Bold = False
+
+# GUIIcon
+Position: $root:0
+- [UnityEngine.HeaderAttribute]
++ [Sirenix.OdinInspector.PreviewFieldAttribute]
+	FilterMode = Point
+	Height = 60
+	alignment = Center
+	alignmentHasValue = True
++ [Sirenix.OdinInspector.TableColumnWidthAttribute]
+	Width = 60
+	Resizable = False
+
+# ViewmodelMesh
+Position: $14Ro413o3Z7N8z323hfNms:1
++ [Sirenix.OdinInspector.PreviewFieldAttribute]
+	Height = 40
++ [Sirenix.OdinInspector.LabelTextAttribute]
+	Text = "Mesh"
+
+# ViewmodelMat
+Position: $14Ro413o3Z7N8z323hfNms:0
++ [Sirenix.OdinInspector.PreviewFieldAttribute]
+	Height = 40
+	alignment = Right
+	alignmentHasValue = True
++ [Sirenix.OdinInspector.LabelTextAttribute]
+	Text = "Material"
++ [Sirenix.OdinInspector.TableColumnWidthAttribute]
+	Width = 120
+	Resizable = True
+
+# TooltipIcon
+Position: $14Ro413o3Z7N8z323hfNms:2
++ [Sirenix.OdinInspector.PreviewFieldAttribute]
+	Height = 40
+
+# Rarity
+Position: $7uQSbqtxVgQ3Xucv4WUCSq:3
+
+# StackSize
+Position: $7uQSbqtxVgQ3Xucv4WUCSq:4
++ [Sirenix.OdinInspector.PropertyRangeAttribute]
+	Min = 1
+	Max = 999
++ [Sirenix.OdinInspector.TableColumnWidthAttribute]
+	Width = 0
+
+# Tooltip
+Position: $7uQSbqtxVgQ3Xucv4WUCSq:2
++ [Sirenix.OdinInspector.MultiLinePropertyAttribute]
+
+# Name
+Position: $7uQSbqtxVgQ3Xucv4WUCSq:1
+- [UnityEngine.HeaderAttribute]
+
+# ItemID
+Position: $7uQSbqtxVgQ3Xucv4WUCSq:0
++ [Sirenix.OdinInspector.HideLabelAttribute]
++ [Sirenix.OdinInspector.TableColumnWidthAttribute]
+	Resizable = True
+	Width = 250
+
+# BlockData
+Position: "Block Data":2
++ [Sirenix.OdinInspector.InlinePropertyAttribute]
+	LabelWidth = 1
++ [Sirenix.OdinInspector.HideLabelAttribute]

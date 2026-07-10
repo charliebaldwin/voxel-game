@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
 
@@ -6,7 +7,6 @@ public class Item
 {
     [Header("Generic")]
     public string Name = "Item";
-    public ItemType Type = ItemType.Default;
     public ItemID ItemID = ItemID.NullItem;
     public string Tooltip = "Item tooltip";
     public int StackSize = 999;
@@ -19,13 +19,18 @@ public class Item
     public Material ViewmodelMat;
     public Sprite TooltipIcon;
 
-    [Header("Block Data")]
+    [Title("Item Type")]
+    public ItemType Type = ItemType.Default;
+    [PropertySpace]
+
+    [ShowIfGroup("Block Data", ItemType.Block, true)]
     public BlockID BlockID;
     public int TextureIndex;
+    public BlockData BlockData;
 
-    [Header("Tool Data")]
-    public int Strength;
-    public float UseTime;
+    [ShowIfGroup("Tool Data", ItemType.Tool, true)]
+    public int Strength = 1;
+    public float UseTime = 1;
     public ToolType ToolType= ToolType.None;
 
     public Item()
