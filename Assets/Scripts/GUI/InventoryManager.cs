@@ -43,6 +43,7 @@ public class InventoryManager : MonoBehaviour
 
     public const int NUM_HOTBAR_SLOTS = 10;
 
+    public bool IsOpen = false;
 
 
     private void Awake()
@@ -162,6 +163,10 @@ public class InventoryManager : MonoBehaviour
 
 
     }
+    public void SetMousePos(Vector3 pos)
+    {
+        mousePos = pos;
+    }
     public void OnScroll(InputAction.CallbackContext context)
     {
         if (context.started)
@@ -178,6 +183,7 @@ public class InventoryManager : MonoBehaviour
         if (mouseTile != null)
             lastCell.ClickCell();
         canvasGroup.alpha = 0;
+        IsOpen = false;
         //HoverWindow.HideWindow();
        // hoveredTile = null;
 
@@ -186,7 +192,7 @@ public class InventoryManager : MonoBehaviour
     {
         //Debug.Log("inventory open");
         canvasGroup.alpha = 1;
-
+        IsOpen=true; 
     }
 
     public void UpdateEquippedItem()

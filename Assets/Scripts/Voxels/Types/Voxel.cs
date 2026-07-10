@@ -22,6 +22,17 @@ public struct Voxel
         ForwardAxis = OrthoNormal.forward;
 
     }
+    public Voxel(BlockID id)
+    {
+        BlockID = id;
+        Damage = 0;
+        Orientation = 0;
+        Toughness = 12;
+        Shape = id == BlockID.Air ? BlockShape.Empty : BlockShape.Solid;
+
+        UpAxis = OrthoNormal.up;
+        ForwardAxis = OrthoNormal.forward;
+    }
     public Voxel(BlockID id, byte damage, byte orientation, BlockShape blockShape)
     {
         BlockID = id;

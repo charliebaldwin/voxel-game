@@ -502,7 +502,7 @@
             ]
         },
         {
-            "name": "UI",
+            "name": "GUI",
             "id": "06c7bb8d-0c9b-4d7e-8450-fb28b24a122c",
             "actions": [
                 {
@@ -708,6 +708,17 @@
                     "name": "",
                     "id": "307d4e71-12e5-4c4d-aa1b-2d5578d3006e",
                     "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Exit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5526f6c1-ae34-447b-bbf1-4efe5c5edeb4",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

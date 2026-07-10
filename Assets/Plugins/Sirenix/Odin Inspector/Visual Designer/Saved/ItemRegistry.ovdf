@@ -1,0 +1,19 @@
+OVDF v1.1
+ItemRegistry, Assembly-CSharp
+MetaGuid:619f35a0045a9d4489335cbf3060a0f4
+
+# ItemList
++ [Sirenix.OdinInspector.TableListAttribute]
+	HideToolbar = False
+	showPaging = False
+	showPagingHasValue = True
+	CellPadding = 0
+	MinScrollViewHeight = 425
+	ShowIndexLabels = True
+	DrawScrollView = True
+
+# ItemDict
++ [Sirenix.OdinInspector.DictionaryDrawerSettings]
+	DisplayMode = Foldout
++ [Sirenix.OdinInspector.SuffixLabelAttribute]
+	Label = "dsadasdas"

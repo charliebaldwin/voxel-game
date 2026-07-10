@@ -1,0 +1,25 @@
+OVDF v1.1
+BlockData, Assembly-CSharp
+
+# Toughness
+Position: $root:1
+
+# BlockID
+Position: $root:0
++ [Sirenix.OdinInspector.LabelTextAttribute]
+	Text = "ID"
++ [Sirenix.OdinInspector.EnumPagingAttribute]
+
+# CanChangeUpAxis
+Position: $root:3
++ [Sirenix.OdinInspector.ToggleLeftAttribute]
+
+# IsBlockEntity
+Position: $root:2
++ [Sirenix.OdinInspector.ToggleLeftAttribute]
+
+# ValidTools
+Position: $root:4
+
+# IdealTools
+Position: $root:5

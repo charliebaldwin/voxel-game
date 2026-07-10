@@ -1,0 +1,10 @@
+OVDF v1.1
+TestRegistry, Assembly-CSharp
+MetaGuid:ca750fc5910822c458acaecb5f03dc11
+
+# $GfZziqt6XNLKNABL1fxZwF
+Position: $root
++ [Sirenix.OdinInspector.BoxGroupAttribute]
+
+# MyDictionary
+Position: $GfZziqt6XNLKNABL1fxZwF:0

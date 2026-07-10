@@ -9,6 +9,10 @@ public class ItemRegistry : MonoBehaviour
     public List<ItemDataObject> ItemDataObjects;
     public Dictionary<ItemID, Item> Items;
     public string IDOFolderPath = "Items";
+    public static Item TestStaticItem;
+
+    public List<Item> ItemList;
+    public Dictionary<ItemID, Item> ItemDict = new Dictionary<ItemID, Item>();
 
     private void Awake()
     {
