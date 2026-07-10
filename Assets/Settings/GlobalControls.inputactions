@@ -113,6 +113,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "08f3ad6c-d1d5-4c8e-a643-500bb353b3ed",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -416,7 +425,7 @@
                 {
                     "name": "",
                     "id": "0d63ebc2-96fe-4679-84b1-37ca3f8acf56",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/tab",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -478,11 +487,22 @@
                     "action": "RadialKey",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1a645cac-82e9-43bc-86a2-b1210d794d6e",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
         {
-            "name": "Inventory",
+            "name": "UI",
             "id": "06c7bb8d-0c9b-4d7e-8450-fb28b24a122c",
             "actions": [
                 {
@@ -495,7 +515,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "CloseInventory",
+                    "name": "Exit",
                     "type": "Button",
                     "id": "f2568d62-c1a8-4ef0-ac5a-ba71e8126a8a",
                     "expectedControlType": "",
@@ -676,11 +696,22 @@
                 {
                     "name": "",
                     "id": "88cd3e45-bc50-4c11-bfac-bce7f23bb379",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/tab",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CloseInventory",
+                    "action": "Exit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "307d4e71-12e5-4c4d-aa1b-2d5578d3006e",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Exit",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

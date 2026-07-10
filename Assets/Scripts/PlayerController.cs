@@ -54,10 +54,12 @@ public class PlayerController : MonoBehaviour
     private Vector3 cameraEuler;
 
     private Vector3 motion = Vector3.zero;
-    private float gravity = 0f;
+    //private float gravity = 0f;
 
     private Vector2 moveInput;
     private Vector3 velocity;
+
+    private OrthoNormal facingXZOrtho;
 
     private Item equippedItem;
 
@@ -104,14 +106,28 @@ public class PlayerController : MonoBehaviour
         cameraEuler.z = currentCameraLean;
         CameraPivot.localEulerAngles = cameraEuler;
 
+
+        Vector3 forward = CameraPivot.forward;
+        OrthoNormal tempFacing = new OrthoNormal(forward);
+        if (Mathf.Abs(forward.x) > Mathf.Abs(forward.z))
+        {
+            facingXZOrtho = new OrthoNormal(tempFacing.x, (sbyte)0, (sbyte)0);
+        }
+        else
+        {
+            facingXZOrtho = new OrthoNormal((sbyte)0, (sbyte)0, tempFacing.z);
+        }
+
         DebugPanel.PlayerPosition = transform.position;
-        RaycastWorld();
-        DebugPanel.PlayerForward = CameraPivot.forward;
+        DebugPanel.PlayerForward = forward;
+        DebugPanel.PlayerForwardOrtho = facingXZOrtho;
+
     }
 
     private void FixedUpdate()
     {
-
+        RaycastWorld();
+        RaycastEntities();
     }
 
 
@@ -148,26 +164,26 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private bool primaryDown = false;
+    //private bool primaryDown = false;
     public void OnPrimary(InputAction.CallbackContext context)
     {
         if (context.started && Cursor.lockState == CursorLockMode.Locked)
         {
-            primaryDown = true;
+            //primaryDown = true;
             DamageVoxel(equippedItem.Strength);
         }
         else if (context.canceled)
         {
-            primaryDown = false;
+            //primaryDown = false;
         }
     }
 
-    private bool secondaryDown = false;
+    //private bool secondaryDown = false;
     public void OnSecondary(InputAction.CallbackContext context)
     {
         if (context.started && Cursor.lockState == CursorLockMode.Locked)
         {
-            secondaryDown = true;
+            //secondaryDown = true;
             if (equippedItem.Type == ItemType.Block)
             {
                 PlaceVoxel(equippedItem.BlockID);
@@ -175,7 +191,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (context.canceled)
         {
-            secondaryDown = false;
+            //secondaryDown = false;
         }
     }
 
@@ -196,6 +212,16 @@ public class PlayerController : MonoBehaviour
             heldBlockShape = (BlockShape)num;
         }
     }
+
+    public CanvasGroup tempPopup;
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (context.started && hitBlockEntity != null)
+        {
+            Debug.Log($"{hitBlockEntity.name}");
+            tempPopup.alpha = 1f-tempPopup.alpha;
+        }
+    }
     #endregion
 
     #region WORLD INTERACTION
@@ -205,6 +231,19 @@ public class PlayerController : MonoBehaviour
     {
         lastHitInfo = world.VoxelTraversal(CameraPivot.position, CameraPivot.forward, AimDistance);
         VoxelCursor.MoveCursor(lastHitInfo, equippedItem.Type);
+    }
+
+    private BlockEntityActor hitBlockEntity = null;
+    private void RaycastEntities()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(CameraPivot.position, CameraPivot.forward, out hit, 10f, 1 << 7))
+        {
+            hitBlockEntity = hit.collider.GetComponent<BlockEntityActor>();
+        } else
+        {
+            hitBlockEntity = null;
+        }
     }
 
     private void DamageVoxel(int damage)
@@ -220,11 +259,28 @@ public class PlayerController : MonoBehaviour
         if (lastHitInfo.didHit)
         {
             BlockData block = BlockRegistry.LookupBlock(id);
-            OrthoNormal up = OrthoNormal.FromVector(lastHitInfo.hitNormal);
-            if (!block.CanChangeUpAxis && heldBlockShape == BlockShape.Solid) up = OrthoNormal.up;
-            OrthoNormal fwd = (up == OrthoNormal.forward || up == OrthoNormal.back) ? OrthoNormal.right : OrthoNormal.forward;
+            OrthoNormal up = OrthoNormal.up;
+            if (block.CanChangeUpAxis || heldBlockShape != BlockShape.Solid)
+            {
+                up = OrthoNormal.FromVector(lastHitInfo.hitNormal);
+            }
+           //OrthoNormal fwd = (up == OrthoNormal.forward || up == OrthoNormal.back) ? OrthoNormal.right : OrthoNormal.forward;
+            OrthoNormal fwd = OrthoNormal.forward;
+            if (up.IsEqual(OrthoNormal.up))
+            {
+                fwd = facingXZOrtho; 
+            } 
+            else if (up.IsEqual(OrthoNormal.forward) || up.IsEqual(OrthoNormal.back))
+            {
+                fwd = OrthoNormal.right;
+            }
+            if (fwd.IsEqual(OrthoNormal.back) && up.IsEqual(OrthoNormal.up))
+            {
+                //up = OrthoNormal.down;
+                //fwd = fwd.Flip();
+            }
             world.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(id, 0, heldBlockShape, up, fwd));
-
+            Debug.Log($"placed: up={up}, fwd={fwd}");
             //Debug.Log($"placed block, ID={id}, shape={heldBlockShape}");
         }
     }
