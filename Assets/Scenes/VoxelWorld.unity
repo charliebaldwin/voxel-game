@@ -9248,7 +9248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VoxelWorld
   ChunkSize: {x: 16, y: 64, z: 16}
-  WorldSize: {x: 32, y: 1, z: 32}
+  WorldSize: {x: 16, y: 1, z: 16}
   GenerationSettings: {fileID: 11400000, guid: e52c9537dfcd47a4587e2d4038385333, type: 2}
   ChunkPrefab: {fileID: 3265665669344878959, guid: afa5dac21cadea249be601a26864fbd9, type: 3}
   BlockEntityPrefab: {fileID: 9103259098748796145, guid: 61317f3ca09daa74295fdc38b5a1e193, type: 3}

@@ -171,7 +171,11 @@ public class InventoryManager : MonoBehaviour
     {
         if (context.started)
         {
-            int newHotbarSlot = (hotbarSlot + Mathf.Clamp(Mathf.RoundToInt(context.ReadValue<float>()), 0, NUM_HOTBAR_SLOTS - 1));
+            Debug.Log($"scroll={context.ReadValue<float>()}");
+            int delta = Mathf.RoundToInt(context.ReadValue<float>());
+            int newHotbarSlot = hotbarSlot + delta;
+            newHotbarSlot = Mathf.Clamp(newHotbarSlot, 0, NUM_HOTBAR_SLOTS - 1);
+            hotbarSlot = newHotbarSlot;
             SelectHotbarSlot(newHotbarSlot);
             //Debug.Log($"slot={hotbarSlot}");
         }
@@ -219,12 +223,14 @@ public class InventoryManager : MonoBehaviour
 
     public Item SelectHotbarSlot(int hotbarIndex)
     {
+        Debug.Log($"hotbar index = {hotbarIndex}");
         if (hotbarIndex < HotbarCells.Count-1)
         {
             hotbarCursor.transform.position = HotbarCells[hotbarIndex].transform.position;
             hotbarSlot = hotbarIndex;
             hotbarDirty = true;
             UpdateEquippedItem();
+            Debug.Log($"hotbar slot = {hotbarSlot}");
 
             return equippedItem;
         }
