@@ -15,4 +15,4 @@ MonoBehaviour:
   NoiseScale: 0.02
   NoiseOctaves: 4
   HeightRange: 16
-  HeightOffset: 36
+  HeightOffset: 42

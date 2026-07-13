@@ -30,6 +30,8 @@ public class BlockModel
         int t = firstTriangle;
         //int[] nb = neighbors;
         Voxel[] nbVoxels = neighborVoxels;
+        int toughness = BlockRegistry.LookupToughness(voxel.BlockID);
+        float damage = (float)voxel.Damage / (float)toughness;
 
         Quaternion q = Quaternion.FromToRotation(Vector3.up, voxel.UpAxis.ToVector());
         q *= Quaternion.FromToRotation(Vector3.forward, voxel.ForwardAxis.ToVector());
@@ -108,7 +110,7 @@ public class BlockModel
                                 break;
                         }
 
-                        Color c = new Color((int)voxel.BlockID, n, (float)voxel.Damage / (float)voxel.Toughness, borderIndex);
+                        Color c = new Color((int)voxel.BlockID, n, damage, borderIndex);
                         colorList.AddRange(new Color[4] { c, c, c, c });
 
                         for (int i = 0; i < 6; i++)

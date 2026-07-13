@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BlockDataObject
   Data:
     BlockID: 21
-    Toughness: 12
+    Toughness: 60
     IsBlockEntity: 0
     ValidTools: 
     IdealTools: 

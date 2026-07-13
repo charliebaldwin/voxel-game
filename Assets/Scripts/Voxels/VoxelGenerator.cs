@@ -14,6 +14,7 @@ public class VoxelGenerator
 
         LoopXZ(TerrainNoise);
         LoopXYZ(AddGrass);
+        LoopXYZ(CarveCaves);
     }
 
     public Voxel[,,] GetGeneratedVoxels()
@@ -83,22 +84,48 @@ public class VoxelGenerator
 
         for (int y = 0; y < worldSize.y; y++)
         {
-            if (y < h)
-                SetVoxel(x, y, z, new Voxel(BlockID.Stone, 0, 0, BlockShape.Solid));
-            else
+            float diff = h - y;
+            if (diff < 0f)
                 SetVoxel(x, y, z, new Voxel(BlockID.Air, 0, 0, BlockShape.Empty));
+            else if (diff < 4f)
+                SetVoxel(x, y, z, new Voxel(BlockID.Dirt, 0, 0, BlockShape.Solid));
+            else if (diff < 8f)
+                SetVoxel(x, y, z, new Voxel(BlockID.Rocky_Dirt, 0, 0, BlockShape.Solid));
+            else if (diff < 15f)
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Sandstone, 0, 0, BlockShape.Solid));
+            else if (diff < 22f)
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Limestone, 0, 0, BlockShape.Solid));
+            else if (diff < 30f)
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Dolomite, 0, 0, BlockShape.Solid));
+            else if (diff < 40f)
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Shale, 0, 0, BlockShape.Solid));
+            else if (diff < 55f)
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Slate, 0, 0, BlockShape.Solid));
+            else if (diff < 70f)
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Basalt, 0, 0, BlockShape.Solid));
         }
     }
 
     private void AddGrass(int x, int y, int z)
     {
-        if (GetVoxel(x, y, z).BlockID == BlockID.Stone && GetVoxel(x, y + 1, z).BlockID == BlockID.Air)
+        if (GetVoxel(x, y, z).BlockID == BlockID.Dirt && GetVoxel(x, y + 1, z).BlockID == BlockID.Air)
         {
             SetVoxel(x, y, z, new Voxel(BlockID.Grass));
-            SetVoxel(x, y-1, z, new Voxel(BlockID.Dirt));
-            SetVoxel(x, y-2, z, new Voxel(BlockID.Dirt));
+            //SetVoxel(x, y-1, z, new Voxel(BlockID.Dirt));
+            //SetVoxel(x, y-2, z, new Voxel(BlockID.Dirt));
 
         }
+    }
+
+    private void CarveCaves(int x, int y, int z) 
+    {
+        if (y < 2 || GetVoxel(x,y,z).BlockID == BlockID.Air) return;
+        float noise = Perlin.Fbm(x * worldSettings.NoiseScale * 1.4f, y * worldSettings.NoiseScale *1.4f, z * worldSettings.NoiseScale * 1.4f, 2);
+        if (noise < -0.1f)
+        {
+            SetVoxel(x, y, z, new Voxel(BlockID.Air));
+        }
+
     }
 
     #endregion
