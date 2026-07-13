@@ -282,8 +282,8 @@ public class PlayerController : MonoBehaviour
             }
 
             // TEMP
-            up = OrthoNormal.up;
-            fwd = OrthoNormal.forward;
+            //up = OrthoNormal.up;
+            //fwd = OrthoNormal.forward;
 
 
             world.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(id, 0, heldBlockShape, up, fwd));

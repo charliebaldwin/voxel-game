@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
 
@@ -84,25 +85,32 @@ public class VoxelGenerator
 
         for (int y = 0; y < worldSize.y; y++)
         {
+            UnityEngine.Random.InitState(x + y + z);
+            int r = Mathf.FloorToInt(UnityEngine.Random.Range(0f, 5.99f));
+            OrthoNormal o1 = VoxelHelper.OrthoDirs[r];
+            OrthoNormal o2 = VoxelHelper.OrthoDirs[(r + 2) % 5];
+
             float diff = h - y;
             if (diff < 0f)
                 SetVoxel(x, y, z, new Voxel(BlockID.Air, 0, 0, BlockShape.Empty));
             else if (diff < 4f)
                 SetVoxel(x, y, z, new Voxel(BlockID.Dirt, 0, 0, BlockShape.Solid));
             else if (diff < 8f)
-                SetVoxel(x, y, z, new Voxel(BlockID.Rocky_Dirt, 0, 0, BlockShape.Solid));
+            {
+                SetVoxel(x, y, z, new Voxel(BlockID.Rocky_Dirt, o1, o2));
+            }
             else if (diff < 15f)
-                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Sandstone, 0, 0, BlockShape.Solid));
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Sandstone, o1, o2));
             else if (diff < 22f)
                 SetVoxel(x, y, z, new Voxel(BlockID.Stone_Limestone, 0, 0, BlockShape.Solid));
             else if (diff < 30f)
-                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Dolomite, 0, 0, BlockShape.Solid));
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Dolomite, o1, o2));
             else if (diff < 40f)
-                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Shale, 0, 0, BlockShape.Solid));
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Shale, o1, o2));
             else if (diff < 55f)
                 SetVoxel(x, y, z, new Voxel(BlockID.Stone_Slate, 0, 0, BlockShape.Solid));
             else if (diff < 70f)
-                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Basalt, 0, 0, BlockShape.Solid));
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Basalt, o1, o2));
         }
     }
 

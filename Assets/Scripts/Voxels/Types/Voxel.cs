@@ -55,6 +55,17 @@ public struct Voxel
         UpAxis = upAxis;
         ForwardAxis = fwdAxis;
     }
+    public Voxel(BlockID id, OrthoNormal upAxis, OrthoNormal fwdAxis)
+    {
+        BlockID = id;
+        Damage = 0;
+        Orientation = 1;
+        Toughness = 12;
+        Shape = id == BlockID.Air ? BlockShape.Empty : BlockShape.Solid;
+
+        UpAxis = upAxis;
+        ForwardAxis = fwdAxis;
+    }
 
 
 }
