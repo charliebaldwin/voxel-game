@@ -11,6 +11,7 @@ public class BlockModel
 
     public Vector3[] vertices;
     public Vector3[] normals;
+    public Vector4[] tangents;
     public Vector2[] uvs;
     public Color[] colors;
     public int[] triangles;
@@ -22,6 +23,7 @@ public class BlockModel
         blockPos = pos;
         List<Vector3> vertList = new List<Vector3>();
         List<Vector3> normalList = new List<Vector3>();
+        List<Vector4> tangentList = new List<Vector4>();
         List<Vector2> uvList = new List<Vector2>();
         List<Color> colorList = new List<Color>();
         List<int> triangleList = new List<int>();
@@ -57,6 +59,7 @@ public class BlockModel
                         }
 
                         Vector3 normal = Directions[n];
+
                         for (int i = 0; i < 4; i++)
                             normalList.Add(rotateMat * normal);
 

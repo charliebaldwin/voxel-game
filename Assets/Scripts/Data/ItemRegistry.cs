@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using VInspector;
+using Sirenix.OdinInspector;
 
 public class ItemRegistry : MonoBehaviour
 {

@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataObject
   Data:
     Name: Iron Axe
-    Type: 2
-    ItemID: 17
+    ItemID: 25
     Tooltip: Item tooltip
     StackSize: 1
     Rarity: 0
@@ -23,8 +22,17 @@ MonoBehaviour:
     ViewmodelMesh: {fileID: 8869033771810560027, guid: 1c2c988c8b63ebe449c17d46fe34bf0c, type: 3}
     ViewmodelMat: {fileID: 2100000, guid: 021ceb6f95f121042acb5f6dbae2eaa1, type: 2}
     TooltipIcon: {fileID: 21300000, guid: 23c40bdccf10c6d4482b335647abf801, type: 3}
+    Type: 2
     BlockID: 0
     TextureIndex: 0
+    BlockData:
+      BlockID: 0
+      Toughness: 6
+      IsBlockEntity: 0
+      ValidTools: 
+      IdealTools: 
+      CanChangeUpAxis: 0
+      Material: {fileID: 0}
     Strength: 6
     UseTime: 0.5
     ToolType: 2

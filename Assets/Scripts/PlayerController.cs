@@ -280,6 +280,12 @@ public class PlayerController : MonoBehaviour
                 //up = OrthoNormal.down;
                 //fwd = fwd.Flip();
             }
+
+            // TEMP
+            up = OrthoNormal.up;
+            fwd = OrthoNormal.forward;
+
+
             world.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(id, 0, heldBlockShape, up, fwd));
             Debug.Log($"placed: up={up}, fwd={fwd}");
             //Debug.Log($"placed block, ID={id}, shape={heldBlockShape}");

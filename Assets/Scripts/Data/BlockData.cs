@@ -12,6 +12,8 @@ public class BlockData
     public ToolType[] IdealTools;
 
     public bool CanChangeUpAxis = false;
+
+    public Material Material;
 }
 
 

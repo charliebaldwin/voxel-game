@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataObject
   Data:
     Name: Gold Pickaxe
-    ItemID: 15
+    ItemID: 23
     Tooltip: Item tooltip
     StackSize: 1
     Rarity: 0
@@ -25,6 +25,14 @@ MonoBehaviour:
     Type: 2
     BlockID: 4
     TextureIndex: 0
+    BlockData:
+      BlockID: 0
+      Toughness: 6
+      IsBlockEntity: 0
+      ValidTools: 
+      IdealTools: 
+      CanChangeUpAxis: 0
+      Material: {fileID: 0}
     Strength: 20
     UseTime: 1
     ToolType: 1

@@ -71,6 +71,8 @@ public class VoxelChunk : MonoBehaviour
 
     private VoxelWorld world;
 
+    private List<BlockID> containedIDs = new List<BlockID>();
+
 
     private void Awake()
     {
@@ -198,7 +200,9 @@ public class VoxelChunk : MonoBehaviour
     private List<Vector3> vertices = new List<Vector3>();
     private List<Vector3> normals = new List<Vector3>();
     private List<Vector2> uvs = new List<Vector2>();
+    private Dictionary<BlockID, List<int>> submeshes = new Dictionary<BlockID, List<int>>();
     private List<int>     triangles = new List<int>();
+    private List<int>     triangles2 = new List<int>();
     private List<Color>   colors = new List<Color>();
     private int           t = 0;
     private void ComputeMeshCPU()
@@ -210,19 +214,45 @@ public class VoxelChunk : MonoBehaviour
         uvs = new List<Vector2>();
         triangles = new List<int>();
         colors = new List<Color>();
+
+        UpdateMaterials();
+
+        submeshes = new Dictionary<BlockID, List<int>>();
+        foreach (BlockID id in containedIDs)
+        {
+            submeshes.Add(id, new List<int>());
+        }
+
         t = 0;
 
         Loop3D(ComputeMeshAction);
 
         // send all data for chunk into mesh
         mesh = new Mesh();
+
+        //mesh.triangles = triangles.ToArray();
+        //SubMeshDescriptor[] sm = new SubMeshDescriptor[]
+        //{
+        //    new SubMeshDescriptor(triangles[0], 3, MeshTopology.Triangles),
+        //    new SubMeshDescriptor(triangles2[0], 3 , MeshTopology.Triangles)
+        //};
+        //mesh.SetSubMeshes(sm);
+        mesh.subMeshCount = submeshes.Count;
         mesh.vertices = vertices.ToArray();
-        mesh.triangles = triangles.ToArray();
+        //mesh.SetTriangles(triangles.ToArray(), 0);
+        int i = 0;
+        foreach (KeyValuePair<BlockID, List<int>> s in submeshes) 
+        {
+            mesh.SetTriangles(submeshes[s.Key].ToArray(), i);
+            i++;
+        }
         mesh.normals = normals.ToArray();
         mesh.colors = colors.ToArray();
         mesh.uv = uvs.ToArray();
+        mesh.RecalculateTangents();
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
+        meshRenderer.materials = materials;
 
         vertices.Clear();
         normals.Clear();
@@ -234,7 +264,6 @@ public class VoxelChunk : MonoBehaviour
     }
 
     readonly ProfilerMarker voxelMarker = new ProfilerMarker("Mesh for Single Voxel");
-
     private void ComputeMeshAction(int x, int y, int z)
     {
         Voxel vox = Voxels[x, y, z];
@@ -257,10 +286,28 @@ public class VoxelChunk : MonoBehaviour
         foreach (Vector3 n in model.normals) normals.Add(n);
         foreach (Vector2 uv in model.uvs) uvs.Add(uv);
         foreach (Color c in model.colors) colors.Add(c);
-        foreach (int tri in model.triangles) triangles.Add(tri);
-            t = model.lastT;
+        //foreach (int tri in model.triangles) triangles2.Add(tri);
+
+        foreach (int tri in model.triangles)
+        {
+            submeshes[vox.BlockID].Add(tri);
+        }
+        
+        t = model.lastT;
         //}
         voxelMarker.End();
+    }
+
+    Material[] materials;
+    private void UpdateMaterials()
+    {
+        materials = new Material[containedIDs.Count];
+        int i = 0;
+        foreach(BlockID id in containedIDs)
+        {
+            materials[i] = BlockRegistry.LookupBlock(id).Material;
+            i++;
+        }
     }
 
     private bool GetVoxelFaceVisible(Vector3Int pos, Vector3Int faceDirection)
@@ -327,8 +374,13 @@ public class VoxelChunk : MonoBehaviour
 
     private void FillActiveVoxelsAction(int x, int y, int z)
     {
-        if (Voxels[x, y, z].BlockID != BlockID.Air )
+        BlockID id = Voxels[x, y, z].BlockID;
+        if (id != BlockID.Air )
         {
+            if (!containedIDs.Contains(id))
+            {
+                containedIDs.Add(id);
+            }
             activeVoxels.Add(new Vector3Int(x, y, z));
         }
     }
@@ -478,7 +530,10 @@ public class VoxelChunk : MonoBehaviour
     }
     public void SetVoxel(Vector3Int worldPos, Voxel voxelData)
     {
-       
+        if (!containedIDs.Contains(voxelData.BlockID) && voxelData.BlockID is not BlockID.Air or BlockID.Invalid)
+        {
+            containedIDs.Add(voxelData.BlockID);
+        }
         Vector3Int localPos = WorldToLocal(worldPos, ChunkCoord, Size3D);
         if (IsPosInGridBounds(localPos, Size3D))
         {

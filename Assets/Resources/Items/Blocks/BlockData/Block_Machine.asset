@@ -16,3 +16,7 @@ MonoBehaviour:
     BlockID: 9
     Toughness: 6
     IsBlockEntity: 1
+    ValidTools: 
+    IdealTools: 
+    CanChangeUpAxis: 0
+    Material: {fileID: 2100000, guid: de341a6e368e47e4881983649c5a0147, type: 2}

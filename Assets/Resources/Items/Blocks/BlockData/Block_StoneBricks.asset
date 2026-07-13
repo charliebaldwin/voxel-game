@@ -19,3 +19,4 @@ MonoBehaviour:
     ValidTools: 
     IdealTools: 
     CanChangeUpAxis: 1
+    Material: {fileID: 2100000, guid: 9f5ce21e31702224698e90ef47abde49, type: 2}

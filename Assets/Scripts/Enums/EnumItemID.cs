@@ -14,6 +14,7 @@ public enum ItemID
     Block_Tiles_1x2, 
     Block_Tiles_1x1,
     Block_Tiles_1x1_Smooth,
+    Block_Rocky_Dirt, Block_Stone_Sandstone, Block_Stone_Limestone, Block_Stone_Dolomite, Block_Stone_Marble, Block_Stone_Shale, Block_Stone_Slate, Block_Stone_Basalt,
 
     // BlockEntity
     Block_Entity_Machine,
@@ -24,6 +25,8 @@ public enum ItemID
     Tool_Pickaxe_Creative,
     Tool_Axe_Iron,
     Tool_Sword,
+
+
 
 
     // NullItem
