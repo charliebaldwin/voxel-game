@@ -23,7 +23,7 @@ MonoBehaviour:
     ViewmodelMat: {fileID: 2100000, guid: ffc8fdf8fff77be4c8429b284f0c4c28, type: 2}
     TooltipIcon: {fileID: 21300000, guid: 23c40bdccf10c6d4482b335647abf801, type: 3}
     Type: 3
-    BlockID: 2
+    BlockID: 16
     TextureIndex: 24
     BlockData:
       BlockID: 0

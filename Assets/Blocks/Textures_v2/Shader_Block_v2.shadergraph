@@ -3735,8 +3735,8 @@
     "m_ObjectId": "6bf8915349124ef38edc7f28f0b51df4",
     "m_Title": "Edge Normal",
     "m_Position": {
-        "x": -1828.6663818359375,
-        "y": 956.6668701171875
+        "x": -1828.6666259765625,
+        "y": 956.666748046875
     }
 }
 
@@ -3905,7 +3905,7 @@
     "m_Hidden": false,
     "m_ShaderOutputName": "Smoothness",
     "m_StageCapability": 2,
-    "m_Value": 0.20000000298023225,
+    "m_Value": 0.800000011920929,
     "m_DefaultValue": 0.5,
     "m_Labels": [],
     "m_LiteralMode": false
