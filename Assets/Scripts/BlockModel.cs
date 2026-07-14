@@ -12,7 +12,7 @@ public class BlockModel
     public Vector3[] vertices;
     public Vector3[] normals;
     public Vector4[] tangents;
-    public Vector2[] uvs;
+    public Vector4[] uvs;
     public Color[] colors;
     public int[] triangles;
 
@@ -26,7 +26,7 @@ public class BlockModel
             List<Vector3> vertList = new List<Vector3>();
             List<Vector3> normalList = new List<Vector3>();
             List<Vector4> tangentList = new List<Vector4>();
-            List<Vector2> uvList = new List<Vector2>();
+            List<Vector4> uvList = new List<Vector4>();
             List<Color> colorList = new List<Color>();
             List<int> triangleList = new List<int>();
             int t = firstTriangle;
@@ -68,7 +68,7 @@ public class BlockModel
                                 normalList.Add(rotateMat * normal);
 
                             foreach (Vector2 uv in GetFaceUVs(Directions[n]))
-                                uvList.Add(uv);
+                                uvList.Add(new Vector4(uv.x, uv.y, 4294967296f, 0.75f));
 
                             int borderIndex = 0;
 

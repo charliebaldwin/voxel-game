@@ -199,7 +199,7 @@ public class VoxelChunk : MonoBehaviour
 
     private List<Vector3> vertices = new List<Vector3>();
     private List<Vector3> normals = new List<Vector3>();
-    private List<Vector2> uvs = new List<Vector2>();
+    private List<Vector4> uvs = new List<Vector4>();
     private Dictionary<BlockID, List<int>> submeshes = new Dictionary<BlockID, List<int>>();
     private List<int>     triangles = new List<int>();
     private List<int>     triangles2 = new List<int>();
@@ -211,7 +211,7 @@ public class VoxelChunk : MonoBehaviour
 
         vertices = new List<Vector3>();
         normals = new List<Vector3>();
-        uvs = new List<Vector2>();
+        uvs = new List<Vector4>();
         triangles = new List<int>();
         colors = new List<Color>();
 
@@ -248,7 +248,7 @@ public class VoxelChunk : MonoBehaviour
         }
         mesh.normals = normals.ToArray();
         mesh.colors = colors.ToArray();
-        mesh.uv = uvs.ToArray();
+        mesh.SetUVs(0,uvs.ToArray());
         mesh.RecalculateTangents();
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
@@ -284,7 +284,7 @@ public class VoxelChunk : MonoBehaviour
         BlockModel model = new BlockModel(pos, t, vox, neighborVoxels);
         foreach (Vector3 v in model.vertices) vertices.Add(v);
         foreach (Vector3 n in model.normals) normals.Add(n);
-        foreach (Vector2 uv in model.uvs) uvs.Add(uv);
+        foreach (Vector4 uv in model.uvs) uvs.Add(uv);
         foreach (Color c in model.colors) colors.Add(c);
         //foreach (int tri in model.triangles) triangles2.Add(tri);
 
