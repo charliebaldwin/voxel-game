@@ -67,7 +67,7 @@ public class InventoryManager : MonoBehaviour
             if (InitialStacks[i] != null)
             {
                 Item itemData = ItemRegistry.LookupItem(InitialStacks[i].ItemID);
-                Debug.Log(itemData.Name);
+                //Debug.Log(itemData.Name);
 
                 ItemTile newItemTile = Instantiate(itemTilePrefab).GetComponent<ItemTile>();
                 newItemTile.Stack = InitialStacks[i];
@@ -80,7 +80,7 @@ public class InventoryManager : MonoBehaviour
             if (InitialHotbarStacks[i] != null)
             {
                 Item itemData = ItemRegistry.LookupItem(InitialStacks[i].ItemID);
-                Debug.Log(itemData.Name);
+                //Debug.Log(itemData.Name);
 
                 ItemTile newItemTile = Instantiate(itemTilePrefab).GetComponent<ItemTile>();
                 newItemTile.Stack = InitialStacks[i];
