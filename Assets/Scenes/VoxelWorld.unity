@@ -8957,6 +8957,7 @@ GameObject:
   m_Component:
   - component: {fileID: 433925807}
   - component: {fileID: 433925808}
+  - component: {fileID: 433925809}
   m_Layer: 0
   m_Name: VoxelWorld
   m_TagString: Untagged
@@ -9260,6 +9261,25 @@ MonoBehaviour:
   BlockUpdateDelay: 0.05
   shuffle: 030000000200000000000000010000000400000005000000
   orientation: 0
+  NoiseCS: {fileID: 7200000, guid: c38731ca5e06507439d8865f3f4b63e3, type: 3}
+--- !u!114 &433925809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433925806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c3e5e967cd5684b8efe2fd1c685a2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoxelGenerator
+  NoiseCS: {fileID: 7200000, guid: c38731ca5e06507439d8865f3f4b63e3, type: 3}
+  worldSize: {x: 512, y: 64, z: 512}
+  Scale: 0.007
+  Octaves: 4
+  OctaveStrength: 0.3
+  OctaveScale: 4
 --- !u!1 &434099614
 GameObject:
   m_ObjectHideFlags: 0

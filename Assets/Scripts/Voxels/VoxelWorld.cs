@@ -55,6 +55,7 @@ public partial class VoxelWorld : MonoBehaviour
 
     static readonly ProfilerMarker marker = new ProfilerMarker("Voxel Generation");
 
+    public ComputeShader NoiseCS;
 
     private void Awake()
     {
@@ -91,7 +92,8 @@ public partial class VoxelWorld : MonoBehaviour
 
         Vector3Int worldVoxelSize = new Vector3Int(ChunkSize.x * WorldSize.x, ChunkSize.y * WorldSize.y, ChunkSize.z * WorldSize.z);
         //GenerateVoxelsCPU(worldVoxelSize);
-        VoxelGenerator generator = new VoxelGenerator(worldVoxelSize, GenerationSettings);
+        VoxelGenerator generator = GetComponent<VoxelGenerator>();
+        generator.Generate(worldVoxelSize, GenerationSettings);
         Voxels = generator.GetGeneratedVoxels();
 
         loadedChunks = new List<VoxelChunk>();

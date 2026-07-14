@@ -1,19 +1,41 @@
+using Sirenix.OdinInspector;
 using System;
+using Unity.Collections;
+using UnityEditor;
 using UnityEngine;
 
-public class VoxelGenerator
+public class VoxelGenerator : MonoBehaviour
 {
-    private Vector3Int worldSize;
+    public ComputeShader NoiseCS;
+    private RenderTexture noiseRT;
+    private float[] noiseArray;
+    private ComputeBuffer noiseBuffer;
+    private Texture2DArray noiseT2DArray;
+
+    [SerializeField]
+    private Vector3Int worldSize = new Vector3Int(512,64,512);
     private WorldGenSettings worldSettings;
     private Voxel[,,] voxels;
-    public VoxelGenerator(Vector3Int worldVoxelSize, WorldGenSettings worldGenSettings)
+
+    public float Scale = 0.02f;
+    public int Octaves = 3;
+    public float OctaveStrength = 0.3f;
+    public float OctaveScale = 1.5f;
+
+    public void Generate(Vector3Int worldVoxelSize, WorldGenSettings worldGenSettings)
     {
         worldSize = worldVoxelSize;
         worldSettings = worldGenSettings;
+
         voxels = new Voxel[worldSize.x, worldSize.y, worldSize.z];
 
+
+
+
+        TerrainNoiseGPU();
         LoopXZ(TerrainNoise);
         LoopXYZ(AddGrass);
+
     }
 
     public Voxel[,,] GetGeneratedVoxels()
@@ -74,12 +96,57 @@ public class VoxelGenerator
 
     #region PASSES 
 
+    [Button]
+    private void TerrainNoiseGPU()
+    {
+        noiseRT = new RenderTexture(worldSize.x, worldSize.y, 32, RenderTextureFormat.RFloat);
+        noiseRT.dimension = UnityEngine.Rendering.TextureDimension.Tex2DArray;
+        noiseRT.volumeDepth = worldSize.z;
+        noiseRT.enableRandomWrite = true;
+
+        noiseArray = new float[worldSize.x * worldSize.y * worldSize.z];
+        noiseBuffer = new ComputeBuffer(worldSize.x * worldSize.y * worldSize.z, sizeof(float));
+
+        int[] size = new int[3] { worldSize.x, worldSize.y, worldSize.z };
+        int[] threads = new int[3] { 16, 1, 16 };
+        int[] threadSize = new int[3] { size[0] / threads[0], size[1] / threads[1], size[2] / threads[2] };
+
+        int kernel = NoiseCS.FindKernel("GenerateNoise");
+        //NoiseCS.SetTexture(kernel, "Result", noiseRT);
+        NoiseCS.SetBuffer(kernel, "ResultBuffer", noiseBuffer);
+        NoiseCS.SetInts("WorldSize", size);
+        NoiseCS.SetInts("ThreadCount", threads);
+        NoiseCS.SetInts("ThreadSize", threadSize);
+        NoiseCS.SetFloat ("Scale", Scale);
+        NoiseCS.SetInt("Octaves", Octaves);
+        NoiseCS.SetFloat("OctaveScale", OctaveScale);
+        NoiseCS.SetFloat("OctaveStrength", OctaveStrength);
+
+        //NoiseCS.SetVector(kernel, new Vector4(worldSize.x, worldSize.y, worldSize.z, 0f));
+        NoiseCS.Dispatch(kernel, threads[0], threads[1], threads[2]);
+
+        //AssetDatabase.CreateAsset(noiseRT, "Assets/Textures/Generated/Test_Tex3D.asset");
+        noiseBuffer.GetData(noiseArray);
+        //noiseT2DArray.CopyPixels(noiseRT);
+
+    }
+
+    private float ReadNoiseTex(int x, int y, int z)
+    {
+        int xyzCoord = x + worldSize.x * y + worldSize.x * worldSize.y * z;
+        return noiseArray[xyzCoord];
+    }
+
     private void TerrainNoise (int x, int z)
     {
-        float noise = Perlin.Fbm(x * worldSettings.NoiseScale, z * worldSettings.NoiseScale, worldSettings.NoiseOctaves);
-        float noise2 = Perlin.Fbm(x * worldSettings.NoiseScale * 0.2f, z * worldSettings.NoiseScale * 0.2f, worldSettings.NoiseOctaves);
-        float h = noise * worldSettings.HeightRange + worldSettings.HeightOffset;
-        h = h + (noise2 * worldSettings.HeightRange * 4);
+        //float noise = Perlin.Fbm(x * worldSettings.NoiseScale, z * worldSettings.NoiseScale, worldSettings.NoiseOctaves);
+        //float noise2 = Perlin.Fbm(x * worldSettings.NoiseScale * 0.2f, z * worldSettings.NoiseScale * 0.2f, worldSettings.NoiseOctaves);
+        //float h = noise * worldSettings.HeightRange + worldSettings.HeightOffset;
+        //h = h + (noise2 * worldSettings.HeightRange * 4);
+
+        float h = ReadNoiseTex(x, 1, z);
+        //Debug.Log($"h={h}");
+        h = h * worldSettings.HeightRange + worldSettings.HeightOffset;
 
         for (int y = 0; y < worldSize.y; y++)
         {

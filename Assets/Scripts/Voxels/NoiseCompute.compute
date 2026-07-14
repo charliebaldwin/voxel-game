@@ -1,0 +1,53 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel GenerateNoise
+
+#include "Packages/jp.keijiro.noiseshader/Shader/SimplexNoise3D.hlsl"
+#include "Packages/jp.keijiro.noiseshader/Shader/ClassicNoise3D.hlsl"
+
+//RWTexture2DArray<float> Result;
+RWStructuredBuffer<float> ResultBuffer;
+uint3 WorldSize;
+uint3 ThreadCount;
+uint3 ThreadSize;
+
+float Scale;
+int Octaves; 
+float OctaveStrength;
+float OctaveScale;
+
+[numthreads(16,1,16)]
+void GenerateNoise (uint3 id : SV_DispatchThreadID)
+{
+    
+    //uint sizeX = WorldSize.x / ThreadCount.x;
+    //uint sizeY = WorldSize.y / ThreadCount.y;
+    //uint sizeZ = WorldSize.z / ThreadCount.z;
+    
+    uint startX = id.x * ThreadSize.x;
+    uint startY = id.y * ThreadSize.y;
+    uint startZ = id.z * ThreadSize.z;
+
+    // TODO: insert actual code here! 
+    for (uint x = startX; x < startX + ThreadSize.x; x++) {
+        for (uint y = startY; y < startY + ThreadSize.y; y++) {
+            for (uint z = startZ; z < startZ + ThreadSize.z; z++) {
+                
+                float n = 0;
+                float str = 1;
+                float scale = Scale;
+                for (int o = 0; o < Octaves; o++)
+                {
+                    n += str * SimplexNoise(float3(x * scale + o*10, y * scale + o*10, z * scale + o*10));
+                    str *= OctaveStrength;
+                    scale *= OctaveScale;
+
+                }
+                //Result[uint3(x,y,z)] = n;
+                ResultBuffer[x + WorldSize.x * y + WorldSize.x * WorldSize.y * z] = n;
+                
+            }
+        }
+    }
+     
+    //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+}
