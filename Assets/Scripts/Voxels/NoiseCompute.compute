@@ -9,6 +9,7 @@ RWStructuredBuffer<float> ResultBuffer;
 uint3 WorldSize;
 uint3 ThreadCount;
 uint3 ThreadSize;
+float Seed;
 
 float Scale;
 int Octaves; 
@@ -17,7 +18,7 @@ float OctaveScale;
 
 [numthreads(16,1,16)]
 void GenerateNoise (uint3 id : SV_DispatchThreadID)
-{
+{ 
     
     //uint sizeX = WorldSize.x / ThreadCount.x;
     //uint sizeY = WorldSize.y / ThreadCount.y;
@@ -37,7 +38,7 @@ void GenerateNoise (uint3 id : SV_DispatchThreadID)
                 float scale = Scale;
                 for (int o = 0; o < Octaves; o++)
                 {
-                    n += str * SimplexNoise(float3(x * scale + o*10, y * scale + o*10, z * scale + o*10));
+                    n += str * SimplexNoise(float3(1000 * Seed + x * scale + o * 10, 1000 * Seed + y * scale + o * 10, 1000 * Seed + z * scale + o * 10));
                     str *= OctaveStrength;
                     scale *= OctaveScale;
 

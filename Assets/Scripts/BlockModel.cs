@@ -113,6 +113,10 @@ public class BlockModel
                             }
 
                             Color c = new Color((int)voxel.BlockID, n, damage, borderIndex);
+                            if (voxel.BlockID == BlockID.Color_Block)
+                            {
+                                c = voxel.VertexColor;
+                            }
                             colorList.AddRange(new Color[4] { c, c, c, c });
 
                             for (int i = 0; i < 6; i++)
