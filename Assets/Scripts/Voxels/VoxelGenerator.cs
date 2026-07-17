@@ -9,10 +9,10 @@ public class VoxelGenerator : MonoBehaviour
 {
     public ComputeShader NoiseCS;
     //private RenderTexture noiseRT;
-    private ComputeBuffer noiseBuffer;
-    private Texture2DArray noiseT2DArray;
+    private ComputeBuffer noiseBuffer1;
+    private ComputeBuffer noiseBuffer2;
 
-    private float[] noiseArray1;
+    private float[] noiseArray;
     private float[] noiseArray2;
     private float[] noiseArray3;
 
@@ -38,7 +38,7 @@ public class VoxelGenerator : MonoBehaviour
 
 
 
-        TerrainNoiseGPU(out noiseArray1, 0f);
+        TerrainNoiseGPU();
         //TerrainNoiseGPU(out noiseArray2, 3f);
         //TerrainNoiseGPU(out noiseArray3, 9f);
 
@@ -108,7 +108,7 @@ public class VoxelGenerator : MonoBehaviour
     #region PASSES 
 
     [Button]
-    private void TerrainNoiseGPU(out float[] noiseArray, float seed)
+    private void TerrainNoiseGPU()
     {
         RenderTexture noiseRT = new RenderTexture(worldSize.x, worldSize.y, 32, RenderTextureFormat.RFloat);
         noiseRT.dimension = UnityEngine.Rendering.TextureDimension.Tex2DArray;
@@ -116,7 +116,9 @@ public class VoxelGenerator : MonoBehaviour
         noiseRT.enableRandomWrite = true;
 
         noiseArray = new float[worldSize.x * worldSize.y * worldSize.z];
-        noiseBuffer = new ComputeBuffer(worldSize.x * worldSize.y * worldSize.z, sizeof(float));
+        noiseArray2 = new float[worldSize.x * worldSize.y * worldSize.z];
+        noiseBuffer1 = new ComputeBuffer(worldSize.x * worldSize.y * worldSize.z, sizeof(float));
+        noiseBuffer2 = new ComputeBuffer(worldSize.x * worldSize.y * worldSize.z, sizeof(float));
 
         int[] size = new int[3] { worldSize.x, worldSize.y, worldSize.z };
         int[] threads = new int[3] { 16, 1, 16 };
@@ -124,11 +126,12 @@ public class VoxelGenerator : MonoBehaviour
 
         int kernel = NoiseCS.FindKernel("GenerateNoise");
         //NoiseCS.SetTexture(kernel, "Result", noiseRT);
-        NoiseCS.SetBuffer(kernel, "ResultBuffer", noiseBuffer);
+        NoiseCS.SetBuffer(kernel, "Noise1Buffer", noiseBuffer1);
+        NoiseCS.SetBuffer(kernel, "Noise2Buffer", noiseBuffer2);
         NoiseCS.SetInts("WorldSize", size);
         NoiseCS.SetInts("ThreadCount", threads);
         NoiseCS.SetInts("ThreadSize", threadSize);
-        NoiseCS.SetFloat("Seed", seed);
+        NoiseCS.SetFloat("Seed", 10f);
         NoiseCS.SetFloat ("Scale", Scale);
         NoiseCS.SetInt("Octaves", Octaves);
         NoiseCS.SetFloat("OctaveScale", OctaveScale);
@@ -138,7 +141,8 @@ public class VoxelGenerator : MonoBehaviour
         NoiseCS.Dispatch(kernel, threads[0], threads[1], threads[2]);
 
         //AssetDatabase.CreateAsset(noiseRT, "Assets/Textures/Generated/Test_Tex3D.asset");
-        noiseBuffer.GetData(noiseArray);
+        noiseBuffer1.GetData(noiseArray);
+        noiseBuffer2.GetData(noiseArray2);
         //noiseT2DArray.CopyPixels(noiseRT);
 
         noiseRT.Release();
@@ -150,17 +154,20 @@ public class VoxelGenerator : MonoBehaviour
         return noise[xyzCoord];
     }
 
-    private void TerrainNoise (int x, int z)
+    private void TerrainNoise(int x, int z)
     {
         //float noise = Perlin.Fbm(x * worldSettings.NoiseScale, z * worldSettings.NoiseScale, worldSettings.NoiseOctaves);
         //float noise2 = Perlin.Fbm(x * worldSettings.NoiseScale * 0.2f, z * worldSettings.NoiseScale * 0.2f, worldSettings.NoiseOctaves);
         //float h = noise * worldSettings.HeightRange + worldSettings.HeightOffset;
         //h = h + (noise2 * worldSettings.HeightRange * 4);
 
-        float h = ReadNoiseTex(x, 1, z, ref noiseArray1);
+        float h = ReadNoiseTex(x, 1, z, ref noiseArray);
         float color_r = Mathf.Abs(h);
-        float color_g = Mathf.Abs(ReadNoiseTex(x, 20, z, ref noiseArray1));
-        float color_b = Mathf.Abs(ReadNoiseTex(x, 40, z, ref noiseArray1));
+        float color_g = Mathf.Abs(ReadNoiseTex(x, 20, z, ref noiseArray));
+        float color_b = Mathf.Abs(ReadNoiseTex(x, 40, z, ref noiseArray));
+
+        float c = ReadNoiseTex(x, 7, z, ref noiseArray2);
+
         //Debug.Log($"h={h}");
         h = h * worldSettings.HeightRange + worldSettings.HeightOffset;
 
@@ -171,12 +178,32 @@ public class VoxelGenerator : MonoBehaviour
             OrthoNormal o1 = VoxelHelper.OrthoDirs[r];
             OrthoNormal o2 = VoxelHelper.OrthoDirs[(r + 2) % 5];
 
+            bool cave = false;
+            //if (c > 0.05f) cave = true;
+            if ((((float)y / worldSize.y) - color_g) * 2f < 2f * c)
+            {
+                cave = true;
+            }
+
             float diff = h - y;
             if (diff < 0f)
                 SetVoxel(x, y, z, new Voxel(BlockID.Air, 0, 0, BlockShape.Empty));
-            else// if (diff < 4f)
-                SetVoxel(x, y, z, new Voxel(new Color(color_r, color_g, color_b).NormalizeRGB()));
-                //SetVoxel(x, y, z, new Voxel(BlockID.Dirt, 0, 0, BlockShape.Solid));
+            else
+            {// if (diff < 4f)
+                Color color = Color.black;
+                if (!cave) {
+                    color = new Color(color_r, color_g, color_b).NormalizeRGB();
+                    SetVoxel(x, y, z, new Voxel(color));
+                }   //SetVoxel(x, y, z, new Voxel(Color.black));
+                else
+                {
+                    SetVoxel(x, y, z, new Voxel(BlockID.Air));
+                    //SetVoxel(x, y, z, new Voxel(color));
+
+                }
+
+            }
+            //SetVoxel(x, y, z, new Voxel(BlockID.Dirt, 0, 0, BlockShape.Solid));
             //else if (diff < 8f)
             //{
             //    SetVoxel(x, y, z, new Voxel(BlockID.Rocky_Dirt, o1, o2));
