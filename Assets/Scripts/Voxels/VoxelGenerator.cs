@@ -44,7 +44,7 @@ public class VoxelGenerator : MonoBehaviour
 
         LoopXZ(TerrainNoise);
         LoopXYZ(AddGrass);
-        LoopXYZ(CarveCaves);
+        //LoopXYZ(CarveCaves);
 
     }
 
@@ -162,14 +162,8 @@ public class VoxelGenerator : MonoBehaviour
         //h = h + (noise2 * worldSettings.HeightRange * 4);
 
         float h = ReadNoiseTex(x, 1, z, ref noiseArray);
-        float color_r = Mathf.Abs(h);
-        float color_g = Mathf.Abs(ReadNoiseTex(x, 20, z, ref noiseArray));
-        float color_b = Mathf.Abs(ReadNoiseTex(x, 40, z, ref noiseArray));
-
-        float c = ReadNoiseTex(x, 7, z, ref noiseArray2);
-
-        //Debug.Log($"h={h}");
         h = h * worldSettings.HeightRange + worldSettings.HeightOffset;
+        Debug.Log($"h={h}");
 
         for (int y = 0; y < worldSize.y; y++)
         {
@@ -177,49 +171,81 @@ public class VoxelGenerator : MonoBehaviour
             int r = Mathf.FloorToInt(UnityEngine.Random.Range(0f, 5.99f));
             OrthoNormal o1 = VoxelHelper.OrthoDirs[r];
             OrthoNormal o2 = VoxelHelper.OrthoDirs[(r + 2) % 5];
+            o1 = OrthoNormal.up;
+            o2 = OrthoNormal.forward;
 
-            bool cave = false;
-            //if (c > 0.05f) cave = true;
-            if ((((float)y / worldSize.y) - color_g) * 2f < 2f * c)
+            float depth = h - y;
+            if (depth < 0f)
             {
-                cave = true;
+                SetVoxel(x, y, z, new Voxel(BlockID.Air));
+
             }
-
-            float diff = h - y;
-            if (diff < 0f)
-                SetVoxel(x, y, z, new Voxel(BlockID.Air, 0, 0, BlockShape.Empty));
             else
-            {// if (diff < 4f)
-                Color color = Color.black;
-                if (!cave) {
-                    color = new Color(color_r, color_g, color_b).NormalizeRGB();
-                    SetVoxel(x, y, z, new Voxel(color));
-                }   //SetVoxel(x, y, z, new Voxel(Color.black));
-                else
-                {
-                    SetVoxel(x, y, z, new Voxel(BlockID.Air));
-                    //SetVoxel(x, y, z, new Voxel(color));
+            {
+                SetVoxel(x, y, z, new Voxel(BlockID.Dirt));
 
+                // Stone Layers
+                if (depth < 4f)
+                {
+                    SetVoxel(x, y, z, new Voxel(BlockID.Dirt));
+                }
+                else if (depth < 8f)
+                {
+                    SetVoxel(x, y, z, new Voxel(BlockID.Rocky_Dirt, o1, o2));
+                }
+                else if (depth < 15f)
+                {
+                    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Sandstone, o1, o2));
+                }
+                else if (depth < 22f)
+                {
+                    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Limestone, 0, 0, BlockShape.Solid));
+                }
+                else if (depth < 30f)
+                {
+                    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Dolomite, o1, o2));
+                }
+                else if (depth < 40f)
+                {
+                    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Shale, o1, o2));
+                }
+                else if (depth < 52f)
+                {
+                    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Slate, 0, 0, BlockShape.Solid));
+                }
+                else if (depth < 65f)
+                {
+                    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Basalt, o1, o2));
                 }
 
+                // Caves / Color Testing
+                //float color_r = Mathf.Abs(h);
+                //float color_g = Mathf.Abs(ReadNoiseTex(x, 20, z, ref noiseArray));
+                //float color_b = Mathf.Abs(ReadNoiseTex(x, 40, z, ref noiseArray));
+
+                //float c = ReadNoiseTex(x, 7, z, ref noiseArray2);
+
+                //bool cave = false;
+                ////if (c > 0.05f) cave = true;
+                //if ((((float)y / worldSize.y) - color_g) * 2f < 2f * c)
+                //{
+                //    cave = true;
+                //}
+                //Color color = Color.black;
+                //if (!cave)
+                //{
+                //    SetVoxel(x, y, z, new Voxel(BlockID.Air));
+                //    color = new Color(color_r, color_g, color_b).NormalizeRGB();
+                //    //SetVoxel(x, y, z, new Voxel(color));
+                //}   //SetVoxel(x, y, z, new Voxel(Color.black));
+                //else
+                //{
+                //    SetVoxel(x, y, z, new Voxel(BlockID.Dirt));
+                //    //SetVoxel(x, y, z, new Voxel(color)
+                //}
             }
-            //SetVoxel(x, y, z, new Voxel(BlockID.Dirt, 0, 0, BlockShape.Solid));
-            //else if (diff < 8f)
-            //{
-            //    SetVoxel(x, y, z, new Voxel(BlockID.Rocky_Dirt, o1, o2));
-            //}
-            //else if (diff < 15f)
-            //    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Sandstone, o1, o2));
-            //else if (diff < 22f)
-            //    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Limestone, 0, 0, BlockShape.Solid));
-            //else if (diff < 30f)
-            //    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Dolomite, o1, o2));
-            //else if (diff < 40f)
-            //    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Shale, o1, o2));
-            //else if (diff < 55f)
-            //    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Slate, 0, 0, BlockShape.Solid));
-            //else if (diff < 70f)
-            //    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Basalt, o1, o2));
+
+
         }
     }
 
