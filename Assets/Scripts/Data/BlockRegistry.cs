@@ -97,14 +97,49 @@ public class BlockRegistry : MonoBehaviour
         {
             if (block.Textures.Count > 0)
             {
-                List<int> indices = new List<int>();
-                for (int i = 0; i < block.Textures.Count; i++)
+                for (int t=0; t <block.Textures.Count; t++)
                 {
-                    textures.Add(block.Textures[i]);
-                    indices.Add(index);
+                    textures.Add(block.Textures[0]);
                     index++;
                 }
+                List<int> indices = new List<int>();
+                switch (block.TextureMode)
+                {
+                    case BlockTextureMode.AllFacesSame:
+                        for (int i = 0; i < 6; i++)
+                        {
+                            indices.Add(index-1);
+                        }
+                        break;
+
+                    case BlockTextureMode.SidesTopBottom:
+                        indices.Add(index - 3);
+                        indices.Add(index - 3);
+                        indices.Add(index - 2);
+                        indices.Add(index - 1);
+                        indices.Add(index - 3);
+                        indices.Add(index - 3);
+                        break;
+                    case BlockTextureMode.SidesAndTop:
+                        indices.Add(index - 2);
+                        indices.Add(index - 2);
+                        indices.Add(index - 1);
+                        indices.Add(index - 1);
+                        indices.Add(index - 2);
+                        indices.Add(index - 2);
+                        break;
+                    case BlockTextureMode.SixFaces:
+                        for (int i = 0; i < 6; i++)
+                        {
+                            indices.Add(index - 1 - i);
+                        }
+                        break;
+
+                }
                 BlockTextureIndices.Add(block.BlockID, indices);
+
+
+
             }
         }
     }

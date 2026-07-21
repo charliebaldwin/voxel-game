@@ -44,7 +44,7 @@ public class BlockModel
                     break;
 
                 case BlockShape.Solid:
-                    int textureIndex = BlockRegistry.LookupBlockTextures(voxel.BlockID)[0];
+                    List<int> textureIndices = BlockRegistry.LookupBlockTextures(voxel.BlockID);
 
                     int air_nX = !DoAdjacentIDsMatch(nbVoxels[0].BlockID, voxel.BlockID) ? 1 : 0;
                     int air_pX = !DoAdjacentIDsMatch(nbVoxels[1].BlockID, voxel.BlockID) ? 1 : 0;
@@ -114,6 +114,7 @@ public class BlockModel
                                     break;
                             }
 
+                            int textureIndex = textureIndices[n];
                             Color c = new Color(textureIndex, n, damage, borderIndex);
                             if (voxel.BlockID == BlockID.Color_Block)
                             {
