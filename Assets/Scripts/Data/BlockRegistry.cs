@@ -3,35 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
+using static Unity.Collections.AllocatorManager;
 
 public class BlockRegistry : MonoBehaviour
 {
     public static BlockRegistry Instance;
     // objects to populate
     public string BDOFolderPath = "Blocks";
+    public static string BDOFolderPathStatic = "BlockData";
     public List<BlockDataObject> BlockDataObjects;
     public List<BlockEntityDataObject> BlockEntityDataObjects;
 
     // dictionaries
     public Dictionary<BlockID, BlockData> Blocks;
     public Dictionary<BlockID, BlockEntityData> BlockEntities;
+    public Dictionary<BlockID, List<int>> BlockTextureIndices;
 
 
-#region INITIALIZE AND LOAD
+    #region INITIALIZE AND LOAD
     private void Awake()
     {
+        Debug.Log("Block registry awake");
         SetInstance();
         LoadObjectsFromPath();
         PopulateDictionary();
+        ScanTextures();
     }
+    [Button]
     private void SetInstance()
     {
         if (Instance != null && Instance != this) Destroy(this);
         else Instance = this;
+        Debug.Log("Block registry instance set");
+
     }
 
     [Button]
-    private void LoadObjectsFromPath()
+    public void LoadObjectsFromPath()
     {
         BlockDataObject[] bdoArray = Resources.LoadAll<BlockDataObject>(BDOFolderPath);
         BlockDataObjects = new List<BlockDataObject>(bdoArray.Length);
@@ -60,7 +69,7 @@ public class BlockRegistry : MonoBehaviour
     }
 
     [Button]
-    private void PopulateDictionary()
+    public void PopulateDictionary()
     {
         Blocks = new Dictionary<BlockID, BlockData>();
         foreach (BlockDataObject bdo in BlockDataObjects)
@@ -74,6 +83,29 @@ public class BlockRegistry : MonoBehaviour
         {
             BlockEntityData data = bdo.Data;
             BlockEntities.Add(data.BlockID, data);
+        }
+    }
+
+    private List<Texture2D> textures;
+    [Button]
+    public void ScanTextures()
+    {
+        BlockTextureIndices = new Dictionary<BlockID, List<int>>();
+        textures = new List<Texture2D>();
+        int index = 0;
+        foreach (BlockData block in Blocks.Values)
+        {
+            if (block.Textures.Count > 0)
+            {
+                List<int> indices = new List<int>();
+                for (int i = 0; i < block.Textures.Count; i++)
+                {
+                    textures.Add(block.Textures[i]);
+                    indices.Add(index);
+                    index++;
+                }
+                BlockTextureIndices.Add(block.BlockID, indices);
+            }
         }
     }
 #endregion
@@ -92,7 +124,15 @@ public class BlockRegistry : MonoBehaviour
         BlockEntityData result = Instance.BlockEntities[id];
         return result;
     }
-
+    public static List<int> LookupBlockTextures(BlockID id)
+    {
+        // Debug.Log($"looking up {id}");
+        if (Instance.BlockTextureIndices.ContainsKey(id))
+        {
+            return Instance.BlockTextureIndices[id];
+        }
+        return new List<int>();
+    }
 
     public static int LookupToughness(BlockID id)
     {
@@ -107,7 +147,27 @@ public class BlockRegistry : MonoBehaviour
         return LookupBlock(id).IdealTools.Contains(tool);
     }
 
+    public List<Texture2D> GetBlockTextures()
+    {
+        return textures;
+    }
+
 
 
     #endregion
+
+
+    public static List<BlockData> GetAllBlockData()
+    {
+        BlockDataObject[] bdoArray = Resources.LoadAll<BlockDataObject>(BDOFolderPathStatic);
+        Debug.Log($"BDOs found: {bdoArray.Length}");
+        List<BlockData> BlockDataList = new List<BlockData>();
+        foreach (BlockDataObject bdo in bdoArray)
+        {
+            BlockDataList.Add(bdo.Data);
+        }
+        
+
+        return BlockDataList;
+    } 
 }

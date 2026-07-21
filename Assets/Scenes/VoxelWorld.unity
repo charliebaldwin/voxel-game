@@ -9710,7 +9710,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 244bf4910cfeab84db54e1ad33ca85f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlockRegistry
-  BDOFolderPath: Items/Blocks
+  BDOFolderPath: BlockData
   BlockDataObjects:
   - {fileID: 11400000, guid: 2c4b80b2f3849f54ca715d05621caeef, type: 2}
   - {fileID: 11400000, guid: 5622611e8db8bfc40bcd226eb0c52381, type: 2}
@@ -9734,6 +9734,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 886f8d2142e11784896e1cd69e8bee72, type: 2}
   - {fileID: 11400000, guid: ae696390731b6aa45bb4a4d515e31ddc, type: 2}
   - {fileID: 11400000, guid: 068a48039d8f89f4e8b925741dec784b, type: 2}
+  - {fileID: 11400000, guid: 553422431740145448389e3ef2522444, type: 2}
   BlockEntityDataObjects:
   - {fileID: 11400000, guid: 1d04167cd48948c4797487a15d75223c, type: 2}
 --- !u!4 &477280522
@@ -28412,7 +28413,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fdca2460e16383f40987dffc09785565, type: 2}
   - {fileID: 11400000, guid: 797bdd1cc59b72048947544c5802bccc, type: 2}
   - {fileID: 11400000, guid: e93766be1adf8694f9a1b4ee51725c0e, type: 2}
-  IDOFolderPath: Items
+  IDOFolderPath: ItemData
   ItemList:
   - Name: Iron Pickaxe
     ItemID: 14
@@ -28434,6 +28435,8 @@ MonoBehaviour:
       IdealTools: 
       CanChangeUpAxis: 0
       Material: {fileID: 0}
+      Textures: []
+      TextureMode: 0
     Strength: 4
     UseTime: 0.5
     ToolType: 0
@@ -28457,6 +28460,8 @@ MonoBehaviour:
       IdealTools: 
       CanChangeUpAxis: 0
       Material: {fileID: 0}
+      Textures: []
+      TextureMode: 0
     Strength: 6
     UseTime: 0.35
     ToolType: 0
@@ -28480,6 +28485,8 @@ MonoBehaviour:
       IdealTools: 
       CanChangeUpAxis: 0
       Material: {fileID: 0}
+      Textures: []
+      TextureMode: 0
     Strength: 20
     UseTime: 0.2
     ToolType: 0
@@ -28503,6 +28510,8 @@ MonoBehaviour:
       IdealTools: 
       CanChangeUpAxis: 0
       Material: {fileID: 0}
+      Textures: []
+      TextureMode: 0
     Strength: 1
     UseTime: 1
     ToolType: 0
@@ -28526,6 +28535,8 @@ MonoBehaviour:
       IdealTools: 01
       CanChangeUpAxis: 0
       Material: {fileID: 0}
+      Textures: []
+      TextureMode: 0
     Strength: 1
     UseTime: 1
     ToolType: 0
@@ -28549,6 +28560,8 @@ MonoBehaviour:
       IdealTools: 
       CanChangeUpAxis: 0
       Material: {fileID: 0}
+      Textures: []
+      TextureMode: 0
     Strength: 1
     UseTime: 1
     ToolType: 0

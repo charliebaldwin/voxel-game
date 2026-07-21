@@ -119,6 +119,77 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &821334786
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 821334788}
+  - component: {fileID: 821334787}
+  m_Layer: 0
+  m_Name: BlockRegistry
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &821334787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 821334786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 244bf4910cfeab84db54e1ad33ca85f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BlockRegistry
+  BDOFolderPath: BlockData
+  BlockDataObjects:
+  - {fileID: 11400000, guid: 2c4b80b2f3849f54ca715d05621caeef, type: 2}
+  - {fileID: 11400000, guid: 5622611e8db8bfc40bcd226eb0c52381, type: 2}
+  - {fileID: 11400000, guid: 37fa5fc8f8e73544693f5a77a3b650da, type: 2}
+  - {fileID: 11400000, guid: d2251d6ec5128314687bee474b33acd0, type: 2}
+  - {fileID: 11400000, guid: 44cb5672a86ee0e438cfb4d10e25922f, type: 2}
+  - {fileID: 11400000, guid: 51d75b6299400874f9b0050611011f88, type: 2}
+  - {fileID: 11400000, guid: 39c48b26ae6634443a53b645a57e0627, type: 2}
+  - {fileID: 11400000, guid: 090a6346cda56184faa8ed9df2c24663, type: 2}
+  - {fileID: 11400000, guid: f5f1c245d440fd44a9f9f25630d633d8, type: 2}
+  - {fileID: 11400000, guid: 07e1811c4b7f44940af480c838b9a669, type: 2}
+  - {fileID: 11400000, guid: 2c337040d414a164f8a2783bde1c7b16, type: 2}
+  - {fileID: 11400000, guid: 31f4d54f84231764681504a92e776b67, type: 2}
+  - {fileID: 11400000, guid: 2528527009d399f49b6761c366259031, type: 2}
+  - {fileID: 11400000, guid: c4bf0def0c646aa46ad56e4949cc6d7f, type: 2}
+  - {fileID: 11400000, guid: 7fe3f5d4a0e610d4ca56de756bc620d6, type: 2}
+  - {fileID: 11400000, guid: 69fc35c7f8cb52642b22b558506b535e, type: 2}
+  - {fileID: 11400000, guid: 4cec8d1b87733fc488900b98f771e466, type: 2}
+  - {fileID: 11400000, guid: 729a5230b4828ca4fa538f5ea7b54048, type: 2}
+  - {fileID: 11400000, guid: 94d021a99ab9a8a4fa8bef6b445a6382, type: 2}
+  - {fileID: 11400000, guid: 886f8d2142e11784896e1cd69e8bee72, type: 2}
+  - {fileID: 11400000, guid: ae696390731b6aa45bb4a4d515e31ddc, type: 2}
+  - {fileID: 11400000, guid: 068a48039d8f89f4e8b925741dec784b, type: 2}
+  - {fileID: 11400000, guid: 553422431740145448389e3ef2522444, type: 2}
+  BlockEntityDataObjects:
+  - {fileID: 11400000, guid: 1d04167cd48948c4797487a15d75223c, type: 2}
+--- !u!4 &821334788
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 821334786}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 627.15314, y: -0, z: 1373.1707}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1019262422
 GameObject:
   m_ObjectHideFlags: 0
@@ -228,15 +299,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 120cc12368d102c4494c7f01eb2bd66c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TextureGenerator
+  BlockRegistry: {fileID: 821334787}
   Textures:
   - {fileID: 2800000, guid: 829adb4896a500541a521c47b036967c, type: 3}
   - {fileID: 2800000, guid: 6e8c1d2ad27128a43bcf28025e8eb2b0, type: 3}
   - {fileID: 2800000, guid: f28971cfc6f99504fbbe38f40d636e08, type: 3}
   - {fileID: 2800000, guid: 7b2d7f2dd1300c94eaf967657f8a2cc4, type: 3}
   - {fileID: 2800000, guid: 6b67bc15f9374f547b590af5fefbb579, type: 3}
-  OutputPath: Assets/Textures/Generated/Texture_Array.asset
+  OutputPath: Assets/Textures/Generated/Texture_Atlas.asset
   SliceWidth: 16
   SliceHeight: 96
+  Columns: 8
+  BlockMaterial: {fileID: 2100000, guid: 61de2080775c6cc4aa57b576218bb8d3, type: 2}
 --- !u!4 &1554009522
 Transform:
   m_ObjectHideFlags: 0
@@ -257,4 +331,5 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1554009522}
+  - {fileID: 821334788}
   - {fileID: 1019262424}

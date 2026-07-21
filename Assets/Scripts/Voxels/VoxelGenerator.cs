@@ -163,7 +163,7 @@ public class VoxelGenerator : MonoBehaviour
 
         float h = ReadNoiseTex(x, 1, z, ref noiseArray);
         h = h * worldSettings.HeightRange + worldSettings.HeightOffset;
-        Debug.Log($"h={h}");
+        //Debug.Log($"h={h}");
 
         for (int y = 0; y < worldSize.y; y++)
         {

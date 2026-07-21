@@ -37,7 +37,6 @@ MonoBehaviour:
     - 1de502022b5778f4a988f9c212f573ea
     - f54d1bd14bd3ca042bd867b519fee8cc
     - 14c4621034124974f9d2d476f54c0fee
-    - 79aa978034871dc41b59062962752392
     values:
     - iconNameOrGuid: Prefab Icon
       colorIndex: 0
@@ -128,10 +127,6 @@ MonoBehaviour:
       isIconRecursive: 0
       isColorRecursive: 0
     - iconNameOrGuid: VFXRenderer Icon
-      colorIndex: 0
-      isIconRecursive: 0
-      isColorRecursive: 0
-    - iconNameOrGuid: PreMatCylinder
       colorIndex: 0
       isIconRecursive: 0
       isColorRecursive: 0
