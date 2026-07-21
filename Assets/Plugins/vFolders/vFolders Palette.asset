@@ -78,3 +78,15 @@ MonoBehaviour:
     - Settings Icon
     customIcons: []
     enabled: 1
+  - builtinIcons: []
+    customIcons:
+    - VFXRenderer Icon
+    enabled: 1
+  - builtinIcons: []
+    customIcons:
+    - PreMatCube
+    - PreMatCylinder
+    enabled: 1
+  - builtinIcons: []
+    customIcons: []
+    enabled: 1
