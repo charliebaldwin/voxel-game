@@ -11,6 +11,7 @@ public struct Voxel
     public OrthoNormal ForwardAxis;
     public Color VertexColor;
 
+
     public Voxel(BlockID id, byte damage, byte orientation)
     {
         BlockID = id;

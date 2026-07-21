@@ -57,6 +57,9 @@ public class BlockModel
                         //if ((BlockShape)nb[n] != BlockShape.Solid)
                         if (!IsNeighborFaceSolid(OrthoDirs[n], nbVoxels[n]))
                         {
+
+
+                            // Vertex Position
                             foreach (Vector3 v in GetFaceVerts(Directions[n]))
                             {
                                 Vector3 newV = v;
@@ -64,16 +67,18 @@ public class BlockModel
                                 vertList.Add(newV * 0.5f + blockPos);
                             }
 
-                            Vector3 normal = Directions[n];
 
+                            // Normal
+                            Vector3 normal = Directions[n];
                             for (int i = 0; i < 4; i++)
                                 normalList.Add(rotateMat * normal);
 
+                            // UV
                             foreach (Vector2 uv in GetFaceUVs(Directions[n]))
                                 uvList.Add(new Vector4(uv.x, uv.y, 4294967296f, 0.75f));
 
+                            // Vertex Color
                             int borderIndex = 0;
-
                             switch (n)
                             {
                                 case 0: // -X
@@ -114,17 +119,28 @@ public class BlockModel
                                     break;
                             }
 
+
+                            int edgeIndex = 0;
+                            if (GetVoxelLeft(neighborVoxels, normal).BlockID == BlockID.StoneBricks)
+                            {
+                                edgeIndex = 1;
+                            } else if (GetVoxelRight(neighborVoxels, normal).BlockID == BlockID.StoneBricks)
+                            {
+                                edgeIndex = 2;
+                            }
+
                             int textureIndex = textureIndices[n];
-                            Color c = new Color(textureIndex, n, damage, borderIndex);
+                            Color c = new Color(textureIndex, edgeIndex, damage, borderIndex);
                             if (voxel.BlockID == BlockID.Color_Block)
                             {
                                 c = voxel.VertexColor;
                             }
                             colorList.AddRange(new Color[4] { c, c, c, c });
 
+
+                            // Triangles
                             for (int i = 0; i < 6; i++)
                                 triangleList.Add(t + Triangles[i]);
-
                             t += 4;
                         }
                     }
@@ -244,6 +260,8 @@ public class BlockModel
         return false;
     }
     public bool DoAdjacentIDsMatch(BlockID id1, BlockID id2) {
+        if (id1 != BlockID.Air) return true; // TEMP
+
         if (id1 == BlockID.Dirt)
             return id2 == BlockID.Grass || id2 == BlockID.Dirt || id2 == BlockID.Log;
         if (id1 == BlockID.Grass)
@@ -254,5 +272,88 @@ public class BlockModel
             return true;
             //return true;
         return id1 == id2;
+    }
+
+    public Voxel GetVoxelLeft(Voxel[] neighbors, Vector3 faceNormal)
+    {
+        if (faceNormal == Vector3.left) // -X face
+        {
+            return neighbors[5]; // +Z neighbor is left
+        }
+        if (faceNormal == Vector3.right) // +X face
+        {
+            return neighbors[4]; // -Z neighbor is left
+        }
+        if (faceNormal == Vector3.back) // -Z face
+        {
+            return neighbors[0]; // -X neighbor is left
+        }
+        if (faceNormal == Vector3.forward) // +Z face
+        {
+            return neighbors[1]; // +X neighbor is left
+        }
+        if (faceNormal == Vector3.down || faceNormal == Vector3.up) // -Y face or +Y face
+        {
+            return neighbors[1]; // +X neighbor is left
+        }
+        return new Voxel(BlockID.Invalid);
+    }
+    public Voxel GetVoxelRight(Voxel[] neighbors, Vector3 faceNormal)
+    {
+        if (faceNormal == Vector3.left) // -X face
+        {
+            return neighbors[4]; // -Z neighbor is right
+        }
+        if (faceNormal == Vector3.right) // +X face
+        {
+            return neighbors[5]; // +Z neighbor is right
+        }
+        if (faceNormal == Vector3.back) // -Z face
+        {
+            return neighbors[1]; // +X neighbor is right
+        }
+        if (faceNormal == Vector3.forward) // +Z face
+        {
+            return neighbors[1]; // +X neighbor is right
+        }
+        if (faceNormal == Vector3.down || faceNormal == Vector3.up) // -Y face or +Y face
+        {
+            return neighbors[0]; // -X neighbor is right
+        }
+        return new Voxel(BlockID.Invalid);
+    }
+    public Voxel GetVoxelUp(Voxel[] neighbors, Vector3 faceNormal)
+    {
+        // +/- X or +/- Z face
+        if (faceNormal == Vector3.left || faceNormal == Vector3.right || faceNormal == Vector3.back || faceNormal == Vector3.forward)
+        {
+            return neighbors[2]; // +Y neighbor is up
+        }
+        if (faceNormal == Vector3.down) // -Y face
+        {
+            return neighbors[5]; // +Z neighbor is up
+        }
+        if (faceNormal == Vector3.up) // +Y face
+        {
+            return neighbors[4]; // -Z neighbor is up
+        }
+        return new Voxel(BlockID.Invalid);
+    }
+    public Voxel GetVoxelDown(Voxel[] neighbors, Vector3 faceNormal)
+    {
+        // +/- X or +/- Z face
+        if (faceNormal == Vector3.left || faceNormal == Vector3.right || faceNormal == Vector3.back || faceNormal == Vector3.forward)
+        {
+            return neighbors[3]; // -Y neighbor is down
+        }
+        if (faceNormal == Vector3.down) // -Y face
+        {
+            return neighbors[4]; // -Z neighbor is down
+        }
+        if (faceNormal == Vector3.up) // +Y face
+        {
+            return neighbors[5]; // +Z neighbor is down
+        }
+        return new Voxel(BlockID.Invalid);
     }
 }

@@ -99,7 +99,7 @@ public class BlockRegistry : MonoBehaviour
             {
                 for (int t=0; t <block.Textures.Count; t++)
                 {
-                    textures.Add(block.Textures[0]);
+                    textures.Add(block.Textures[t]);
                     index++;
                 }
                 List<int> indices = new List<int>();
@@ -115,10 +115,14 @@ public class BlockRegistry : MonoBehaviour
                     case BlockTextureMode.SidesTopBottom:
                         indices.Add(index - 3);
                         indices.Add(index - 3);
-                        indices.Add(index - 2);
                         indices.Add(index - 1);
+                        indices.Add(index - 2);
                         indices.Add(index - 3);
                         indices.Add(index - 3);
+                        foreach (int d  in indices)
+                        {
+                            Debug.Log($"{block.BlockID}: index {d}");
+                        }
                         break;
                     case BlockTextureMode.SidesAndTop:
                         indices.Add(index - 2);

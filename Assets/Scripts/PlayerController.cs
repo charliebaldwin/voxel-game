@@ -267,6 +267,7 @@ public class PlayerController : MonoBehaviour
             }
            //OrthoNormal fwd = (up == OrthoNormal.forward || up == OrthoNormal.back) ? OrthoNormal.right : OrthoNormal.forward;
             OrthoNormal fwd = OrthoNormal.forward;
+
             if (up.IsEqual(OrthoNormal.up))
             {
                 fwd = facingXZOrtho; 
@@ -282,8 +283,8 @@ public class PlayerController : MonoBehaviour
             }
 
             // TEMP
-            //up = OrthoNormal.up;
-            //fwd = OrthoNormal.forward;
+            up = OrthoNormal.up;
+            fwd = OrthoNormal.forward;
 
 
             world.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(id, 0, heldBlockShape, up, fwd));
