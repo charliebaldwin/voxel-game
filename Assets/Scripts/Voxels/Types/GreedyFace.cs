@@ -21,7 +21,7 @@ public class GreedyFace
 
         Vector3[] newVerts = new Vector3[4] { Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero };
 
-        if (faceDirection == Directions[0])
+        if (faceDirection == VectorDirections[0])
         {
             Vector3 originVert = new Vector3(originVoxel.x * 1f - 0.5f, originVoxel.y * 1f + 0.5f, originVoxel.z * 1f - 0.5f);
             newVerts = new Vector3[4] {
@@ -31,7 +31,7 @@ public class GreedyFace
                 originVert + new Vector3(0f, 0f,            lengthPrimary),
             };
         }
-        if (faceDirection == Directions[1])
+        if (faceDirection == VectorDirections[1])
         {
             Vector3 originVert = new Vector3(originVoxel.x * 1f + 0.5f, originVoxel.y * 1f + 0.5f, originVoxel.z * 1f - 0.5f);
             newVerts = new Vector3[4] {
@@ -41,7 +41,7 @@ public class GreedyFace
                 originVert
             };
         }
-        else if (faceDirection == Directions[2] || faceDirection == Directions[3])
+        else if (faceDirection == VectorDirections[2] || faceDirection == VectorDirections[3])
         {
             Vector3 originVert = new Vector3(originVoxel.x * 1f - 0.5f, originVoxel.y * 1f + 0.5f, originVoxel.z * 1f - 0.5f);
             newVerts = new Vector3[4] {
@@ -51,7 +51,7 @@ public class GreedyFace
                 originVert
             };
         }
-        else if (faceDirection == Directions[4])
+        else if (faceDirection == VectorDirections[4])
         {
             Vector3 originVert = new Vector3(originVoxel.x * 1f - 0.5f, originVoxel.y * 1f + 0.5f, originVoxel.z * 1f - 0.5f);
             newVerts = new Vector3[4] {
@@ -61,7 +61,7 @@ public class GreedyFace
                 originVert
             };
         }
-        else if (faceDirection == Directions[5])
+        else if (faceDirection == VectorDirections[5])
         {
             Vector3 originVert = new Vector3(originVoxel.x * 1f - 0.5f, originVoxel.y * 1f + 0.5f, originVoxel.z * 1f + 0.5f);
             newVerts = new Vector3[4] {

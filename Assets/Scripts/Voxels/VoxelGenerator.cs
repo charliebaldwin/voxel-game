@@ -169,8 +169,8 @@ public class VoxelGenerator : MonoBehaviour
         {
             UnityEngine.Random.InitState(x + y + z);
             int r = Mathf.FloorToInt(UnityEngine.Random.Range(0f, 5.99f));
-            OrthoNormal o1 = VoxelHelper.OrthoDirs[r];
-            OrthoNormal o2 = VoxelHelper.OrthoDirs[(r + 2) % 5];
+            OrthoNormal o1 = VoxelHelper.OrthoDirections[r];
+            OrthoNormal o2 = VoxelHelper.OrthoDirections[(r + 2) % 5];
             o1 = OrthoNormal.up;
             o2 = OrthoNormal.forward;
 

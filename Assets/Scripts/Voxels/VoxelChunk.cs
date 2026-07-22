@@ -276,7 +276,7 @@ public class VoxelChunk : MonoBehaviour
         Voxel[] neighborVoxels = new Voxel[6];
         for (int n = 0; n < 6; n++)
         {
-            Vector3Int dir = OrthoDirs[n].AlignYZ(vox.UpAxis, vox.ForwardAxis).ToVector();
+            Vector3Int dir = OrthoDirections[n].AlignYZ(vox.UpAxis, vox.ForwardAxis).ToVector();
             Voxel neighbor = world.LookupVoxelWorld(LocalToWorld(new Vector3Int(x, y, z) + dir, ChunkCoord, Size3D));
             neighborVoxels[n] = neighbor;
             //neighbors[n] = (int)world.LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).Shape;
@@ -703,9 +703,9 @@ public class VoxelChunk : MonoBehaviour
             for (int x = 0; x < Size3D.x; x++) {
                 for (int z = 0; z < Size3D.z; z++) {
                     Vector3Int pos = new Vector3Int(x, y, z);
-                    if (GetVoxelFaceVisible(pos, Directions[0]))
+                    if (GetVoxelFaceVisible(pos, VectorDirections[0]))
                     {
-                        GreedyFace newFace = new GreedyFace(Directions[0], pos);
+                        GreedyFace newFace = new GreedyFace(VectorDirections[0], pos);
                         for (int i = z+1; i < Size3D.z; i++)
                         {
                             Vector3Int neighborPos = new Vector3Int(pos.x, pos.y, i);
@@ -718,7 +718,7 @@ public class VoxelChunk : MonoBehaviour
                         foreach (Vector3 v in newVerts)
                         {
                             vertices.Add(v);
-                            normals.Add(Directions[0]);
+                            normals.Add(VectorDirections[0]);
                         }
                         for (int i = 0; i < 6; i++)
                         {
@@ -734,9 +734,9 @@ public class VoxelChunk : MonoBehaviour
             for (int x = 0; x < Size3D.x; x++) {
                 for (int z = 0; z < Size3D.z; z++) {
                     Vector3Int pos = new Vector3Int(x, y, z);
-                    if (GetVoxelFaceVisible(pos, Directions[1]))
+                    if (GetVoxelFaceVisible(pos, VectorDirections[1]))
                     {
-                        GreedyFace newFace = new GreedyFace(Directions[1], pos);
+                        GreedyFace newFace = new GreedyFace(VectorDirections[1], pos);
                         for (int i = z+1; i < Size3D.z; i++)
                         {
                             Vector3Int neighborPos = new Vector3Int(pos.x, pos.y, i);
@@ -749,7 +749,7 @@ public class VoxelChunk : MonoBehaviour
                         foreach (Vector3 v in newVerts)
                         {
                             vertices.Add(v);
-                            normals.Add(Directions[1]);
+                            normals.Add(VectorDirections[1]);
                         }
                         for (int i = 0; i < 6; i++)
                         {
@@ -766,9 +766,9 @@ public class VoxelChunk : MonoBehaviour
             for (int z = 0; z < Size3D.z; z++) {
                 for (int x = 0; x < Size3D.x; x++) {
                     Vector3Int pos = new Vector3Int(x, y, z);
-                    if (GetVoxelFaceVisible(pos, Directions[3]))
+                    if (GetVoxelFaceVisible(pos, VectorDirections[3]))
                     {
-                        GreedyFace newFace = new GreedyFace(Directions[3], pos);
+                        GreedyFace newFace = new GreedyFace(VectorDirections[3], pos);
                         for (int i = x+1; i < Size3D.x; i++)
                         {
                             Vector3Int neighborPos = new Vector3Int(i, pos.y, pos.z);
@@ -781,7 +781,7 @@ public class VoxelChunk : MonoBehaviour
                         foreach (Vector3 v in newVerts)
                         {
                             vertices.Add(v);
-                            normals.Add(Directions[3]);
+                            normals.Add(VectorDirections[3]);
                         }
                         for (int i = 0; i < 6; i++)
                         {
@@ -797,9 +797,9 @@ public class VoxelChunk : MonoBehaviour
             for (int z = 0; z < Size3D.z; z++) {
                 for (int x = 0; x < Size3D.x; x++) {
                     Vector3Int pos = new Vector3Int(x, y, z);
-                    if (GetVoxelFaceVisible(pos, Directions[4]))
+                    if (GetVoxelFaceVisible(pos, VectorDirections[4]))
                     {
-                        GreedyFace newFace = new GreedyFace(Directions[4], pos);
+                        GreedyFace newFace = new GreedyFace(VectorDirections[4], pos);
                         for (int i = x+1; i < Size3D.x; i++)
                         {
                             Vector3Int neighborPos = new Vector3Int(i, pos.y, pos.z);
@@ -812,7 +812,7 @@ public class VoxelChunk : MonoBehaviour
                         foreach (Vector3 v in newVerts)
                         {
                             vertices.Add(v);
-                            normals.Add(Directions[4]);
+                            normals.Add(VectorDirections[4]);
                         }
                         for (int i = 0; i < 6; i++)
                         {
@@ -828,9 +828,9 @@ public class VoxelChunk : MonoBehaviour
             for (int z = 0; z < Size3D.z; z++) {
                 for (int x = 0; x < Size3D.x; x++) {
                     Vector3Int pos = new Vector3Int(x, y, z);
-                    if (GetVoxelFaceVisible(pos, Directions[5]))
+                    if (GetVoxelFaceVisible(pos, VectorDirections[5]))
                     {
-                        GreedyFace newFace = new GreedyFace(Directions[5], pos);
+                        GreedyFace newFace = new GreedyFace(VectorDirections[5], pos);
                         for (int i = x+1; i < Size3D.x; i++)
                         {
                             Vector3Int neighborPos = new Vector3Int(i, pos.y, pos.z);
@@ -843,7 +843,7 @@ public class VoxelChunk : MonoBehaviour
                         foreach (Vector3 v in newVerts)
                         {
                             vertices.Add(v);
-                            normals.Add(Directions[5]);
+                            normals.Add(VectorDirections[5]);
                         }
                         for (int i = 0; i < 6; i++)
                         {

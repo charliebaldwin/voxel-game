@@ -73,6 +73,35 @@ public class OrthoNormal
     {
         return new OrthoNormal(-x, -y, -z);
     }
+
+    public Direction AsDirection()
+    {
+        if (IsEqual(left))
+        {
+            return Direction.NegativeX;
+        }
+        else if (IsEqual(right))
+        {
+            return Direction.PositiveX;
+        } 
+        else if (IsEqual(down))
+        {
+            return Direction.NegativeY;
+        }
+        else if (IsEqual(up))
+        {
+            return Direction.PositiveY;
+        }
+        else if (IsEqual(back))
+        {
+            return Direction.NegativeZ;
+        }
+        else if (IsEqual(forward))
+        {
+            return Direction.PositiveZ;
+        }
+        return Direction.Invalid;
+    }
     #endregion
 
     public bool IsEqual(OrthoNormal other)
