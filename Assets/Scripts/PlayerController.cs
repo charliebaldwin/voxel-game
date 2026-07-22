@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VInspector;
+using static VoxelHelper;
 //using VInspector.Libs;
 
 public class PlayerController : MonoBehaviour
@@ -58,7 +59,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 moveInput;
     private Vector3 velocity;
-
+    private Vector3 forward;
     private OrthoNormal facingXZOrtho;
 
     private Item equippedItem;
@@ -107,7 +108,7 @@ public class PlayerController : MonoBehaviour
         CameraPivot.localEulerAngles = cameraEuler;
 
 
-        Vector3 forward = CameraPivot.forward;
+        forward = CameraPivot.forward;
         OrthoNormal tempFacing = new OrthoNormal(forward);
         if (Mathf.Abs(forward.x) > Mathf.Abs(forward.z))
         {
@@ -122,12 +123,16 @@ public class PlayerController : MonoBehaviour
         DebugPanel.PlayerForward = forward;
         DebugPanel.PlayerForwardOrtho = facingXZOrtho;
 
+        
+
+
     }
 
     private void FixedUpdate()
     {
         RaycastWorld();
         RaycastEntities();
+        SetHitDebugInfo();
     }
 
 
@@ -325,6 +330,37 @@ public class PlayerController : MonoBehaviour
         if (Camera == null) Camera = GetComponentInChildren<Camera>();
         Gizmos.color = Color.red;
         Gizmos.DrawLine(Camera.transform.position, Camera.transform.position + Camera.transform.forward * targetAimRange);
+    }
+
+    private void SetHitDebugInfo()
+    {
+        DebugOverlay.AddSpacer(0);
+        DebugOverlay.SetDebugValue("Player Position", transform.position);
+        DebugOverlay.SetDebugValue("Forward", forward);
+        DebugOverlay.SetDebugValue("Forward Ortho", facingXZOrtho);
+        //DebugPanel.LastHitInfo = hitData;
+
+        DebugOverlay.AddSpacer(1);
+        if (lastHitInfo.didHit)
+        {
+            DebugOverlay.SetDebugValue("Block ID", lastHitInfo.blockID);
+            DebugOverlay.SetDebugValue("Voxel World Pos", lastHitInfo.voxelPos);
+            DebugOverlay.SetDebugValue("Voxel Local Pos", lastHitInfo.localVoxelPos);
+            DebugOverlay.SetDebugValue("Chunk", lastHitInfo.chunkPos);
+            DebugOverlay.SetDebugValue("Hit Position", lastHitInfo.hitPos);
+            DebugOverlay.SetDebugValue("Hit Face", NormalVectorToText(lastHitInfo.hitNormal));
+            DebugOverlay.SetDebugValue("Distance", lastHitInfo.distance);
+        }
+        else
+        {
+            DebugOverlay.SetDebugValue("Block ID", "None");
+            DebugOverlay.SetDebugValue("Voxel World Pos", "-");
+            DebugOverlay.SetDebugValue("Voxel Local Pos", "-");
+            DebugOverlay.SetDebugValue("Chunk", "-");
+            DebugOverlay.SetDebugValue("Hit Position", "-");
+            DebugOverlay.SetDebugValue("Hit Face", "-");
+            DebugOverlay.SetDebugValue("Distance", "-");
+        }
     }
 
 }

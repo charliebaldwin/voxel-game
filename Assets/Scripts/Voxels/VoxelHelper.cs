@@ -220,4 +220,23 @@ public static class VoxelHelper
     }
 
 
+
+    public static string NormalVectorToText(Vector3Int normal)
+    {
+        if (normal == Vector3Int.left)
+            return "-X";
+        if (normal == Vector3Int.right)
+            return "+X";
+        if (normal == Vector3Int.down)
+            return "-Y";
+        if (normal == Vector3Int.up)
+            return "+Y";
+        if (normal == Vector3Int.back)
+            return "-Z";
+        if (normal == Vector3Int.forward)
+            return "+Z";
+        return "invalid";
+
+    }
+
 }

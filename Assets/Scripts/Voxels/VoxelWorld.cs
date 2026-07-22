@@ -5,6 +5,7 @@ using System.Drawing;
 using Unity.Mathematics;
 using Unity.Mathematics.Geometry;
 using Unity.Profiling;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Splines;
 using UnityEngine.Timeline;
@@ -595,21 +596,23 @@ public partial class VoxelWorld : MonoBehaviour
                 hitData.hitPos = pos + t * dir;
                 hitData.chunkPos = FindContainingChunk(stepPos, ChunkSize);
                 hitData.localVoxelPos = WorldToLocal(stepPos, hitData.chunkPos, ChunkSize);
-                
+
                 DEBUGWorldHitPoint = hitData.hitPos;
-                DebugPanel.LastHitInfo = hitData;
 
                 return hitData;
-        
+
             }
             else if (hitVoxel.BlockID == BlockID.Invalid)
+            {
                 return new VoxelHitInfo(false);
+            }
             else
                 DEBUGTraversalColorList.Add(new Color(Mathf.Abs(hitNormal.x), Mathf.Abs(hitNormal.y), Mathf.Abs(hitNormal.z)));
-            
 
-            // going through air
-            Vector3 absTMax = new Vector3(Mathf.Abs(tMax.x), Mathf.Abs(tMax.y), Mathf.Abs(tMax.z));
+
+            
+                // going through air
+                Vector3 absTMax = new Vector3(Mathf.Abs(tMax.x), Mathf.Abs(tMax.y), Mathf.Abs(tMax.z));
             if (absTMax.x < absTMax.y && absTMax.x < absTMax.z) // tMax.X is the lowest, an YZ cell boundary plane is nearest.
             {
                 stepPos.x += stepX;
@@ -675,5 +678,7 @@ public partial class VoxelWorld : MonoBehaviour
         }
 
     }
+
+
 }
 

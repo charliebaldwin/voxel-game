@@ -193,17 +193,6 @@
                 },
                 {
                     "name": "",
-                    "id": "232667c7-9e1c-4ef8-b4d5-3db5617e9d8a",
-                    "path": "<Keyboard>/backquote",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Toggle Debug Panel",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "dbe879a3-92a6-49d6-aac9-9bd48f83729b",
                     "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
