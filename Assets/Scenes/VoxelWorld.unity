@@ -13912,6 +13912,62 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 743205680}
   m_CullTransparentMesh: 1
+--- !u!1 &747157195
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 747157197}
+  - component: {fileID: 747157196}
+  m_Layer: 0
+  m_Name: DebugOverlay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &747157196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747157195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29005f537f6c50b4fb751bc13868e551, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp-firstpass::DebugOverlay
+  updateInterval: 0.1
+  backgroundOpacity: 0.5
+  textColor: {r: 1, g: 1, b: 1, a: 1}
+  fontSize: 25
+  padding: {x: 10, y: 15}
+  resolution: {x: 1920, y: 1080}
+  panelWidth: 1000
+  font: {fileID: 11400000, guid: b9eaf5570922ec845b483eb8974e9cef, type: 2}
+  isVisible: 0
+  showFPS: 1
+  showPerformance: 1
+  toggleKey: 4
+--- !u!4 &747157197
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747157195}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 40.13806, y: 9.5, z: 20.76401}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &748264811
 GameObject:
   m_ObjectHideFlags: 0
@@ -17463,7 +17519,7 @@ PrefabInstance:
     - target: {fileID: 7639103546529478570, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: m_fontAsset
       value: 
-      objectReference: {fileID: 11400000, guid: ee54e8a4f4bad4b42afdd78ce3a78664, type: 2}
+      objectReference: {fileID: 11400000, guid: b9eaf5570922ec845b483eb8974e9cef, type: 2}
     - target: {fileID: 7639103546529478570, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: m_fontStyle
       value: 0
@@ -17471,7 +17527,7 @@ PrefabInstance:
     - target: {fileID: 7639103546529478570, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: 8361567688019994980, guid: ee54e8a4f4bad4b42afdd78ce3a78664, type: 2}
+      objectReference: {fileID: 9205109390366172157, guid: b9eaf5570922ec845b483eb8974e9cef, type: 2}
     - target: {fileID: 7639103546529478570, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: m_hasFontAssetChanged
       value: 0
@@ -44648,6 +44704,7 @@ MonoBehaviour:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 747157197}
   - {fileID: 1763829522}
   - {fileID: 931529471}
   - {fileID: 871158461}

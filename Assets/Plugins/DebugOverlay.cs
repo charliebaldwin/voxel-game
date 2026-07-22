@@ -8,6 +8,8 @@ using System;
 using UnityEngine.InputSystem;
 #endif
 
+// original script from https://github.com/NotMbk/Unity-Debug-Overlay
+
 public class DebugOverlay : MonoBehaviour
 {
     

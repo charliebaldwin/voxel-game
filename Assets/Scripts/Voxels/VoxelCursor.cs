@@ -9,21 +9,6 @@ public class VoxelCursor : MonoBehaviour
 
     public void MoveCursor(VoxelHitInfo hit, ItemType itemType)
     {
-        switch (itemType)
-        {
-            case ItemType.Block:
-                MeshRenderer.enabled = true;
-                MeshRenderer.material.SetColor("_Color", BlockColor);
-                break;
-            case ItemType.Tool:
-                MeshRenderer.enabled = true;
-                MeshRenderer.material.SetColor("_Color", ToolColor);
-                break;
-            case ItemType.Null:
-                MeshRenderer.enabled = false;
-                break;
-        }
-
 
         if (hit.didHit)
         {
@@ -35,7 +20,20 @@ public class VoxelCursor : MonoBehaviour
             if (itemType == ItemType.Block)
                 transform.position += hit.hitNormal;
 
-            MeshRenderer.enabled = true;
+            switch (itemType)
+            {
+                case ItemType.Block:
+                    MeshRenderer.enabled = true;
+                    MeshRenderer.material.SetColor("_Color", BlockColor);
+                    break;
+                case ItemType.Tool:
+                    MeshRenderer.enabled = true;
+                    MeshRenderer.material.SetColor("_Color", ToolColor);
+                    break;
+                case ItemType.Null:
+                    MeshRenderer.enabled = false;
+                    break;
+            }
         }
         else
         {
