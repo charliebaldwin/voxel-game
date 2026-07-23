@@ -68,7 +68,7 @@ public class VoxelChunk : MonoBehaviour
     public NativeArray<Color> colorsResult;
 
     readonly ProfilerMarker meshMarker = new ProfilerMarker("Chunk Mesher");
-
+    private ProfilerRecorder meshRecorder;
     private VoxelWorld world;
 
     private List<BlockID> containedIDs = new List<BlockID>();
@@ -76,6 +76,7 @@ public class VoxelChunk : MonoBehaviour
 
     private void Awake()
     {
+
         //Voxels = new VoxelData[Size3D.x, Size3D.y, Size3D.z];
         world = World();
     }
@@ -208,6 +209,8 @@ public class VoxelChunk : MonoBehaviour
     private void ComputeMeshCPU()
     {
         meshMarker.Begin();
+        double startTime = Time.realtimeSinceStartupAsDouble;
+        //meshRecorder = ProfilerRecorder.StartNew(meshMarker, 1);
 
         vertices = new List<Vector3>();
         normals = new List<Vector3>();
@@ -261,6 +264,12 @@ public class VoxelChunk : MonoBehaviour
         colors.Clear();
 
         meshMarker.End();
+
+        float duration = Mathf.Round((float)(Time.realtimeSinceStartupAsDouble - startTime) * 10000f) / 100f;
+
+        Debug.Log($"mesh time:{duration*100}ms");
+        DebugOverlay.SetDebugValue("Mesh Time", $"{duration}ms");
+        //Debug.Log($"mesh recorder value: {meshRecorder.CurrentValue}");
     }
 
     readonly ProfilerMarker voxelMarker = new ProfilerMarker("Mesh for Single Voxel");

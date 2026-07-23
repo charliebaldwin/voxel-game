@@ -142,6 +142,7 @@ public class DebugOverlay : MonoBehaviour
         if(showPerformance)
         {
             SetDebugValue("Frame Time", "0.0ms");
+            SetDebugValue("Mesh Time", $"{0}ms");
             SetDebugValue("Memory", "0MB");
             SetDebugValue("GC Collections", "0");
         }
