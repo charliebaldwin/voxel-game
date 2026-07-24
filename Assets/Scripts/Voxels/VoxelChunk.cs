@@ -611,7 +611,8 @@ public class VoxelChunk : MonoBehaviour
             voxel = new Voxel(BlockID.Air, 0, 0);
             voxel.Shape = 0;
         }
-        world.SetVoxel(worldPos, voxel);
+        world.SetVoxel(worldPos, voxel); // set via world
+        //SetVoxel(worldPos, voxel); // set directly
     }
 
     #endregion

@@ -7,6 +7,7 @@ using Unity.Mathematics.Geometry;
 using Unity.Profiling;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.LightTransport;
 using UnityEngine.Splines;
 using UnityEngine.Timeline;
 using UnityEngine.VFX;
@@ -462,7 +463,24 @@ public partial class VoxelWorld : MonoBehaviour
     {
         Vector3Int chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
         VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.z];
-        chunk.DamageVoxel(SnapToGrid(worldPos), hitInfo, damage);
+        //chunk.DamageVoxel(SnapToGrid(worldPos), hitInfo, damage);
+
+        Voxel voxel = chunk.GetVoxel(SnapToGrid(worldPos));
+        BlockData data = BlockRegistry.LookupBlock(voxel.BlockID);
+
+        VFX().SpawnVFX(VFXType.BLOCK_DMG, hitInfo.hitPos, hitInfo.hitNormal, (int)voxel.BlockID);
+
+        voxel.Damage += damage;
+        int toughness = data.Toughness;
+        if (voxel.Damage >= toughness)
+        {
+            
+            VFX().SpawnVFX(VFXType.BLOCK_BREAK, worldPos, Vector3.zero, (int)voxel.BlockID);
+
+            voxel = new Voxel(BlockID.Air, 0, 0);
+            voxel.Shape = 0;
+        }
+        SetVoxel(SnapToGrid(worldPos) , voxel);
     }
     public void AddVoxel(Vector3 worldPos, Voxel voxel)
     {
