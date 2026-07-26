@@ -31,4 +31,6 @@ public enum ItemID
 
     // NullItem
     NullItem,
+
+    Block_Test,
 }

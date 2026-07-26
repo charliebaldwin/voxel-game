@@ -3986,10 +3986,15 @@ MonoBehaviour:
   BlockRegistry: {fileID: 477280521}
   Textures: []
   OutputPath: Assets/Textures/Generated/Texture_Array.asset
+  OutputPathNormal: Assets/Textures/Generated/Texture_Array_Normal.asset
+  OutputPathMS: Assets/Textures/Generated/Texture_Array_MS.asset
   SliceWidth: 16
   SliceHeight: 96
   Columns: 8
   BlockMaterial: {fileID: 2100000, guid: 61de2080775c6cc4aa57b576218bb8d3, type: 2}
+  DefaultColorTexture: {fileID: 0}
+  DefaultNormalTexture: {fileID: 0}
+  DefaultMSTexture: {fileID: 0}
 --- !u!4 &171169156
 Transform:
   m_ObjectHideFlags: 0
@@ -9786,8 +9791,25 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ae696390731b6aa45bb4a4d515e31ddc, type: 2}
   - {fileID: 11400000, guid: 068a48039d8f89f4e8b925741dec784b, type: 2}
   - {fileID: 11400000, guid: 553422431740145448389e3ef2522444, type: 2}
+  - {fileID: 11400000, guid: be7df186445d4be40b51ec27b754a68e, type: 2}
   BlockEntityDataObjects:
   - {fileID: 11400000, guid: 1d04167cd48948c4797487a15d75223c, type: 2}
+  BlockData:
+  - BlockID: 2
+    Toughness: 6
+    IsBlockEntity: 0
+    ValidTools: 
+    IdealTools: 
+    CanChangeUpAxis: 0
+    Material: {fileID: 0}
+    Textures:
+    - {fileID: 2800000, guid: f064222fb312c5d4bb7094d98fe199e0, type: 3}
+    NormalTextures: []
+    MSTextures: []
+    TextureMode: 0
+  DefaultColorTexture: {fileID: 2800000, guid: 9e75096419e45d0449949cd2b8cdd010, type: 3}
+  DefaultNormalTexture: {fileID: 2800000, guid: 86e95d9f9da0cf24b9f47160959b28a8, type: 3}
+  DefaultMSTexture: {fileID: 2800000, guid: e0cdb76f282622c4fb39a0ba7e1047fb, type: 3}
 --- !u!4 &477280522
 Transform:
   m_ObjectHideFlags: 0
@@ -17138,7 +17160,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: InitialHotbarStacks.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: InitialStacks.Array.data[1].Count
@@ -17271,6 +17293,10 @@ PrefabInstance:
     - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: InitialHotbarStacks.Array.data[1].ItemID
       value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
+      propertyPath: InitialHotbarStacks.Array.data[2].ItemID
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 6337647151361779227, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: m_AnchorMax.y
@@ -28509,6 +28535,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d152955ff23920f4394d507761fb4923, type: 2}
   - {fileID: 11400000, guid: eab714ead4ea62547aa2d81fe71cabd2, type: 2}
   - {fileID: 11400000, guid: 47cbdc9519d614a4ab6ebf873ebc3b19, type: 2}
+  - {fileID: 11400000, guid: 52b0a0e2642168a42aa0e54526809216, type: 2}
   - {fileID: 11400000, guid: 2153949b2c857da4c9d9faa3c4bd8d99, type: 2}
   - {fileID: 11400000, guid: 4c74dc545e4f8dd46865f03f0a74d42e, type: 2}
   - {fileID: 11400000, guid: b42efc6d656068e4fb76c2845ff57285, type: 2}
@@ -28543,6 +28570,8 @@ MonoBehaviour:
       CanChangeUpAxis: 0
       Material: {fileID: 0}
       Textures: []
+      NormalTextures: []
+      MSTextures: []
       TextureMode: 0
     Strength: 4
     UseTime: 0.5
@@ -28568,6 +28597,8 @@ MonoBehaviour:
       CanChangeUpAxis: 0
       Material: {fileID: 0}
       Textures: []
+      NormalTextures: []
+      MSTextures: []
       TextureMode: 0
     Strength: 6
     UseTime: 0.35
@@ -28593,6 +28624,8 @@ MonoBehaviour:
       CanChangeUpAxis: 0
       Material: {fileID: 0}
       Textures: []
+      NormalTextures: []
+      MSTextures: []
       TextureMode: 0
     Strength: 20
     UseTime: 0.2
@@ -28618,6 +28651,8 @@ MonoBehaviour:
       CanChangeUpAxis: 0
       Material: {fileID: 0}
       Textures: []
+      NormalTextures: []
+      MSTextures: []
       TextureMode: 0
     Strength: 1
     UseTime: 1
@@ -28643,6 +28678,8 @@ MonoBehaviour:
       CanChangeUpAxis: 0
       Material: {fileID: 0}
       Textures: []
+      NormalTextures: []
+      MSTextures: []
       TextureMode: 0
     Strength: 1
     UseTime: 1
@@ -28668,6 +28705,8 @@ MonoBehaviour:
       CanChangeUpAxis: 0
       Material: {fileID: 0}
       Textures: []
+      NormalTextures: []
+      MSTextures: []
       TextureMode: 0
     Strength: 1
     UseTime: 1

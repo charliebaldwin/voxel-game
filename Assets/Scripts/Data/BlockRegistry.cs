@@ -15,11 +15,16 @@ public class BlockRegistry : MonoBehaviour
     public List<BlockDataObject> BlockDataObjects;
     public List<BlockEntityDataObject> BlockEntityDataObjects;
 
+    public List<BlockData> BlockData;
+
     // dictionaries
     public Dictionary<BlockID, BlockData> Blocks;
     public Dictionary<BlockID, BlockEntityData> BlockEntities;
     public Dictionary<BlockID, List<int>> BlockTextureIndices;
 
+    public Texture2D DefaultColorTexture;
+    public Texture2D DefaultNormalTexture;
+    public Texture2D DefaultMSTexture;
 
     #region INITIALIZE AND LOAD
     private void Awake()
@@ -86,20 +91,44 @@ public class BlockRegistry : MonoBehaviour
         }
     }
 
-    private List<Texture2D> textures;
+    private List<Texture2D> colorTextures;
+    private List<Texture2D> normalTextures;
+    private List<Texture2D> msTextures;
     [Button]
     public void ScanTextures()
     {
         BlockTextureIndices = new Dictionary<BlockID, List<int>>();
-        textures = new List<Texture2D>();
+        colorTextures = new List<Texture2D>();
+        normalTextures = new List<Texture2D>();
+        msTextures = new List<Texture2D>();
+
         int index = 0;
         foreach (BlockData block in Blocks.Values)
         {
+            if (block.Textures.Count == 0)
+            {
+                block.Textures.Add(DefaultColorTexture);
+            }
             if (block.Textures.Count > 0)
             {
                 for (int t=0; t <block.Textures.Count; t++)
-                {
-                    textures.Add(block.Textures[t]);
+                { 
+                    colorTextures.Add(block.Textures[t]);
+                    if (t < block.NormalTextures.Count)
+                    {
+                        normalTextures.Add(block.NormalTextures[t]);
+                    } else
+                    {
+                        normalTextures.Add(DefaultNormalTexture);
+                    }
+                    if (t < block.MSTextures.Count)
+                    {
+                        msTextures.Add(block.MSTextures[t]);
+                    }
+                    else
+                    {
+                        msTextures.Add(DefaultMSTexture);
+                    }
                     index++;
                 }
                 List<int> indices = new List<int>();
@@ -186,9 +215,17 @@ public class BlockRegistry : MonoBehaviour
         return LookupBlock(id).IdealTools.Contains(tool);
     }
 
-    public List<Texture2D> GetBlockTextures()
+    public List<Texture2D> GetBlockColorTextures()
     {
-        return textures;
+        return colorTextures;
+    }
+    public List<Texture2D> GetBlockNormalTextures()
+    {
+        return normalTextures;
+    }
+    public List<Texture2D> GetBlockMSTextures()
+    {
+        return msTextures;
     }
 
 

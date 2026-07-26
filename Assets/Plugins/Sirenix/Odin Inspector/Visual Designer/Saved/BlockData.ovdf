@@ -1,25 +1,62 @@
 OVDF v1.1
 BlockData, Assembly-CSharp
 
+# $3BRFntEc5K2gLrT9NoYMi8
+Position: $root:0
++ [Sirenix.OdinInspector.VerticalGroupAttribute]
+	GroupName = "_Settings"
+
+# $EEJzp4EJC3Se7doguqxM8k
+Position: $root:2
++ [Sirenix.OdinInspector.VerticalGroupAttribute]
+	GroupName = "_Textures"
+
+# $LGh47XwHhfSZ2hazqimmiA
+Position: $root:3
++ [Sirenix.OdinInspector.VerticalGroupAttribute]
+	GroupName = "_Tools"
+
+# $C53CwtTDiSGcyzUo4kvemn
+Position: $EEJzp4EJC3Se7doguqxM8k:1
++ [Sirenix.OdinInspector.HorizontalGroupAttribute]
+
 # Toughness
-Position: $root:1
+Position: $3BRFntEc5K2gLrT9NoYMi8:1
 
 # BlockID
-Position: $root:0
+Position: $3BRFntEc5K2gLrT9NoYMi8:0
 + [Sirenix.OdinInspector.LabelTextAttribute]
 	Text = "ID"
 + [Sirenix.OdinInspector.EnumPagingAttribute]
 
 # CanChangeUpAxis
-Position: $root:3
+Position: $3BRFntEc5K2gLrT9NoYMi8:3
 + [Sirenix.OdinInspector.ToggleLeftAttribute]
 
 # IsBlockEntity
-Position: $root:2
+Position: $3BRFntEc5K2gLrT9NoYMi8:2
 + [Sirenix.OdinInspector.ToggleLeftAttribute]
 
 # ValidTools
-Position: $root:4
+Position: $LGh47XwHhfSZ2hazqimmiA:0
++ [Sirenix.OdinInspector.TableColumnWidthAttribute]
+	Width = -300
 
 # IdealTools
-Position: $root:5
+Position: $LGh47XwHhfSZ2hazqimmiA:1
+
+# Material
++ [Sirenix.OdinInspector.HideInTablesAttribute]
+
+# Textures
+Position: $C53CwtTDiSGcyzUo4kvemn:1
++ [Sirenix.OdinInspector.ImageAttribute]
+
+# NormalTextures
+Position: $C53CwtTDiSGcyzUo4kvemn:3
+
+# MSTextures
+Position: $C53CwtTDiSGcyzUo4kvemn:2
+
+# TextureMode
+Position: $EEJzp4EJC3Se7doguqxM8k:0

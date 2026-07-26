@@ -1,0 +1,9 @@
+OVDF v1.1
+BlockRegistry, Assembly-CSharp
+MetaGuid:244bf4910cfeab84db54e1ad33ca85f6
+
+# Blocks
++ [Sirenix.OdinInspector.DictionaryDrawerSettings]
+
+# BlockData
++ [Sirenix.OdinInspector.TableListAttribute]

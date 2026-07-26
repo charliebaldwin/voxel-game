@@ -18,6 +18,8 @@ public class BlockData
     public Material Material;
 
     public List<Texture2D> Textures;
+    public List<Texture2D> NormalTextures;
+    public List<Texture2D> MSTextures;
     public BlockTextureMode TextureMode;
 }
 
