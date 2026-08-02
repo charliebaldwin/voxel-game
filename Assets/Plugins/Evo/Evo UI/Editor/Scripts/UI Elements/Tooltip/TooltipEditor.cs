@@ -1,7 +1,6 @@
-using Evo.EditorTools;
 using UnityEditor;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
+using Evo.EditorTools;
 
 namespace Evo.UI
 {
@@ -123,9 +122,8 @@ namespace Evo.UI
                     EvoEditorGUI.DrawProperty(tooltipPreset, "Preset", null, true, true, true);
                     EvoEditorGUI.DrawProperty(icon, "Icon", null, true, true, true);
                     EvoEditorGUI.DrawProperty(title, "Title", null, true, true, true);
-                    EvoEditorGUI.DrawProperty(description, "Description", null, false, true, true);
+                    EvoEditorGUI.DrawProperty(description, "Description", null, true, true, true);
 #if EVO_LOCALIZATION
-                    EvoEditorGUI.AddLayoutSpace();
                     string[] exProps = new string[] { "titleKey", "descriptionKey" };
                     Localization.ExternalEditor.DrawLocalizationContainer(serializedObject, tooltipTarget.gameObject, null, exProps);
 #endif

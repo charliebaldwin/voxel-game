@@ -11,6 +11,9 @@ namespace Evo.UI
         static StylerPreset cachedDefaultPreset;
         public static readonly List<StylerObject> RegisteredObjects = new();
 
+        // Buffer for zero-allocation component fetching
+        static readonly List<IStylerHandler> handlerBuffer = new();
+
         // Clear for FEPM
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetStatics()
@@ -333,15 +336,28 @@ namespace Evo.UI
         }
 
         /// <summary>
+        /// Helper method to update the cached default preset.
+        /// </summary>
+        public static void UpdateCachedDefaultPreset(StylerPreset newDefaultPreset)
+        {
+            if (newDefaultPreset != null)
+                cachedDefaultPreset = newDefaultPreset;
+        }
+
+        /// <summary>
         /// Call this method to replace the preset asset globally.
         /// </summary>
-        public static void ApplyPreset(StylerPreset newPreset)
+        public static void ApplyPreset(StylerPreset newPreset, bool updateCache = true)
         {
             if (newPreset == null)
             {
                 Debug.LogWarning($"[Styler] No preset specified when calling ApplyPreset. Operation cancelled.");
                 return;
             }
+
+            if (updateCache)
+                UpdateCachedDefaultPreset(newPreset);
+
 #if UNITY_6000_4_OR_NEWER
             var allBehaviours = Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include);
 #else
@@ -364,13 +380,16 @@ namespace Evo.UI
         /// Call this method to replace the preset asset for active objects.
         /// Faster than ApplyPreset, but will only apply to registered StylerObject references.
         /// </summary>
-        public static void ApplyPresetToRegisteredObjects(StylerPreset newPreset)
+        public static void ApplyPresetToRegisteredObjects(StylerPreset newPreset, bool updateCache = true)
         {
             if (newPreset == null)
             {
                 Debug.LogWarning($"[Styler] No preset specified when calling ApplyPreset. Operation cancelled.");
                 return;
             }
+
+            if (updateCache)
+                UpdateCachedDefaultPreset(newPreset);
 
             // Iterate backwards so if an object removes itself, it doesn't break the loop
             for (int i = RegisteredObjects.Count - 1; i >= 0; i--)
@@ -388,6 +407,72 @@ namespace Evo.UI
             }
 
             Debug.Log($"[Styler] Preset '{newPreset.name}' successfully set on {RegisteredObjects.Count} registered objects.");
+        }
+
+        /// <summary>
+        /// Call this method to apply the given preset to specified IStylerHandler target.
+        /// </summary>
+        public static void ApplyPresetTo(StylerPreset preset, IStylerHandler target)
+        {
+            if (preset != null && target != null)
+                target.Preset = preset;
+        }
+
+        /// <summary>
+        /// Call this method to apply the given preset to specified parent and optionally childs.
+        /// </summary>
+        public static void ApplyPresetTo(StylerPreset preset, GameObject target, bool includeChildren = true)
+        {
+            if (preset == null || target == null)
+                return;
+
+            // Clear the buffer to ensure no leftover references
+            handlerBuffer.Clear();
+
+            // Use the non-allocating list overloads
+            if (includeChildren) { target.GetComponentsInChildren(true, handlerBuffer); }
+            else { target.GetComponents(handlerBuffer); }
+
+            // Iterate through the buffer
+            int count = handlerBuffer.Count;
+            for (int i = 0; i < count; i++)
+                handlerBuffer[i].Preset = preset;
+        }
+
+        /// <summary>
+        /// Call this method to apply the default preset to specified IStylerHandler target.
+        /// </summary>
+        public static void ApplyDefaultPresetTo(IStylerHandler target)
+        {
+            if (target == null)
+                return;
+
+            StylerPreset defaultPreset = GetDefaultPreset();
+            if (defaultPreset == null)
+            {
+                Debug.LogWarning($"[Styler] Cannot apply default preset to {target} because no default preset was found.");
+                return;
+            }
+
+            target.Preset = defaultPreset;
+        }
+
+        /// <summary>
+        /// Call this method to apply the given preset to specified parent and optionally childs.
+        /// </summary>
+        public static void ApplyDefaultPresetTo(GameObject target, bool includeChildren = true)
+        {
+            if (target == null)
+                return;
+
+            StylerPreset defaultPreset = GetDefaultPreset();
+            if (defaultPreset == null)
+            {
+                Debug.LogWarning($"[Styler] Cannot apply default preset to {target.name} because no default preset was found.");
+                return;
+            }
+
+            ApplyPresetTo(defaultPreset, target, includeChildren);
         }
     }
 }

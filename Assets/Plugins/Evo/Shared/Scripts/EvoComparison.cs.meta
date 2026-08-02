@@ -4,6 +4,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 310303
   packageName: Evo UI - Modern UI Framework
-  packageVersion: 1.9.8
-  assetPath: Assets/Evo/Shared/Scripts/EvoComparison.cs
-  uploadId: 946346
+  packageVersion: 1.9.9
+  assetPath: Assets/Plugins/Evo/Shared/Scripts/EvoComparison.cs
+  uploadId: 957982

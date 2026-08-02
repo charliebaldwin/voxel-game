@@ -41,11 +41,8 @@ namespace Evo.UI
         readonly List<Button> editorPreviewButtonsCache = new();
 #endif
 
-        public enum IndicatorDirection
-        {
-            Horizontal,
-            Vertical
-        }
+        // Enums
+        public enum IndicatorDirection { Horizontal, Vertical }
 
         void Awake()
         {
@@ -58,9 +55,7 @@ namespace Evo.UI
             // If there's a selection, force the indicator to snap to it again.
             // Just in case the layout changed while this object was disabled.
             if (selectedIndex >= 0 && availableButtons.Count > selectedIndex)
-            {
                 UpdateIndicator(availableButtons[selectedIndex], false);
-            }
         }
 
         public void Initialize()
@@ -69,13 +64,14 @@ namespace Evo.UI
             availableButtons.Clear();
 
             // Get button parent
-            if (targetParent == null) { targetParent = transform; }
+            if (targetParent == null)
+                targetParent = transform;
 
             // Get all Button components from direct children only
             for (int i = 0; i < targetParent.childCount; i++)
             {
                 Transform child = targetParent.GetChild(i);
-                if (child.TryGetComponent<Button>(out Button btn))
+                if (child.TryGetComponent(out Button btn))
                 {
                     availableButtons.Add(btn);
                     int btnIndex = availableButtons.Count - 1;
@@ -89,8 +85,10 @@ namespace Evo.UI
             }
 
             // Set default selection if specified
-            if (selectedIndex >= 0 && selectedIndex < availableButtons.Count) { SetButton(selectedIndex, false); }
-            else { UpdateIndicator(null, false); } // Initialize indicator state (hidden) if nothing is selected
+            if (selectedIndex >= 0 && selectedIndex < availableButtons.Count)
+                SetButton(selectedIndex, false);
+            else
+                UpdateIndicator(null, false); // Initialize indicator state (hidden) if nothing is selected
         }
 
         void UpdateIndicator(Button targetButton, bool animate)
@@ -98,7 +96,9 @@ namespace Evo.UI
             if (indicatorObject == null || !gameObject.activeInHierarchy)
                 return;
 
-            if (indicatorCoroutine != null) { StopCoroutine(indicatorCoroutine); }
+            if (indicatorCoroutine != null)
+                StopCoroutine(indicatorCoroutine);
+
             indicatorCoroutine = StartCoroutine(AnimateIndicatorRoutine(targetButton, animate));
         }
 
@@ -130,14 +130,12 @@ namespace Evo.UI
                 indicatorObject.position = worldPos;
                 startAnchoredPos = indicatorObject.anchoredPosition;
 
-                // Target is simply the target's anchored position (relative to its own anchors)
-                // Since we copied anchors, we want to match the target's offset
-                // If target and indicator are siblings, this works perfectly.
-                // If they are not siblings, this assumes they share the same coordinate space logic.
+                // Target is the target's anchored position (relative to its own anchors)
                 targetAnchoredPos = targetRect.anchoredPosition;
 
                 // Calculate target size
-                if (indicatorAutoSize) { targetSize = targetRect.sizeDelta; }
+                if (indicatorAutoSize)
+                    targetSize = targetRect.sizeDelta;
             }
             else
             {
@@ -164,10 +162,8 @@ namespace Evo.UI
                     // Only stretch if there's a target, otherwise just shrink (disappear)
                     float stretchValue = (targetRect != null) ? Mathf.Sin(Mathf.Clamp01(curveValue) * Mathf.PI) * indicatorStretch : 0f;
 
-                    // Lerp Position (Both axes to handle grid/multiline movement)
+                    // Lerp position and size (Both axes to handle grid/multiline movement)
                     Vector2 currentPos = Vector2.Lerp(startAnchoredPos, targetAnchoredPos, curveValue);
-
-                    // Lerp Size (Both axes)
                     Vector2 currentSize = Vector2.Lerp(startSize, targetSize, curveValue);
 
                     // Apply stretch to main axis
@@ -212,10 +208,12 @@ namespace Evo.UI
             }
 
             // Don't do anything if this button is already selected
-            if (selectedButton == targetButton) { return; }
+            if (selectedButton == targetButton)
+                return;
 
             // Stop any pending state change
-            if (stateDelayCoroutine != null) { StopCoroutine(stateDelayCoroutine); }
+            if (stateDelayCoroutine != null)
+                StopCoroutine(stateDelayCoroutine);
 
             // Update Indicator immediately so it starts moving
             UpdateIndicator(targetButton, animate);
@@ -251,7 +249,8 @@ namespace Evo.UI
         void ApplyStateChange(Button targetButton, int index, bool isDelayed)
         {
             // Deselect current button
-            if (selectedButton != null) { selectedButton.SetState(InteractionState.Normal); }
+            if (selectedButton != null)
+                selectedButton.SetState(InteractionState.Normal);
 
             // Select new button
             targetButton.SetState(InteractionState.Selected);
@@ -260,13 +259,15 @@ namespace Evo.UI
 
             // Check for delay and notify listeners
             // We already notify listeners in coroutine, so bypassing for duplicate
-            if (!isDelayed) { onSelectionChanged?.Invoke(index); }
+            if (!isDelayed)
+                onSelectionChanged?.Invoke(index);
         }
 
         public void DeselectAll()
         {
             // Stop any pending state change
-            if (stateDelayCoroutine != null) { StopCoroutine(stateDelayCoroutine); }
+            if (stateDelayCoroutine != null)
+                StopCoroutine(stateDelayCoroutine);
 
             // Check for selected button
             if (selectedButton != null)
@@ -332,11 +333,11 @@ namespace Evo.UI
                 return;
 
             // Get target parent
-            if (targetParent == null) { targetParent = transform; }
+            if (targetParent == null)
+                targetParent = transform;
 
             // Clamp selected index
-            if (targetParent.childCount > 0) { selectedIndex = Mathf.Clamp(selectedIndex, -1, targetParent.childCount - 1); }
-            else { selectedIndex = -1; }
+            selectedIndex = targetParent.childCount > 0 ? Mathf.Clamp(selectedIndex, -1, targetParent.childCount - 1) : -1;
 
             // Update editor preview if index changed - defer to avoid SendMessage warnings
             if (lastSelectedIndex != selectedIndex)
@@ -363,15 +364,19 @@ namespace Evo.UI
 
             for (int i = 0; i < targetParent.childCount; i++)
             {
-                if (targetParent.GetChild(i).TryGetComponent<Button>(out Button btn)) { editorPreviewButtonsCache.Add(btn); }
-                else { editorPreviewButtonsCache.Add(null); }
+                if (targetParent.GetChild(i).TryGetComponent(out Button btn))
+                    editorPreviewButtonsCache.Add(btn);
+                else
+                    editorPreviewButtonsCache.Add(null);
             }
 
             // Update States
             for (int i = 0; i < editorPreviewButtonsCache.Count; i++)
             {
                 var btn = editorPreviewButtonsCache[i];
-                if (btn == null) { continue; }
+                
+                if (btn == null)
+                    continue;
 
                 if (i != selectedIndex) { btn.SetState(InteractionState.Normal); }
                 else
@@ -382,7 +387,8 @@ namespace Evo.UI
             }
 
             // Handle deselect case
-            if (selectedIndex == -1) { UpdateIndicator(null, false); }
+            if (selectedIndex == -1)
+                UpdateIndicator(null, false);
         }
 #endif
     }

@@ -12,6 +12,7 @@ namespace Evo.UI
         StylerObject soTarget;
 
         // Properties
+        SerializedProperty presetSource;
         SerializedProperty preset;
         SerializedProperty targetGraphic;
         SerializedProperty targetText;
@@ -50,6 +51,7 @@ namespace Evo.UI
         {
             soTarget = (StylerObject)target;
 
+            presetSource = serializedObject.FindProperty("presetSource");
             preset = serializedObject.FindProperty("preset");
             targetGraphic = serializedObject.FindProperty("targetGraphic");
             targetText = serializedObject.FindProperty("targetText");
@@ -115,8 +117,17 @@ namespace Evo.UI
             if (EvoEditorGUI.DrawFoldout(ref soTarget.referencesFoldout, "References", EvoEditorGUI.GetIcon("UI_References")))
             {
                 EvoEditorGUI.BeginContainer();
-                {
-                    EvoEditorGUI.DrawProperty(preset, "Styler Preset", "The preset containing style definitions.", true, true, true);
+                {      
+                    EvoEditorGUI.BeginVerticalBackground(true);
+                    EvoEditorGUI.DrawProperty(presetSource, "Preset Source", null, false, customBackground: false);
+                    EvoEditorGUI.BeginContainer(3);
+                    {
+                        GUI.enabled = presetSource.enumValueIndex == (int)StylerObject.PresetSource.UserDefined;
+                        EvoEditorGUI.DrawProperty(preset, "Styler Preset", null, false, true);
+                        GUI.enabled = true;
+                    }
+                    EvoEditorGUI.EndContainer();
+                    EvoEditorGUI.EndVerticalBackground(true);
                  
                     if (objectType.enumValueIndex == (int)StylerObject.ObjectType.Graphic)
                         EvoEditorGUI.DrawProperty(targetGraphic, "Target Graphic", null, false, true, true);

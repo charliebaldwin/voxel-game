@@ -38,13 +38,13 @@ public class VoxelGenerator : MonoBehaviour
 
 
 
-        TerrainNoiseGPU();
+        //TerrainNoiseGPU();
         //TerrainNoiseGPU(out noiseArray2, 3f);
         //TerrainNoiseGPU(out noiseArray3, 9f);
 
         LoopXZ(TerrainNoise);
         LoopXYZ(AddGrass);
-        //LoopXYZ(CarveCaves);
+        LoopXYZ(CarveCaves);
 
     }
 
@@ -156,13 +156,16 @@ public class VoxelGenerator : MonoBehaviour
 
     private void TerrainNoise(int x, int z)
     {
-        //float noise = Perlin.Fbm(x * worldSettings.NoiseScale, z * worldSettings.NoiseScale, worldSettings.NoiseOctaves);
-        //float noise2 = Perlin.Fbm(x * worldSettings.NoiseScale * 0.2f, z * worldSettings.NoiseScale * 0.2f, worldSettings.NoiseOctaves);
-        //float h = noise * worldSettings.HeightRange + worldSettings.HeightOffset;
-        //h = h + (noise2 * worldSettings.HeightRange * 4);
+        float h = 0f;
 
-        float h = ReadNoiseTex(x, 1, z, ref noiseArray);
-        h = h * worldSettings.HeightRange + worldSettings.HeightOffset;
+
+        float noise = Perlin.Fbm(x * worldSettings.NoiseScale, z * worldSettings.NoiseScale, worldSettings.NoiseOctaves);
+        float noise2 = Perlin.Fbm(x * worldSettings.NoiseScale * 0.2f, z * worldSettings.NoiseScale * 0.2f, worldSettings.NoiseOctaves);
+        h = noise * worldSettings.HeightRange + worldSettings.HeightOffset;
+        h = h + (noise2 * worldSettings.HeightRange * 4);
+
+        //float h = ReadNoiseTex(x, 1, z, ref noiseArray);
+        //h = h * worldSettings.HeightRange + worldSettings.HeightOffset;
         //Debug.Log($"h={h}");
 
         for (int y = 0; y < worldSize.y; y++)

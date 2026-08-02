@@ -107,7 +107,7 @@ namespace Evo.UI
         public TooltipPreset Instance => tooltipInstance;
         public bool IsVisible() => tooltipInstance != null;
 
-        void Awake() => isUIElement = TryGetComponent<RectTransform>(out myRectTransform);
+        void Awake() => isUIElement = TryGetComponent(out myRectTransform);
 
 #if EVO_LOCALIZATION
         void Start()
@@ -430,7 +430,7 @@ namespace Evo.UI
             bool isCustom = customContent != null;
 
             // Try to get existing TooltipPreset, or add one if missing
-            if (!toGo.TryGetComponent<TooltipPreset>(out tooltipInstance))
+            if (!toGo.TryGetComponent(out tooltipInstance))
             {
                 tooltipInstance = toGo.AddComponent<TooltipPreset>();
                 if (!isCustomLogGiven)
@@ -455,7 +455,8 @@ namespace Evo.UI
             positionCoroutine = StartCoroutine(UpdateTooltipPosition());
 
             // Start animations
-            if (tooltipInstance != null && animationType != AnimationType.None) { animationCoroutine = StartCoroutine(AnimateTooltipIn()); }
+            if (tooltipInstance != null && animationType != AnimationType.None)
+                animationCoroutine = StartCoroutine(AnimateTooltipIn());
 
             // Set coroutine
             showCoroutine = null;

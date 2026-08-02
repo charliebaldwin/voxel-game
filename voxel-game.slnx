@@ -1,0 +1,23 @@
+﻿<Solution>
+  <Project Path="Evo.UI.csproj" />
+  <Project Path="VHierarchy.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Evo.UI.Editor.csproj" />
+  <Project Path="LeTai.Asset.TranslucentImage.Editor.csproj" />
+  <Project Path="LeTai.Common.csproj" />
+  <Project Path="VFolders.csproj" />
+  <Project Path="Assembly-CSharp-Editor-firstpass.csproj" />
+  <Project Path="LeTai.Asset.TranslucentImage.csproj" />
+  <Project Path="Assembly-CSharp-firstpass.csproj" />
+  <Project Path="LeTai.Paraform.Scaffold.Editor.csproj" />
+  <Project Path="Evo.Editor.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="Evo.csproj" />
+  <Project Path="LeTai.Common.Editor.csproj" />
+  <Project Path="VInspector.csproj" />
+  <Project Path="LeTai.Paraform.Scaffold.csproj" />
+  <Project Path="LeTai.TranslucentImage.UniversalRP.csproj" />
+  <Project Path="LeTai.TranslucentImage.UniversalRP.Editor.csproj" />
+  <Project Path="LeTai.Asset.TranslucentImage.Demo.csproj" />
+  <Project Path="Sirenix.OdinInspector.Modules.UnityMathematics.csproj" />
+</Solution>
