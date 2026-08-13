@@ -21,5 +21,18 @@ MonoBehaviour:
     CanChangeUpAxis: 1
     Material: {fileID: 2100000, guid: 61de2080775c6cc4aa57b576218bb8d3, type: 2}
     Textures:
-    - {fileID: 2800000, guid: 71d5e8b490d272e4b9413e885ee66d4c, type: 3}
-    TextureMode: 0
+    - {fileID: 2800000, guid: fe6a80469da70314b8bbf7732dcdfb4d, type: 3}
+    - {fileID: 2800000, guid: fe6a80469da70314b8bbf7732dcdfb4d, type: 3}
+    - {fileID: 2800000, guid: 0ea9efe3d8766b143b12e905a7060caa, type: 3}
+    - {fileID: 2800000, guid: 0ea9efe3d8766b143b12e905a7060caa, type: 3}
+    - {fileID: 2800000, guid: adeeba71a0dc63d4192aacf7de301004, type: 3}
+    - {fileID: 2800000, guid: adeeba71a0dc63d4192aacf7de301004, type: 3}
+    NormalTextures:
+    - {fileID: 2800000, guid: 2736046e3882fa24a9538a0cb7118359, type: 3}
+    - {fileID: 2800000, guid: 2736046e3882fa24a9538a0cb7118359, type: 3}
+    - {fileID: 2800000, guid: 460e9c4dd7e87b44eb79d1e9cef9eaad, type: 3}
+    - {fileID: 2800000, guid: 460e9c4dd7e87b44eb79d1e9cef9eaad, type: 3}
+    - {fileID: 2800000, guid: 02384fecd79cbbf43ac523ae015e36c0, type: 3}
+    - {fileID: 2800000, guid: 02384fecd79cbbf43ac523ae015e36c0, type: 3}
+    MSTextures: []
+    TextureMode: 3

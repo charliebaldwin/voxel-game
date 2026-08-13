@@ -3992,9 +3992,9 @@ MonoBehaviour:
   SliceHeight: 96
   Columns: 8
   BlockMaterial: {fileID: 2100000, guid: 61de2080775c6cc4aa57b576218bb8d3, type: 2}
-  DefaultColorTexture: {fileID: 0}
-  DefaultNormalTexture: {fileID: 0}
-  DefaultMSTexture: {fileID: 0}
+  DefaultColorTexture: {fileID: 2800000, guid: 9e75096419e45d0449949cd2b8cdd010, type: 3}
+  DefaultNormalTexture: {fileID: 2800000, guid: 86e95d9f9da0cf24b9f47160959b28a8, type: 3}
+  DefaultMSTexture: {fileID: 2800000, guid: e0cdb76f282622c4fb39a0ba7e1047fb, type: 3}
 --- !u!4 &171169156
 Transform:
   m_ObjectHideFlags: 0

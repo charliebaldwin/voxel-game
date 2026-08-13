@@ -201,7 +201,6 @@ public class VoxelChunk : MonoBehaviour
     private List<Vector3> vertices = new List<Vector3>();
     private List<Vector3> normals = new List<Vector3>();
     private List<Vector4> uvs = new List<Vector4>();
-    private Dictionary<BlockID, List<int>> submeshes = new Dictionary<BlockID, List<int>>();
     private List<int>     triangles = new List<int>();
     private List<int>     triangles2 = new List<int>();
     private List<Color>   colors = new List<Color>();
@@ -220,11 +219,6 @@ public class VoxelChunk : MonoBehaviour
 
         UpdateMaterials();
 
-        submeshes = new Dictionary<BlockID, List<int>>();
-        foreach (BlockID id in containedIDs)
-        {
-            submeshes.Add(id, new List<int>());
-        }
 
         t = 0;
 
@@ -233,22 +227,9 @@ public class VoxelChunk : MonoBehaviour
         // send all data for chunk into mesh
         mesh = new Mesh();
 
-        //mesh.triangles = triangles.ToArray();
-        //SubMeshDescriptor[] sm = new SubMeshDescriptor[]
-        //{
-        //    new SubMeshDescriptor(triangles[0], 3, MeshTopology.Triangles),
-        //    new SubMeshDescriptor(triangles2[0], 3 , MeshTopology.Triangles)
-        //};
-        //mesh.SetSubMeshes(sm);
-        mesh.subMeshCount = submeshes.Count;
+        //mesh.subMeshCount = submeshes.Count;
         mesh.vertices = vertices.ToArray();
-        //mesh.SetTriangles(triangles.ToArray(), 0);
-        int i = 0;
-        foreach (KeyValuePair<BlockID, List<int>> s in submeshes) 
-        {
-            mesh.SetTriangles(submeshes[s.Key].ToArray(), i);
-            i++;
-        }
+        mesh.triangles = triangles.ToArray();
         mesh.normals = normals.ToArray();
         mesh.colors = colors.ToArray();
         mesh.SetUVs(0,uvs.ToArray());
@@ -278,8 +259,6 @@ public class VoxelChunk : MonoBehaviour
         Voxel vox = Voxels[x, y, z];
         if (vox.BlockID == BlockID.Air || vox.BlockID == BlockID.Machine) return;
         voxelMarker.Begin();
-        //if ((BlockShape)vox.Shape != BlockShape.Empty && !BlockRegistry.LookupBlock(vox.BlockID).IsBlockEntity )
-        //{
         Vector3 pos = new Vector3(x, y, z);
 
         Voxel[] neighborVoxels = new Voxel[6];
@@ -295,15 +274,11 @@ public class VoxelChunk : MonoBehaviour
         foreach (Vector3 n in model.normals) normals.Add(n);
         foreach (Vector4 uv in model.uvs) uvs.Add(uv);
         foreach (Color c in model.colors) colors.Add(c);
-        //foreach (int tri in model.triangles) triangles2.Add(tri);
+        foreach (int tri in model.triangles) triangles.Add(tri);
 
-        foreach (int tri in model.triangles)
-        {
-            submeshes[vox.BlockID].Add(tri);
-        }
         
         t = model.lastT;
-        //}
+
         voxelMarker.End();
     }
 
@@ -646,6 +621,7 @@ public class VoxelChunk : MonoBehaviour
         }
     }
 
+    #region OLD
     /**
     private void DispatchChunkJob()
     {
@@ -872,7 +848,7 @@ public class VoxelChunk : MonoBehaviour
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
     }
-    
+    #endregion
 }
 
 
