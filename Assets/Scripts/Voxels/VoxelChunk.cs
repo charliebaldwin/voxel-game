@@ -228,6 +228,8 @@ public class VoxelChunk : MonoBehaviour
 
         t = 0;
 
+        neighborCache = new Dictionary<Vector3Int, Voxel>();
+
         Loop3D(ComputeMeshAction);
 
         // send all data for chunk into mesh
@@ -265,6 +267,8 @@ public class VoxelChunk : MonoBehaviour
 
         meshMarker.End();
 
+        neighborCache.Clear();
+
         float duration = Mathf.Round((float)(Time.realtimeSinceStartupAsDouble - startTime) * 10000f) / 100f;
 
         Debug.Log($"mesh time:{duration*100}ms");
@@ -273,24 +277,25 @@ public class VoxelChunk : MonoBehaviour
     }
 
     readonly ProfilerMarker voxelMarker = new ProfilerMarker("Mesh for Single Voxel");
+    Dictionary<Vector3Int, Voxel> neighborCache;
     private void ComputeMeshAction(int x, int y, int z)
     {
         Voxel vox = Voxels[x, y, z];
         if (vox.BlockID == BlockID.Air || vox.BlockID == BlockID.Machine) return;
         voxelMarker.Begin();
-        //if ((BlockShape)vox.Shape != BlockShape.Empty && !BlockRegistry.LookupBlock(vox.BlockID).IsBlockEntity )
-        //{
-        Vector3 pos = new Vector3(x, y, z);
+
+        Vector3Int localPos = new Vector3Int(x, y, z);
+        Vector3Int worldPos = LocalToWorld(localPos, ChunkCoord, Size3D);
 
         Voxel[] neighborVoxels = new Voxel[6];
         for (int n = 0; n < 6; n++)
         {
             Vector3Int dir = OrthoDirections[n].AlignYZ(vox.UpAxis, vox.ForwardAxis).ToVector();
-            Voxel neighbor = world.LookupVoxelWorld(LocalToWorld(new Vector3Int(x, y, z) + dir, ChunkCoord, Size3D));
+            //Voxel neighbor = world.LookupVoxelWorld(LocalToWorld(new Vector3Int(x, y, z) + dir, ChunkCoord, Size3D));
+            Voxel neighbor = GetCachedNeighbor(worldPos + dir);
             neighborVoxels[n] = neighbor;
-            //neighbors[n] = (int)world.LookupVoxel(LocalToWorld(new Vector3Int(x, y, z) + Directions[n], ChunkCoord, Size3D)).Shape;
         }
-        BlockModel model = new BlockModel(pos, t, vox, neighborVoxels);
+        BlockModel model = new BlockModel(localPos, t, vox, neighborVoxels);
         foreach (Vector3 v in model.vertices) vertices.Add(v);
         foreach (Vector3 n in model.normals) normals.Add(n);
         foreach (Vector4 uv in model.uvs) uvs.Add(uv);
@@ -305,6 +310,18 @@ public class VoxelChunk : MonoBehaviour
         t = model.lastT;
         //}
         voxelMarker.End();
+    }
+
+    private Voxel GetCachedNeighbor(Vector3Int worldPos)
+    {
+        if (neighborCache.ContainsKey(worldPos)) return neighborCache[worldPos];
+        else
+        {
+            Voxel neighbor = world.LookupVoxelWorld(worldPos);
+            neighborCache.Add(worldPos, neighbor);
+            return neighbor;
+
+        }
     }
 
     Material[] materials;
