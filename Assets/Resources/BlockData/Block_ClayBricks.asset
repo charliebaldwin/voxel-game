@@ -21,5 +21,7 @@ MonoBehaviour:
     CanChangeUpAxis: 0
     Material: {fileID: 2100000, guid: 61de2080775c6cc4aa57b576218bb8d3, type: 2}
     Textures:
-    - {fileID: 2800000, guid: 255674c29b5e58147be5d4ab42ed9775, type: 3}
+    - {fileID: 2800000, guid: 56971a3807f64564f837520839d2526f, type: 3}
+    NormalTextures: []
+    MSTextures: []
     TextureMode: 0

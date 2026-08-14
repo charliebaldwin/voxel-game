@@ -40,7 +40,7 @@ public class TextureGenerator : MonoBehaviour
         int numRows = colorTextures.Count / Columns + 1;
 
 
-        // init atlast textures
+        // init atlas textures
         Texture2D atlasTextureColor = new Texture2D(16 * numCols, 16 * numRows, TextureFormat.RGBA32, false);
         atlasTextureColor.filterMode = FilterMode.Point;
         atlasTextureColor.FillWithColor(new Color(0f, 0f, 0f, 0f));
