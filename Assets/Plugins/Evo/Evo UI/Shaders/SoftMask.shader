@@ -3,7 +3,8 @@ Shader "Hidden/Evo/UI/Soft Mask"
     Properties
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
-    
+        _Color ("Tint", Color) = (1,1,1,1)
+
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
         _StencilOp ("Stencil Operation", Float) = 0
@@ -12,21 +13,16 @@ Shader "Hidden/Evo/UI/Soft Mask"
         _ColorMask ("Color Mask", Float) = 15
 
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
-        
-        // Soft Mask Parameters
-        [HideInInspector] _SoftMaskTex ("Soft Mask Texture", 2D) = "white" {}
-        [HideInInspector] _SoftMask_Mode ("Mask Mode", Float) = 0
-        [HideInInspector] _SoftMask_Rect ("Soft Mask Rect", Vector) = (0,0,0,0)
-        
-        [HideInInspector] _SoftMask_PR_Center ("PR Center", Vector) = (0,0,0,0)
-        [HideInInspector] _SoftMask_PR_HalfSize ("PR Half Size", Vector) = (0,0,0,0)
-        [HideInInspector] _SoftMask_PR_Radii ("PR Radii", Vector) = (0,0,0,0)
-        [HideInInspector] _SoftMask_PR_Softness ("PR Softness", Float) = 0
-        [HideInInspector] _SoftMask_PR_FillData ("PR Fill Data", Vector) = (0,0,0,0)
+        [PerRendererData] _AlphaTex ("External Alpha", 2D) = "white" {}
+        [PerRendererData] _EnableExternalAlpha ("Enable External Alpha", Float) = 0
 
-        [HideInInspector] _SoftMask_BorderData ("Border Data", Vector) = (0,0,0,0)
-        [HideInInspector] _SoftMask_UVOuter ("UV Outer", Vector) = (0,0,1,1)
-        [HideInInspector] _SoftMask_UVInner ("UV Inner", Vector) = (0,0,1,1)
+        // Soft Mask Parameters
+        [HideInInspector] _SoftMaskSupport ("Soft Mask Support", Float) = 1
+        [HideInInspector] _SoftMask_Count ("Soft Mask Count", Float) = 0
+        [HideInInspector] _SoftMaskTex0 ("Soft Mask 0", 2D) = "white" {}
+        [HideInInspector] _SoftMaskTex1 ("Soft Mask 1", 2D) = "white" {}
+        [HideInInspector] _SoftMaskTex2 ("Soft Mask 2", 2D) = "white" {}
+        [HideInInspector] _SoftMaskTex3 ("Soft Mask 3", 2D) = "white" {}
     }
 
     SubShader
@@ -69,8 +65,8 @@ Shader "Hidden/Evo/UI/Soft Mask"
             #include "SoftMask.cginc"
 
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
-            #pragma multi_compile_local _ UNITY_UI_ALPHACLIP     
-            #pragma multi_compile_local _ SOFTMASK_SLICED SOFTMASK_PROCEDURAL
+            #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
+            #pragma multi_compile_local _ ETC1_EXTERNAL_ALPHA
 
             struct appdata_t
             {
@@ -83,13 +79,15 @@ Shader "Hidden/Evo/UI/Soft Mask"
             struct v2f
             {
                 float4 vertex    : SV_POSITION;
-                float4 color     : COLOR; 
+                float4 color     : COLOR;
                 float2 texcoord  : TEXCOORD0;
                 float4 canvasPos : TEXCOORD1;
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
             sampler2D _MainTex;
+            sampler2D _AlphaTex;
+            float _EnableExternalAlpha;
             float4 _Color;
             float4 _TextureSampleAdd;
             float4 _ClipRect;
@@ -97,51 +95,60 @@ Shader "Hidden/Evo/UI/Soft Mask"
             // Engine Polynomial Sync
             float _UIVertexColorAlwaysGammaSpace;
 
-            inline float3 UI_GammaToLinear(float3 c)
+            inline float3 UI_GammaToLinear(float3 color)
             {
-                float3 linearPath = c * 0.084971 - 0.000163;
-                float3 gammaPath  = c * (c * (c * 0.265885 + 0.736584) - 0.009802) + 0.003197;
-                float3 cmp = step(0.072549, c);
-                return lerp(linearPath, gammaPath, cmp);
+                float3 linearPath = color * 0.084971 - 0.000163;
+                float3 gammaPath = color * (color * (color * 0.265885 + 0.736584) - 0.009802) + 0.003197;
+                float3 comparison = step(0.072549, color);
+                return lerp(linearPath, gammaPath, comparison);
             }
 
-            inline float4 UI_ColorSpaceSync(float4 c)
+            inline float4 UI_ColorSpaceSync(float4 color)
             {
             #if !defined(UNITY_COLORSPACE_GAMMA)
-                if (_UIVertexColorAlwaysGammaSpace > 0.5) {
-                    c.rgb = UI_GammaToLinear(c.rgb);
-                }
+                if (_UIVertexColorAlwaysGammaSpace > 0.5)
+                    color.rgb = UI_GammaToLinear(color.rgb);
             #endif
-                return c;
+                return color;
             }
 
-            v2f vert(appdata_t v)
+            inline half4 SampleSpriteTexture(float2 uv)
             {
-                v2f OUT;
-                UNITY_SETUP_INSTANCE_ID(v);
-                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
-                
-                OUT.canvasPos = v.vertex; 
-                OUT.vertex = UnityObjectToClipPos(v.vertex);
-                
-                OUT.texcoord = v.texcoord;
-                OUT.color = UI_ColorSpaceSync(v.color) * _Color;
-                return OUT;
+                half4 color = tex2D(_MainTex, uv);
+
+            #if ETC1_EXTERNAL_ALPHA
+                half4 alpha = tex2D(_AlphaTex, uv);
+                color.a = lerp(color.a, alpha.r, _EnableExternalAlpha);
+            #endif
+
+                return color;
             }
 
-            float4 frag(v2f IN) : SV_Target
+            v2f vert(appdata_t vertex)
             {
-                half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd) * IN.color;
-                
-                // Soft Mask Rendering Pass
-                color.a *= SoftMask_GetAlpha(IN.canvasPos);
+                v2f output;
+                UNITY_SETUP_INSTANCE_ID(vertex);
+                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
+
+                output.canvasPos = vertex.vertex;
+                output.vertex = UnityObjectToClipPos(vertex.vertex);
+                output.texcoord = vertex.texcoord;
+                output.color = UI_ColorSpaceSync(vertex.color) * _Color;
+                return output;
+            }
+
+            float4 frag(v2f input) : SV_Target
+            {
+                half4 color = (SampleSpriteTexture(input.texcoord) + _TextureSampleAdd) * input.color;
+
+                SoftMask_Apply(color, input.canvasPos);
 
                 #ifdef UNITY_UI_CLIP_RECT
-                color.a *= UnityGet2DClipping(IN.canvasPos.xy, _ClipRect);
+                color.a *= UnityGet2DClipping(input.canvasPos.xy, _ClipRect);
                 #endif
 
                 #ifdef UNITY_UI_ALPHACLIP
-                clip (color.a - 0.001);
+                clip(color.a - 0.001);
                 #endif
 
                 return color;

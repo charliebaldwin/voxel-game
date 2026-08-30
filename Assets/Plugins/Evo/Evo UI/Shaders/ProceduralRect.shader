@@ -48,19 +48,12 @@ Shader "Evo/UI/Procedural Rect"
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
         
         // Soft Mask Parameters
-        [HideInInspector] _SoftMaskTex ("Soft Mask Texture", 2D) = "white" {}
-        [HideInInspector] _SoftMask_Mode ("Mask Mode", Float) = 0
-        [HideInInspector] _SoftMask_Rect ("Soft Mask Rect", Vector) = (0,0,0,0)
-        
-        [HideInInspector] _SoftMask_PR_Center ("PR Center", Vector) = (0,0,0,0)
-        [HideInInspector] _SoftMask_PR_HalfSize ("PR Half Size", Vector) = (0,0,0,0)
-        [HideInInspector] _SoftMask_PR_Radii ("PR Radii", Vector) = (0,0,0,0)
-        [HideInInspector] _SoftMask_PR_Softness ("PR Softness", Float) = 0
-        [HideInInspector] _SoftMask_PR_FillData ("PR Fill Data", Vector) = (0,0,0,0)
-
-        [HideInInspector] _SoftMask_BorderData ("Border Data", Vector) = (0,0,0,0)
-        [HideInInspector] _SoftMask_UVOuter ("UV Outer", Vector) = (0,0,1,1)
-        [HideInInspector] _SoftMask_UVInner ("UV Inner", Vector) = (0,0,1,1)
+        [HideInInspector] _SoftMaskSupport ("Soft Mask Support", Float) = 1
+        [HideInInspector] _SoftMask_Count ("Soft Mask Count", Float) = 0
+        [HideInInspector] _SoftMaskTex0 ("Soft Mask 0", 2D) = "white" {}
+        [HideInInspector] _SoftMaskTex1 ("Soft Mask 1", 2D) = "white" {}
+        [HideInInspector] _SoftMaskTex2 ("Soft Mask 2", 2D) = "white" {}
+        [HideInInspector] _SoftMaskTex3 ("Soft Mask 3", 2D) = "white" {}
     }
 
     CGINCLUDE
@@ -363,7 +356,7 @@ Shader "Evo/UI/Procedural Rect"
         // Final Composite
         float4 col = AlphaBlend(shapeCol, outShdCol);
 
-        float clipMask = computeFillMask(i.sdfCoord, halfSize, fillAmount, fillPacked);
+        float clipMask = Evo_UI_ComputeFillMask(i.sdfCoord, halfSize, fillAmount, fillPacked);
         col.a *= clipMask;
 
         // Apply Master Tint Alpha
@@ -422,7 +415,6 @@ Shader "Evo/UI/Procedural Rect"
             #pragma fragment frag
             #pragma target 3.0
             
-            #pragma multi_compile_local _ SOFTMASK_SLICED SOFTMASK_PROCEDURAL
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
             ENDCG

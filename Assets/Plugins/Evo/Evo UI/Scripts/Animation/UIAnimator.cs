@@ -10,7 +10,8 @@ namespace Evo.UI
 {
     [HelpURL(Constants.HelpUrl + "animation/ui-animator")]
     [AddComponentMenu("Evo/UI/Animation/UI Animator")]
-    public class UIAnimator : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
+    public class UIAnimator : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, 
+        IPointerClickHandler, ISelectHandler, IDeselectHandler
     {
         // Content
         public List<AnimationGroup> animationGroups = new();
@@ -75,6 +76,8 @@ namespace Evo.UI
             OnPointerLeave = 3,
             OnPointerDown = 4,
             OnPointerUp = 5,
+            OnSelect = 7,
+            OnDeselect = 8,
             Manual = 6
         }
 
@@ -149,6 +152,8 @@ namespace Evo.UI
         public void OnPointerDown(PointerEventData eventData) => ExecuteAnimations(TriggerType.OnPointerDown);
         public void OnPointerUp(PointerEventData eventData) => ExecuteAnimations(TriggerType.OnPointerUp);
         public void OnPointerClick(PointerEventData eventData) => ExecuteAnimations(TriggerType.OnClick);
+        public void OnSelect(BaseEventData eventData) => ExecuteAnimations(TriggerType.OnSelect);
+        public void OnDeselect(BaseEventData eventData) => ExecuteAnimations(TriggerType.OnDeselect);
 
         void StoreOriginalValues()
         {

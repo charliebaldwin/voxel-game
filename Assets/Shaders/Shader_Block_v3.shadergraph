@@ -7186,7 +7186,7 @@
     "m_StageCapability": 3,
     "m_BareResource": false,
     "m_Texture": {
-        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"6935dea25533ab94d905cbe606e11303\",\"type\":3}}",
+        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"7fee2b02e32ced24ab98755839c60e9a\",\"type\":3}}",
         "m_Guid": ""
     },
     "m_DefaultType": 3
@@ -10691,8 +10691,8 @@
     "m_ObjectId": "d171f97c17f246178ee319f08e62d57c",
     "m_Title": "Blend Normals",
     "m_Position": {
-        "x": 147.3332977294922,
-        "y": 1432.6666259765625
+        "x": 147.3333740234375,
+        "y": 1432.666748046875
     }
 }
 
@@ -12147,7 +12147,7 @@
     "m_Title": "Face Normal",
     "m_Position": {
         "x": -223.99996948242188,
-        "y": 834.6666870117188
+        "y": 834.666748046875
     }
 }
 

@@ -28,11 +28,11 @@ MonoBehaviour:
     - {fileID: 2800000, guid: fe6a80469da70314b8bbf7732dcdfb4d, type: 3}
     - {fileID: 2800000, guid: fe6a80469da70314b8bbf7732dcdfb4d, type: 3}
     NormalTextures:
-    - {fileID: 2800000, guid: 064b60382558d3d4c93e3aa40522c9e7, type: 3}
-    - {fileID: 2800000, guid: 064b60382558d3d4c93e3aa40522c9e7, type: 3}
-    - {fileID: 2800000, guid: 064b60382558d3d4c93e3aa40522c9e7, type: 3}
-    - {fileID: 2800000, guid: 064b60382558d3d4c93e3aa40522c9e7, type: 3}
-    - {fileID: 2800000, guid: 064b60382558d3d4c93e3aa40522c9e7, type: 3}
-    - {fileID: 2800000, guid: 064b60382558d3d4c93e3aa40522c9e7, type: 3}
+    - {fileID: 2800000, guid: 02384fecd79cbbf43ac523ae015e36c0, type: 3}
+    - {fileID: 2800000, guid: 02384fecd79cbbf43ac523ae015e36c0, type: 3}
+    - {fileID: 2800000, guid: 460e9c4dd7e87b44eb79d1e9cef9eaad, type: 3}
+    - {fileID: 2800000, guid: 460e9c4dd7e87b44eb79d1e9cef9eaad, type: 3}
+    - {fileID: 2800000, guid: 2736046e3882fa24a9538a0cb7118359, type: 3}
+    - {fileID: 2800000, guid: 2736046e3882fa24a9538a0cb7118359, type: 3}
     MSTextures: []
     TextureMode: 3

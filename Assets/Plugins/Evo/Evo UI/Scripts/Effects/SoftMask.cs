@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,52 +10,81 @@ namespace Evo.UI
     /// Applies a soft mask to child Graphic elements.
     /// </summary>
     [ExecuteAlways]
-    [HelpURL(Constants.HelpUrl)]
-    [AddComponentMenu("Evo/UI/Effects/Soft Mask (Preview)")]
     [DisallowMultipleComponent]
+    [HelpURL(Constants.HelpUrl)]
+    [AddComponentMenu("Evo/UI/Effects/Soft Mask")]
     [RequireComponent(typeof(Graphic), typeof(RectTransform))]
-    public class SoftMask : UIBehaviour, IMeshModifier
+    public class SoftMask : UIBehaviour, IMeshModifier, ICanvasRaycastFilter
     {
         [Tooltip("Should the graphic serving as the mask be drawn?")]
-        [SerializeField] private bool showMaskGraphic = false;
+        [SerializeField] private bool showMaskGraphic = true;
+
+        // Constants
+        public const int MaxMaskDepth = 4;
 
         // Cache
         Graphic maskGraphic;
         RectTransform rectTransform;
-        readonly Dictionary<Material, Material> materialCache = new();
-        static readonly List<Graphic> graphics = new();
-        static readonly List<SoftMaskable> maskables = new();
+        readonly Dictionary<MaterialKey, MaterialEntry> materialCache = new();
+        readonly List<MaterialKey> staleMaterialKeys = new();
+        readonly List<Graphic> graphics = new();
+        readonly List<SoftMaskable> assignedMaskables = new();
+        readonly List<SoftMask> nestedMasks = new();
+        readonly SoftMask[] maskStack = new SoftMask[MaxMaskDepth];
+        int maskCount;
+        int stackVersion;
+        int dataVersion;
+        int lastHierarchyCount;
+        bool didWarnMaskLimit;
+        bool hasTransformSnapshot;
+        Rect lastRect;
+        Matrix4x4 lastWorldToLocal;
+        Texture lastMaskTexture;
 
         // Shader Serialization
         [SerializeField, HideInInspector] Shader embeddedShader;
         [SerializeField, HideInInspector] Shader embeddedTMPShader;
+        [SerializeField, HideInInspector] Shader embeddedTMPMobileShader;
+        [SerializeField, HideInInspector] Shader embeddedTMPBitmapShader;
         const string ShaderName = "Hidden/Evo/UI/Soft Mask";
         const string TMPShaderName = "Hidden/Evo/UI/Soft Mask TMP";
+        const string TMPMobileShaderName = "Hidden/Evo/UI/Soft Mask TMP Mobile";
+        const string TMPBitmapShaderName = "Hidden/Evo/UI/Soft Mask TMP Bitmap";
+        const string TMPBitmapMobileKeyword = "EVO_TMP_BITMAP_MOBILE";
+        const string TMPSpriteKeyword = "EVO_TMP_SPRITE";
 
         // Shader Property IDs
-        static readonly int PropsTex = Shader.PropertyToID("_SoftMaskTex");
-        static readonly int PropsCanvasToLocal = Shader.PropertyToID("_SoftMask_CanvasToLocal");
+        static readonly int PropsSupport = Shader.PropertyToID("_SoftMaskSupport");
+        static readonly int PropsCount = Shader.PropertyToID("_SoftMask_Count");
+        static readonly int PropsCanvasToLocalX = Shader.PropertyToID("_SoftMask_CanvasToLocalX");
+        static readonly int PropsCanvasToLocalY = Shader.PropertyToID("_SoftMask_CanvasToLocalY");
         static readonly int PropsRect = Shader.PropertyToID("_SoftMask_Rect");
-
-        // Procedural Rect Property IDs
-        static readonly int PropsPRCenter = Shader.PropertyToID("_SoftMask_PR_Center");
-        static readonly int PropsPRHalfSize = Shader.PropertyToID("_SoftMask_PR_HalfSize");
-        static readonly int PropsPRRadii = Shader.PropertyToID("_SoftMask_PR_Radii");
-        static readonly int PropsPRSoftness = Shader.PropertyToID("_SoftMask_PR_Softness");
-        static readonly int PropsPRFillData = Shader.PropertyToID("_SoftMask_PR_FillData");
-
-        // Sliced Atlas Property IDs
+        static readonly int PropsData = Shader.PropertyToID("_SoftMask_Data");
+        static readonly int PropsPRRect = Shader.PropertyToID("_SoftMask_PRRect");
+        static readonly int PropsPRRadii = Shader.PropertyToID("_SoftMask_PRRadii");
+        static readonly int PropsPRFillData = Shader.PropertyToID("_SoftMask_PRFillData");
         static readonly int PropsBorderData = Shader.PropertyToID("_SoftMask_BorderData");
         static readonly int PropsUVOuter = Shader.PropertyToID("_SoftMask_UVOuter");
         static readonly int PropsUVInner = Shader.PropertyToID("_SoftMask_UVInner");
-
-        // General Properties
         static readonly int PropsMainTex = Shader.PropertyToID("_MainTex");
+        static readonly int[] PropsTextures =
+        {
+            Shader.PropertyToID("_SoftMaskTex0"),
+            Shader.PropertyToID("_SoftMaskTex1"),
+            Shader.PropertyToID("_SoftMaskTex2"),
+            Shader.PropertyToID("_SoftMaskTex3")
+        };
 
-#if UNITY_EDITOR
-        // Cache the delegate to prevent Editor memory leaks from repeated OnValidate calls
-        UnityEditor.EditorApplication.CallbackFunction onValidateDelayCall;
-#endif
+        static readonly Vector4[] CanvasToLocalX = new Vector4[MaxMaskDepth];
+        static readonly Vector4[] CanvasToLocalY = new Vector4[MaxMaskDepth];
+        static readonly Vector4[] MaskRects = new Vector4[MaxMaskDepth];
+        static readonly Vector4[] MaskData = new Vector4[MaxMaskDepth];
+        static readonly Vector4[] ProceduralRects = new Vector4[MaxMaskDepth];
+        static readonly Vector4[] ProceduralRadii = new Vector4[MaxMaskDepth];
+        static readonly Vector4[] ProceduralFillData = new Vector4[MaxMaskDepth];
+        static readonly Vector4[] BorderData = new Vector4[MaxMaskDepth];
+        static readonly Vector4[] UVOuter = new Vector4[MaxMaskDepth];
+        static readonly Vector4[] UVInner = new Vector4[MaxMaskDepth];
 
         public bool ShowMaskGraphic
         {
@@ -65,11 +95,7 @@ namespace Evo.UI
                     return;
 
                 showMaskGraphic = value;
-                if (maskGraphic != null)
-                {
-                    maskGraphic.SetVerticesDirty();
-                    maskGraphic.canvasRenderer.SetAlpha(showMaskGraphic ? 1f : 0f);
-                }
+                RefreshMaskGraphic();
             }
         }
 
@@ -80,232 +106,560 @@ namespace Evo.UI
             rectTransform = GetComponent<RectTransform>();
             maskGraphic = GetComponent<Graphic>();
 
-            if (embeddedShader == null) { embeddedShader = Shader.Find(ShaderName); }
-            if (embeddedTMPShader == null) { embeddedTMPShader = Shader.Find(TMPShaderName); }
-            if (maskGraphic != null) { maskGraphic.canvasRenderer.SetAlpha(showMaskGraphic ? 1f : 0f); }
-            if (Application.isPlaying) { SpawnMaskables(); }
+            LoadShaders();
+            RegisterGraphicCallbacks();
+            RebuildMaskStack();
+            RefreshHierarchy();
+            RefreshMaskGraphic();
+            lastHierarchyCount = transform.hierarchyCount;
 
             Canvas.willRenderCanvases += UpdateMaskProperties;
-            NotifyChildren();
         }
 
         protected override void OnDisable()
         {
-            base.OnDisable();
-
             Canvas.willRenderCanvases -= UpdateMaskProperties;
+            UnregisterGraphicCallbacks();
 
-            if (Application.isPlaying)
-            {
-                GetComponentsInChildren<SoftMaskable>(true, maskables);
-                for (int i = 0; i < maskables.Count; i++)
-                {
-                    var m = maskables[i];
-                    
-                    if (m != null)
-                        m.enabled = false;
-                }
-            }
-
-            // Force children to revert to their original materials natively
-            GetComponentsInChildren(true, graphics);
-            for (int i = 0; i < graphics.Count; i++)
-            {
-                var g = graphics[i];
-
-                if (g == null || g.gameObject == this.gameObject)
-                    continue;
-
-                g.SetMaterialDirty();
-            }
-
+            RefreshDescendantMaskStacks();
+            RefreshAssignedMaskables();
+            NotifyChildren();
             ClearCache();
 
-            // Update mask graphic
             if (maskGraphic != null)
             {
                 maskGraphic.SetVerticesDirty();
                 maskGraphic.SetMaterialDirty();
-                maskGraphic.canvasRenderer.SetAlpha(1f);
             }
+
+            base.OnDisable();
         }
 
         protected override void OnDestroy()
         {
+            Canvas.willRenderCanvases -= UpdateMaskProperties;
+            UnregisterGraphicCallbacks();
+            ClearCache();
+
             base.OnDestroy();
-
-            if (Application.isPlaying)
-            {
-                GetComponentsInChildren<SoftMaskable>(true, maskables);
-                for (int i = 0; i < maskables.Count; i++)
-                {
-                    var m = maskables[i];
-
-                    if (m == null || m.gameObject == this.gameObject || m.AssignedMask != this)
-                        continue;
-
-                    if (m.TryGetComponent<Graphic>(out var graphic))
-                        graphic.SetMaterialDirty();
-
-                    Destroy(m);
-                }
-            }
         }
 
         protected override void OnRectTransformDimensionsChange()
         {
             base.OnRectTransformDimensionsChange();
-            UpdateMaskProperties();
+            MarkMaskPropertiesDirty();
+        }
+
+        protected override void OnTransformParentChanged()
+        {
+            base.OnTransformParentChanged();
+            RebuildMaskStack();
+            RefreshHierarchy();
+        }
+
+        protected void OnTransformChildrenChanged() => RefreshHierarchy();
+
+        protected override void OnCanvasHierarchyChanged()
+        {
+            base.OnCanvasHierarchyChanged();
+            RebuildMaskStack();
+            ClearCache();
+            RefreshHierarchy();
+
+            if (Application.IsPlaying(gameObject))
+                NotifyChildren();
+        }
+
+        protected override void OnDidApplyAnimationProperties()
+        {
+            base.OnDidApplyAnimationProperties();
+            MarkMaskPropertiesDirty();
+        }
+
+        void LoadShaders()
+        {
+            if (embeddedShader == null) { embeddedShader = Shader.Find(ShaderName); }
+            if (embeddedTMPShader == null) { embeddedTMPShader = Shader.Find(TMPShaderName); }
+            if (embeddedTMPMobileShader == null) { embeddedTMPMobileShader = Shader.Find(TMPMobileShaderName); }
+            if (embeddedTMPBitmapShader == null) { embeddedTMPBitmapShader = Shader.Find(TMPBitmapShaderName); }
+        }
+
+        void RegisterGraphicCallbacks()
+        {
+            if (maskGraphic == null)
+                return;
+
+            maskGraphic.RegisterDirtyMaterialCallback(MarkMaskPropertiesDirty);
+            maskGraphic.RegisterDirtyVerticesCallback(MarkMaskPropertiesDirty);
+        }
+
+        void UnregisterGraphicCallbacks()
+        {
+            if (maskGraphic == null)
+                return;
+
+            maskGraphic.UnregisterDirtyMaterialCallback(MarkMaskPropertiesDirty);
+            maskGraphic.UnregisterDirtyVerticesCallback(MarkMaskPropertiesDirty);
+        }
+
+        void MarkMaskPropertiesDirty()
+        {
+            unchecked { dataVersion++; }
+        }
+
+        void RefreshDataVersion()
+        {
+            if (rectTransform == null || maskGraphic == null)
+                return;
+
+            Rect currentRect = maskGraphic.GetPixelAdjustedRect();
+            Matrix4x4 currentWorldToLocal = rectTransform.worldToLocalMatrix;
+            Texture currentMaskTexture = maskGraphic.mainTexture;
+
+            if (hasTransformSnapshot && currentRect == lastRect && currentWorldToLocal == lastWorldToLocal && currentMaskTexture == lastMaskTexture)
+                return;
+
+            hasTransformSnapshot = true;
+            lastRect = currentRect;
+            lastWorldToLocal = currentWorldToLocal;
+            lastMaskTexture = currentMaskTexture;
+
+            unchecked { dataVersion++; }
+        }
+
+        void RebuildMaskStack()
+        {
+            for (int i = 0; i < maskStack.Length; i++)
+                maskStack[i] = null;
+
+            maskCount = 0;
+            bool exceededLimit = false;
+            Transform current = transform;
+
+            while (current != null)
+            {
+                if (current.TryGetComponent(out SoftMask mask) && mask.isActiveAndEnabled)
+                {
+                    if (maskCount < MaxMaskDepth)
+                    {
+                        maskStack[maskCount] = mask;
+                        maskCount++;
+                    }
+                    else
+                    {
+                        exceededLimit = true;
+                    }
+                }
+
+                current = current.parent;
+            }
+
+            unchecked { stackVersion++; }
+
+            if (!exceededLimit)
+            {
+                didWarnMaskLimit = false;
+                return;
+            }
+
+            if (!didWarnMaskLimit)
+            {
+                didWarnMaskLimit = true;
+                Debug.LogWarning($"Soft Mask supports up to {MaxMaskDepth} nested masks. The nearest {MaxMaskDepth} masks will be used.", this);
+            }
+        }
+
+        void RefreshHierarchy()
+        {
+            RefreshAssignedMaskables();
+            RefreshDescendantMaskStacks();
+            EnsureMaskables();
+
+            lastHierarchyCount = transform.hierarchyCount;
+        }
+
+        void RefreshDescendantMaskStacks()
+        {
+            GetComponentsInChildren(true, nestedMasks);
+            for (int i = 0; i < nestedMasks.Count; i++)
+            {
+                SoftMask mask = nestedMasks[i];
+                if (mask != null && mask != this)
+                    mask.RebuildMaskStack();
+            }
         }
 
         void NotifyChildren()
         {
-            GetComponentsInChildren<Graphic>(true, graphics);
+            GetComponentsInChildren(true, graphics);
             for (int i = 0; i < graphics.Count; i++)
             {
-                var g = graphics[i];
-
-                if (g == null || g.gameObject == this.gameObject)
+                Graphic graphic = graphics[i];
+                if (graphic == null || graphic.gameObject == gameObject)
                     continue;
 
-                g.SetMaterialDirty();
+                graphic.SetMaterialDirty();
             }
         }
 
-        void SpawnMaskables()
+        void EnsureMaskables()
         {
-            if (this == null || !Application.isPlaying)
-                return;
-
-            GetComponentsInChildren<Graphic>(false, graphics);
+            GetComponentsInChildren(true, graphics);
             for (int i = 0; i < graphics.Count; i++)
             {
-                var g = graphics[i];
-
-                if (g.gameObject == this.gameObject)
+                Graphic graphic = graphics[i];
+                if (graphic == null || graphic.gameObject == gameObject)
                     continue;
 
-                if (!g.TryGetComponent<SoftMaskable>(out var maskable))
-                {
-                    maskable = g.gameObject.AddComponent<SoftMaskable>();
-                    maskable.hideFlags = HideFlags.HideInInspector;
-                    g.SetMaterialDirty();
-                }
-                else if (!maskable.enabled)
-                {
-                    // If the maskable was disabled by toggling the parent Soft Mask off,
-                    // we must re-enable it here so it resumes intercepting the TMP materials.
-                    maskable.enabled = true;
-                    g.SetMaterialDirty();
-                }
+                if (!graphic.TryGetComponent(out SoftMaskable maskable))
+                    maskable = graphic.gameObject.AddComponent<SoftMaskable>();
+
+                maskable.Initialize(graphic);
             }
         }
 
-        void SetMaterialProperties(Material mat)
+        void RefreshAssignedMaskables()
         {
-            if (maskGraphic == null || rectTransform == null || mat == null)
+            for (int i = assignedMaskables.Count - 1; i >= 0; i--)
+            {
+                SoftMaskable maskable = assignedMaskables[i];
+                if (maskable == null)
+                {
+                    assignedMaskables.RemoveAt(i);
+                    continue;
+                }
+
+                maskable.RefreshMask();
+            }
+        }
+
+        internal void RegisterMaskable(SoftMaskable maskable)
+        {
+            if (maskable != null && !assignedMaskables.Contains(maskable))
+                assignedMaskables.Add(maskable);
+        }
+
+        internal void UnregisterMaskable(SoftMaskable maskable)
+        {
+            if (maskable != null)
+                assignedMaskables.Remove(maskable);
+        }
+
+        /// <summary>
+        /// Refreshes dynamically created or reparented UI descendants immediately.
+        /// </summary>
+        public void Refresh()
+        {
+            RebuildMaskStack();
+            RefreshHierarchy();
+            MarkMaskPropertiesDirty();
+        }
+
+        int GetMaterialDataVersion()
+        {
+            while (true)
+            {
+                if (maskCount == 0 || maskStack[0] != this || !isActiveAndEnabled)
+                    RebuildMaskStack();
+
+                int currentVersion = stackVersion;
+                bool stackInvalid = false;
+
+                for (int i = 0; i < maskCount; i++)
+                {
+                    SoftMask mask = maskStack[i];
+
+                    if (mask == null || !mask.isActiveAndEnabled)
+                    {
+                        stackInvalid = true;
+                        break;
+                    }
+
+                    mask.RefreshDataVersion();
+                    unchecked { currentVersion = currentVersion * 397 ^ mask.dataVersion; }
+                }
+
+                if (!stackInvalid)
+                    return currentVersion;
+
+                RebuildMaskStack();
+            }
+        }
+
+        void SetMaterialProperties(MaterialEntry entry, bool force, int currentVersion)
+        {
+            if (entry == null || entry.ModifiedMaterial == null)
                 return;
 
-            Rect r = rectTransform.rect;
+            Matrix4x4 canvasToWorld = entry.Canvas != null ? entry.Canvas.transform.localToWorldMatrix : Matrix4x4.identity;
 
-            ProceduralRect prMask = maskGraphic as ProceduralRect;
-            if (prMask != null)
+            if (!force && entry.AppliedVersion == currentVersion && entry.HasCanvasSnapshot && entry.CanvasToWorld == canvasToWorld)
+                return;
+
+            for (int i = 0; i < maskCount; i++)
+                maskStack[i].WriteMaterialData(i, canvasToWorld, entry.ModifiedMaterial);
+
+            entry.ModifiedMaterial.SetFloat(PropsCount, maskCount);
+            entry.ModifiedMaterial.SetVectorArray(PropsCanvasToLocalX, CanvasToLocalX);
+            entry.ModifiedMaterial.SetVectorArray(PropsCanvasToLocalY, CanvasToLocalY);
+            entry.ModifiedMaterial.SetVectorArray(PropsRect, MaskRects);
+            entry.ModifiedMaterial.SetVectorArray(PropsData, MaskData);
+            entry.ModifiedMaterial.SetVectorArray(PropsPRRect, ProceduralRects);
+            entry.ModifiedMaterial.SetVectorArray(PropsPRRadii, ProceduralRadii);
+            entry.ModifiedMaterial.SetVectorArray(PropsPRFillData, ProceduralFillData);
+            entry.ModifiedMaterial.SetVectorArray(PropsBorderData, BorderData);
+            entry.ModifiedMaterial.SetVectorArray(PropsUVOuter, UVOuter);
+            entry.ModifiedMaterial.SetVectorArray(PropsUVInner, UVInner);
+
+            entry.AppliedVersion = currentVersion;
+            entry.CanvasToWorld = canvasToWorld;
+            entry.HasCanvasSnapshot = true;
+        }
+
+        void WriteMaterialData(int index, Matrix4x4 canvasToWorld, Material material)
+        {
+            if (maskGraphic == null || rectTransform == null)
+                return;
+
+            Rect rect = rectTransform.rect;
+            float mode = 0f;
+            float modeDataY = 0f;
+            float modeDataZ = 0f;
+            float modeDataW = 0f;
+            Texture maskTexture = maskGraphic.mainTexture != null ? maskGraphic.mainTexture : Texture2D.whiteTexture;
+            Vector4 uvOuter = new(0f, 0f, 1f, 1f);
+            Vector4 uvInner = uvOuter;
+            Vector4 borderData = Vector4.zero;
+            Vector4 proceduralRect = Vector4.zero;
+            Vector4 proceduralRadii = Vector4.zero;
+            Vector4 proceduralFillData = Vector4.zero;
+
+            if (maskGraphic is ProceduralRect proceduralMask)
             {
-                mat.DisableKeyword("SOFTMASK_SLICED");
-                mat.EnableKeyword("SOFTMASK_PROCEDURAL");
+                mode = 2f;
+                rect = GetProceduralRectDrawingRect(proceduralMask);
+                Vector2 halfSize = rect.size * 0.5f;
 
-                mat.SetVector(PropsPRCenter, r.center);
-                mat.SetVector(PropsPRHalfSize, new Vector2(r.width * 0.5f, r.height * 0.5f));
-
-                float maxR = Mathf.Min(r.width, r.height) * 0.5f;
-                float P(float val) => prMask.radiusMode == ProceduralRect.RadiusMode.Percentage ? val * 0.01f * maxR : val;
-                mat.SetVector(PropsPRRadii, new Vector4(P(prMask.cornerRadius.y), P(prMask.cornerRadius.z), P(prMask.cornerRadius.w), P(prMask.cornerRadius.x)));
-
-                mat.SetFloat(PropsPRSoftness, prMask.softness);
-
-                float fillPacked = (int)prMask.clipMethod + Mathf.Clamp(prMask.clipOrigin, 0, 3) * 8 + (prMask.clipClockwise ? 1 : 0) * 64;
-                mat.SetVector(PropsPRFillData, new Vector4(prMask.clipAmount, fillPacked, 0, 0));
+                proceduralRect = new Vector4(rect.center.x, rect.center.y, halfSize.x, halfSize.y);
+                proceduralRadii = proceduralMask.GetRadiiPixels(rect);
+                modeDataY = Mathf.Max(0f, proceduralMask.softness);
+                proceduralFillData = new Vector4(Mathf.Clamp01(proceduralMask.clipAmount), GetPackedClipConfig(proceduralMask),
+                    0f, UsesSquircleCorners(proceduralMask) ? 1f : 0f);
+                maskTexture = Texture2D.whiteTexture;
             }
-            else
+            else if (maskGraphic is Image image)
             {
-                mat.DisableKeyword("SOFTMASK_PROCEDURAL");
-                Texture maskTexture = maskGraphic.mainTexture != null ? maskGraphic.mainTexture : Texture2D.whiteTexture;
-                mat.SetTexture(PropsTex, maskTexture);
+                Sprite sprite = image.overrideSprite != null ? image.overrideSprite : image.sprite;
+                rect = image.GetPixelAdjustedRect();
 
-                Image img = maskGraphic as Image;
-                if (img != null && img.sprite != null)
+                if (sprite != null)
                 {
-                    Vector4 outerUV = UnityEngine.Sprites.DataUtility.GetOuterUV(img.sprite);
-                    mat.SetVector(PropsUVOuter, outerUV);
+                    uvOuter = UnityEngine.Sprites.DataUtility.GetOuterUV(sprite);
 
-                    if (img.type == Image.Type.Simple && img.preserveAspect)
+                    if (image.type == Image.Type.Simple)
                     {
-                        mat.DisableKeyword("SOFTMASK_SLICED");
-                        Vector2 size = new(img.sprite.rect.width, img.sprite.rect.height);
-                        if (size.sqrMagnitude > 0)
+                        rect = GetImageDrawingRect(image, sprite, image.preserveAspect);
+                    }
+                    else if (image.type == Image.Type.Sliced)
+                    {
+                        if (sprite.border.sqrMagnitude > 0f)
                         {
-                            float spriteRatio = size.x / size.y;
-                            float rectRatio = r.width / r.height;
-                            if (spriteRatio > rectRatio)
-                            {
-                                float oldHeight = r.height;
-                                r.height = r.width * (1.0f / spriteRatio);
-                                r.y += (oldHeight - r.height) * img.rectTransform.pivot.y;
-                            }
-                            else
-                            {
-                                float oldWidth = r.width;
-                                r.width = r.height * spriteRatio;
-                                r.x += (oldWidth - r.width) * img.rectTransform.pivot.x;
-                            }
+                            mode = 1f;
+                            modeDataY = image.fillCenter ? 1f : 0f;
+                            GetSlicedImageData(image, sprite, ref rect, out borderData);
+                            uvInner = UnityEngine.Sprites.DataUtility.GetInnerUV(sprite);
+                        }
+                        else
+                        {
+                            rect = GetImageDrawingRect(image, sprite, false);
                         }
                     }
-                    else if (img.type == Image.Type.Sliced && img.hasBorder)
+                    else if (image.type == Image.Type.Filled)
                     {
-                        mat.EnableKeyword("SOFTMASK_SLICED");
-
-                        float ppu = img.pixelsPerUnit * img.pixelsPerUnitMultiplier;
-                        if (ppu <= 0f) { ppu = 1f; }
-
-                        Vector4 border = img.sprite.border / ppu;
-
-                        for (int axis = 0; axis <= 1; axis++)
-                        {
-                            float combinedBorders = border[axis] + border[axis + 2];
-                            if (r.size[axis] < combinedBorders && combinedBorders != 0)
-                            {
-                                float borderScaleRatio = r.size[axis] / combinedBorders;
-                                border[axis] *= borderScaleRatio;
-                                border[axis + 2] *= borderScaleRatio;
-                            }
-                        }
-
-                        mat.SetVector(PropsBorderData, new Vector4(border.x, border.y, r.width - border.z, r.height - border.w));
-                        Vector4 innerUV = UnityEngine.Sprites.DataUtility.GetInnerUV(img.sprite);
-                        mat.SetVector(PropsUVInner, innerUV);
+                        mode = 3f;
+                        rect = GetImageDrawingRect(image, sprite, image.preserveAspect);
+                        float packedFill = (int)image.fillMethod + Mathf.Clamp(image.fillOrigin, 0, 3) * 8 + (image.fillClockwise ? 64 : 0);
+                        proceduralFillData = new Vector4(Mathf.Clamp01(image.fillAmount), packedFill, 0f, 0f);
                     }
-                    else
+                    else if (image.type == Image.Type.Tiled)
                     {
-                        mat.DisableKeyword("SOFTMASK_SLICED");
+                        mode = 4f;
+                        modeDataY = image.fillCenter ? 1f : 0f;
+                        GetTiledImageData(image, sprite, rect, out borderData, out modeDataZ, out modeDataW);
+                        uvInner = UnityEngine.Sprites.DataUtility.GetInnerUV(sprite);
                     }
+                }
+            }
+            else if (maskGraphic is RawImage rawImage)
+            {
+                rect = rawImage.GetPixelAdjustedRect();
+                Rect uvRect = rawImage.uvRect;
+                uvOuter = new Vector4(uvRect.xMin, uvRect.yMin, uvRect.xMax, uvRect.yMax);
+                uvInner = uvOuter;
+            }
+
+            Matrix4x4 canvasToLocal = rectTransform.worldToLocalMatrix * canvasToWorld;
+
+            CanvasToLocalX[index] = canvasToLocal.GetRow(0);
+            CanvasToLocalY[index] = canvasToLocal.GetRow(1);
+            MaskRects[index] = new Vector4(rect.xMin, rect.yMin, rect.width, rect.height);
+            MaskData[index] = new Vector4(mode, modeDataY, modeDataZ, modeDataW);
+            ProceduralRects[index] = proceduralRect;
+            ProceduralRadii[index] = proceduralRadii;
+            ProceduralFillData[index] = proceduralFillData;
+            BorderData[index] = borderData;
+            UVOuter[index] = uvOuter;
+            UVInner[index] = uvInner;
+
+            if (material.HasTexture(PropsTextures[index]))
+                material.SetTexture(PropsTextures[index], maskTexture);
+        }
+
+        static Rect GetProceduralRectDrawingRect(ProceduralRect proceduralRect)
+        {
+            Rect rect = proceduralRect.rectTransform.rect;
+            Sprite sprite = proceduralRect.sprite;
+
+            if (sprite == null || proceduralRect.scaleMode != ProceduralRect.ScaleMode.Fit)
+                return rect;
+
+            Rect spriteRect = sprite.rect;
+            if (spriteRect.width <= 0.001f || spriteRect.height <= 0.001f || rect.height <= 0.001f)
+                return rect;
+
+            float spriteAspect = spriteRect.width / spriteRect.height;
+            float rectAspect = rect.width / rect.height;
+
+            if (spriteAspect > rectAspect)
+            {
+                float newHeight = rect.width / spriteAspect;
+                return new Rect(rect.x, rect.center.y - newHeight * 0.5f, rect.width, newHeight);
+            }
+
+            float newWidth = rect.height * spriteAspect;
+            return new Rect(rect.center.x - newWidth * 0.5f, rect.y, newWidth, rect.height);
+        }
+
+        static float GetPackedClipConfig(ProceduralRect proceduralRect)
+        {
+            int method = (int)proceduralRect.clipMethod;
+            int maxOrigin = proceduralRect.clipMethod switch
+            {
+                ProceduralRect.ClipMethod.Horizontal => 1,
+                ProceduralRect.ClipMethod.Vertical => 1,
+                ProceduralRect.ClipMethod.Radial360 => 3,
+                _ => 0
+            };
+            int origin = Mathf.Clamp(proceduralRect.clipOrigin, 0, maxOrigin);
+            int clockwise = proceduralRect.clipClockwise ? 1 : 0;
+            return method + origin * 8 + clockwise * 64;
+        }
+
+        static bool UsesSquircleCorners(ProceduralRect proceduralRect)
+        {
+            if (proceduralRect.radiusSyncMode == ProceduralRect.RadiusSyncMode.None)
+                return proceduralRect.squircleCorners;
+
+            ProceduralRect target = proceduralRect.radiusSyncMode == ProceduralRect.RadiusSyncMode.MatchParent
+                ? (proceduralRect.transform.parent != null ? proceduralRect.transform.parent.GetComponent<ProceduralRect>() : null)
+                : proceduralRect.radiusSyncTarget;
+
+            return target != null && target != proceduralRect ? target.squircleCorners : proceduralRect.squircleCorners;
+        }
+
+        static Rect GetImageDrawingRect(Image image, Sprite sprite, bool preserveAspect)
+        {
+            Rect rect = image.GetPixelAdjustedRect();
+            Vector2 size = sprite.rect.size;
+
+            if (preserveAspect && size.x > 0f && size.y > 0f && rect.width > 0f && rect.height > 0f)
+            {
+                float spriteRatio = size.x / size.y;
+                float rectRatio = rect.width / rect.height;
+
+                if (spriteRatio > rectRatio)
+                {
+                    float oldHeight = rect.height;
+                    rect.height = rect.width / spriteRatio;
+                    rect.y += (oldHeight - rect.height) * image.rectTransform.pivot.y;
                 }
                 else
                 {
-                    mat.SetVector(PropsUVOuter, new Vector4(0, 0, 1, 1));
-                    mat.DisableKeyword("SOFTMASK_SLICED");
+                    float oldWidth = rect.width;
+                    rect.width = rect.height * spriteRatio;
+                    rect.x += (oldWidth - rect.width) * image.rectTransform.pivot.x;
                 }
             }
 
-            Canvas canvas = maskGraphic.canvas;
-            if (canvas == null) { mat.SetMatrix(PropsCanvasToLocal, rectTransform.worldToLocalMatrix); }
-            else
+            int spriteWidth = Mathf.RoundToInt(size.x);
+            int spriteHeight = Mathf.RoundToInt(size.y);
+            if (spriteWidth <= 0 || spriteHeight <= 0)
+                return rect;
+
+            Vector4 padding = UnityEngine.Sprites.DataUtility.GetPadding(sprite);
+            float xMin = padding.x / spriteWidth;
+            float yMin = padding.y / spriteHeight;
+            float xMax = (spriteWidth - padding.z) / spriteWidth;
+            float yMax = (spriteHeight - padding.w) / spriteHeight;
+
+            return Rect.MinMaxRect(rect.x + rect.width * xMin, rect.y + rect.height * yMin,
+                rect.x + rect.width * xMax, rect.y + rect.height * yMax);
+        }
+
+        static Vector4 GetAdjustedBorders(RectTransform target, Vector4 border, Rect adjustedRect)
+        {
+            Rect originalRect = target.rect;
+
+            for (int axis = 0; axis <= 1; axis++)
             {
-                Matrix4x4 canvasToWorld = canvas.transform.localToWorldMatrix;
-                Matrix4x4 worldToMaskLocal = rectTransform.worldToLocalMatrix;
-                mat.SetMatrix(PropsCanvasToLocal, worldToMaskLocal * canvasToWorld);
+                if (originalRect.size[axis] != 0f)
+                {
+                    float borderScaleRatio = adjustedRect.size[axis] / originalRect.size[axis];
+                    border[axis] *= borderScaleRatio;
+                    border[axis + 2] *= borderScaleRatio;
+                }
+
+                float combinedBorders = border[axis] + border[axis + 2];
+                if (adjustedRect.size[axis] < combinedBorders && combinedBorders != 0f)
+                {
+                    float borderScaleRatio = adjustedRect.size[axis] / combinedBorders;
+                    border[axis] *= borderScaleRatio;
+                    border[axis + 2] *= borderScaleRatio;
+                }
             }
 
-            mat.SetVector(PropsRect, new Vector4(r.xMin, r.yMin, Mathf.Max(r.width, 0.001f), Mathf.Max(r.height, 0.001f)));
+            return border;
+        }
+
+        static void GetSlicedImageData(Image image, Sprite sprite, ref Rect rect, out Vector4 borderData)
+        {
+            float pixelsPerUnit = image.pixelsPerUnit * image.pixelsPerUnitMultiplier;
+            if (pixelsPerUnit <= 0f) { pixelsPerUnit = 1f; }
+
+            Vector4 border = GetAdjustedBorders(image.rectTransform, sprite.border / pixelsPerUnit, rect);
+            Vector4 padding = UnityEngine.Sprites.DataUtility.GetPadding(sprite) / pixelsPerUnit;
+            float paddedWidth = Mathf.Max(0f, rect.width - padding.x - padding.z);
+            float paddedHeight = Mathf.Max(0f, rect.height - padding.y - padding.w);
+
+            borderData = new Vector4(Mathf.Clamp(border.x - padding.x, 0f, paddedWidth), Mathf.Clamp(border.y - padding.y, 0f, paddedHeight),
+                Mathf.Clamp(rect.width - border.z - padding.x, 0f, paddedWidth), Mathf.Clamp(rect.height - border.w - padding.y, 0f, paddedHeight));
+            rect = new Rect(rect.x + padding.x, rect.y + padding.y, paddedWidth, paddedHeight);
+        }
+
+        static void GetTiledImageData(Image image, Sprite sprite, Rect rect, out Vector4 borderData, out float tileWidth, out float tileHeight)
+        {
+            float pixelsPerUnit = image.pixelsPerUnit * image.pixelsPerUnitMultiplier;
+            if (pixelsPerUnit <= 0f) { pixelsPerUnit = 1f; }
+
+            Vector4 spriteBorder = sprite.border;
+            Vector4 border = GetAdjustedBorders(image.rectTransform, spriteBorder / pixelsPerUnit, rect);
+            borderData = new Vector4(border.x, border.y, rect.width - border.z, rect.height - border.w);
+
+            tileWidth = (sprite.rect.width - spriteBorder.x - spriteBorder.z) / pixelsPerUnit;
+            tileHeight = (sprite.rect.height - spriteBorder.y - spriteBorder.w) / pixelsPerUnit;
+
+            if (tileWidth <= 0f) { tileWidth = Mathf.Max(borderData.z - borderData.x, 0.001f); }
+            if (tileHeight <= 0f) { tileHeight = Mathf.Max(borderData.w - borderData.y, 0.001f); }
         }
 
         void UpdateMaskProperties()
@@ -313,187 +667,323 @@ namespace Evo.UI
             if (!isActiveAndEnabled || maskGraphic == null)
                 return;
 
-#if UNITY_EDITOR
-            if (Application.isPlaying) { SpawnMaskables(); }
-            else
-            {
-                // Edit Mode: Brute-force the preview to avoid dirtying the Scene/Prefab
-                GetComponentsInChildren<Graphic>(false, graphics);
-                foreach (var g in graphics)
-                {
-                    if (g == null || g.gameObject == this.gameObject)
-                        continue;
+            if (lastHierarchyCount != transform.hierarchyCount)
+                RefreshHierarchy();
 
-                    Material baseMat = g.materialForRendering;
-                    Texture texToUse = g.mainTexture;
+            UpdateCachedMaterials();
+        }
 
-                    // Honor the standard Maskable flag
-                    if (g is MaskableGraphic mg && !mg.maskable)
-                    {
-                        g.canvasRenderer.SetMaterial(baseMat, texToUse);
-                        continue;
-                    }
-
-                    Material modified = GetModifiedMaterialForChild(baseMat);
-                    bool isDefaultTex = texToUse == null || texToUse.name == "White Texture" || texToUse.name == "UnityWhite";
-
-                    // TMP Editor Bug Fix
-                    if (isDefaultTex && baseMat != null && baseMat.HasProperty(PropsMainTex))
-                    {
-                        var matTex = baseMat.GetTexture(PropsMainTex);
-                        if (matTex != null)
-                        {
-                            texToUse = matTex;
-                            isDefaultTex = false;
-                        }
-                    }
-
-                    if (isDefaultTex && baseMat != null && baseMat.shader.name.Contains("TextMeshPro"))
-                        continue;
-
-                    if (modified != null && texToUse != null) { modified.SetTexture(PropsMainTex, texToUse); }
-                    g.canvasRenderer.SetMaterial(modified, texToUse);
-                }
-            }
-#else
-            SpawnMaskables();
-#endif
-
+        void UpdateCachedMaterials()
+        {
             if (materialCache.Count == 0)
                 return;
 
-            foreach (var mat in materialCache.Values)
-                SetMaterialProperties(mat);
+            staleMaterialKeys.Clear();
+            int currentVersion = GetMaterialDataVersion();
+            bool refreshChildren = false;
+
+            foreach (KeyValuePair<MaterialKey, MaterialEntry> pair in materialCache)
+            {
+                MaterialEntry entry = pair.Value;
+                if (entry.SourceMaterial == null || entry.ModifiedMaterial == null)
+                {
+                    staleMaterialKeys.Add(pair.Key);
+                    continue;
+                }
+
+                if (!IsMaterialCompatible(entry.ModifiedMaterial))
+                {
+                    staleMaterialKeys.Add(pair.Key);
+                    refreshChildren = true;
+                    continue;
+                }
+
+                SyncMaterial(entry, false, currentVersion);
+            }
+
+            for (int i = 0; i < staleMaterialKeys.Count; i++)
+            {
+                MaterialKey key = staleMaterialKeys[i];
+                if (materialCache.TryGetValue(key, out MaterialEntry entry))
+                    DestroyMaterial(entry.ModifiedMaterial);
+
+                materialCache.Remove(key);
+            }
+
+            if (refreshChildren)
+                NotifyChildren();
         }
 
-        public void ModifyMesh(VertexHelper vh)
+        public void ModifyMesh(VertexHelper vertexHelper)
         {
-            if (maskGraphic != null)
-                maskGraphic.canvasRenderer.SetAlpha(showMaskGraphic ? 1f : 0f);
-          
             if (!showMaskGraphic)
-                vh.Clear();
+                vertexHelper.Clear();
+        }
+
+        public void ModifyMesh(Mesh mesh)
+        {
+            if (!showMaskGraphic)
+                mesh.Clear();
+        }
+
+        public bool IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera)
+        {
+            if (!isActiveAndEnabled)
+                return true;
+
+            return RectTransformUtility.RectangleContainsScreenPoint(rectTransform, screenPoint, eventCamera);
+        }
+
+        void RefreshMaskGraphic()
+        {
+            if (maskGraphic == null)
+                return;
+
+            maskGraphic.SetVerticesDirty();
+
+#if UNITY_EDITOR
+            if (!Application.IsPlaying(gameObject))
+            {
+                UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
+                UnityEditor.SceneView.RepaintAll();
+            }
+#endif
         }
 
         void ClearCache()
         {
-            foreach (var mat in materialCache.Values)
-            {
-                if (mat != null)
-                {
-                    if (Application.isPlaying) { Destroy(mat); }
-                    else { DestroyImmediate(mat); }
-                }
-            }
+            foreach (MaterialEntry entry in materialCache.Values)
+                DestroyMaterial(entry.ModifiedMaterial);
+
             materialCache.Clear();
         }
 
-        void SyncMaterial(Material baseMaterial, Material modifiedMaterial)
+        static void DestroyMaterial(Material material)
         {
-            // Always sync properties to support dynamic material updates
-            modifiedMaterial.CopyPropertiesFromMaterial(baseMaterial);
+            if (material == null)
+                return;
 
-            // When masks are dynamically enabled/disabled at runtime, TMP can desync and CanvasRenderer 
-            // briefly pushes a default white texture. Forcing the Font Atlas directly onto the material 
-            // instance ensures the SDF math never draws a solid square.
-            if (baseMaterial.HasProperty(PropsMainTex))
-            {
-                var tex = baseMaterial.GetTexture(PropsMainTex);
-                if (tex != null) { modifiedMaterial.SetTexture(PropsMainTex, tex); }
-            }
-
-            SetMaterialProperties(modifiedMaterial);
+            if (Application.isPlaying)
+                Destroy(material);
+            else
+                DestroyImmediate(material);
         }
 
-        public Material GetModifiedMaterialForChild(Material baseMaterial)
+        static bool IsMaterialCompatible(Material material)
+        {
+            if (material == null || !material.HasProperty(PropsSupport) || !material.HasProperty(PropsCount))
+                return false;
+
+            for (int i = 0; i < PropsTextures.Length; i++)
+            {
+                if (!material.HasTexture(PropsTextures[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
+        Shader GetReplacementShader(Material baseMaterial)
+        {
+            if (baseMaterial == null || baseMaterial.shader == null)
+                return null;
+
+            string shaderName = baseMaterial.shader.name;
+
+            if (shaderName == "UI/Default" || shaderName == "UI/DefaultETC1" || shaderName == ShaderName)
+                return embeddedShader;
+
+            if (shaderName == TMPShaderName)
+                return embeddedTMPShader;
+            if (shaderName == TMPMobileShaderName)
+                return embeddedTMPMobileShader;
+            if (shaderName == TMPBitmapShaderName)
+                return embeddedTMPBitmapShader;
+
+            if (shaderName.StartsWith("TextMeshPro/", StringComparison.Ordinal))
+            {
+                if (shaderName.IndexOf("Sprite", StringComparison.Ordinal) >= 0)
+                    return embeddedTMPBitmapShader;
+
+                if (shaderName.IndexOf("Bitmap", StringComparison.Ordinal) >= 0)
+                    return embeddedTMPBitmapShader;
+
+                return shaderName.IndexOf("Mobile", StringComparison.Ordinal) >= 0
+                    ? embeddedTMPMobileShader
+                    : embeddedTMPShader;
+            }
+
+            if (baseMaterial.HasProperty(PropsSupport) && baseMaterial.GetFloat(PropsSupport) > 0.5f)
+                return baseMaterial.shader;
+
+            return null;
+        }
+
+        public Material GetModifiedMaterialForChild(Material baseMaterial, Canvas targetCanvas)
         {
             if (!isActiveAndEnabled || maskGraphic == null || baseMaterial == null)
                 return baseMaterial;
 
-            // Check the cache first.
-            // Accessing baseMaterial.shader.name allocates a new string in C# memory. 
-            // Doing it after the cache check prevents string allocations during continuous UI rebuilds.
-            if (materialCache.TryGetValue(baseMaterial, out Material modifiedMaterial) && modifiedMaterial != null)
+            if (targetCanvas != null)
+                targetCanvas = targetCanvas.rootCanvas;
+
+            MaterialKey key = new(baseMaterial, targetCanvas);
+            if (materialCache.TryGetValue(key, out MaterialEntry entry) && entry.ModifiedMaterial != null)
             {
-                SyncMaterial(baseMaterial, modifiedMaterial);
-                return modifiedMaterial;
+                if (entry.SourceShader == baseMaterial.shader && IsMaterialCompatible(entry.ModifiedMaterial))
+                {
+                    SyncMaterial(entry, false, GetMaterialDataVersion());
+                    return entry.ModifiedMaterial;
+                }
+
+                DestroyMaterial(entry.ModifiedMaterial);
+                materialCache.Remove(key);
             }
 
-            // Cache miss - we will only allocate the string name once per new material
-            string shaderName = baseMaterial.shader.name;
-            Shader shaderToUse = null;
-
-            if (shaderName == "UI/Default" || shaderName == ShaderName)
-            {
-                // Intercept standard UI Shaders
-                shaderToUse = embeddedShader != null ? embeddedShader : Shader.Find(ShaderName);
-            }
-            else if (shaderName.Contains("TextMeshPro") || shaderName == TMPShaderName)
-            {
-                // Intercept TextMeshPro Shaders
-                shaderToUse = embeddedTMPShader != null ? embeddedTMPShader : Shader.Find(TMPShaderName);
-            }
-            else if (baseMaterial.HasProperty(PropsRect))
-            {
-                // Intercept custom shaders that natively support Soft Masking
-                shaderToUse = baseMaterial.shader;
-            }
-
-            if (shaderToUse == null)
+            Shader replacementShader = GetReplacementShader(baseMaterial);
+            if (replacementShader == null)
                 return baseMaterial;
 
-            modifiedMaterial = new Material(shaderToUse)
+            Material modifiedMaterial = new(replacementShader)
             {
-                name = "SoftMask_Mat",
+                name = $"{baseMaterial.name} (Evo Soft Mask)",
                 hideFlags = HideFlags.HideAndDontSave
             };
-            materialCache[baseMaterial] = modifiedMaterial;
 
-            SyncMaterial(baseMaterial, modifiedMaterial);
+            if (!IsMaterialCompatible(modifiedMaterial))
+            {
+                DestroyMaterial(modifiedMaterial);
+                return baseMaterial;
+            }
+
+            entry = new MaterialEntry(baseMaterial, modifiedMaterial, targetCanvas);
+            materialCache[key] = entry;
+
+            SyncMaterial(entry, true, GetMaterialDataVersion());
             return modifiedMaterial;
         }
 
-        public void ModifyMesh(Mesh mesh) { }
+        void SyncMaterial(MaterialEntry entry, bool force, int currentVersion)
+        {
+            int sourceCRC = entry.SourceMaterial.ComputeCRC();
+            bool sourceChanged = force || !entry.HasSourceSnapshot || entry.SourceCRC != sourceCRC;
+
+            if (sourceChanged)
+            {
+                entry.ModifiedMaterial.CopyMatchingPropertiesFromMaterial(entry.SourceMaterial);
+                entry.ModifiedMaterial.DisableKeyword(TMPBitmapMobileKeyword);
+                entry.ModifiedMaterial.DisableKeyword(TMPSpriteKeyword);
+
+                if (entry.TMPBitmapMode == 1)
+                    entry.ModifiedMaterial.EnableKeyword(TMPBitmapMobileKeyword);
+                else if (entry.TMPBitmapMode == 2)
+                    entry.ModifiedMaterial.EnableKeyword(TMPSpriteKeyword);
+
+                if (entry.SourceMaterial.HasProperty(PropsMainTex) && entry.ModifiedMaterial.HasProperty(PropsMainTex))
+                {
+                    Texture mainTexture = entry.SourceMaterial.GetTexture(PropsMainTex);
+                    if (mainTexture != null) { entry.ModifiedMaterial.SetTexture(PropsMainTex, mainTexture); }
+                }
+
+                entry.SourceCRC = sourceCRC;
+                entry.HasSourceSnapshot = true;
+                entry.AppliedVersion = int.MinValue;
+            }
+
+            SetMaterialProperties(entry, sourceChanged, currentVersion);
+        }
+
+        readonly struct MaterialKey : IEquatable<MaterialKey>
+        {
+            readonly Material material;
+            readonly Canvas canvas;
+            readonly int hashCode;
+
+            public MaterialKey(Material material, Canvas canvas)
+            {
+                this.material = material;
+                this.canvas = canvas;
+
+                int materialId = material != null ? material.GetHashCode() : 0;
+                int canvasId = canvas != null ? canvas.GetHashCode() : 0;
+                hashCode = materialId * 397 ^ canvasId;
+            }
+
+            public bool Equals(MaterialKey other) => ReferenceEquals(material, other.material) && ReferenceEquals(canvas, other.canvas);
+
+            public override bool Equals(object obj) => obj is MaterialKey other && Equals(other);
+
+            public override int GetHashCode() => hashCode;
+        }
+
+        sealed class MaterialEntry
+        {
+            public readonly Material SourceMaterial;
+            public readonly Material ModifiedMaterial;
+            public readonly Shader SourceShader;
+            public readonly Canvas Canvas;
+            public readonly int TMPBitmapMode;
+            public int AppliedVersion = int.MinValue;
+            public int SourceCRC;
+            public bool HasSourceSnapshot;
+            public bool HasCanvasSnapshot;
+            public Matrix4x4 CanvasToWorld;
+
+            public MaterialEntry(Material sourceMaterial, Material modifiedMaterial, Canvas canvas)
+            {
+                SourceMaterial = sourceMaterial;
+                ModifiedMaterial = modifiedMaterial;
+                SourceShader = sourceMaterial.shader;
+                Canvas = canvas;
+
+                string shaderName = SourceShader != null ? SourceShader.name : string.Empty;
+                if (shaderName.IndexOf("Sprite", StringComparison.Ordinal) >= 0)
+                    TMPBitmapMode = 2;
+                else if (shaderName.IndexOf("Bitmap", StringComparison.Ordinal) >= 0 
+                    && shaderName.IndexOf("Mobile", StringComparison.Ordinal) >= 0)
+                    TMPBitmapMode = 1;
+            }
+        }
 
 #if UNITY_EDITOR
+        // Cache the delegate to prevent Editor memory leaks from repeated OnValidate calls
+        UnityEditor.EditorApplication.CallbackFunction onValidateDelayCall;
+
         protected override void Reset()
         {
             base.Reset();
 
-            embeddedShader = Shader.Find(ShaderName);
-            embeddedTMPShader = Shader.Find(TMPShaderName);
-
-            if (maskGraphic == null)
-                maskGraphic = GetComponent<Graphic>();
+            rectTransform = GetComponent<RectTransform>();
+            maskGraphic = GetComponent<Graphic>();
+            LoadShaders();
         }
 
         protected override void OnValidate()
         {
             base.OnValidate();
 
-            if (embeddedShader == null) { embeddedShader = Shader.Find(ShaderName); }
-            if (embeddedTMPShader == null) { embeddedTMPShader = Shader.Find(TMPShaderName); }
+            if (rectTransform == null) { rectTransform = GetComponent<RectTransform>(); }
             if (maskGraphic == null) { maskGraphic = GetComponent<Graphic>(); }
-            if (maskGraphic != null) { maskGraphic.canvasRenderer.SetAlpha(showMaskGraphic ? 1f : 0f); }
 
-            // Ensure we don't cause Editor delegate leaks by subscribing multiple anonymous lambdas
+            LoadShaders();
+            MarkMaskPropertiesDirty();
+            RefreshMaskGraphic();
+
             onValidateDelayCall ??= () =>
-                {
-                    if (this == null)
-                        return;
+            {
+                if (this == null)
+                    return;
 
-                    if (Application.isPlaying)
-                        SpawnMaskables();
-
-                    UpdateMaskProperties();
-
-                    if (maskGraphic != null)
-                        maskGraphic.SetVerticesDirty();
-                };
+                RebuildMaskStack();
+                RefreshHierarchy();
+                RefreshMaskGraphic();
+                Canvas.ForceUpdateCanvases();
+            };
 
             UnityEditor.EditorApplication.delayCall -= onValidateDelayCall;
             UnityEditor.EditorApplication.delayCall += onValidateDelayCall;
         }
+
 #endif
     }
 }

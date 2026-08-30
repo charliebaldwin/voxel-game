@@ -14,6 +14,12 @@ Shader "Evo/UI/Adaptive Image Blur"
         _ColorMask ("Color Mask", Float) = 15
 
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
+        [HideInInspector] _SoftMaskSupport ("Soft Mask Support", Float) = 1
+        [HideInInspector] _SoftMask_Count ("Soft Mask Count", Float) = 0
+        [HideInInspector] _SoftMaskTex0 ("Soft Mask 0", 2D) = "white" {}
+        [HideInInspector] _SoftMaskTex1 ("Soft Mask 1", 2D) = "white" {}
+        [HideInInspector] _SoftMaskTex2 ("Soft Mask 2", 2D) = "white" {}
+        [HideInInspector] _SoftMaskTex3 ("Soft Mask 3", 2D) = "white" {}
         
         // Custom Properties
         _BackgroundTex ("Background Texture (Generated)", 2D) = "white" {}    
@@ -28,20 +34,6 @@ Shader "Evo/UI/Adaptive Image Blur"
         // Mode: 0 = Screen Space, 1 = Local
         _LocalSpace ("Local Space", Float) = 0 
         
-        // Soft Mask Parameters
-        _SoftMaskTex ("Soft Mask Texture", 2D) = "white" {}
-        _SoftMask_Mode ("Mask Mode", Float) = 0
-        _SoftMask_Rect ("Soft Mask Rect", Vector) = (0,0,0,0)
-        
-        _SoftMask_PR_Center ("PR Center", Vector) = (0,0,0,0)
-        _SoftMask_PR_HalfSize ("PR Half Size", Vector) = (0,0,0,0)
-        _SoftMask_PR_Radii ("PR Radii", Vector) = (0,0,0,0)
-        _SoftMask_PR_Softness ("PR Softness", Float) = 0
-        _SoftMask_PR_FillData ("PR Fill Data", Vector) = (0,0,0,0)
-
-        _SoftMask_BorderData ("Border Data", Vector) = (0,0,0,0)
-        _SoftMask_UVOuter ("UV Outer", Vector) = (0,0,1,1)
-        _SoftMask_UVInner ("UV Inner", Vector) = (0,0,1,1)
     }
 
     SubShader
@@ -85,7 +77,6 @@ Shader "Evo/UI/Adaptive Image Blur"
 
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
-            #pragma multi_compile_local _ SOFTMASK_SLICED SOFTMASK_PROCEDURAL
 
             struct appdata_t
             {
@@ -188,18 +179,16 @@ Shader "Evo/UI/Adaptive Image Blur"
                 blurRGB = lerp(float3(luminance, luminance, luminance), blurRGB, _Saturation);
                 blurRGB += (nrand(viewportUV * 100.0) - 0.5) * _NoiseStrength;
 
-                // Fetch the Soft Mask Alpha in a single line!
-                half maskAlpha = SoftMask_GetAlpha(IN.canvasPos);
-
                 // Final Alpha
                 half sourceAlpha = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd).a;
-                half finalAlpha = sourceAlpha * IN.color.a * edgeFade * maskAlpha;
+                half finalAlpha = sourceAlpha * IN.color.a * edgeFade;
 
                 // Output
                 half4 finalCol = half4(blurRGB * IN.color.rgb, finalAlpha);
+                SoftMask_Apply(finalCol, IN.canvasPos);
 
                 #ifdef UNITY_UI_CLIP_RECT
-                finalCol.a *= UnityGet2DClipping(IN.screenPosition.xy, _ClipRect);
+                finalCol.a *= UnityGet2DClipping(IN.canvasPos.xy, _ClipRect);
                 #endif
 
                 #ifdef UNITY_UI_ALPHACLIP

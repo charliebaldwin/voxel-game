@@ -181,6 +181,14 @@ namespace Evo.UI
                     GUILayout.Space(4);
                     GUILayout.BeginHorizontal();
                     {
+                        if (EvoEditorGUI.DrawButton("OnSelect", revertBackgroundColor: true)) { animator.ExecuteAnimations(UIAnimator.TriggerType.OnSelect); }
+                        GUILayout.Space(4);
+                        if (EvoEditorGUI.DrawButton("OnDeselect", revertBackgroundColor: true)) { animator.ExecuteAnimations(UIAnimator.TriggerType.OnDeselect); }
+                    }
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(4);
+                    GUILayout.BeginHorizontal();
+                    {
                         if (EvoEditorGUI.DrawButton("OnEnable", revertBackgroundColor: true)) { animator.ExecuteAnimations(UIAnimator.TriggerType.OnEnable); }
                         GUILayout.Space(4);
                         if (EvoEditorGUI.DrawButton("Manual", revertBackgroundColor: true)) { animator.ExecuteAnimations(UIAnimator.TriggerType.Manual); }

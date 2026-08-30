@@ -136,10 +136,15 @@ namespace Evo.UI
             {
                 contentLayout.childForceExpandHeight = dynamicScale;
                 contentLayout.childForceExpandWidth = dynamicScale;
-                contentLayout.padding = padding;
+                contentLayout.padding = new RectOffset(padding.left, padding.right, padding.top, padding.bottom);
                 contentLayout.spacing = spacing;
                 contentLayout.reverseArrangement = reverseArrangement;
+
+                LayoutRebuilder.MarkLayoutForRebuild((RectTransform)contentLayout.transform);
             }
+
+            if (transform is RectTransform buttonRect)
+                LayoutRebuilder.MarkLayoutForRebuild(buttonRect);
         }
 
         /// <summary>
@@ -195,11 +200,30 @@ namespace Evo.UI
 
 #if UNITY_EDITOR
         [HideInInspector] public bool objectFoldout = true;
+        UnityEditor.EditorApplication.CallbackFunction layoutRebuildDelayCall;
 
         protected override void OnValidate()
         {
             base.OnValidate();
             UpdateUI();
+
+            layoutRebuildDelayCall ??= RebuildLayoutAfterValidation;
+            UnityEditor.EditorApplication.delayCall -= layoutRebuildDelayCall;
+            UnityEditor.EditorApplication.delayCall += layoutRebuildDelayCall;
+        }
+
+        void RebuildLayoutAfterValidation()
+        {
+            UnityEditor.EditorApplication.delayCall -= layoutRebuildDelayCall;
+
+            if (this == null || Application.IsPlaying(gameObject) || !isActiveAndEnabled)
+                return;
+
+            if (contentLayout != null && contentLayout.isActiveAndEnabled)
+                LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)contentLayout.transform);
+
+            if (dynamicScale && transform is RectTransform buttonRect)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(buttonRect);
         }
 #endif
     }
