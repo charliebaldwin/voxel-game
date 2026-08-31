@@ -260,36 +260,44 @@ public class PlayerController : MonoBehaviour
             world.DamageVoxel(lastHitInfo.voxelPos, lastHitInfo, (byte)damage);
         }
     }
+
+    private const bool DO_ROTATE = true;
     private void PlaceVoxel(BlockID id)
     {
         if (lastHitInfo.didHit)
         {
             BlockData block = BlockRegistry.LookupBlock(id);
             OrthoNormal up = OrthoNormal.up;
-            if (block.CanChangeUpAxis || heldBlockShape != BlockShape.Solid)
-            {
-                up = OrthoNormal.FromVector(lastHitInfo.hitNormal);
-            }
-           //OrthoNormal fwd = (up == OrthoNormal.forward || up == OrthoNormal.back) ? OrthoNormal.right : OrthoNormal.forward;
             OrthoNormal fwd = OrthoNormal.forward;
 
-            if (up.IsEqual(OrthoNormal.up))
+            if (DO_ROTATE)
             {
-                fwd = facingXZOrtho; 
-            } 
-            else if (up.IsEqual(OrthoNormal.forward) || up.IsEqual(OrthoNormal.back))
-            {
-                fwd = OrthoNormal.right;
-            }
-            if (fwd.IsEqual(OrthoNormal.back) && up.IsEqual(OrthoNormal.up))
-            {
-                //up = OrthoNormal.down;
-                //fwd = fwd.Flip();
+
+                if (block.CanChangeUpAxis || heldBlockShape != BlockShape.Solid)
+                {
+                    up = OrthoNormal.FromVector(lastHitInfo.hitNormal);
+                }
+                fwd = (up == OrthoNormal.forward || up == OrthoNormal.back) ? OrthoNormal.right : OrthoNormal.forward;
+                //OrthoNormal fwd = OrthoNormal.forward;
+
+                if (up.IsEqual(OrthoNormal.up))
+                {
+                    fwd = facingXZOrtho;
+                }
+                else if (up.IsEqual(OrthoNormal.forward) || up.IsEqual(OrthoNormal.back))
+                {
+                    fwd = OrthoNormal.right;
+                }
+                if (fwd.IsEqual(OrthoNormal.back) && up.IsEqual(OrthoNormal.up))
+                {
+                    //up = OrthoNormal.down;
+                    //fwd = fwd.Flip();
+                }
             }
 
             // TEMP
-            up = OrthoNormal.up;
-            fwd = OrthoNormal.forward;
+            //up = OrthoNormal.up;
+            //fwd = OrthoNormal.forward;
 
 
             world.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(id, 0, heldBlockShape, up, fwd));

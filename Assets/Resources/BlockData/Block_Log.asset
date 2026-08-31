@@ -23,6 +23,8 @@ MonoBehaviour:
     Textures:
     - {fileID: 2800000, guid: 293a2449243c378449fc08142b7dc216, type: 3}
     - {fileID: 2800000, guid: bbce016144adb34429571db34548c9c1, type: 3}
-    NormalTextures: []
+    NormalTextures:
+    - {fileID: 2800000, guid: 3b532939188174f4ca78a5ce9cd594b4, type: 3}
+    - {fileID: 2800000, guid: c547fab3197b18d49b7b0862c5f48ffa, type: 3}
     MSTextures: []
     TextureMode: 1

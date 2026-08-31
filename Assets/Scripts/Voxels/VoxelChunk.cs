@@ -474,7 +474,16 @@ public class VoxelChunk : MonoBehaviour
     public Voxel GetVoxel(Vector3Int worldPos)
     {
         Vector3Int localPos = WorldToLocal(worldPos, ChunkCoord, Size3D);
-        return Voxels[localPos.x, localPos.y, localPos.z];
+        Voxel result;
+        try
+        {
+            result = GetVoxelLocal(localPos);
+        } catch (IndexOutOfRangeException)
+        {
+            result = LookupWorldVoxel(localPos);
+        }
+        return result;
+        //return Voxels[localPos.x, localPos.y, localPos.z];
     }
     public Voxel GetVoxelLocal(Vector3Int localPos)
     {
@@ -499,53 +508,21 @@ public class VoxelChunk : MonoBehaviour
     #endregion
 
     #region MODIFY VOXELS
-    public void SetVoxel(Vector3Int worldPos, BlockID blockID) // DEPRECATED
-    {
-        Vector3Int localPos = WorldToLocal(worldPos, ChunkCoord, Size3D);
-        if (IsPosInGridBounds(localPos, Size3D)) { 
-            if (Voxels[localPos.x, localPos.y, localPos.z].BlockID == 0 || true)
-            {
-                Voxels[localPos.x, localPos.y, localPos.z] = new Voxel(blockID, 0, 0);
-                //World().SetVoxel(worldPosition, new VoxelData(blockType, 0, 0));
-
-                //voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
-                meshDirty = true;
-                
-                Vector3Int dirtyNeighbors = CheckPosOnEdge(localPos, Size3D);
-                if (dirtyNeighbors.x == -1 && neighborNX != null)
-                    neighborNX.SetDirty();
-                if (dirtyNeighbors.x == 1 && neighborPX != null)
-                    neighborPX.SetDirty();
-                if (dirtyNeighbors.z == -1 && neighborNZ != null)
-                    neighborNZ.SetDirty();
-                if (dirtyNeighbors.z == 1 && neighborPZ  != null)
-                    neighborPZ.SetDirty();
-
-            }
-        }
-        activeVoxels.Add(localPos);
-        activeVoxels.Add(localPos + Vector3Int.left);
-        activeVoxels.Add(localPos + Vector3Int.right);
-        activeVoxels.Add(localPos + Vector3Int.down);
-        activeVoxels.Add(localPos + Vector3Int.up);
-        activeVoxels.Add(localPos + Vector3Int.back);
-        activeVoxels.Add(localPos + Vector3Int.forward);
-    }
+    
     public void SetVoxel(Vector3Int worldPos, Voxel voxelData)
     {
-        if (!containedIDs.Contains(voxelData.BlockID) && voxelData.BlockID is not BlockID.Air or BlockID.Invalid)
-        {
-            containedIDs.Add(voxelData.BlockID);
-        }
+        //if (!containedIDs.Contains(voxelData.BlockID) && voxelData.BlockID is not BlockID.Air or BlockID.Invalid)
+        //{
+        //    containedIDs.Add(voxelData.BlockID);
+        //}
         Vector3Int localPos = WorldToLocal(worldPos, ChunkCoord, Size3D);
+        Voxel currentVoxel = GetVoxel(localPos);
         if (IsPosInGridBounds(localPos, Size3D))
         {
-            if (Voxels[localPos.x, localPos.y, localPos.z].BlockID == 0 || true)
+            if (currentVoxel.BlockID == 0 || true)
             {
                 Voxels[localPos.x, localPos.y, localPos.z] = voxelData;
-                //World().SetVoxel(worldPos, voxelData);
 
-                //voxelBuffer.SetData(VoxelDataToFlatArray(voxels));
                 meshDirty = true;
 
                 Vector3Int dirtyNeighbors = CheckPosOnEdge(localPos, Size3D);
