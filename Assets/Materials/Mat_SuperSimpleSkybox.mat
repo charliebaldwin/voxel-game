@@ -282,7 +282,7 @@ Material:
     - _CloudWindSpeed: {r: 0.2, g: 0.3, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _GroundColor: {r: 1, g: 1, b: 1, a: 1}
+    - _GroundColor: {r: 0.41568628, g: 0.7411765, b: 0.8509804, a: 1}
     - _HorizonColorDay: {r: 0.49999988, g: 0.65624994, b: 1, a: 1}
     - _HorizonColorNight: {r: 0.012635894, g: 0.012307694, b: 0.032, a: 0}
     - _MoonColor: {r: 0.67058825, g: 0.7254902, b: 0.7490196, a: 0}
