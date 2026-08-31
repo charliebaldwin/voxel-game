@@ -35,6 +35,8 @@ public class VoxelChunk : MonoBehaviour
 
     private VoxelChunk neighborNX;
     private VoxelChunk neighborPX;
+    private VoxelChunk neighborNY;
+    private VoxelChunk neighborPY;
     private VoxelChunk neighborNZ;
     private VoxelChunk neighborPZ;
 
@@ -168,6 +170,10 @@ public class VoxelChunk : MonoBehaviour
             neighborNX = world.GetChunk(ChunkCoord + Vector3Int.left);
         if (neighborPX == null)
             neighborPX = world.GetChunk(ChunkCoord + Vector3Int.right);
+        if (neighborNY == null)
+            neighborNY = world.GetChunk(ChunkCoord + Vector3Int.down);
+        if (neighborPY == null)
+            neighborPY = world.GetChunk(ChunkCoord + Vector3Int.up);
         if (neighborNZ == null)
             neighborNZ = world.GetChunk(ChunkCoord + Vector3Int.back);
         if (neighborPZ == null)
@@ -539,6 +545,10 @@ public class VoxelChunk : MonoBehaviour
                     neighborNX.SetDirty();
                 if (dirtyNeighbors.x == 1 && neighborPX != null)
                     neighborPX.SetDirty();
+                if (dirtyNeighbors.y == -1 && neighborNY != null)
+                    neighborNY.SetDirty();
+                if (dirtyNeighbors.y == -1 && neighborPY != null)
+                    neighborPY.SetDirty();
                 if (dirtyNeighbors.z == -1 && neighborNZ != null)
                     neighborNZ.SetDirty();
                 if (dirtyNeighbors.z == 1 && neighborPZ != null)

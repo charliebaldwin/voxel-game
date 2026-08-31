@@ -115,7 +115,7 @@ public static class VoxelHelper
     }
     public static Vector3Int FindContainingChunk(Vector3Int worldPos, Vector3Int size)
     {
-        Vector3Int chunkCoord = new Vector3Int(Mathf.FloorToInt(worldPos.x / size.x), 0, Mathf.FloorToInt(worldPos.z / size.z));
+        Vector3Int chunkCoord = new Vector3Int(Mathf.FloorToInt(worldPos.x / size.x), Mathf.FloorToInt(worldPos.y / size.y), Mathf.FloorToInt(worldPos.z / size.z));
         return chunkCoord;
     }
 

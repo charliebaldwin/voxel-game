@@ -34,7 +34,7 @@ public partial class VoxelWorld : MonoBehaviour
 
     [Foldout("Data")]
     [ShowInInspector] private Voxel[,,] Voxels;
-    [ShowInInspector] private VoxelChunk[,] Chunks;
+    [ShowInInspector] private VoxelChunk[,,] Chunks;
     private List<VoxelChunk> loadedChunks;
     public VoxelStructure tempStructure;
     [EndFoldout]
@@ -100,12 +100,15 @@ public partial class VoxelWorld : MonoBehaviour
         Voxels = generator.GetGeneratedVoxels();
 
         loadedChunks = new List<VoxelChunk>();
-        Chunks = new VoxelChunk[WorldSize.x, WorldSize.z];
+        Chunks = new VoxelChunk[WorldSize.x, WorldSize.y, WorldSize.z];
         for (int x = 0; x < WorldSize.x; x++)
         {
             for (int z = 0; z < WorldSize.z; z++)
             {
-                AddChunk(new Vector3Int(x, 0, z));
+                for (int y = 0; y < WorldSize.y; y++)
+                {
+                    AddChunk(new Vector3Int(x, y, z));
+                }
             }
         }
     }
@@ -123,15 +126,15 @@ public partial class VoxelWorld : MonoBehaviour
     #region CHUNK MANAGEMENT
     public void AddChunk(Vector3Int pos)
     {
-        if (Chunks[pos.x, pos.z] == null)
+        if (Chunks[pos.x, pos.y, pos.z] == null)
         {
             VoxelChunk newChunk = Instantiate(ChunkPrefab).GetComponent<VoxelChunk>();
-            Chunks[pos.x, pos.z] = newChunk;
-            newChunk.transform.name = $"Chunk_x{pos.x}_z{pos.z}";
-            newChunk.transform.position = new Vector3(pos.x * ChunkSize.x, 0, pos.z * ChunkSize.z);
+            Chunks[pos.x, pos.y, pos.z] = newChunk;
+            newChunk.transform.name = $"Chunk_x{pos.x}_y{pos.y}_z{pos.z}";
+            newChunk.transform.position = new Vector3(pos.x * ChunkSize.x, pos.y * ChunkSize.y, pos.z * ChunkSize.z);
             newChunk.transform.parent = transform;
 
-            MinMaxAABB bounds = new MinMaxAABB(new float3(pos.x * ChunkSize.x, 0f, pos.z * ChunkSize.z), new float3((pos.x + 1) * ChunkSize.x, ChunkSize.y, (pos.z + 1) * ChunkSize.z));
+            //MinMaxAABB bounds = new MinMaxAABB(new float3(pos.x * ChunkSize.x, pos.y * ChunkSize.y, pos.z * ChunkSize.z), new float3((pos.x + 1) * ChunkSize.x, (pos.y + 1) * ChunkSize.y, (pos.z + 1) * ChunkSize.z));
 
             Voxel[,,] chunkData = new Voxel[ChunkSize.x, ChunkSize.y, ChunkSize.z];
 
@@ -142,7 +145,7 @@ public partial class VoxelWorld : MonoBehaviour
                     for (int z = 0; z < ChunkSize.z; z++)
                     {
                         //Voxel v = LookupVoxelWorld(new Vector3Int(x + pos.x * ChunkSize.x, y, z + pos.z * ChunkSize.z));
-                        Voxel v = Voxels[x + pos.x * ChunkSize.x, y, z + pos.z * ChunkSize.z];
+                        Voxel v = Voxels[x + pos.x * ChunkSize.x, y + pos.y * ChunkSize.y, z + pos.z * ChunkSize.z];
                         chunkData[x, y, z] = v;
                     }
                 }
@@ -155,8 +158,11 @@ public partial class VoxelWorld : MonoBehaviour
 
         for (int x = 0; x < WorldSize.x; x++) {
             for (int z = 0; z < WorldSize.z; z++) {
-                if (Chunks[x, z] != null)
-                    Chunks[x, z].FindNeighbors();
+                for (int y = 0; y < WorldSize.y; y++)
+                {
+                    if (Chunks[x, y, z] != null)
+                        Chunks[x, y, z].FindNeighbors();
+                }
             }
         }
     }
@@ -168,16 +174,17 @@ public partial class VoxelWorld : MonoBehaviour
         enqueueChunkMarker.Begin();
         if (IsChunkCoordInBounds(coord))
         {
-            VoxelChunk c = Chunks[coord.x, coord.z];
+            //Debug.Log("chunk inside bounds");
+            VoxelChunk c = Chunks[coord.x, coord.y, coord.z];
             if (c != null && !c.Loaded)
             {
                 if (!loadedChunks.Contains(c) && !chunksToLoad.Contains(c)) { 
-                    chunksToLoad.Add(Chunks[coord.x, coord.z]);
+                    chunksToLoad.Add(Chunks[coord.x, coord.y, coord.z]);
                 }
             }
         }
         else
-            Debug.Log("chunk outside bounds");
+            //Debug.Log("chunk outside bounds");
 
         enqueueChunkMarker.End();
     }
@@ -208,9 +215,9 @@ public partial class VoxelWorld : MonoBehaviour
     public void LoadChunk(Vector3Int coord)
     {
         if (IsChunkCoordInBounds(coord)) {
-            if (Chunks[coord.x, coord.z] != null) 
-                if (!Chunks[coord.x, coord.z].Loaded)
-                    loadedChunks.Add(Chunks[coord.x, coord.z].LoadChunk());
+            if (Chunks[coord.x, coord.y, coord.z] != null) 
+                if (!Chunks[coord.x, coord.y, coord.z].Loaded)
+                    loadedChunks.Add(Chunks[coord.x, coord.y, coord.z].LoadChunk());
         } else
         {
             Debug.Log("chunk outside bounds");
@@ -246,6 +253,8 @@ public partial class VoxelWorld : MonoBehaviour
                 spreadDist -= 1;
                 LoadChunkSpread(coord + Vector3Int.left, spreadDist);
                 LoadChunkSpread(coord + Vector3Int.right, spreadDist);
+                LoadChunkSpread(coord + Vector3Int.down, spreadDist);
+                LoadChunkSpread(coord + Vector3Int.up, spreadDist);
                 LoadChunkSpread(coord + Vector3Int.back, spreadDist);
                 LoadChunkSpread(coord + Vector3Int.forward, spreadDist);
             }
@@ -270,8 +279,8 @@ public partial class VoxelWorld : MonoBehaviour
     public void UnloadChunk(Vector3Int coord)
     {
         if (IsChunkCoordInBounds(coord)) {
-            if (Chunks[coord.x, coord.z].Loaded) {
-                loadedChunks.Remove(Chunks[coord.x, coord.z].UnloadChunk());
+            if (Chunks[coord.x, coord.y, coord.z].Loaded) {
+                loadedChunks.Remove(Chunks[coord.x, coord.y, coord.z].UnloadChunk());
                 DebugOverlay.SetDebugValue("Loaded Chunks", loadedChunks.Count);
 
             }
@@ -285,9 +294,9 @@ public partial class VoxelWorld : MonoBehaviour
         List<VoxelChunk> chunksToUnload = new List<VoxelChunk>();
         foreach (VoxelChunk c in loadedChunks)
         {
-            Vector2 center = new Vector2(centerCoord.x, centerCoord.z);
-            Vector2 chunkPos = new Vector2(c.ChunkCoord.x, c.ChunkCoord.z);
-            if (Vector2.Distance(center, chunkPos) > dist)
+            //Vector2 center = new Vector2(centerCoord.x, centerCoord.z);
+            //Vector2 chunkPos = new Vector2(c.ChunkCoord.x, c.ChunkCoord.z);
+            if (Vector3Int.Distance(centerCoord, c.ChunkCoord) > dist)
             {
                 chunksToUnload.Add(c);
             }
@@ -301,10 +310,10 @@ public partial class VoxelWorld : MonoBehaviour
     }
     public VoxelChunk GetContainingChunk(Vector3Int worldPos)
     {
-        Vector3Int chunkCoord = new Vector3Int(Mathf.FloorToInt(worldPos.x / ChunkSize.x), 0, Mathf.FloorToInt(worldPos.z / ChunkSize.z));
+        Vector3Int chunkCoord = new Vector3Int(Mathf.FloorToInt(worldPos.x / ChunkSize.x), Mathf.FloorToInt(worldPos.y / ChunkSize.y), Mathf.FloorToInt(worldPos.z / ChunkSize.z));
         if (IsChunkCoordInBounds(chunkCoord))
         {
-            return Chunks[chunkCoord.x, chunkCoord.z];
+            return Chunks[chunkCoord.x, chunkCoord.y, chunkCoord.z];
         }
         return null;
     }
@@ -313,8 +322,8 @@ public partial class VoxelWorld : MonoBehaviour
         //if (chunkCoord.x >= 0 && chunkCoord.z >= 0 && chunkCoord.x < WorldSize.x && chunkCoord.z < WorldSize.z)
         if (IsChunkCoordInBounds(chunkCoord))
         {
-            if (Chunks[chunkCoord.x, chunkCoord.z] != null)
-                return Chunks[chunkCoord.x, chunkCoord.z];
+            if (Chunks[chunkCoord.x, chunkCoord.y, chunkCoord.z] != null)
+                return Chunks[chunkCoord.x, chunkCoord.y, chunkCoord.z];
             else
                 return null;
         }
@@ -409,25 +418,7 @@ public partial class VoxelWorld : MonoBehaviour
                 Voxels[x, y, z].BlockID = BlockID.Dirt;
             }
         }
-        //if (Voxels[x, y, z].BlockID == BlockID.Air && y > 0)
-        //{
-        //    if (Voxels[x, y - 1, z].BlockID == BlockID.Grass)
-        //    {
-        //        float noise = Perlin.Fbm(x * 0.5f, z * 0.5f, 2);
-        //        if (noise > 0.3f)
-        //        {
-        //            Voxels[x, y, z] = new Voxel(BlockID.Log, 0, 0);
-        //            Voxels[x, y+1, z] = new Voxel(BlockID.Log, 0, 0); // dangerous
-        //            Voxels[x, y + 2, z] = new Voxel(BlockID.Log, 0, 0);
-        //            Voxels[x, y + 3, z] = new Voxel(BlockID.Leaves, 0, 0);
-        //            //Voxels[x, y + 3, z+1] = new Voxel(BlockID.Leaves, 0, 0);
-        //            //Voxels[x, y + 3, z-1] = new Voxel(BlockID.Leaves, 0, 0);
-        //            //Voxels[x+1, y + 3, z] = new Voxel(BlockID.Leaves, 0, 0);
-        //            //Voxels[x-1, y + 3, z] = new Voxel(BlockID.Leaves, 0, 0);
 
-        //        }
-        //    }
-        //}
     }
 
     private void LoadStructure(VoxelStructure structure)
@@ -514,7 +505,7 @@ public partial class VoxelWorld : MonoBehaviour
     public void DamageVoxel(Vector3 worldPos, VoxelHitInfo hitInfo, byte damage)
     {
         Vector3Int chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
-        VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.z];
+        VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y, chunkPos.z];
         //chunk.DamageVoxel(SnapToGrid(worldPos), hitInfo, damage);
 
         Voxel voxel = chunk.GetVoxel(SnapToGrid(worldPos));
@@ -539,7 +530,7 @@ public partial class VoxelWorld : MonoBehaviour
         if (voxel.BlockID == 0) voxel.Shape = 0;
 
         Vector3Int chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
-        VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.z];
+        VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y, chunkPos.z];
         if (Physics.CheckBox(worldPos, Vector3.one * 0.5f, Quaternion.identity, BlockPlacementMask.value))
         {
             return;
@@ -554,7 +545,7 @@ public partial class VoxelWorld : MonoBehaviour
             BlockData data = BlockRegistry.LookupBlock(newVoxel.BlockID);
 
             Vector3Int chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
-            VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.z];
+            VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y, chunkPos.z];
             
             //Debug.Log($"World is placing block, id={data.BlockID}, isEntity={data.IsBlockEntity}");
             
@@ -715,7 +706,10 @@ public partial class VoxelWorld : MonoBehaviour
     }
     public bool IsChunkCoordInBounds(Vector3Int coord)
     {
-        return coord.x >= 0 && coord.z >= 0 && coord.x < WorldSize.x - 1 && coord.z < WorldSize.z - 1;
+        return coord.x >= 0 && coord.y >= 0 && coord.z >= 0 && 
+                coord.x < WorldSize.x - 1 && 
+                coord.y < WorldSize.y - 1 && 
+                coord.z < WorldSize.z - 1;
     }
 
     public void Explode(Vector3Int center, float radius)

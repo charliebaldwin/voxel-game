@@ -13,7 +13,10 @@ public class VoxelCursor : MonoBehaviour
         if (hit.didHit)
         {
             transform.position = hit.voxelPos;
-            transform.forward = hit.hitNormal;
+            if (hit.hitNormal != Vector3Int.zero)
+            {
+                transform.forward = hit.hitNormal;
+            }
 
             if (hit.voxel.Shape == BlockShape.HalfSlab)
                 transform.position += Vector3.down * 0.5f;

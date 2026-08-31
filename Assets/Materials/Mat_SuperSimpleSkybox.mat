@@ -212,7 +212,7 @@ Material:
     - _HorizonSaturationFalloff: 5.3
     - _Metallic: 0
     - _MoonAngularDiameter: 3.74
-    - _MoonFalloff: 57.1
+    - _MoonFalloff: 136.1
     - _Moon_Enabled: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.005
