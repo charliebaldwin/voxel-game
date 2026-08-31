@@ -1,4 +1,5 @@
 using NUnit.Framework.Internal;
+using Sirenix.OdinInspector.Editor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -201,9 +202,15 @@ public class VoxelChunk : MonoBehaviour
     private List<Vector3> vertices = new List<Vector3>();
     private List<Vector3> normals = new List<Vector3>();
     private List<Vector4> uvs = new List<Vector4>();
-    private List<int>     triangles = new List<int>();
-    private List<int>     triangles2 = new List<int>();
-    private List<Color>   colors = new List<Color>();
+    private List<int> triangles = new List<int>();
+    private List<int> triangles2 = new List<int>();
+    private List<Color> colors = new List<Color>();
+
+    private List<Vector3> tempVertices = new List<Vector3>();
+    private List<Vector3> tempNormals = new List<Vector3>();
+    private List<Vector4> tempUvs = new List<Vector4>();
+    private List<int> tempTriangles = new List<int>();
+    private List<Color> tempColors = new List<Color>();
     private int           t = 0;
     private void ComputeMeshCPU()
     {
@@ -217,7 +224,7 @@ public class VoxelChunk : MonoBehaviour
         triangles = new List<int>();
         colors = new List<Color>();
 
-        UpdateMaterials();
+        //UpdateMaterials();
 
 
         t = 0;
@@ -227,18 +234,19 @@ public class VoxelChunk : MonoBehaviour
         Loop3D(ComputeMeshAction);
 
         // send all data for chunk into mesh
-        mesh = new Mesh();
-
-        //mesh.subMeshCount = submeshes.Count;
-        mesh.vertices = vertices.ToArray();
-        mesh.triangles = triangles.ToArray();
-        mesh.normals = normals.ToArray();
-        mesh.colors = colors.ToArray();
+        mesh = new Mesh
+        {
+            //mesh.subMeshCount = submeshes.Count;
+            vertices = vertices.ToArray(),
+            triangles = triangles.ToArray(),
+            normals = normals.ToArray(),
+            colors = colors.ToArray()
+        };
         mesh.SetUVs(0,uvs.ToArray());
         mesh.RecalculateTangents();
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
-        meshRenderer.materials = materials;
+        //meshRenderer.materials = materials;
 
         vertices.Clear();
         normals.Clear();
@@ -263,7 +271,7 @@ public class VoxelChunk : MonoBehaviour
     {
         Voxel vox = Voxels[x, y, z];
         if (vox.BlockID == BlockID.Air || vox.BlockID == BlockID.Machine) return;
-        voxelMarker.Begin();
+        //voxelMarker.Begin();
 
         Vector3Int localPos = new Vector3Int(x, y, z);
         Vector3Int worldPos = LocalToWorld(localPos, ChunkCoord, Size3D);
@@ -271,12 +279,13 @@ public class VoxelChunk : MonoBehaviour
         Voxel[] neighborVoxels = new Voxel[6];
         for (int n = 0; n < 6; n++)
         {
-            Vector3Int dir = OrthoDirections[n].AlignYZ(vox.UpAxis, vox.ForwardAxis).ToVector();
+            //Vector3Int dir = OrthoDirections[n].AlignYZ(vox.UpAxis, vox.ForwardAxis).ToVector();
+            Vector3Int dir = OrthoNormal.AlignYZ(OrthoDirections[n], vox.UpAxis, vox.ForwardAxis).ToVector();
             //Voxel neighbor = world.LookupVoxelWorld(LocalToWorld(new Vector3Int(x, y, z) + dir, ChunkCoord, Size3D));
             Voxel neighbor = GetCachedNeighbor(worldPos + dir);
             neighborVoxels[n] = neighbor;
         }
-        BlockModel model = new BlockModel(localPos, t, vox, neighborVoxels);
+        BlockModel model = new BlockModel(localPos, t, vox, neighborVoxels, ref tempVertices, ref tempNormals, ref tempUvs, ref tempColors, ref tempTriangles);
         foreach (Vector3 v in model.vertices) vertices.Add(v);
         foreach (Vector3 n in model.normals) normals.Add(n);
         foreach (Vector4 uv in model.uvs) uvs.Add(uv);
@@ -285,12 +294,12 @@ public class VoxelChunk : MonoBehaviour
 
         
         t = model.lastT;
-
-        voxelMarker.End();
+        //voxelMarker.End();
     }
 
     private Voxel GetCachedNeighbor(Vector3Int worldPos)
     {
+
         if (neighborCache.ContainsKey(worldPos)) return neighborCache[worldPos];
         else
         {

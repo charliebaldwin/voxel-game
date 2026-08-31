@@ -18,17 +18,17 @@ public class BlockModel
 
     public int lastT;
 
-    public BlockModel(Vector3 pos, int firstTriangle, Voxel voxel, Voxel[] neighborVoxels)
+    public BlockModel(Vector3 pos, int firstTriangle, Voxel voxel, Voxel[] neighborVoxels, ref List<Vector3> vertList, ref List<Vector3> normalList, ref List<Vector4> uvList, ref List<Color> colorList, ref List<int> triangleList)
     {
         if (voxel.BlockID != BlockID.Air)
         {
             blockPos = pos;
-            List<Vector3> vertList = new List<Vector3>();
-            List<Vector3> normalList = new List<Vector3>();
-            List<Vector4> tangentList = new List<Vector4>();
-            List<Vector4> uvList = new List<Vector4>();
-            List<Color> colorList = new List<Color>();
-            List<int> triangleList = new List<int>();
+            vertList.Clear();
+            normalList.Clear();
+            uvList.Clear();
+            colorList.Clear();
+            triangleList.Clear();
+
             int t = firstTriangle;
             //int[] nb = neighbors;
             Voxel[] nbVoxels = neighborVoxels;

@@ -44,6 +44,7 @@ public partial class VoxelWorld : MonoBehaviour
     public LayerMask BlockPlacementMask;
 
     public float BlockUpdateDelay = 0.05f;
+    public float ChunkLoadDelay = 0.02f;
     private IEnumerator blockUpdate_co;
     private IEnumerator chunkLoad_co;
 
@@ -161,16 +162,24 @@ public partial class VoxelWorld : MonoBehaviour
     }
 
     private List<VoxelChunk> chunksToLoad = new List<VoxelChunk>();
+    static readonly ProfilerMarker enqueueChunkMarker = new ProfilerMarker("Enqueue Chunk");
     public void EnqueueChunk (Vector3Int coord)
     {
+        enqueueChunkMarker.Begin();
         if (IsChunkCoordInBounds(coord))
         {
             VoxelChunk c = Chunks[coord.x, coord.z];
-            if (c != null && !c.Loaded && !loadedChunks.Contains(c) && !chunksToLoad.Contains(c))
-                chunksToLoad.Add(Chunks[coord.x, coord.z]);
+            if (c != null && !c.Loaded)
+            {
+                if (!loadedChunks.Contains(c) && !chunksToLoad.Contains(c)) { 
+                    chunksToLoad.Add(Chunks[coord.x, coord.z]);
+                }
+            }
         }
         else
             Debug.Log("chunk outside bounds");
+
+        enqueueChunkMarker.End();
     }
     public void LoadLastQueuedChunk()
     {
@@ -183,12 +192,16 @@ public partial class VoxelWorld : MonoBehaviour
     {
         Debug.Log($"starting chunk loading co, count={chunksToLoad.Count}");
         List<VoxelChunk> chunksToLoadCopy = chunksToLoad;
+        DebugOverlay.SetDebugValue("Queued Chunks", chunksToLoadCopy.Count);
         for (int i = 0; i < chunksToLoadCopy.Count; i++)
         {
             loadedChunks.Add(chunksToLoadCopy[i].LoadChunk());
-            yield return new WaitForSeconds(0.1f);
+            DebugOverlay.SetDebugValue("Queued Chunks", chunksToLoadCopy.Count-i);
+            DebugOverlay.SetDebugValue("Loaded Chunks", loadedChunks.Count);
+            yield return new WaitForSeconds(ChunkLoadDelay);
         }
         chunksToLoad = new List<VoxelChunk>();
+        DebugOverlay.SetDebugValue("Queued Chunks", chunksToLoad.Count);
         chunkLoad_co = null;
     }
 
@@ -203,13 +216,30 @@ public partial class VoxelWorld : MonoBehaviour
             Debug.Log("chunk outside bounds");
         }
     }
+
+    static readonly ProfilerMarker chunkSpreadMarker = new ProfilerMarker("Chunk Spread");
+    private List<Vector3Int> spreadChunks;
+    public void StartLoadChunkSpread(Vector3Int coord, int spreadDist)
+    {
+        chunkSpreadMarker.Begin();
+        spreadChunks = new List<Vector3Int>();
+        if (IsChunkCoordInBounds(coord))
+        {
+            LoadChunkSpread(coord, spreadDist);
+        }
+        chunkSpreadMarker.End();
+    }
     public void LoadChunkSpread(Vector3Int coord, int spreadDist)
     {
-
+        if (spreadChunks.Contains(coord))
+        {
+            return;
+        }
         if (IsChunkCoordInBounds(coord))
         {
             //LoadChunk(coord);
             EnqueueChunk(coord);
+
             //Debug.Log($"spreading into {coord}");
             if (spreadDist > 0)
             {
@@ -219,18 +249,39 @@ public partial class VoxelWorld : MonoBehaviour
                 LoadChunkSpread(coord + Vector3Int.back, spreadDist);
                 LoadChunkSpread(coord + Vector3Int.forward, spreadDist);
             }
+            spreadChunks.Add(coord);
+        }
+    }
+
+    public void LoadChunksRadius(Vector3Int center, int radius)
+    {
+        foreach(VoxelChunk chunk in Chunks) {
+            if (!chunk.Loaded)
+            {
+                Vector3Int chunkCoord = chunk.ChunkCoord;
+                if (Vector3Int.Distance(center, chunkCoord) < radius)
+                {
+                    EnqueueChunk(chunkCoord);
+                }
+            }
         }
     }
 
     public void UnloadChunk(Vector3Int coord)
     {
         if (IsChunkCoordInBounds(coord)) {
-            loadedChunks.Remove(Chunks[coord.x, coord.z].UnloadChunk());
+            if (Chunks[coord.x, coord.z].Loaded) {
+                loadedChunks.Remove(Chunks[coord.x, coord.z].UnloadChunk());
+                DebugOverlay.SetDebugValue("Loaded Chunks", loadedChunks.Count);
+
+            }
         } 
     }
 
+    static readonly ProfilerMarker unloadChunkMarker = new ProfilerMarker("Chunk Unload");
     public void UnloadDistantChunks(Vector3Int centerCoord, int dist)
     {
+        unloadChunkMarker.Begin();
         List<VoxelChunk> chunksToUnload = new List<VoxelChunk>();
         foreach (VoxelChunk c in loadedChunks)
         {
@@ -246,6 +297,7 @@ public partial class VoxelWorld : MonoBehaviour
             UnloadChunk(c.ChunkCoord);
         }
         chunksToUnload.Clear();
+        unloadChunkMarker.End();
     }
     public VoxelChunk GetContainingChunk(Vector3Int worldPos)
     {

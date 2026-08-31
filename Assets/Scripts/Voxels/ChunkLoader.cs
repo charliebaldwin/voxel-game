@@ -26,7 +26,7 @@ public class ChunkLoader : MonoBehaviour
         if (chunkPos.x != currentChunkPos.x || chunkPos.z != currentChunkPos.z)
         {
             Debug.Log($"starting load from {chunkPos}");
-            world.LoadChunkSpread(chunkPos, RenderDistance);
+            world.LoadChunksRadius(chunkPos, RenderDistance);
             world.UnloadDistantChunks(chunkPos, RenderDistance + 2);
             //World().UnloadChunk(currentChunkPos);
             currentChunkPos = chunkPos;
