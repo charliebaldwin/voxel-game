@@ -205,14 +205,14 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _GroundEnabled: 1
-    - _GroundFadeAmount: 0.242
+    - _GroundFadeAmount: 0.52
     - _Ground_Fade: -0.01
-    - _Ground_Height: -0.16
-    - _HorizonSaturationAmount: 1
-    - _HorizonSaturationFalloff: 2.08
+    - _Ground_Height: -0.48
+    - _HorizonSaturationAmount: 0.41
+    - _HorizonSaturationFalloff: 5.3
     - _Metallic: 0
-    - _MoonAngularDiameter: 2
-    - _MoonFalloff: 60
+    - _MoonAngularDiameter: 3.74
+    - _MoonFalloff: 57.1
     - _Moon_Enabled: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -222,36 +222,36 @@ Material:
     - _ReceiveShadows: 1
     - _SSS_CLOUD_OPACITY: 0.8
     - _Shading_Intensity: 0
-    - _SkyColorBlend: 0.22
+    - _SkyColorBlend: 0.11
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _StarDaytimeBrightness: 0
-    - _StarFrequency: 1
-    - _StarHorizonFalloff: 0
-    - _StarIntensity: 0.98
+    - _StarFrequency: 0.62
+    - _StarHorizonFalloff: 0.77
+    - _StarIntensity: 1.15
     - _StarSaturation: 1
     - _StarScale: 1
     - _StarSharness: 1
-    - _StarSharpness: 1
+    - _StarSharpness: 1.36
     - _StarSpeed: 1
     - _Star_Frequency: 0
     - _Star_Saturation: 1
     - _Star_Sharness: 0
     - _Stars_Enabled: 1
-    - _SunAngularDiameter: 2
-    - _SunFalloff: 10
-    - _SunFalloffIntensity: 1
+    - _SunAngularDiameter: 4
+    - _SunFalloff: 572.3
+    - _SunFalloffIntensity: 9.56
     - _SunSize: 0.38
     - _SunSkyLightingEnabled: 1
     - _Sun_Angular_Diameter: 2
     - _Sun_Enabled: 1
     - _Sun_Sky_Lighting_Enabled: 1
-    - _SunsetHorizontalFalloff: 0.6
-    - _SunsetIntensity: 0.727
-    - _SunsetRadialFalloff: 0.131
-    - _SunsetVerticalFalloff: 0.5
+    - _SunsetHorizontalFalloff: 0.51
+    - _SunsetIntensity: 1
+    - _SunsetRadialFalloff: 0.17
+    - _SunsetVerticalFalloff: 0.2
     - _Surface: 0
     - _UseProceduralStars: 0
     - _Use_Procedural_Stars: 1
@@ -283,15 +283,15 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GroundColor: {r: 1, g: 1, b: 1, a: 1}
-    - _HorizonColorDay: {r: 0.35534585, g: 0.5616242, b: 1, a: 1}
-    - _HorizonColorNight: {r: 0.025605002, g: 0.021300001, b: 0.05, a: 0}
+    - _HorizonColorDay: {r: 0.49999988, g: 0.65624994, b: 1, a: 1}
+    - _HorizonColorNight: {r: 0.012635894, g: 0.012307694, b: 0.032, a: 0}
     - _MoonColor: {r: 0.67058825, g: 0.7254902, b: 0.7490196, a: 0}
     - _SkyColorDay: {r: 0, g: 0.022067716, b: 0.12578613, a: 0}
-    - _SkyColorNight: {r: 0.01, g: 0.002216981, b: 0.01, a: 0}
+    - _SkyColorNight: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Star_Texture_Tint: {r: 1, g: 1, b: 1, a: 0}
-    - _SunColorHorizon: {r: 23.968637, g: 11.11594, b: 5.087683, a: 0}
-    - _SunColorZenith: {r: 47.93725, g: 38.987194, b: 17.41117, a: 0}
+    - _SunColorHorizon: {r: 5.3403144, g: 0.61124593, b: 0, a: 0}
+    - _SunColorZenith: {r: 5.992156, g: 4.8733997, b: 2.1763964, a: 0}
     - _WorldSpaceLightPos0: {r: 0, g: 0, b: 0, a: 0}
     - _ZenithColorDay: {r: 1, g: 1, b: 1, a: 1}
     - _ZenithColorNight: {r: 0.1037736, g: 0.01507654, b: 0.1037736, a: 0}
