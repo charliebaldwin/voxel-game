@@ -252,7 +252,7 @@ public class VoxelChunk : MonoBehaviour
 
         float duration = Mathf.Round((float)(Time.realtimeSinceStartupAsDouble - startTime) * 10000f) / 100f;
 
-        Debug.Log($"mesh time:{duration*100}ms");
+        //Debug.Log($"mesh time:{duration*100}ms");
         DebugOverlay.SetDebugValue("Mesh Time", $"{duration}ms");
         //Debug.Log($"mesh recorder value: {meshRecorder.CurrentValue}");
     }

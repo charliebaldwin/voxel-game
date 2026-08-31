@@ -175,7 +175,12 @@ public class PlayerController : MonoBehaviour
         if (context.started && Cursor.lockState == CursorLockMode.Locked)
         {
             //primaryDown = true;
-            DamageVoxel(equippedItem.Strength);
+            int strength = equippedItem.Strength;
+            if (equippedItem.Type != ItemType.Tool) 
+            {
+                strength = 1;
+            }
+            DamageVoxel(strength);
         }
         else if (context.canceled)
         {

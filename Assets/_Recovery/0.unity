@@ -14112,7 +14112,7 @@ MonoBehaviour:
   fontSize: 25
   padding: {x: 10, y: 15}
   resolution: {x: 1920, y: 1080}
-  panelWidth: 500
+  panelWidth: 700
   font: {fileID: 11400000, guid: b9eaf5570922ec845b483eb8974e9cef, type: 2}
   isVisible: 1
   showFPS: 1
