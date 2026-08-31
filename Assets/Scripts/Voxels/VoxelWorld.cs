@@ -168,8 +168,9 @@ public partial class VoxelWorld : MonoBehaviour
     }
 
     private List<VoxelChunk> chunksToLoad = new List<VoxelChunk>();
+    private SortedDictionary<float, VoxelChunk> sortedChunksToLoad = new SortedDictionary<float, VoxelChunk>();
     static readonly ProfilerMarker enqueueChunkMarker = new ProfilerMarker("Enqueue Chunk");
-    public void EnqueueChunk (Vector3Int coord)
+    public void EnqueueChunk (Vector3Int coord, float distance)
     {
         enqueueChunkMarker.Begin();
         if (IsChunkCoordInBounds(coord))
@@ -179,7 +180,22 @@ public partial class VoxelWorld : MonoBehaviour
             if (c != null && !c.Loaded)
             {
                 if (!loadedChunks.Contains(c) && !chunksToLoad.Contains(c)) { 
-                    chunksToLoad.Add(Chunks[coord.x, coord.y, coord.z]);
+                    chunksToLoad.Add(c);
+
+
+                    while (sortedChunksToLoad.ContainsKey(distance))
+                    {
+                        if (sortedChunksToLoad[distance].ChunkCoord != c.ChunkCoord)
+                        {
+                            distance += 0.01f;
+                        } else
+                        {
+                            return;
+                        }
+
+                    }
+                    sortedChunksToLoad.Add(distance, c);
+
                 }
             }
         }
@@ -197,17 +213,26 @@ public partial class VoxelWorld : MonoBehaviour
     }
     private IEnumerator LoadChunkCO()
     {
-        Debug.Log($"starting chunk loading co, count={chunksToLoad.Count}");
+        //.Log($"starting chunk loading co, count={chunksToLoad.Count}");
+
         List<VoxelChunk> chunksToLoadCopy = chunksToLoad;
+        SortedDictionary<float, VoxelChunk> sortedChunksToLoadCopy = sortedChunksToLoad;
+
         DebugOverlay.SetDebugValue("Queued Chunks", chunksToLoadCopy.Count);
-        for (int i = 0; i < chunksToLoadCopy.Count; i++)
+        //for (int i = 0; i < chunksToLoadCopy.Count; i++)
+        int i = 0;
+        foreach(KeyValuePair<float, VoxelChunk> kvp in sortedChunksToLoadCopy)
         {
-            loadedChunks.Add(chunksToLoadCopy[i].LoadChunk());
+            //loadedChunks.Add(chunksToLoadCopy[i].LoadChunk());
+            loadedChunks.Add(kvp.Value.LoadChunk());
+
             DebugOverlay.SetDebugValue("Queued Chunks", chunksToLoadCopy.Count-i);
-            DebugOverlay.SetDebugValue("Loaded Chunks", loadedChunks.Count);
+            DebugOverlay.SetDebugValue("Loaded Chunks", loadedChunks.Count); 
+            i++;
             yield return new WaitForSeconds(ChunkLoadDelay);
         }
         chunksToLoad = new List<VoxelChunk>();
+        sortedChunksToLoad = new SortedDictionary<float, VoxelChunk>();
         DebugOverlay.SetDebugValue("Queued Chunks", chunksToLoad.Count);
         chunkLoad_co = null;
     }
@@ -245,7 +270,7 @@ public partial class VoxelWorld : MonoBehaviour
         if (IsChunkCoordInBounds(coord))
         {
             //LoadChunk(coord);
-            EnqueueChunk(coord);
+            EnqueueChunk(coord, 1f);
 
             //Debug.Log($"spreading into {coord}");
             if (spreadDist > 0)
@@ -264,16 +289,26 @@ public partial class VoxelWorld : MonoBehaviour
 
     public void LoadChunksRadius(Vector3Int center, int radius)
     {
+        if (chunkLoad_co != null)
+        {
+            StopCoroutine(chunkLoad_co);
+        }
+        chunksToLoad.Clear();
+        sortedChunksToLoad.Clear();
+
         foreach(VoxelChunk chunk in Chunks) {
             if (!chunk.Loaded)
             {
                 Vector3Int chunkCoord = chunk.ChunkCoord;
-                if (Vector3Int.Distance(center, chunkCoord) < radius)
+                float distance = Vector3Int.Distance(center, chunkCoord);
+                if (distance < radius)
                 {
-                    EnqueueChunk(chunkCoord);
+                    EnqueueChunk(chunkCoord, distance);
                 }
             }
         }
+        chunkLoad_co = LoadChunkCO();
+        StartCoroutine(chunkLoad_co);
     }
 
     public void UnloadChunk(Vector3Int coord)

@@ -7362,7 +7362,7 @@ Light:
   serializedVersion: 12
   m_Type: 1
   m_Color: {r: 0.5503144, g: 0.8917909, b: 1, a: 1}
-  m_Intensity: 0.03643161
+  m_Intensity: 0.9034394
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -7371,7 +7371,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 0.03643161
+    m_Strength: 0.9034394
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
@@ -7424,13 +7424,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 329234428}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.9793725, y: -0.088007234, z: -0.18008456, w: 0.02556856}
-  m_LocalPosition: {x: 18.291874, y: 53.769207, z: 41.84498}
+  m_LocalRotation: {x: 0.35572365, y: 0.13194692, z: -0.15088348, w: 0.9128445}
+  m_LocalPosition: {x: 17.759333, y: 52.084583, z: 41.317116}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 1.053, y: -159.066, z: -169.536}
+  m_LocalEulerAnglesHint: {x: 43.571, y: 10.622, z: -14.515}
 --- !u!1 &331992735
 GameObject:
   m_ObjectHideFlags: 0
@@ -9575,7 +9575,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VoxelWorld
   ChunkSize: {x: 16, y: 16, z: 16}
-  WorldSize: {x: 24, y: 16, z: 24}
+  WorldSize: {x: 64, y: 6, z: 64}
   GenerationSettings: {fileID: 11400000, guid: e52c9537dfcd47a4587e2d4038385333, type: 2}
   ChunkPrefab: {fileID: 3265665669344878959, guid: afa5dac21cadea249be601a26864fbd9, type: 3}
   BlockEntityPrefab: {fileID: 9103259098748796145, guid: 61317f3ca09daa74295fdc38b5a1e193, type: 3}
@@ -11611,15 +11611,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2
+      value: 11.8
       objectReference: {fileID: 0}
     - target: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 20
+      value: 30.1
       objectReference: {fileID: 0}
     - target: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2
+      value: 17.6
       objectReference: {fileID: 0}
     - target: {fileID: 3736821807430417006, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: m_LocalRotation.w
@@ -11655,7 +11655,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4012988247841787298, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: RenderDistance
-      value: 12
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4332070277492633877, guid: 33310f4d894d76046b677c2e8a3d9976, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -19800,7 +19800,7 @@ Light:
   serializedVersion: 12
   m_Type: 1
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 0.072859526
+  m_Intensity: 1.8068799
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -19809,7 +19809,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 0.036429763
+    m_Strength: 0.90343994
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
@@ -19862,13 +19862,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 931529469}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.9793725, y: -0.08800741, z: -0.1800846, w: 0.025568113}
-  m_LocalPosition: {x: 17.965488, y: 51.80277, z: 42.008575}
+  m_LocalRotation: {x: 0.35572425, y: 0.13194674, z: -0.1508835, w: 0.91284424}
+  m_LocalPosition: {x: 18.49803, y: 53.487392, z: 42.536438}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 1.053, y: -159.066, z: -169.536}
+  m_LocalEulerAnglesHint: {x: 43.571, y: 10.622, z: -14.515}
 --- !u!114 &931529472
 MonoBehaviour:
   m_ObjectHideFlags: 0
