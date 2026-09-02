@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfd70aa7ae84d8c47aef5c794489c379, type: 3}
+  m_Name: Block_StoneBrick_Long
+  m_EditorClassIdentifier: Assembly-CSharp::BlockDataObject
+  Data:
+    BlockID: 24
+    Toughness: 20
+    IsBlockEntity: 0
+    ValidTools: 
+    IdealTools: 
+    CanChangeUpAxis: 0
+    Material: {fileID: 2100000, guid: 61de2080775c6cc4aa57b576218bb8d3, type: 2}
+    Textures:
+    - {fileID: 2800000, guid: cef0b4de194679747b678bf465785ec1, type: 3}
+    NormalTextures: []
+    MSTextures: []
+    TextureMode: 0

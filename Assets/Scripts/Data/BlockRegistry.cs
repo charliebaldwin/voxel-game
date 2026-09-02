@@ -48,16 +48,17 @@ public class BlockRegistry : MonoBehaviour
     public void LoadObjectsFromPath()
     {
         BlockDataObject[] bdoArray = Resources.LoadAll<BlockDataObject>(BDOFolderPath);
-        BlockDataObjects = new List<BlockDataObject>(bdoArray.Length);
+        BlockDataObjects = new List<BlockDataObject>(bdoArray.Length+2);
         foreach (BlockDataObject bdo in bdoArray)
         {
-            BlockDataObjects.Add(null);
+            BlockDataObjects.Add(bdo);
         }
-        foreach (BlockDataObject bdo in bdoArray)
-        {
-            BlockDataObjects[(int)bdo.Data.BlockID] = bdo;
-            //Debug.Log($"{bdo.Data.ItemID} - {bdo.Data.Name}");
-        }
+        //foreach (BlockDataObject bdo in bdoArray)
+        //{
+        //    Debug.Log($"{bdo.Data.BlockID} = {(int)bdo.Data.BlockID} ({BlockDataObjects.Count})");
+        //    BlockDataObjects[(int)bdo.Data.BlockID] = bdo;
+            
+        //}
 
         BlockEntityDataObject[] bdoEntityArray = Resources.LoadAll<BlockEntityDataObject>(BDOFolderPath);
         BlockEntityDataObjects = new List<BlockEntityDataObject>(bdoArray.Length);
@@ -79,6 +80,7 @@ public class BlockRegistry : MonoBehaviour
         Blocks = new Dictionary<BlockID, BlockData>();
         foreach (BlockDataObject bdo in BlockDataObjects)
         {
+            Debug.Log(bdo.name);
             BlockData data = bdo.Data;
             Blocks.Add(data.BlockID, data);
         }

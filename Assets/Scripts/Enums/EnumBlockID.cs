@@ -13,5 +13,6 @@ public enum BlockID : short
     Rocky_Dirt, Stone_Sandstone, Stone_Limestone, Stone_Dolomite, Stone_Marble, Stone_Shale, Stone_Slate, Stone_Basalt,
     Color_Block,
     Test,
+    StoneBrick_Long, StoneBrick_Small, StoneSlab_H, StoneSlab_V, StoneTile_L, StoneTile_M,
 
 }

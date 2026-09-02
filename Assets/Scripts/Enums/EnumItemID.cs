@@ -33,4 +33,5 @@ public enum ItemID
     NullItem,
 
     Block_Test,
+    Block_StoneBrick_Long, Block_StoneBrick_Small, Block_StoneSlab_H, Block_StoneSlab_V, Block_StoneTile_L, Block_StoneTile_M,
 }

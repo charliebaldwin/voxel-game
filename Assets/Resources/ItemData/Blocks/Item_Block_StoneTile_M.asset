@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0448bd35bb5186438b06193dddf38b4, type: 3}
+  m_Name: Item_Block_StoneTile_M
+  m_EditorClassIdentifier: Assembly-CSharp::ItemDataObject
+  Data:
+    Name: Stone Tiles
+    ItemID: 34
+    Tooltip: Item tooltip
+    StackSize: 999
+    Rarity: 0
+    GUIIcon: {fileID: 21300000, guid: 130b9a855cfe66046a52448747b0c414, type: 3}
+    ViewmodelMesh: {fileID: 8308663131422070708, guid: 649fbd93bd831a246a5d5c6ee74dc2a0, type: 3}
+    ViewmodelMat: {fileID: 2100000, guid: ffc8fdf8fff77be4c8429b284f0c4c28, type: 2}
+    TooltipIcon: {fileID: 21300000, guid: 23c40bdccf10c6d4482b335647abf801, type: 3}
+    Type: 3
+    BlockID: 29
+    TextureIndex: 3
+    BlockData:
+      BlockID: 0
+      Toughness: 6
+      IsBlockEntity: 0
+      ValidTools: 
+      IdealTools: 
+      CanChangeUpAxis: 0
+      Material: {fileID: 0}
+      Textures: []
+      NormalTextures: []
+      MSTextures: []
+      TextureMode: 0
+    Strength: 1
+    UseTime: 1
+    ToolType: 0
