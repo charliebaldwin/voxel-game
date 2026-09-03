@@ -34,4 +34,5 @@ public enum ItemID
 
     Block_Test,
     Block_StoneBrick_Long, Block_StoneBrick_Small, Block_StoneSlab_H, Block_StoneSlab_V, Block_StoneTile_L, Block_StoneTile_M,
+    Block_Sand, Block_Silt, Block_Clay, Block_GrassySand, Block_GrassySilt, Block_GrassyClay,
 }

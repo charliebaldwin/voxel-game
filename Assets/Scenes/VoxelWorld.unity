@@ -10041,6 +10041,7 @@ MonoBehaviour:
   BlockDataObjects:
   - {fileID: 11400000, guid: 2c4b80b2f3849f54ca715d05621caeef, type: 2}
   - {fileID: 11400000, guid: 068a48039d8f89f4e8b925741dec784b, type: 2}
+  - {fileID: 11400000, guid: 015fe90a00360e04abfe66af26e4f2a4, type: 2}
   - {fileID: 11400000, guid: f5f1c245d440fd44a9f9f25630d633d8, type: 2}
   - {fileID: 11400000, guid: 553422431740145448389e3ef2522444, type: 2}
   - {fileID: 11400000, guid: 37fa5fc8f8e73544693f5a77a3b650da, type: 2}
@@ -10053,8 +10054,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 94d021a99ab9a8a4fa8bef6b445a6382, type: 2}
   - {fileID: 11400000, guid: 44cb5672a86ee0e438cfb4d10e25922f, type: 2}
   - {fileID: 11400000, guid: 7fe3f5d4a0e610d4ca56de756bc620d6, type: 2}
+  - {fileID: 11400000, guid: ca4edbbcfcdbcdb409370ea3b5ba5575, type: 2}
   - {fileID: 11400000, guid: 69fc35c7f8cb52642b22b558506b535e, type: 2}
   - {fileID: 11400000, guid: 886f8d2142e11784896e1cd69e8bee72, type: 2}
+  - {fileID: 11400000, guid: 2c2707d16ec885f439aa72e1b5659a4f, type: 2}
   - {fileID: 11400000, guid: ae696390731b6aa45bb4a4d515e31ddc, type: 2}
   - {fileID: 11400000, guid: d2251d6ec5128314687bee474b33acd0, type: 2}
   - {fileID: 11400000, guid: 1c09a27cec58618479090584bf25b8ea, type: 2}
@@ -17447,7 +17450,7 @@ PrefabInstance:
       objectReference: {fileID: 584695760}
     - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: InitialStacks.Array.size
-      value: 7
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: InitialHotbarStacks.Array.size
@@ -17539,15 +17542,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: InitialStacks.Array.data[7].ItemID
-      value: 17
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: InitialStacks.Array.data[8].ItemID
-      value: 17
+      value: 36
       objectReference: {fileID: 0}
     - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: InitialStacks.Array.data[9].ItemID
-      value: 17
+      value: 37
       objectReference: {fileID: 0}
     - target: {fileID: 6024166015988664546, guid: ac0807829e096744f858bb67cdf639e5, type: 3}
       propertyPath: InitialStacks.Array.data[10].ItemID
@@ -45224,7 +45227,7 @@ SceneRoots:
   - {fileID: 380934262}
   - {fileID: 477280522}
   - {fileID: 1386501655}
+  - {fileID: 171169156}
   - {fileID: 222626572}
   - {fileID: 1148129049}
-  - {fileID: 171169156}
   - {fileID: 1050951639}
