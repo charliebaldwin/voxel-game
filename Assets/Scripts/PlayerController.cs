@@ -266,7 +266,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private const bool DO_ROTATE = true;
+    private const bool DO_ROTATE = false;
     private void PlaceVoxel(BlockID id)
     {
         if (lastHitInfo.didHit)

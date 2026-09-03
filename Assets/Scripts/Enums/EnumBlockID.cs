@@ -15,5 +15,6 @@ public enum BlockID : short
     Test,
     StoneBrick_Long, StoneBrick_Small, StoneSlab_H, StoneSlab_V, StoneTile_L, StoneTile_M,
     Sand, Silt, Clay, GrassySand, GrassySilt, GrassyClay,
+    WoodFloor_S, WoodFloor_L
 
 }
