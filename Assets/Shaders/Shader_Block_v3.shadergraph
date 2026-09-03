@@ -1367,20 +1367,6 @@
         {
             "m_OutputSlot": {
                 "m_Node": {
-                    "m_Id": "b97e473f06f94216a65320a3496b275b"
-                },
-                "m_SlotId": 1
-            },
-            "m_InputSlot": {
-                "m_Node": {
-                    "m_Id": "e1fec65af8a8491fad51c2d7edd31f17"
-                },
-                "m_SlotId": 0
-            }
-        },
-        {
-            "m_OutputSlot": {
-                "m_Node": {
                     "m_Id": "baf5b2aaedf749259115bd4df3617575"
                 },
                 "m_SlotId": 0
@@ -5433,8 +5419,8 @@
     "m_ObjectId": "582a219413f342d9b3ff7bb8fafffdc2",
     "m_Title": "damage",
     "m_Position": {
-        "x": -220.0,
-        "y": -457.3333740234375
+        "x": -219.99998474121095,
+        "y": -457.3333435058594
     }
 }
 
@@ -6770,7 +6756,7 @@
     "m_Hidden": false,
     "m_ShaderOutputName": "Smoothness",
     "m_StageCapability": 2,
-    "m_Value": 0.30000001192092898,
+    "m_Value": 0.0,
     "m_DefaultValue": 0.5,
     "m_Labels": [],
     "m_LiteralMode": false
@@ -10691,7 +10677,7 @@
     "m_ObjectId": "d171f97c17f246178ee319f08e62d57c",
     "m_Title": "Blend Normals",
     "m_Position": {
-        "x": 147.333251953125,
+        "x": 147.33331298828126,
         "y": 1432.666748046875
     }
 }
@@ -12147,7 +12133,7 @@
     "m_Title": "Face Normal",
     "m_Position": {
         "x": -224.0,
-        "y": 834.666748046875
+        "y": 834.6666870117188
     }
 }
 

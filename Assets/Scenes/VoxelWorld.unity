@@ -10071,6 +10071,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c4bf0def0c646aa46ad56e4949cc6d7f, type: 2}
   - {fileID: 11400000, guid: 31f4d54f84231764681504a92e776b67, type: 2}
   - {fileID: 11400000, guid: 2c337040d414a164f8a2783bde1c7b16, type: 2}
+  - {fileID: 11400000, guid: bac91c2c4375a7240840cd5968ab91f5, type: 2}
   - {fileID: 11400000, guid: 4098edf1a63f51543bcb23e8fd52477b, type: 2}
   BlockEntityDataObjects:
   - {fileID: 11400000, guid: 1d04167cd48948c4797487a15d75223c, type: 2}
