@@ -44,7 +44,7 @@ public class VoxelGenerator : MonoBehaviour
 
         LoopXZ(TerrainNoise);
         LoopXYZ(AddGrass);
-        LoopXYZ(CarveCaves);
+        //LoopXYZ(CarveCaves);
 
     }
 

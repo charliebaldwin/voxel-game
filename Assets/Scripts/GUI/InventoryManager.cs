@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -79,13 +80,43 @@ public class InventoryManager : MonoBehaviour
         {
             if (InitialHotbarStacks[i] != null)
             {
-                Item itemData = ItemRegistry.LookupItem(InitialStacks[i].ItemID);
+                Item itemData = ItemRegistry.LookupItem(InitialHotbarStacks[i].ItemID);
                 //Debug.Log(itemData.Name);
 
                 ItemTile newItemTile = Instantiate(itemTilePrefab).GetComponent<ItemTile>();
-                newItemTile.Stack = InitialStacks[i];
+                newItemTile.Stack = InitialHotbarStacks[i];
 
                 HotbarCells[i].GiveTile(newItemTile);
+            }
+        }
+    }
+
+    public void AddItemStack(ItemStack stack)
+    {
+        // first check matching stacks
+        for (int i = 0; i < InventoryCells.Count; i++)
+        {
+            ItemTile tile = InventoryCells[i].GetTile();
+            if (tile != null)
+            {
+                if (tile.Stack.ItemID == stack.ItemID)
+                {
+                    tile.AddCount(stack.Count);
+                    return;
+                }
+            }
+        }
+
+        // then find first empty stack
+        for (int i = 0; i < InventoryCells.Count; i++)
+        {
+            if (InventoryCells[i].GetTile() == null)
+            {
+                ItemTile newItemTile = Instantiate(itemTilePrefab).GetComponent<ItemTile>();
+                newItemTile.Stack = stack;
+
+                InventoryCells[i].GiveTile(newItemTile);
+                return;
             }
         }
     }

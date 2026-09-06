@@ -32,6 +32,8 @@ public partial class VoxelWorld : MonoBehaviour
     [SerializeField] private GameObject BlockEntityPrefab;
     [EndFoldout]
 
+    [SerializeField] private ItemPickupManager PickupManager;
+
     [Foldout("Data")]
     [ShowInInspector] private Voxel[,,] Voxels;
     [ShowInInspector] private VoxelChunk[,,] Chunks;
@@ -552,11 +554,15 @@ public partial class VoxelWorld : MonoBehaviour
         int toughness = data.Toughness;
         if (voxel.Damage >= toughness)
         {
-            
+
+            ItemID pickupItemID = ItemRegistry.GetBlockItem(voxel.BlockID);
+
             VFX().SpawnVFX(VFXType.BLOCK_BREAK, worldPos, Vector3.zero, (int)voxel.BlockID);
 
             voxel = new Voxel(BlockID.Air, 0, 0);
             voxel.Shape = 0;
+
+            PickupManager.SpawnItemPickup(worldPos, pickupItemID, 1);
         }
         SetVoxel(SnapToGrid(worldPos) , voxel);
     }
