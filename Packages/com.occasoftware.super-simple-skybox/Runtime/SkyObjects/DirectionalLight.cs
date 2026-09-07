@@ -70,7 +70,7 @@ namespace OccaSoftware.SuperSimpleSkybox.Runtime
 
         private float lightAngle;
 
-        private float GetLightAngle()
+        public float GetLightAngle()
         {
             return Vector3.Dot(Vector3.down, transform.forward);
         }

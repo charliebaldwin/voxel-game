@@ -39,6 +39,7 @@ public class ItemRegistry : MonoBehaviour
         {
             if (item.Type == ItemType.Block)
             {
+
                 if (item.BlockID == blockID)
                 {
                     return item.ItemID;

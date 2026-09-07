@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a0448bd35bb5186438b06193dddf38b4, type: 3}
-  m_Name: Item_Null
+  m_Name: Item_Block_GrassyClay
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataObject
   Data:
-    Name: Null Item
-    ItemID: 27
-    Tooltip: this is a null item
+    Name: Grassy Clay
+    ItemID: 40
+    Tooltip: Item tooltip
     StackSize: 999
     Rarity: 0
-    GUIIcon: {fileID: 21300000, guid: 067fee68b1b1d5d48b3268337ed102cc, type: 3}
-    ViewmodelMesh: {fileID: 1205814016665740986, guid: 45410d4dc870ce940a4c6efbeeea6639, type: 3}
-    ViewmodelMat: {fileID: 2100000, guid: 43608b840b0da9c419a449f6bd92966a, type: 2}
-    TooltipIcon: {fileID: 21300000, guid: 067fee68b1b1d5d48b3268337ed102cc, type: 3}
-    Type: 2
-    BlockID: -1
-    TextureIndex: 0
+    GUIIcon: {fileID: 1404578019, guid: 68a035836e904954eb79f97d34414980, type: 3}
+    ViewmodelMesh: {fileID: 8308663131422070708, guid: 649fbd93bd831a246a5d5c6ee74dc2a0, type: 3}
+    ViewmodelMat: {fileID: 2100000, guid: ffc8fdf8fff77be4c8429b284f0c4c28, type: 2}
+    TooltipIcon: {fileID: 21300000, guid: 23c40bdccf10c6d4482b335647abf801, type: 3}
+    Type: 3
+    BlockID: 35
+    TextureIndex: 1
     BlockData:
       BlockID: 0
       Toughness: 6
@@ -37,6 +37,6 @@ MonoBehaviour:
       NormalTextures: []
       MSTextures: []
       TextureMode: 0
-    Strength: 1
-    UseTime: 1
+    Strength: 0
+    UseTime: 0
     ToolType: 0

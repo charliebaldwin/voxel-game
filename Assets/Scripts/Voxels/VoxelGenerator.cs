@@ -5,6 +5,7 @@ using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
 
+
 public class VoxelGenerator : MonoBehaviour
 {
     public ComputeShader NoiseCS;
@@ -27,6 +28,9 @@ public class VoxelGenerator : MonoBehaviour
     public float OctaveStrength = 0.3f;
     public float OctaveScale = 1.5f;
 
+    public int Seed = 1;
+    private float seedOffset;
+
 
     public void Generate(Vector3Int worldVoxelSize, WorldGenSettings worldGenSettings)
     {
@@ -35,7 +39,8 @@ public class VoxelGenerator : MonoBehaviour
 
         voxels = new Voxel[worldSize.x, worldSize.y, worldSize.z];
 
-
+        UnityEngine.Random.InitState(Seed);
+        seedOffset = UnityEngine.Random.Range(0f, 999999f);
 
 
         //TerrainNoiseGPU();
@@ -43,6 +48,7 @@ public class VoxelGenerator : MonoBehaviour
         //TerrainNoiseGPU(out noiseArray3, 9f);
 
         LoopXZ(TerrainNoise);
+        LoopXYZ(SoilNoise);
         LoopXYZ(AddGrass);
         //LoopXYZ(CarveCaves);
 
@@ -159,8 +165,8 @@ public class VoxelGenerator : MonoBehaviour
         float h = 0f;
 
 
-        float noise = Perlin.Fbm(x * worldSettings.NoiseScale, z * worldSettings.NoiseScale, worldSettings.NoiseOctaves);
-        float noise2 = Perlin.Fbm(x * worldSettings.NoiseScale * 0.2f, z * worldSettings.NoiseScale * 0.2f, worldSettings.NoiseOctaves);
+        float noise = Perlin.Fbm(x * worldSettings.NoiseScale + seedOffset, z * worldSettings.NoiseScale + seedOffset, worldSettings.NoiseOctaves);
+        float noise2 = Perlin.Fbm(x * worldSettings.NoiseScale * 0.2f + seedOffset, z * worldSettings.NoiseScale * 0.2f + seedOffset, worldSettings.NoiseOctaves);
         h = noise * worldSettings.HeightRange + worldSettings.HeightOffset;
         h = h + (noise2 * worldSettings.HeightRange * 4);
 
@@ -252,14 +258,55 @@ public class VoxelGenerator : MonoBehaviour
         }
     }
 
+    private void SoilNoise(int x, int y, int z)
+    {
+        if (GetVoxel(x, y, z).BlockID != BlockID.Air) {
+
+            float sand = Perlin.Fbm(x * worldSettings.NoiseScale + 4392f + seedOffset, y * worldSettings.NoiseScale * 0.3f + 200f + seedOffset,  z * worldSettings.NoiseScale + 9200f + seedOffset, 3);
+            float silt = Perlin.Fbm(x * worldSettings.NoiseScale - 9492f + seedOffset, y * worldSettings.NoiseScale * 0.3f - 600f + seedOffset,  z * worldSettings.NoiseScale - 3300f + seedOffset, 3);
+            float clay = Perlin.Fbm(x * worldSettings.NoiseScale + 2124f + seedOffset, y * worldSettings.NoiseScale * 0.3f + 3000f + seedOffset, z * worldSettings.NoiseScale + 100f + seedOffset, 3);
+
+            Color soilMix = new Color(sand, silt, clay);
+            Color.RGBToHSV(soilMix, out float hue, out float sat, out float val);
+            if (sat < 0.1f)
+            {
+                SetVoxel(x, y, z, new Voxel(BlockID.Silt)); // even mixture (loam)
+            }
+            else
+            {
+                if (hue > 0.85f || hue < 0.15f) // red (sand)
+                {
+                    SetVoxel(x, y, z, new Voxel(BlockID.Sand));
+                }
+                else if (hue < 0.5f) // green (silt)
+                {
+                    SetVoxel(x, y, z, new Voxel(BlockID.Silt));
+                }
+                else // blue (clay)
+                {
+                    SetVoxel(x, y, z, new Voxel(BlockID.Clay));
+                }
+            }
+        }
+
+    }
     private void AddGrass(int x, int y, int z)
     {
         if (GetVoxel(x, y, z).BlockID == BlockID.Dirt && GetVoxel(x, y + 1, z).BlockID == BlockID.Air)
         {
             SetVoxel(x, y, z, new Voxel(BlockID.Grass));
-            //SetVoxel(x, y-1, z, new Voxel(BlockID.Dirt));
-            //SetVoxel(x, y-2, z, new Voxel(BlockID.Dirt));
-
+        }
+        else if (GetVoxel(x, y, z).BlockID == BlockID.Sand && GetVoxel(x, y + 1, z).BlockID == BlockID.Air)
+        {
+            SetVoxel(x, y, z, new Voxel(BlockID.GrassySand));
+        }
+        else if (GetVoxel(x, y, z).BlockID == BlockID.Silt && GetVoxel(x, y + 1, z).BlockID == BlockID.Air)
+        {
+            SetVoxel(x, y, z, new Voxel(BlockID.GrassySilt));
+        }
+        else if (GetVoxel(x, y, z).BlockID == BlockID.Clay && GetVoxel(x, y + 1, z).BlockID == BlockID.Air)
+        {
+            SetVoxel(x, y, z, new Voxel(BlockID.GrassyClay));
         }
     }
 

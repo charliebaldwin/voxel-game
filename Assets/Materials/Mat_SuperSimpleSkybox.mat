@@ -205,11 +205,11 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _GroundEnabled: 1
-    - _GroundFadeAmount: 0.52
+    - _GroundFadeAmount: 0.079
     - _Ground_Fade: -0.01
-    - _Ground_Height: -0.48
-    - _HorizonSaturationAmount: 0.41
-    - _HorizonSaturationFalloff: 5.3
+    - _Ground_Height: -0.164
+    - _HorizonSaturationAmount: 1
+    - _HorizonSaturationFalloff: 1
     - _Metallic: 0
     - _MoonAngularDiameter: 3.74
     - _MoonFalloff: 136.1
@@ -222,7 +222,7 @@ Material:
     - _ReceiveShadows: 1
     - _SSS_CLOUD_OPACITY: 0.8
     - _Shading_Intensity: 0
-    - _SkyColorBlend: 0.11
+    - _SkyColorBlend: 0.724
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -248,10 +248,10 @@ Material:
     - _Sun_Angular_Diameter: 2
     - _Sun_Enabled: 1
     - _Sun_Sky_Lighting_Enabled: 1
-    - _SunsetHorizontalFalloff: 0.51
+    - _SunsetHorizontalFalloff: 0.574
     - _SunsetIntensity: 1
-    - _SunsetRadialFalloff: 0.17
-    - _SunsetVerticalFalloff: 0.2
+    - _SunsetRadialFalloff: 0.01
+    - _SunsetVerticalFalloff: 0.472
     - _Surface: 0
     - _UseProceduralStars: 0
     - _Use_Procedural_Stars: 1
@@ -283,10 +283,10 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GroundColor: {r: 0.41568628, g: 0.7411765, b: 0.8509804, a: 1}
-    - _HorizonColorDay: {r: 0.49999988, g: 0.65624994, b: 1, a: 1}
+    - _HorizonColorDay: {r: 0, g: 0.52890587, b: 1, a: 1}
     - _HorizonColorNight: {r: 0.012635894, g: 0.012307694, b: 0.032, a: 0}
     - _MoonColor: {r: 0.67058825, g: 0.7254902, b: 0.7490196, a: 0}
-    - _SkyColorDay: {r: 0, g: 0.022067716, b: 0.12578613, a: 0}
+    - _SkyColorDay: {r: 0, g: 0.030507809, b: 0.15723258, a: 0}
     - _SkyColorNight: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Star_Texture_Tint: {r: 1, g: 1, b: 1, a: 0}
