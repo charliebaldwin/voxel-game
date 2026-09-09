@@ -1,7 +1,17 @@
 fileFormatVersion: 2
 guid: 0062cf572e97bb04194c99cc59be3377
+AssetOrigin:
+  serializedVersion: 1
+  productId: 310303
+  packageName: Evo UI - Modern UI Framework
+  packageVersion: 1.9.11
+  assetPath: Assets/Plugins/Evo/Evo UI/Sprites/Borders/Radial/Filled/Radial Filled (Top Sided) - 64px.png
+  uploadId: 976444
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 787889332103392042
+    second: Radial Filled (Top Sided) - 64px_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -53,7 +63,9 @@ TextureImporter:
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
+  spriteTessellationMethod: 0
   spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
@@ -108,7 +120,29 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Radial Filled (Top Sided) - 64px_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2ba7525c252fea00800000000000000
+      internalID: 787889332103392042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -128,11 +162,3 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 310303
-  packageName: Evo UI - Modern UI Framework
-  packageVersion: 1.9.11
-  assetPath: Assets/Plugins/Evo/Evo UI/Sprites/Borders/Radial/Filled/Radial Filled
-    (Top Sided) - 64px.png
-  uploadId: 976444

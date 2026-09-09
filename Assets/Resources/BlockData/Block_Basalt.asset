@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Block_Basalt
   m_EditorClassIdentifier: Assembly-CSharp::BlockDataObject
   Data:
-    BlockID: 21
+    BlockID: 17
     Toughness: 60
     IsBlockEntity: 0
     ValidTools: 

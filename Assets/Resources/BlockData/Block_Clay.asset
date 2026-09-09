@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Block_Clay
   m_EditorClassIdentifier: Assembly-CSharp::BlockDataObject
   Data:
-    BlockID: 32
+    BlockID: 40
     Toughness: 6
     IsBlockEntity: 0
     ValidTools: 

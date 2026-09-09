@@ -247,5 +247,34 @@ public class BlockRegistry : MonoBehaviour
         
 
         return BlockDataList;
-    } 
+    }
+
+    [Button]
+    public void PopulateBlockDataList()
+    {
+        System.Array allBlockIDs = System.Enum.GetValues(typeof(BlockID));
+        foreach (BlockID id in allBlockIDs)
+        {
+
+            if (!HasBlockID(id))
+            {
+                BlockData newBlockData = new BlockData();
+                newBlockData.BlockID = id;
+                BlockData.Add(newBlockData);
+            }
+        }
+    }
+
+    private bool HasBlockID(BlockID id)
+    {
+        bool hasID = false;
+        foreach (BlockData data in BlockData)
+        {
+            if (data.BlockID == id)
+            {
+                hasID = true;
+            }
+        }
+        return hasID;
+    }
 }

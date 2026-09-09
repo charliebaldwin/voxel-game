@@ -6,4 +6,16 @@ MetaGuid:244bf4910cfeab84db54e1ad33ca85f6
 + [Sirenix.OdinInspector.DictionaryDrawerSettings]
 
 # BlockData
+Position: $root:1
 + [Sirenix.OdinInspector.TableListAttribute]
+	ShowIndexLabels = True
+	NumberOfItemsPerPage = 10
+	AlwaysExpanded = False
+	HideToolbar = False
+	showPaging = True
+	showPagingHasValue = True
+	CellPadding = 0
+
+# BDOFolderPath
++ [UnityEngine.SpaceAttribute]
+	height = 50

@@ -16,9 +16,9 @@ Position: $root:3
 + [Sirenix.OdinInspector.VerticalGroupAttribute]
 	GroupName = "_Tools"
 
-# $C53CwtTDiSGcyzUo4kvemn
+# $UKQVbYy7m6KigRLK6YH9Qw
 Position: $EEJzp4EJC3Se7doguqxM8k:1
-+ [Sirenix.OdinInspector.HorizontalGroupAttribute]
++ [Sirenix.OdinInspector.VerticalGroupAttribute]
 
 # Toughness
 Position: $3BRFntEc5K2gLrT9NoYMi8:1
@@ -49,14 +49,14 @@ Position: $LGh47XwHhfSZ2hazqimmiA:1
 + [Sirenix.OdinInspector.HideInTablesAttribute]
 
 # Textures
-Position: $C53CwtTDiSGcyzUo4kvemn:1
+Position: $UKQVbYy7m6KigRLK6YH9Qw:0
 + [Sirenix.OdinInspector.ImageAttribute]
 
 # NormalTextures
-Position: $C53CwtTDiSGcyzUo4kvemn:3
+Position: $UKQVbYy7m6KigRLK6YH9Qw:2
 
 # MSTextures
-Position: $C53CwtTDiSGcyzUo4kvemn:2
+Position: $UKQVbYy7m6KigRLK6YH9Qw:1
 
 # TextureMode
 Position: $EEJzp4EJC3Se7doguqxM8k:0

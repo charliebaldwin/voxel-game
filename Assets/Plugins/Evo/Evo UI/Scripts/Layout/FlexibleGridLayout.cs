@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -143,6 +144,8 @@ namespace Evo.UI
             // ContentSizeFitter support
             SetLayoutInputForAxis(totalHeight, totalHeight, -1, 1);
         }
+
+        private void SetLayoutInputForAxis(float totalHeight1, float totalHeight2, int v1, int v2) => throw new NotImplementedException();
 
         float GetChildHeight(RectTransform child)
         {

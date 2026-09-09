@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Block_Sandstone
   m_EditorClassIdentifier: Assembly-CSharp::BlockDataObject
   Data:
-    BlockID: 15
+    BlockID: 11
     Toughness: 14
     IsBlockEntity: 0
     ValidTools: 

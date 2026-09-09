@@ -1,7 +1,17 @@
 fileFormatVersion: 2
 guid: 9ec2d90f8619b4b40a9a706ce198a72e
+AssetOrigin:
+  serializedVersion: 1
+  productId: 310303
+  packageName: Evo UI - Modern UI Framework
+  packageVersion: 1.9.11
+  assetPath: Assets/Plugins/Evo/Evo UI/Sprites/Icons/Business/Stock (Fill).png
+  uploadId: 976444
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: -2690411606772133894
+    second: Stock (Fill)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -53,7 +63,9 @@ TextureImporter:
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
+  spriteTessellationMethod: 0
   spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
@@ -95,7 +107,29 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Stock (Fill)_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aff42c6e5ecb9aad0800000000000000
+      internalID: -2690411606772133894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -115,10 +149,3 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 310303
-  packageName: Evo UI - Modern UI Framework
-  packageVersion: 1.9.11
-  assetPath: Assets/Plugins/Evo/Evo UI/Sprites/Icons/Business/Stock (Fill).png
-  uploadId: 976444
