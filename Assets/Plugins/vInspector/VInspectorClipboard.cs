@@ -104,8 +104,10 @@ namespace VInspector
                 typeof(ParticleSystem),
                 typeof(TrailRenderer),
                 typeof(LineRenderer),
+#if !UNITY_6000_6_OR_NEWER
                 typeof(LensFlare),
                 typeof(Projector),
+#endif
                 typeof(AudioReverbZone),
                 typeof(AudioEchoFilter),
 #if TERRAIN_PACKAGE_ENABLED
@@ -221,6 +223,7 @@ namespace VInspector
         public class ComponentData
         {
             public Component sourceComponent;
+            [System.NonSerialized]
             public Dictionary<string, object> serializedPropertyValues_byPath = new();
 
             public GlobalID globalId;

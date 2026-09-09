@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -186,9 +187,10 @@ namespace Evo.UI
                 minSize = 100f + padding.left + padding.right;
                 preferredSize = 200f + padding.left + padding.right;
             }
-
             SetLayoutInputForAxis(minSize, preferredSize, flexibleSize, 0);
         }
+
+        private void SetLayoutInputForAxis(float minSize, float preferredSize, float flexibleSize, int axis) => throw new NotImplementedException();
 
         public override void CalculateLayoutInputVertical()
         {

@@ -199,9 +199,7 @@ namespace Evo.UI
                 Vector2 constrainedPosition = ConstrainToBounds(rectTransform.anchoredPosition);
                 if (Vector2.Distance(rectTransform.anchoredPosition, constrainedPosition) > 0.1f)
                 {
-                    if (returnCoroutine != null)
-                        StopCoroutine(returnCoroutine);
-
+                    if (returnCoroutine != null) { StopCoroutine(returnCoroutine); }
                     returnCoroutine = StartCoroutine(SmoothReturnToBounds(constrainedPosition));
                     isAnimatingReturn = true;
                 }
@@ -258,6 +256,7 @@ namespace Evo.UI
             if (canvasRect == parentRect) { canvasRectLocal = canvasRect.rect; }
             else
             {
+                // Canvas is higher in hierarchy. Uses cachedCorners instead of allocating new Vector3[4]
                 canvasRect.GetWorldCorners(cachedCorners);
 
                 Vector2 min = parentRect.InverseTransformPoint(cachedCorners[0]);
@@ -383,19 +382,12 @@ namespace Evo.UI
             }
         }
 
-        /// <summary>
-        /// Stop dragging process manually.
-        /// </summary>
-        public void StopDrag() => HandlePointerUp(null);
-
-        /// <summary>
-        /// Helper class to forward events.
-        /// </summary>
+        // Helper class to forward events
         class DragListener : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
         {
             RectDragger dragger;
 
-            public void Initialize(RectDragger srcDragger) => dragger = srcDragger;
+            public void Initialize(RectDragger srcDragger) { dragger = srcDragger; }
 
             public void OnPointerDown(PointerEventData eventData)
             {

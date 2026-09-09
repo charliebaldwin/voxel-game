@@ -11,7 +11,7 @@ using EGU = UnityEditor.EditorGUIUtility;
 #if UNITY_6000_4_OR_NEWER
 using PropFlagsCompat = UnityEngine.Rendering.ShaderPropertyFlags;
 #else
-using PropFlagsCompat = UnityEngine.Rendering.ShaderPropertyFlags;
+using PropFlagsCompat = UnityEditor.MaterialProperty.PropFlags;
 #endif
 
 
@@ -162,7 +162,7 @@ public class TranslucentImageShaderGUI : ShaderGUI
             #if UNITY_6000_4_OR_NEWER
             propFlags = prop.propertyFlags;
             #else
-            propFlags = prop.propertyFlags;
+            propFlags = prop.flags;
             #endif
 
             if ((propFlags & PropFlagsCompat.HideInInspector) != 0)

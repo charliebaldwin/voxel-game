@@ -658,7 +658,6 @@ namespace Evo.UI
             try
             {
                 File.WriteAllText(fullPath, resourcePath);
-                Styler.UpdateCachedDefaultPreset(spTarget);
                 AssetDatabase.Refresh();
                 CheckDefaultStatus();
             }

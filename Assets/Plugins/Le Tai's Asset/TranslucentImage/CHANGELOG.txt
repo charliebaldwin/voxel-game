@@ -1,5 +1,20 @@
 Changelog:
 
+v7.0.1:
+ - Improve compatibility with Unity 6.5.
+
+v7.0.0:
+This is a major version bump indicating breaking changes. The only breaking change is:
+ - The minimum supported Unity version is now 2022.3, due to the store requirements
+There's no breaking changes if your project is already at that version or higher
+ - Raw Image mode: use a Texture instead of Sprite, which unlocks runtime generated textures
+ - TranslucentImageProceduralTexture: Render any material into the Translucent Image (check out the new Procedural Texture demos!)
+ - Texture Alpha Mode: use the texture alpha to control foreground opacity
+ - Improved support for the builtin Shadow & Outline component
+ - Fix a stray heap alloc
+ - Fix shader compilation when targeting PlayStation
+ - And other minor bug fixes
+
 v6.6.2:
  - Fix VR support
 

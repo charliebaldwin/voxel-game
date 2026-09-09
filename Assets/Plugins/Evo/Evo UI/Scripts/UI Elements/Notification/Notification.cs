@@ -121,10 +121,9 @@ namespace Evo.UI
             if (isInitialized)
                 return;
 
+            // Get or add required components
             rectTransform = GetComponent<RectTransform>();
-
-            if (canvasGroup == null && !TryGetComponent(out canvasGroup))
-                canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            if (canvasGroup == null && !TryGetComponent(out canvasGroup)) { canvasGroup = gameObject.AddComponent<CanvasGroup>(); }
 
             // Store original transform values
             originalPosition = rectTransform.anchoredPosition;
@@ -138,37 +137,17 @@ namespace Evo.UI
         void UpdateUI()
         {
             string newTitle = title ?? string.Empty;
+            if (titleText != null && titleText.text != newTitle) { titleText.text = newTitle; }
+
             string newDescription = description ?? string.Empty;
+            if (descriptionText != null && descriptionText.text != newDescription) { descriptionText.text = newDescription; }
 
-            bool hasIcon = icon != null;
-            bool hasTitle = !string.IsNullOrEmpty(newTitle);
-            bool hasDescription = !string.IsNullOrEmpty(newDescription);
-
-            // Update Title
-            if (titleText != null)
-            {
-                titleText.gameObject.SetActive(hasTitle);
-
-                if (hasTitle && titleText.text != newTitle)
-                    titleText.text = newTitle;
-            }
-
-            // Update Description
-            if (descriptionText != null)
-            {
-                descriptionText.gameObject.SetActive(hasDescription);
-
-                if (hasDescription && descriptionText.text != newDescription)
-                    descriptionText.text = newDescription;
-            }
-
-            // Update Icon
             if (iconImage != null)
             {
-                iconImage.gameObject.SetActive(hasIcon);
+                bool hasIcon = icon != null;
 
-                if (hasIcon && iconImage.sprite != icon)
-                    iconImage.sprite = icon;
+                if (iconImage.gameObject.activeSelf != hasIcon) { iconImage.gameObject.SetActive(hasIcon); }
+                if (hasIcon && iconImage.sprite != icon) { iconImage.sprite = icon; }
             }
         }
 
@@ -294,13 +273,10 @@ namespace Evo.UI
                 yield return null;
             }
 
-            if (animationType != AnimationType.None && animationType != AnimationType.Fade)
-            {
-                rectTransform.localScale = originalScale;
-                rectTransform.anchoredPosition = originalPosition;
-            }
-
             canvasGroup.alpha = 1f;
+            rectTransform.localScale = originalScale;
+            rectTransform.anchoredPosition = originalPosition;
+
             OnOpenComplete();
         }
 
@@ -340,13 +316,10 @@ namespace Evo.UI
                 yield return null;
             }
 
-            if (animationType != AnimationType.None && animationType != AnimationType.Fade)
-            {
-                rectTransform.localScale = targetScale;
-                rectTransform.anchoredPosition = targetPosition;
-            }
-
             canvasGroup.alpha = 0f;
+            rectTransform.localScale = targetScale;
+            rectTransform.anchoredPosition = targetPosition;
+
             OnCloseComplete();
         }
 
@@ -439,13 +412,10 @@ namespace Evo.UI
                 return;
 
             StopCurrentAnimations();
-            canvasGroup.alpha = 0f;
 
-            if (animationType != AnimationType.None && animationType != AnimationType.Fade)
-            {
-                rectTransform.localScale = originalScale;
-                rectTransform.anchoredPosition = originalPosition;
-            }
+            canvasGroup.alpha = 0f;
+            rectTransform.localScale = originalScale;
+            rectTransform.anchoredPosition = originalPosition;
 
             isQueued = false;
             IsOpen = false;
@@ -477,7 +447,7 @@ namespace Evo.UI
             }
 
             GameObject ntfGo = Instantiate(preset, parent);
-            if (!ntfGo.TryGetComponent(out Notification ntf))
+            if (!ntfGo.TryGetComponent<Notification>(out var ntf))
             {
                 Debug.LogError("[Notification] Assigned preset does not contain the 'Notification' component.");
                 Destroy(ntfGo);

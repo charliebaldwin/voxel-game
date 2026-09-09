@@ -466,6 +466,7 @@ namespace VInspector
 
         public Component component;
         public Editor editor;
+        [System.NonSerialized]
         public InspectorElement inspectorElement;
 
         public ObjectID componentIid;

@@ -4,8 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - indicatorPreset: {fileID: 7159204491357555182, guid: d81bbc1001880b447b1f665c8017f5fd,
-      type: 3}
+  - indicatorPreset: {fileID: 7159204491357555182, guid: d81bbc1001880b447b1f665c8017f5fd, type: 3}
   - indicatorIcon: {fileID: 21300000, guid: 22bd50c20fa1d8445994dc837bde45f5, type: 3}
   - distanceSource: {instanceID: 0}
   - targetTransform: {instanceID: 0}
@@ -20,6 +19,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 310303
   packageName: Evo UI - Modern UI Framework
-  packageVersion: 1.9.11
+  packageVersion: 1.9.8
   assetPath: Assets/Plugins/Evo/Evo UI/Scripts/UI Elements/Off Screen Indicator/OffScreenIndicator.cs
-  uploadId: 976444
+  uploadId: 946346

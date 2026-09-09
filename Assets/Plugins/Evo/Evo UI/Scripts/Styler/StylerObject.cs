@@ -11,9 +11,6 @@ namespace Evo.UI
     public class StylerObject : MonoBehaviour, IStylerHandler
     {
         [EvoHeader("References", Constants.CustomEditorID)]
-        [Tooltip("Defines object's preset source.")]
-        public PresetSource presetSource = PresetSource.UserDefined;
-        [Tooltip("The preset containing style definitions.")]
         [SerializeField] private StylerPreset preset;
         [UnityEngine.Serialization.FormerlySerializedAs("targetImage")]
         [Tooltip("Graphic component to style")]
@@ -74,15 +71,6 @@ namespace Evo.UI
         }
 
         // Enums
-        public enum PresetSource
-        {
-            [Tooltip("Custom option. Styler Preset can be manually assigned.")]
-            UserDefined = 0,
-
-            [Tooltip("Locked to the current default Styler Preset.")]
-            Default = 1
-        }
-
         public enum ObjectType
         {
             [Tooltip("Sets the color of the Graphic variable.")]
@@ -424,9 +412,6 @@ namespace Evo.UI
         /// </summary>
         public void UpdateStyler()
         {
-            if (presetSource == PresetSource.Default)
-                preset = Styler.GetDefaultPreset(false);
-
             CheckComponents();
 
             if (targetGraphic == null && targetText == null && targetGradient == null)
@@ -605,7 +590,7 @@ namespace Evo.UI
 
         void OnValidate()
         {
-            if (!enabled)
+            if (!this.enabled)
                 return;
 
             UpdateStyler();

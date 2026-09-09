@@ -4,8 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - tooltipPreset: {fileID: 5522925556100278261, guid: 66a3f5828c6c5d0449e43afc6acfe221,
-      type: 3}
+  - tooltipPreset: {fileID: 5522925556100278261, guid: 66a3f5828c6c5d0449e43afc6acfe221, type: 3}
   - icon: {instanceID: 0}
   - tooltipCanvas: {instanceID: 0}
   - customContent: {instanceID: 0}
@@ -18,6 +17,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 310303
   packageName: Evo UI - Modern UI Framework
-  packageVersion: 1.9.11
+  packageVersion: 1.9.8
   assetPath: Assets/Plugins/Evo/Evo UI/Scripts/UI Elements/Tooltip/Tooltip.cs
-  uploadId: 976444
+  uploadId: 946346
