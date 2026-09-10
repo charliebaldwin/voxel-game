@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Block_Tiles_2x1
   m_EditorClassIdentifier: Assembly-CSharp::BlockDataObject
   Data:
-    BlockID: 11
+    BlockID: 121
     Toughness: 20
     IsBlockEntity: 0
     ValidTools: 
@@ -22,4 +22,6 @@ MonoBehaviour:
     Material: {fileID: 2100000, guid: 9f5ce21e31702224698e90ef47abde49, type: 2}
     Textures:
     - {fileID: 2800000, guid: 71d5e8b490d272e4b9413e885ee66d4c, type: 3}
+    NormalTextures: []
+    MSTextures: []
     TextureMode: 0

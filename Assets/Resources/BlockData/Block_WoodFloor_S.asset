@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Block_WoodFloor_S
   m_EditorClassIdentifier: Assembly-CSharp::BlockDataObject
   Data:
-    BlockID: 36
+    BlockID: 150
     Toughness: 8
     IsBlockEntity: 0
     ValidTools: 

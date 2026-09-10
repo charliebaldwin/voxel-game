@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Block_RockyDirt
   m_EditorClassIdentifier: Assembly-CSharp::BlockDataObject
   Data:
-    BlockID: 14
+    BlockID: 10
     Toughness: 9
     IsBlockEntity: 0
     ValidTools: 

@@ -13,14 +13,15 @@ MonoBehaviour:
   m_Name: Block_Test
   m_EditorClassIdentifier: Assembly-CSharp::BlockDataObject
   Data:
-    BlockID: 23
+    BlockID: 999
     Toughness: 60
     IsBlockEntity: 0
     ValidTools: 
     IdealTools: 
     CanChangeUpAxis: 0
     Material: {fileID: 2100000, guid: 61de2080775c6cc4aa57b576218bb8d3, type: 2}
-    Textures: []
+    Textures:
+    - {fileID: 2800000, guid: 9e75096419e45d0449949cd2b8cdd010, type: 3}
     NormalTextures: []
     MSTextures: []
     TextureMode: 0

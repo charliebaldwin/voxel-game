@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Block_Limestone
   m_EditorClassIdentifier: Assembly-CSharp::BlockDataObject
   Data:
-    BlockID: 16
+    BlockID: 12
     Toughness: 18
     IsBlockEntity: 0
     ValidTools: 

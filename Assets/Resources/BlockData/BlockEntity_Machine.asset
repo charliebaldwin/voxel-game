@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: BlockEntity_Machine
   m_EditorClassIdentifier: Assembly-CSharp::BlockEntityDataObject
   Data:
-    BlockID: 9
+    BlockID: 99
     EntityMesh: {fileID: -8670151273213183110, guid: 29ec0254fe2c89f47b66e8b36aed2f23, type: 3}
     EntityMaterial: {fileID: 2100000, guid: 10aad0a1ee5350c44bd504cf89809e51, type: 2}

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Block_StoneBrick_Small
   m_EditorClassIdentifier: Assembly-CSharp::BlockDataObject
   Data:
-    BlockID: 25
+    BlockID: 101
     Toughness: 20
     IsBlockEntity: 0
     ValidTools: 

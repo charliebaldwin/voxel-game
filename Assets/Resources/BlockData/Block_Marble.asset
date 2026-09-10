@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Block_Marble
   m_EditorClassIdentifier: Assembly-CSharp::BlockDataObject
   Data:
-    BlockID: 18
+    BlockID: 14
     Toughness: 12
     IsBlockEntity: 0
     ValidTools: 

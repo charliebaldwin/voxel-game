@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Block_GrassyClay
   m_EditorClassIdentifier: Assembly-CSharp::BlockDataObject
   Data:
-    BlockID: 35
+    BlockID: 41
     Toughness: 6
     IsBlockEntity: 0
     ValidTools: 
