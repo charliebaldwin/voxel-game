@@ -45,5 +45,7 @@ public enum BlockID : short
 
     Color_Block = 200,
 
+    Foliage_Grass = 300,
+
     Test = 999,
 }
