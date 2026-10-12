@@ -26,7 +26,9 @@ public class BlockRegistry : MonoBehaviour
     public Texture2D DefaultNormalTexture;
     public Texture2D DefaultMSTexture;
 
-    #region INITIALIZE AND LOAD
+    public Vector2Int TextureAtlasSize;
+
+#region INITIALIZE AND LOAD
     private void Awake()
     {
         Debug.Log("Block registry awake");
@@ -80,7 +82,7 @@ public class BlockRegistry : MonoBehaviour
         Blocks = new Dictionary<BlockID, BlockData>();
         foreach (BlockDataObject bdo in BlockDataObjects)
         {
-            Debug.Log(bdo.name);
+            //Debug.Log(bdo.name);
             BlockData data = bdo.Data;
             Blocks.Add(data.BlockID, data);
         }
@@ -150,10 +152,10 @@ public class BlockRegistry : MonoBehaviour
                         indices.Add(index - 2);
                         indices.Add(index - 3);
                         indices.Add(index - 3);
-                        foreach (int d  in indices)
-                        {
-                            Debug.Log($"{block.BlockID}: index {d}");
-                        }
+                        //foreach (int d  in indices)
+                        //{
+                        //    Debug.Log($"{block.BlockID}: index {d}");
+                        //}
                         break;
                     case BlockTextureMode.SidesAndTop:
                         indices.Add(index - 2);
@@ -199,8 +201,10 @@ public class BlockRegistry : MonoBehaviour
         // Debug.Log($"looking up {id}");
         if (Instance.BlockTextureIndices.ContainsKey(id))
         {
+            
             return Instance.BlockTextureIndices[id];
         }
+        //Debug.Log($"didnt find texture indices for {id}");
         return new List<int>();
     }
 
@@ -228,6 +232,11 @@ public class BlockRegistry : MonoBehaviour
     public List<Texture2D> GetBlockMSTextures()
     {
         return msTextures;
+    }
+
+    public static Vector2Int GetAtlasSize()
+    {
+        return Instance.TextureAtlasSize;
     }
 
 

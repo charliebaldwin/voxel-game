@@ -549,6 +549,7 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-5554024159035658828-584695758
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-747157195-0
         - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-171169154-0
+        - globalObjectIdString: GlobalObjectId_V1-2-9b5e4b1128e97484eb163240a5574117-187797733-0
         values:
         - colorIndex: 5
           iconNameOrGuid: PreMatCube
@@ -2664,6 +2665,10 @@ MonoBehaviour:
           isColorRecursive: 0
         - colorIndex: 0
           iconNameOrGuid: MyRegistries
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 2
+          iconNameOrGuid: 
           isIconRecursive: 0
           isColorRecursive: 0
     - goDatas_byGlobalId:

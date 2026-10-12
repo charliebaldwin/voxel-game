@@ -86,6 +86,9 @@ public class TextureGenerator : MonoBehaviour
         BlockMaterial.SetTexture("_AtlasTexture", atlasTextureColor);
         BlockMaterial.SetTexture("_AtlasTextureNormal", atlasTextureNormal);
         BlockMaterial.SetTexture("_AtlasTextureMS", atlasTextureMS);
+
+        BlockRegistry.TextureAtlasSize = new Vector2Int(numCols, numRows);
+        Debug.Log($"atlas size = {numCols}x{numRows}");
         //Texture2DArray array = new Texture2DArray(SliceWidth, SliceHeight, Textures.Count, TextureFormat.RGBA32, true);
         //array.filterMode = FilterMode.Point;
         //int t = 0;
