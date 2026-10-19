@@ -37,6 +37,6 @@ MonoBehaviour:
       NormalTextures: []
       MSTextures: []
       TextureMode: 0
-    Strength: 32
+    Strength: 16
     UseTime: 0.2
     ToolType: 1
