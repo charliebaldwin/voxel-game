@@ -30,7 +30,6 @@ public class PlayerPickup : MonoBehaviour
         {
             ItemStack stack;
             item.ConsumePickup(out stack);
-            Debug.Log($"item: {stack.ItemID} x{stack.Count}");
             inventory.AddItemStack(stack);
         }
     }

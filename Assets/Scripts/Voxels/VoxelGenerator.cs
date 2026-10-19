@@ -295,18 +295,25 @@ public class VoxelGenerator : MonoBehaviour
         if (GetVoxel(x, y, z).BlockID == BlockID.Dirt && GetVoxel(x, y + 1, z).BlockID == BlockID.Air)
         {
             SetVoxel(x, y, z, new Voxel(BlockID.Grass));
+            SetVoxel(x, y + 1, z, new Voxel(BlockID.Foliage_Grass, BlockShape.Foliage));
+
         }
         else if (GetVoxel(x, y, z).BlockID == BlockID.Sand && GetVoxel(x, y + 1, z).BlockID == BlockID.Air)
         {
             SetVoxel(x, y, z, new Voxel(BlockID.GrassySand));
+            SetVoxel(x, y + 1, z, new Voxel(BlockID.Foliage_Grass, BlockShape.Foliage));
+
         }
         else if (GetVoxel(x, y, z).BlockID == BlockID.Silt && GetVoxel(x, y + 1, z).BlockID == BlockID.Air)
         {
             SetVoxel(x, y, z, new Voxel(BlockID.GrassySilt));
+            SetVoxel(x, y+1, z, new Voxel(BlockID.Foliage_Grass, BlockShape.Foliage));
         }
         else if (GetVoxel(x, y, z).BlockID == BlockID.Clay && GetVoxel(x, y + 1, z).BlockID == BlockID.Air)
         {
             SetVoxel(x, y, z, new Voxel(BlockID.GrassyClay));
+            SetVoxel(x, y + 1, z, new Voxel(BlockID.Foliage_Grass, BlockShape.Foliage));
+
         }
     }
 

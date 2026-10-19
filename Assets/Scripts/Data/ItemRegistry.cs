@@ -34,19 +34,18 @@ public class ItemRegistry : MonoBehaviour
     }
     public static ItemID GetBlockItem(BlockID blockID)
     {
-        Debug.Log($"searching for item with blockID {blockID}");
+        //Debug.Log($"searching for item with blockID {blockID}");
         foreach(Item item in Instance.Items.Values)
         {
             if (item.Type == ItemType.Block)
             {
-
                 if (item.BlockID == blockID)
                 {
                     return item.ItemID;
                 }
             }
         }
-        Debug.Log($"Did not find item with blockID {blockID}");
+        //Debug.Log($"Did not find item with blockID {blockID}");
         return ItemID.NullItem;
     }
 

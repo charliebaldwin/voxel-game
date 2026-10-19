@@ -5,4 +5,5 @@ public enum BlockShape : byte
     HalfSlab = 2,
     Stairs = 3,
     BlockEntity = 4,
+    Foliage = 5,
 }

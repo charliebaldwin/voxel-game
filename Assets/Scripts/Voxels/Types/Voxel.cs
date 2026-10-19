@@ -25,6 +25,7 @@ public struct Voxel
         VertexColor = Color.black;
 
     }
+
     public Voxel(BlockID id)
     {
         BlockID = id;
@@ -43,6 +44,19 @@ public struct Voxel
         BlockID = id;
         Damage = damage;
         Orientation = orientation;
+        Toughness = 12;
+        Shape = blockShape;
+
+        UpAxis = OrthoNormal.up;
+        ForwardAxis = OrthoNormal.forward;
+        VertexColor = Color.black;
+
+    }
+    public Voxel(BlockID id, BlockShape blockShape)
+    {
+        BlockID = id;
+        Damage = 0;
+        Orientation = 0;
         Toughness = 12;
         Shape = blockShape;
 

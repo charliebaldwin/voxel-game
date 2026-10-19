@@ -33,6 +33,10 @@ MonoBehaviour:
       IdealTools: 
       CanChangeUpAxis: 0
       Material: {fileID: 0}
+      Textures: []
+      NormalTextures: []
+      MSTextures: []
+      TextureMode: 0
     Strength: 32
     UseTime: 0.2
     ToolType: 1

@@ -19,7 +19,7 @@ MonoBehaviour:
     StackSize: 1
     Rarity: 1
     GUIIcon: {fileID: 1199246195, guid: 2b8dd6e29b3f1114fb947f3313f3373f, type: 3}
-    ViewmodelMesh: {fileID: 8573983735195795733, guid: 4fbafe63c35ef3b48a71dadd48faefe7, type: 3}
+    ViewmodelMesh: {fileID: -1635502439461065762, guid: e751d53c353b95d48a138c9067ee1ecd, type: 3}
     ViewmodelMat: {fileID: 2100000, guid: 9278495cef1f3d04bbdb519446267ef9, type: 2}
     TooltipIcon: {fileID: 21300000, guid: 953e97af493262b48a344f2f8acdd1da, type: 3}
     Type: 2
@@ -33,6 +33,10 @@ MonoBehaviour:
       IdealTools: 
       CanChangeUpAxis: 0
       Material: {fileID: 0}
+      Textures: []
+      NormalTextures: []
+      MSTextures: []
+      TextureMode: 0
     Strength: 6
     UseTime: 0.5
     ToolType: 1

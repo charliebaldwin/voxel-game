@@ -552,17 +552,20 @@ public partial class VoxelWorld : MonoBehaviour
 
         voxel.Damage += damage;
         int toughness = data.Toughness;
+
+        // Break voxel
         if (voxel.Damage >= toughness)
         {
-
-            ItemID pickupItemID = ItemRegistry.GetBlockItem(voxel.BlockID);
-
             VFX().SpawnVFX(VFXType.BLOCK_BREAK, worldPos, Vector3.zero, (int)voxel.BlockID);
-
             voxel = new Voxel(BlockID.Air, 0, 0);
             voxel.Shape = 0;
 
-            PickupManager.SpawnItemPickup(worldPos, pickupItemID, 1);
+            // drop item
+            if (voxel.Shape != BlockShape.Foliage)
+            {
+                //ItemID pickupItemID = ItemRegistry.GetBlockItem(voxel.BlockID);
+                //PickupManager.SpawnItemPickup(worldPos, pickupItemID, 1);
+            }
         }
         SetVoxel(SnapToGrid(worldPos) , voxel);
     }

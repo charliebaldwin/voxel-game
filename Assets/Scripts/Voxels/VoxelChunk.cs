@@ -52,6 +52,7 @@ public class VoxelChunk : MonoBehaviour
     [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private GameObject blockBreakVFXPrefab;
     [SerializeField] private GameObject blockHitVFXPrefab;
+    [SerializeField] private ChunkFoliage foliage;
     [EndFoldout]
 
 
@@ -60,6 +61,24 @@ public class VoxelChunk : MonoBehaviour
     private Vector3 tempOrigin = Vector3.zero;
     private Vector3 tempDirection = Vector3.forward;
     private List<Vector4> tempCubes = new List<Vector4>();
+
+    // data storage for meshing function
+    private List<Vector3> vertices = new List<Vector3>();
+    private List<Vector3> normals = new List<Vector3>();
+    private List<Vector4> uvs = new List<Vector4>();
+    private List<int> triangles = new List<int>();
+    private List<int> triangles2 = new List<int>();
+    private List<Color> colors = new List<Color>();
+
+    private List<Vector3> tempVertices = new List<Vector3>();
+    private List<Vector3> tempNormals = new List<Vector3>();
+    private List<Vector4> tempUvs = new List<Vector4>();
+    private List<int> tempTriangles = new List<int>();
+    private List<Color> tempColors = new List<Color>();
+    private int t = 0;
+
+    private List<Vector3> foliageGrassCoords = new List<Vector3>();
+
 
 
     private JobHandle handle;
@@ -79,8 +98,6 @@ public class VoxelChunk : MonoBehaviour
 
     private void Awake()
     {
-
-        //Voxels = new VoxelData[Size3D.x, Size3D.y, Size3D.z];
         world = World();
     }
     private void FixedUpdate()
@@ -89,22 +106,9 @@ public class VoxelChunk : MonoBehaviour
         //Loop3D(BlockUpdateAction);
         if (meshDirty && Loaded)
         {
-
             ChunkMesh();
-
             meshDirty = false;
         }
-    }
-    private void LateUpdate()
-    {
-        //if (jobActive)
-        //{
-        //    if (handle.IsCompleted)
-        //    {
-        //        FinishChunkJob();
-        //    }
-        //}
-
     }
 
     public void InitializeChunk(Vector3Int size, Vector3Int chunkCoord)
@@ -119,6 +123,8 @@ public class VoxelChunk : MonoBehaviour
         meshRenderer.enabled = false;
         gameObject.SetActive(false);
         BlockEntities = new Dictionary<Vector3Int, BlockEntityActor>();
+        foliage = GetComponentInChildren<ChunkFoliage>();
+
     }
     public VoxelChunk LoadChunk()
     {
@@ -138,6 +144,9 @@ public class VoxelChunk : MonoBehaviour
         {
             entity.Value.LoadEntity();
         }
+
+        foliage.Load();
+
         return this;
     }
     public VoxelChunk UnloadChunk()
@@ -154,7 +163,7 @@ public class VoxelChunk : MonoBehaviour
 
         gameObject.SetActive(false);
 
-
+        foliage.Unload();
         return this;
     }
     public void FillVoxelData(Voxel[,,] newVoxels)
@@ -202,27 +211,13 @@ public class VoxelChunk : MonoBehaviour
             GreedyMesh();
         else
             ComputeMeshCPU();
-
     }
 
-    private List<Vector3> vertices = new List<Vector3>();
-    private List<Vector3> normals = new List<Vector3>();
-    private List<Vector4> uvs = new List<Vector4>();
-    private List<int> triangles = new List<int>();
-    private List<int> triangles2 = new List<int>();
-    private List<Color> colors = new List<Color>();
 
-    private List<Vector3> tempVertices = new List<Vector3>();
-    private List<Vector3> tempNormals = new List<Vector3>();
-    private List<Vector4> tempUvs = new List<Vector4>();
-    private List<int> tempTriangles = new List<int>();
-    private List<Color> tempColors = new List<Color>();
-    private int           t = 0;
     private void ComputeMeshCPU()
     {
         meshMarker.Begin();
         double startTime = Time.realtimeSinceStartupAsDouble;
-        //meshRecorder = ProfilerRecorder.StartNew(meshMarker, 1);
 
         vertices = new List<Vector3>();
         normals = new List<Vector3>();
@@ -230,8 +225,7 @@ public class VoxelChunk : MonoBehaviour
         triangles = new List<int>();
         colors = new List<Color>();
 
-        //UpdateMaterials();
-
+        foliageGrassCoords = new List<Vector3>();
 
         t = 0;
 
@@ -260,11 +254,15 @@ public class VoxelChunk : MonoBehaviour
         triangles.Clear();
         colors.Clear();
 
+        foliage.SetFoliage(foliageGrassCoords);
+        foliageGrassCoords.Clear();
+
         meshMarker.End();
 
         neighborCache.Clear();
 
         float duration = Mathf.Round((float)(Time.realtimeSinceStartupAsDouble - startTime) * 10000f) / 100f;
+
 
         //Debug.Log($"mesh time:{duration*100}ms");
         DebugOverlay.SetDebugValue("Mesh Time", $"{duration}ms");
@@ -277,6 +275,12 @@ public class VoxelChunk : MonoBehaviour
     {
         Voxel vox = Voxels[x, y, z];
         if (vox.BlockID == BlockID.Air || vox.BlockID == BlockID.Machine) return;
+
+        if (vox.BlockID == BlockID.Foliage_Grass)
+        {
+            foliageGrassCoords.Add(new Vector3(x, y, z));
+            return;
+        }
         //voxelMarker.Begin();
 
         Vector3Int localPos = new Vector3Int(x, y, z);
