@@ -73,7 +73,16 @@ Shader "Test/PointToVoxels"
 			static const float3 FaceT[6] = { float3(0,1,0),  float3(0,0,1),  float3(0,0,1),  float3(1,0,0),  float3(1,0,0),  float3(0,1,0)  };
 			static const float3 FaceB[6] = { float3(0,0,1),  float3(0,1,0),  float3(1,0,0),  float3(0,0,1),  float3(0,1,0),  float3(1,0,0)  };
 
+
 			static const float2 UVs[4] = {float2(0,0), float2(1,0), float2(0,1), float2(1,1)};
+			float2 flipbook(float2 UV, float Width, float Height, float Tile, float2 Invert)
+			{
+				Tile = fmod(Tile, Width * Height);
+				float2 tileCount = float2(1.0, 1.0) / float2(Width, Height);
+				float tileY = abs(Invert.y * Height - (floor(Tile * tileCount.x) + Invert.y * 1));
+				float tileX = abs(Invert.x * Width - ((Tile - Width * floor(Tile * tileCount.x)) + Invert.x * 1));
+				return (UV + float2(tileX, tileY)) * tileCount;
+			}
 
 			[maxvertexcount(24)]
 			void geo(point v2g input[1], inout TriangleStream<g2f> stream) {
@@ -90,6 +99,11 @@ Shader "Test/PointToVoxels"
 
 				float2 start = float2(colStart, rowStart);
 				float2 span = float2(1/_Cols, 1/_Rows);
+
+				float2 fb1 = flipbook(UVs[0], _Cols, _Rows, _AtlasIndex, float2(1,1));
+				float2 fb2 = flipbook(UVs[1], _Cols, _Rows, _AtlasIndex, float2(1,1));
+				float2 fb3 = flipbook(UVs[2], _Cols, _Rows, _AtlasIndex, float2(1,1));
+				float2 fb4 = flipbook(UVs[3], _Cols, _Rows, _AtlasIndex, float2(1,1));
 
 
 				[unroll]
@@ -108,16 +122,16 @@ Shader "Test/PointToVoxels"
 
 					// Triangle strip order: (-t,-b) (+t,-b) (-t,+b) (+t,+b)
 					o.positionCS = TransformObjectToHClip(fc - t*h - b*h); 
-					o.texCoord = start + span * float2(0.0, 0.0);
+					o.texCoord = fb1;
 					stream.Append(o);
 					o.positionCS = TransformObjectToHClip(fc + t*h - b*h); 
-					o.texCoord = start + span * float2(1.0, 0.0);
+					o.texCoord = fb2;
 					stream.Append(o);
 					o.positionCS = TransformObjectToHClip(fc - t*h + b*h);
-					o.texCoord = start + span * float2(0.0, 1.0);
+					o.texCoord = fb3;
 					stream.Append(o);
 					o.positionCS = TransformObjectToHClip(fc + t*h + b*h); 
-					o.texCoord = start + span * float2(1.0, 1.0);
+					o.texCoord = fb4;
 					stream.Append(o);
 
 					stream.RestartStrip();

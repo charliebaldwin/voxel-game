@@ -29,9 +29,9 @@ Material:
         m_Offset: {x: 1.74, y: 0}
     m_Ints: []
     m_Floats:
-    - _AtlasIndex: 2
-    - _Cols: 1
-    - _Rows: 4
+    - _AtlasIndex: 30
+    - _Cols: 8
+    - _Rows: 7
     - _Size: 0.5
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
