@@ -210,8 +210,12 @@ public class VoxelChunk : MonoBehaviour
         if (useGreedy)
             GreedyMesh();
         else
-            ComputeMeshCPU();
+        {
+            ComputeMeshShader();
+            //ComputeMeshCPU();
+        }
     }
+
 
 
     private void ComputeMeshCPU()
@@ -319,17 +323,54 @@ public class VoxelChunk : MonoBehaviour
 
         }
     }
-
-    Material[] materials;
-    private void UpdateMaterials()
+    
+    private void ComputeMeshShader()
     {
-        materials = new Material[containedIDs.Count];
-        int i = 0;
-        foreach(BlockID id in containedIDs)
-        {
-            materials[i] = BlockRegistry.LookupBlock(id).Material;
-            i++;
+        Mesh mesh = new Mesh { indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
+
+        List<Vector3> positions = new List<Vector3>();
+        List<Color> colors = new List<Color>();
+        List<Vector4> uvs0 = new List<Vector4>();
+        List<Vector4> uvs1 = new List<Vector4>();
+
+        foliageGrassCoords = new List<Vector3>();
+
+        for (int z = 0; z < Size3D.z; z++) {
+            for (int y = 0; y < Size3D.y; y++) {
+                for (int x = 0; x < Size3D.x; x++) {
+
+                    Voxel vox = Voxels[x, y, z];
+                    if (vox.BlockID == BlockID.Foliage_Grass || vox.Shape == BlockShape.Foliage)
+                    {
+                        foliageGrassCoords.Add(new Vector3(x, y, z));
+                    }
+                    else if (vox.BlockID != BlockID.Air && vox.BlockID != BlockID.Foliage_Grass && vox.Shape != BlockShape.Empty && vox.Shape != BlockShape.Foliage)
+                    {
+                        positions.Add(new Vector3(x, y, z));
+                        List<int> indices = BlockRegistry.LookupBlockTextures(vox.BlockID);
+                        Vector4 uv0 = Vector4.zero;
+                        Vector4 uv1 = Vector4.zero;
+                        uv0.x = indices[0];
+                        if (indices.Count > 1) uv0.y = indices[1];
+                        if (indices.Count > 2) uv0.z = indices[2];
+                        if (indices.Count > 3) uv0.w = indices[3];
+                        if (indices.Count > 4) uv1.x = indices[4];
+                        if (indices.Count > 6) uv1.y = indices[5];
+                        uvs0.Add(uv0);
+                        uvs1.Add(uv1);
+                    }
+                }
+            }
         }
+
+        mesh.SetVertices(positions);
+        mesh.SetUVs(0, uvs0);
+        mesh.SetUVs(1, uvs1);
+        mesh.SetIndices(Enumerable.Range(0, positions.Count).ToArray(), MeshTopology.Points, 0);
+        meshFilter.mesh = mesh;
+
+        foliage.SetFoliage(foliageGrassCoords);
+        foliageGrassCoords.Clear();
     }
 
     private bool GetVoxelFaceVisible(Vector3Int pos, Vector3Int faceDirection)

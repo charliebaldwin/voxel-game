@@ -46,15 +46,4 @@ public class MagicCarpet : MonoBehaviour
             SetPlane(Planes[i], hit);
         }
     }
-
-    private void OnDrawGizmos()
-    {
-        Vector3 pos = player.transform.position;
-        Gizmos.DrawRay(pos + 0.5f * Vector3.up, RaycastDistance * Vector3.left);
-        Gizmos.DrawRay(pos + 0.5f * Vector3.up, RaycastDistance * Vector3.right);
-        Gizmos.DrawRay(pos + 1.5f * Vector3.up, RaycastDistance * Vector3.up);
-        Gizmos.DrawRay(pos + 0.0f * Vector3.up, RaycastDistance * Vector3.down);
-        Gizmos.DrawRay(pos + 0.5f * Vector3.up, RaycastDistance * Vector3.back);
-        Gizmos.DrawRay(pos + 0.5f * Vector3.up, RaycastDistance * Vector3.forward);
-    }
 }

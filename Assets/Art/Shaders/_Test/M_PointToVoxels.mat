@@ -26,10 +26,10 @@ Material:
     - _TextureAtlas:
         m_Texture: {fileID: 2800000, guid: 01007be6429e2344e8f24706b57d93f0, type: 2}
         m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 1.74, y: 0}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AtlasIndex: 30
+    - _AtlasIndex: 2
     - _Cols: 8
     - _Rows: 7
     - _Size: 0.5
