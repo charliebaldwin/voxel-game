@@ -2678,4 +2678,7 @@ MonoBehaviour:
         keys: []
         values: []
   bookmarks: []
-  bookmarkedScenePaths: []
+  bookmarkedScenePaths:
+  - Assets/Scenes/VoxelWorld.unity
+  - Assets/Scenes/TestScene.unity
+  - Assets/Scenes/TextureGeneration.unity

@@ -771,19 +771,19 @@ public partial class VoxelWorld : MonoBehaviour
     
     private void OnDrawGizmos()
     { 
-        for (int i = 0; i < DEBUGTraversalPosList.Count; i++)
-        {
-            //Gizmos.color = DEBUGTraversalColorList[i];
-            Gizmos.color = new Color((float)i / DEBUGTraversalPosList.Count, 0f, 0f);
-            if (i >= DEBUGTraversalPosList.Count - 1) Gizmos.color = Color.white;
-            Gizmos.DrawCube(DEBUGTraversalPosList[i], Vector3.one);
-        }
+        //for (int i = 0; i < DEBUGTraversalPosList.Count; i++)
+        //{
+        //    //Gizmos.color = DEBUGTraversalColorList[i];
+        //    Gizmos.color = new Color((float)i / DEBUGTraversalPosList.Count, 0f, 0f);
+        //    if (i >= DEBUGTraversalPosList.Count - 1) Gizmos.color = Color.white;
+        //    Gizmos.DrawCube(DEBUGTraversalPosList[i], Vector3.one);
+        //}
 
-        if (DEBUGWorldHitPoint != Vector3.zero)
-        {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(DEBUGWorldHitPoint, 0.2f);
-        }
+        //if (DEBUGWorldHitPoint != Vector3.zero)
+        //{
+        //    Gizmos.color = Color.blue;
+        //    Gizmos.DrawSphere(DEBUGWorldHitPoint, 0.2f);
+        //}
 
     }
 
