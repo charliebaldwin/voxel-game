@@ -1,5 +1,6 @@
 // Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel GenerateNoise
+#pragma kernel GenerateNoiseCaves
 
 #include "Packages/jp.keijiro.noiseshader/Shader/SimplexNoise3D.hlsl"
 #include "Packages/jp.keijiro.noiseshader/Shader/ClassicNoise3D.hlsl"
@@ -17,6 +18,8 @@ float3 Offset;
 int Octaves; 
 float OctaveStrength;
 float OctaveScale;
+
+float CaveWidth;
 
 float remap(float value, float originMin, float originMax, float destinationMin, float destinationMax) {
     return destinationMin + (value - originMin) * (destinationMax - destinationMin) / (originMax - originMin);
@@ -58,6 +61,53 @@ void GenerateNoise (uint3 id : SV_DispatchThreadID)
                 //float cave = edge1 * edge2;
 
                 //Noise2Buffer[x + WorldSize.x * y + WorldSize.x * WorldSize.y * z] = cave;
+                
+            }
+        }
+    }
+     
+    //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+}
+
+[numthreads(8, 8, 8)]
+void GenerateNoiseCaves(uint3 id : SV_DispatchThreadID)
+{
+    
+    //uint sizeX = WorldSize.x / ThreadCount.x;
+    //uint sizeY = WorldSize.y / ThreadCount.y;
+    //uint sizeZ = WorldSize.z / ThreadCount.z;
+    
+    uint startX = id.x * ThreadSize.x;
+    uint startY = id.y * ThreadSize.y;
+    uint startZ = id.z * ThreadSize.z;
+
+    for (uint x = startX; x < startX + ThreadSize.x; x++)
+    {
+        for (uint y = startY; y < startY + ThreadSize.y; y++)
+        {
+            for (uint z = startZ; z < startZ + ThreadSize.z; z++)
+            {
+                
+                float n1 = 0;
+                //float n2 = 0;
+                float str = 1;
+                float3 scale = Scale;
+                for (int o = 0; o < Octaves; o++)
+                {
+                    n1 += str * SimplexNoise(float3(1000 * Seed + Offset.x + x * scale.x + o * 10, 1000 * Seed + Offset.y + y * scale.y + o * 10, 1000 * Seed + Offset.z + z * scale.z + o * 10));
+                    str *= OctaveStrength;
+                    scale *= OctaveScale;
+
+                }
+
+                float edge1 = clamp(remap(n1, 0.5 - CaveWidth * 2, 0.5 - CaveWidth, 0, 1), 0, 1);
+                float edge2 = clamp(remap(n1, 0.5 + CaveWidth, 0.5 + CaveWidth * 2, 1, 0), 0, 1);
+                float cave = edge1 * edge2;
+                
+                float h = float(y) / float(WorldSize.y);
+                cave *= 0.7;
+
+                Noise1Buffer[x + WorldSize.x * y + WorldSize.x * WorldSize.y * z] = cave;
                 
             }
         }

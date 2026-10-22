@@ -81,12 +81,19 @@ Shader "Test/PointToVoxels"
 				return OUT;
 			}
 
-			static const float3 FaceN[6] = { float3( -1,0,0), float3( 1,0,0), float3(0,01,0), float3(0, 1,0), float3(0,0,-1), float3(0,0, 1) };
+			static const float3 FaceN[6] = { float3( -1,0,0), float3( 1,0,0), float3(0,-1,0), float3(0,1,0), float3(0,0,-1), float3(0,0, 1) };
 			static const float3 FaceB[6] = { float3(0,1,0),  float3(0,0,1),  float3(0,0,1),  float3(1,0,0),  float3(1,0,0),  float3(0,1,0)  };
 			static const float3 FaceT[6] = { float3(0,0,1),  float3(0,1,0),  float3(1,0,0),  float3(0,0,1),  float3(0,1,0),  float3(1,0,0)  };
 
 
-			static const float2 UVs[4] = {float2(0,0), float2(1,0), float2(0,1), float2(1,1)};
+			static const float2 UVs[6][4] = {
+				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) },
+				{ float2(1,0), float2(1,1), float2(0,0), float2(0,1) },
+				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) },
+				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) },
+				{ float2(1,0), float2(1,1), float2(0,0), float2(0,1) },
+				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) }
+			};
 			float2 flipbook(float2 UV, float Width, float Height, float Tile, float2 Invert)
 			{
 				Tile = fmod(Tile, Width * Height);
@@ -114,52 +121,54 @@ Shader "Test/PointToVoxels"
 
 				int tArray[6] = {t1, t2, t3, t4, t5, t6};
 
-
+				uint solidFaces = uint(input[0].uv2.x);
 
 				[unroll]
 				for (int f = 0; f < 6; f++)
 				{
-					float3 n = FaceN[f], t = FaceT[f], b = FaceB[f];
-					float3 fc = c + n * h - float3(0,0,0);
+					if ((solidFaces >> f) & 1) {
+						float3 n = FaceN[f], t = FaceT[f], b = FaceB[f];
+						float3 fc = c + n * h - float3(0,0,0);
 
-					int tex = tArray[f];
+						int tex = tArray[f];
 
-					float2 fb1 = flipbook(UVs[0], _Cols, _Rows, tex, float2(0,0));
-					float2 fb2 = flipbook(UVs[1], _Cols, _Rows, tex, float2(0,0));
-					float2 fb3 = flipbook(UVs[2], _Cols, _Rows, tex, float2(0,0));
-					float2 fb4 = flipbook(UVs[3], _Cols, _Rows, tex, float2(0,0));
+						float2 fb1 = flipbook(UVs[f][0], _Cols, _Rows, tex, float2(0,0));
+						float2 fb2 = flipbook(UVs[f][1], _Cols, _Rows, tex, float2(0,0));
+						float2 fb3 = flipbook(UVs[f][2], _Cols, _Rows, tex, float2(0,0));
+						float2 fb4 = flipbook(UVs[f][3], _Cols, _Rows, tex, float2(0,0));
 
 
-					// Skip faces pointing away from the camera -> "up to 6" faces
-					if (dot(n, camOS - fc) <= 0) continue;
+						// Skip faces pointing away from the camera -> "up to 6" faces
+						if (dot(n, camOS - fc) <= 0) continue;
 
-					g2f o;
-					o.normalWS = TransformObjectToWorldNormal(n);
+						g2f o;
+						o.normalWS = TransformObjectToWorldNormal(n);
 
-					//float2 uv = TRANSFORM_TEX(IN.texCoord, _TextureAtlas);
+						//float2 uv = TRANSFORM_TEX(IN.texCoord, _TextureAtlas);
 
-					// Triangle strip order: (-t,-b) (+t,-b) (-t,+b) (+t,+b)
-					o.positionCS = TransformObjectToHClip(fc - t*h - b*h); 
-					o.positionWS = fc - t*h - b*h;
-					o.texCoord = fb1;
-					stream.Append(o);
+						// Triangle strip order: (-t,-b) (+t,-b) (-t,+b) (+t,+b)
+						o.positionCS = TransformObjectToHClip(fc - t*h - b*h); 
+						o.positionWS = fc - t*h - b*h;
+						o.texCoord = fb1;
+						stream.Append(o);
 
-					o.positionCS = TransformObjectToHClip(fc + t*h - b*h); 
-					o.positionWS = fc + t*h - b*h;
-					o.texCoord = fb2;
-					stream.Append(o);
+						o.positionCS = TransformObjectToHClip(fc + t*h - b*h); 
+						o.positionWS = fc + t*h - b*h;
+						o.texCoord = fb2;
+						stream.Append(o);
 
-					o.positionCS = TransformObjectToHClip(fc - t*h + b*h);
-					o.positionWS = fc - t*h + b*h;
-					o.texCoord = fb3;
-					stream.Append(o);
+						o.positionCS = TransformObjectToHClip(fc - t*h + b*h);
+						o.positionWS = fc - t*h + b*h;
+						o.texCoord = fb3;
+						stream.Append(o);
 
-					o.positionCS = TransformObjectToHClip(fc + t*h + b*h); 
-					o.positionWS = fc + t*h + b*h;
-					o.texCoord = fb4;
-					stream.Append(o); 
+						o.positionCS = TransformObjectToHClip(fc + t*h + b*h); 
+						o.positionWS = fc + t*h + b*h;
+						o.texCoord = fb4;
+						stream.Append(o); 
 
-					stream.RestartStrip();
+						stream.RestartStrip();
+					}
 				}
 			}
 
@@ -176,7 +185,9 @@ Shader "Test/PointToVoxels"
 				shadow *= AdditionalLightRealtimeShadow(0, steppedPos);
 
 				half4 texColor = SAMPLE_TEXTURE2D(_TextureAtlas, sampler_TextureAtlas, IN.texCoord);
-				return half4(texColor.rgb * light * shadow, 1);
+				//return half4(texColor.rgb * light * shadow, 1);
+				return half4(texColor.rgb * light, 1);
+
 				//return half4(IN.texCoord * light, 0, 1);
 			}
 			ENDHLSL

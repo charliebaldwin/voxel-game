@@ -21,22 +21,24 @@ public class TestScript : MonoBehaviour
     [Button]
     unsafe void RunTest()
     {
-        //OrthoNormal o = new OrthoNormal(1, 0, 0);
-        //Debug.Log($"original: {o}");
+        uint a = 0;
+        Debug.Log($"initial value: {a}");
 
-        //o = o.Rotate(OrthoNormal.up, 1);
-        //Debug.Log($"rotated on y 1x: {o}");
-        //o = o.Rotate(OrthoNormal.up, 1);
-        //Debug.Log($"rotated on y 2x: {o}");
-        //o = o.Rotate(OrthoNormal.up, 1);
-        //Debug.Log($"rotated on y 3x: {o}");
+        a = 0 | (1 << 0);
+        Debug.Log($"new value: {a}");
+        a = 0 | (1 << 1);
+        Debug.Log($"new value: {a}");
+        a = 0 | (1 << 2);
+        Debug.Log($"new value: {a}");
+        a = 0 | (1 << 3);
+        Debug.Log($"new value: {a}");
+        a = 0 | (1 << 4);
+        Debug.Log($"new value: {a}");
+        a = 0 | (1 << 5);
+        Debug.Log($"new value: {a}");
 
-        //o = o.Rotate(OrthoNormal.left, 1);
-        //Debug.Log($"rotated on x 1x: {o}");
-        //o = o.Rotate(OrthoNormal.left, 1);
-        //Debug.Log($"rotated on x 2x: {o}");
-        //o = o.Rotate(OrthoNormal.left, 1);
-        //Debug.Log($"rotated on x 3x: {o}");
+
+
     }
 
     public static OrthoNormal RotateOrtho(OrthoNormal original, Quaternion rotation)

@@ -468,9 +468,9 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 
 		List<Vector3> positions = new List<Vector3>();
 		List<Color> colors = new List<Color>();
-		List<Vector4> uvs0 = new List<Vector4>();
-		List<Vector4> uvs1 = new List<Vector4>();
-
+		List<Vector4> uvs0 = new List<Vector4>(); // rgba=texture indices 0-3
+		List<Vector4> uvs1 = new List<Vector4>(); // rg=texture indices 4-5
+		List<Vector4> uvs2 = new List<Vector4>(); // r=solid faces
 		foliageGrassCoords = new List<Vector3>();
         neighborCache = new Dictionary<Vector3Int, Voxel>();
 
@@ -489,6 +489,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
                         Vector3Int localPos = new Vector3Int(x, y, z);
                         Vector3Int worldPos = LocalToWorld(localPos, ChunkPos, Size3D);
 						bool shouldDraw = false;
+						uint solidFaces = 0;
                         for (int n = 0; n < 6; n++)
                         {
                             Vector3Int dir = OrthoNormal.AlignYZ(OrthoDirections[n], vox.UpAxis, vox.ForwardAxis).ToVector();
@@ -496,22 +497,30 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 							if (neighbor.Shape == BlockShape.Foliage || neighbor.Shape == BlockShape.Empty)
 							{
 								shouldDraw = true;
+								solidFaces = solidFaces | ((uint)1 << n);
 							}
                         }
 						if (shouldDraw)
 						{
 							positions.Add(new Vector3(x, y, z));
 							List<int> indices = BlockRegistry.LookupBlockTextures(vox.BlockID);
+							
 							Vector4 uv0 = Vector4.zero;
-							Vector4 uv1 = Vector4.zero;
 							uv0.x = indices[0];
-							if (indices.Count > 1) uv0.y = indices[1];
-							if (indices.Count > 2) uv0.z = indices[2];
-							if (indices.Count > 3) uv0.w = indices[3];
-							if (indices.Count > 4) uv1.x = indices[4];
-							if (indices.Count > 6) uv1.y = indices[5];
+                            if (indices.Count > 1) uv0.y = indices[1];
+                            if (indices.Count > 2) uv0.z = indices[2];
+                            if (indices.Count > 3) uv0.w = indices[3];
+
+                            Vector4 uv1 = Vector4.zero;
+                            if (indices.Count > 4) uv1.x = indices[4];
+                            if (indices.Count > 6) uv1.y = indices[5];
+
+                            Vector4 uv2 = Vector4.zero;
+							uv2.x = solidFaces;
+
 							uvs0.Add(uv0);
 							uvs1.Add(uv1);
+							uvs2.Add(uv2);
 						}
 					}
 				}
@@ -520,8 +529,9 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 
 		mesh.SetVertices(positions);
 		mesh.SetUVs(0, uvs0);
-		mesh.SetUVs(1, uvs1);
-		mesh.SetIndices(Enumerable.Range(0, positions.Count).ToArray(), MeshTopology.Points, 0);
+        mesh.SetUVs(1, uvs1);
+        mesh.SetUVs(2, uvs2);
+        mesh.SetIndices(Enumerable.Range(0, positions.Count).ToArray(), MeshTopology.Points, 0);
 		meshFilter.mesh = mesh;
 
 		foliage.SetFoliage(foliageGrassCoords);
