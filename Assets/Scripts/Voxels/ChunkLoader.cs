@@ -20,16 +20,17 @@ public class ChunkLoader : MonoBehaviour
     void Update()
     {
         if (world == null) world = VoxelWorld.Instance;
-
-        Vector3Int chunkPos = FindContainingChunk(SnapToGrid(transform.position), World().ChunkSize);
-
-        if (chunkPos.x != currentChunkPos.x || chunkPos.z != currentChunkPos.z)
+        else if (world.Initialized)
         {
-            Debug.Log($"starting load from {chunkPos}");
-            world.LoadChunksRadius(chunkPos, RenderDistance);
-            world.UnloadDistantChunks(chunkPos, RenderDistance + 2);
-            //World().UnloadChunk(currentChunkPos);
-            currentChunkPos = chunkPos;
+            Vector3Int chunkPos = FindContainingChunk(SnapToGrid(transform.position), world.ChunkSize);
+
+            if (chunkPos.x != currentChunkPos.x || chunkPos.z != currentChunkPos.z)
+            {
+                world.LoadChunksRadius(chunkPos, RenderDistance);
+                world.UnloadDistantChunks(chunkPos, RenderDistance + 2);
+                //World().UnloadChunk(currentChunkPos);
+                currentChunkPos = chunkPos;
+            }
         }
     }
 }

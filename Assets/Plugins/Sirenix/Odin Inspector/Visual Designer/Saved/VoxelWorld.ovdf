@@ -1,0 +1,7 @@
+OVDF v1.1
+VoxelWorld, Assembly-CSharp
+MetaGuid:e55df7c589bc5dc4a95df630c28d767f
+
+# ChunkMaterials
++ [Sirenix.OdinInspector.DictionaryDrawerSettings]
+	DisplayMode = Foldout

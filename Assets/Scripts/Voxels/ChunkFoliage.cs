@@ -36,6 +36,7 @@ public class ChunkFoliage : MonoBehaviour
     public void SetFoliage(List<Vector3> positions)
     {
         GrassPositions = positions;
+        posBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Raw, 1000, 3 * sizeof(float));
         posBuffer.SetData(GrassPositions);
         LoadFoliage();
     }

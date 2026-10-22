@@ -32,7 +32,7 @@ public class RaycastTester : MonoBehaviour
 
     public void TestRaycast()
     {
-        if (!world.Initialized) world.InitializeWorld();
+        if (!world.Initialized) world.Initialize();
         world.VoxelTraversal(transform.position + offset, transform.forward, 30);
 
     }

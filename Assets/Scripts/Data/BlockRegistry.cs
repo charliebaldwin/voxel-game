@@ -6,8 +6,11 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using static Unity.Collections.AllocatorManager;
 
-public class BlockRegistry : MonoBehaviour
+public class BlockRegistry : MonoBehaviour, IInitializable
 {
+    bool IInitializable.Initialized { get { return initialized; } }
+    private bool initialized = false;
+
     public static BlockRegistry Instance;
     // objects to populate
     public string BDOFolderPath = "Blocks";
@@ -29,9 +32,15 @@ public class BlockRegistry : MonoBehaviour
     public Vector2Int TextureAtlasSize;
 
 #region INITIALIZE AND LOAD
+
     private void Awake()
     {
-        Debug.Log("Block registry awake");
+        Initialize();
+    }
+
+    [Button]
+    public void Initialize()
+    {
         SetInstance();
         LoadObjectsFromPath();
         PopulateDictionary();
