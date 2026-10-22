@@ -472,8 +472,10 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		List<Vector4> uvs1 = new List<Vector4>();
 
 		foliageGrassCoords = new List<Vector3>();
+        neighborCache = new Dictionary<Vector3Int, Voxel>();
 
-		for (int z = 0; z < Size3D.z; z++) {
+
+        for (int z = 0; z < Size3D.z; z++) {
 			for (int y = 0; y < Size3D.y; y++) {
 				for (int x = 0; x < Size3D.x; x++) {
 
@@ -484,18 +486,33 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 					}
 					else if (vox.BlockID != BlockID.Air && vox.BlockID != BlockID.Foliage_Grass && vox.Shape != BlockShape.Empty && vox.Shape != BlockShape.Foliage)
 					{
-						positions.Add(new Vector3(x, y, z));
-						List<int> indices = BlockRegistry.LookupBlockTextures(vox.BlockID);
-						Vector4 uv0 = Vector4.zero;
-						Vector4 uv1 = Vector4.zero;
-						uv0.x = indices[0];
-						if (indices.Count > 1) uv0.y = indices[1];
-						if (indices.Count > 2) uv0.z = indices[2];
-						if (indices.Count > 3) uv0.w = indices[3];
-						if (indices.Count > 4) uv1.x = indices[4];
-						if (indices.Count > 6) uv1.y = indices[5];
-						uvs0.Add(uv0);
-						uvs1.Add(uv1);
+                        Vector3Int localPos = new Vector3Int(x, y, z);
+                        Vector3Int worldPos = LocalToWorld(localPos, ChunkPos, Size3D);
+						bool shouldDraw = false;
+                        for (int n = 0; n < 6; n++)
+                        {
+                            Vector3Int dir = OrthoNormal.AlignYZ(OrthoDirections[n], vox.UpAxis, vox.ForwardAxis).ToVector();
+                            Voxel neighbor = GetCachedNeighbor(worldPos + dir);
+							if (neighbor.Shape == BlockShape.Foliage || neighbor.Shape == BlockShape.Empty)
+							{
+								shouldDraw = true;
+							}
+                        }
+						if (shouldDraw)
+						{
+							positions.Add(new Vector3(x, y, z));
+							List<int> indices = BlockRegistry.LookupBlockTextures(vox.BlockID);
+							Vector4 uv0 = Vector4.zero;
+							Vector4 uv1 = Vector4.zero;
+							uv0.x = indices[0];
+							if (indices.Count > 1) uv0.y = indices[1];
+							if (indices.Count > 2) uv0.z = indices[2];
+							if (indices.Count > 3) uv0.w = indices[3];
+							if (indices.Count > 4) uv1.x = indices[4];
+							if (indices.Count > 6) uv1.y = indices[5];
+							uvs0.Add(uv0);
+							uvs1.Add(uv1);
+						}
 					}
 				}
 			}
@@ -509,6 +526,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 
 		foliage.SetFoliage(foliageGrassCoords);
 		foliageGrassCoords.Clear();
+        neighborCache.Clear();
 
         meshMarker.End();
         float duration = Mathf.Round((float)(Time.realtimeSinceStartupAsDouble - startTime) * 10000f) / 100f;

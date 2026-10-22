@@ -31,8 +31,11 @@ public class BlockRegistry : MonoBehaviour, IInitializable
 
     public Vector2Int TextureAtlasSize;
 
-#region INITIALIZE AND LOAD
-
+    #region INITIALIZE AND LOAD
+    private void OnValidate()
+    {
+        Initialize();
+    }
     private void Awake()
     {
         Initialize();
@@ -51,8 +54,6 @@ public class BlockRegistry : MonoBehaviour, IInitializable
     {
         if (Instance != null && Instance != this) Destroy(this);
         else Instance = this;
-        Debug.Log("Block registry instance set");
-
     }
 
     [Button]

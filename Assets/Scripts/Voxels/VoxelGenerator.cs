@@ -17,6 +17,15 @@ public class VoxelGenerator : MonoBehaviour
     private float[] noiseArray2;
     private float[] noiseArray3;
 
+    private float[,,] noiseArray3d;
+    private float[,,] noiseArray3d_2;
+
+    private float[,,] noiseSand;
+    private float[,,] noiseSilt;
+    private float[,,] noiseClay;
+
+    private float[,,] noiseCaves;
+
 
     [SerializeField]
     private Vector3Int worldSize = new Vector3Int(512,64,512);
@@ -43,12 +52,24 @@ public class VoxelGenerator : MonoBehaviour
         seedOffset = UnityEngine.Random.Range(0f, 999999f);
 
 
-        //TerrainNoiseGPU();
-        //TerrainNoiseGPU(out noiseArray2, 3f);
-        //TerrainNoiseGPU(out noiseArray3, 9f);
 
-        LoopXZ(TerrainNoise);
+        //GenerateNoise(out noiseArray3d, 1f, worldSettings.NoiseOctaves);
+        //GenerateNoise(out noiseArray3d_2, 0.2f, worldSettings.NoiseOctaves);
+
+        GenerateNoiseGPU(out noiseArray3d, 1f * Vector3.one, Vector3.zero, worldSettings.NoiseOctaves);
+        GenerateNoiseGPU(out noiseArray3d_2, 0.2f * Vector3.one, Vector3.zero, worldSettings.NoiseOctaves);
+        LoopXYZ(BuildTerrain);
+
+        GenerateNoiseGPU(out noiseSand, new Vector3(1f, 0.9f, 1f), new Vector3(4392f, 200f, 9200f), worldSettings.NoiseOctaves);
+        GenerateNoiseGPU(out noiseSilt, new Vector3(1f, 0.9f, 1f), new Vector3(-9492f, -600f, -3300f), worldSettings.NoiseOctaves);
+        GenerateNoiseGPU(out noiseClay, new Vector3(1f, 0.9f, 1f), new Vector3(2124f, 3000f, 100f), worldSettings.NoiseOctaves);
         LoopXYZ(SoilNoise);
+
+        GenerateNoiseGPU(out noiseCaves, 1.4f * Vector3.one, new Vector3(10929f, -200f, -92234f), 4);
+        LoopXYZ(CarveCaves);
+
+        //LoopXZ(TerrainNoise);
+
         LoopXYZ(AddGrass);
         //LoopXYZ(CarveCaves);
 
@@ -113,158 +134,187 @@ public class VoxelGenerator : MonoBehaviour
 
     #region PASSES 
 
-    [Button]
-    private void TerrainNoiseGPU()
+    private void GenerateNoiseGPU(out float[,,] noiseArray, Vector3 scale, Vector3 offset, int octaves)
     {
-        RenderTexture noiseRT = new RenderTexture(worldSize.x, worldSize.y, 32, RenderTextureFormat.RFloat);
+        float[,,] result = new float[worldSize.x, worldSize.y, worldSize.z];
+        Vector3Int Size3D = new Vector3Int(worldSize.x, worldSize.y, worldSize.z);
+
+        RenderTexture noiseRT = new RenderTexture(worldSize.x, worldSize.z, 24, RenderTextureFormat.RFloat);
         noiseRT.dimension = UnityEngine.Rendering.TextureDimension.Tex2DArray;
         noiseRT.volumeDepth = worldSize.z;
         noiseRT.enableRandomWrite = true;
 
-        noiseArray = new float[worldSize.x * worldSize.y * worldSize.z];
-        noiseArray2 = new float[worldSize.x * worldSize.y * worldSize.z];
+        float[] noiseArray1d = new float[worldSize.x * worldSize.y * worldSize.z];
+        //noiseArray2 = new float[worldSize.x * worldSize.y * worldSize.z];
         noiseBuffer1 = new ComputeBuffer(worldSize.x * worldSize.y * worldSize.z, sizeof(float));
-        noiseBuffer2 = new ComputeBuffer(worldSize.x * worldSize.y * worldSize.z, sizeof(float));
+        //noiseBuffer2 = new ComputeBuffer(worldSize.x * worldSize.y * worldSize.z, sizeof(float));
 
         int[] size = new int[3] { worldSize.x, worldSize.y, worldSize.z };
-        int[] threads = new int[3] { 16, 1, 16 };
+        int[] threads = new int[3] { 8, 8, 8 };
         int[] threadSize = new int[3] { size[0] / threads[0], size[1] / threads[1], size[2] / threads[2] };
 
         int kernel = NoiseCS.FindKernel("GenerateNoise");
         //NoiseCS.SetTexture(kernel, "Result", noiseRT);
         NoiseCS.SetBuffer(kernel, "Noise1Buffer", noiseBuffer1);
-        NoiseCS.SetBuffer(kernel, "Noise2Buffer", noiseBuffer2);
+        //NoiseCS.SetBuffer(kernel, "Noise2Buffer", noiseBuffer2);
         NoiseCS.SetInts("WorldSize", size);
         NoiseCS.SetInts("ThreadCount", threads);
         NoiseCS.SetInts("ThreadSize", threadSize);
-        NoiseCS.SetFloat("Seed", 10f);
-        NoiseCS.SetFloat ("Scale", Scale);
-        NoiseCS.SetInt("Octaves", Octaves);
+        NoiseCS.SetFloat("Seed", Seed);
+        NoiseCS.SetVector("Scale", Scale * scale);
+        NoiseCS.SetVector("Offset", offset);
+        NoiseCS.SetInt("Octaves", octaves);
         NoiseCS.SetFloat("OctaveScale", OctaveScale);
         NoiseCS.SetFloat("OctaveStrength", OctaveStrength);
 
         //NoiseCS.SetVector(kernel, new Vector4(worldSize.x, worldSize.y, worldSize.z, 0f));
-        NoiseCS.Dispatch(kernel, threads[0], threads[1], threads[2]);
+        NoiseCS.Dispatch(kernel, 1, 1, 1);// threads[0], threads[1], threads[2]);
 
         //AssetDatabase.CreateAsset(noiseRT, "Assets/Textures/Generated/Test_Tex3D.asset");
-        noiseBuffer1.GetData(noiseArray);
-        noiseBuffer2.GetData(noiseArray2);
+        noiseBuffer1.GetData(noiseArray1d);
+        //noiseBuffer2.GetData(noiseArray2);
         //noiseT2DArray.CopyPixels(noiseRT);
-
         noiseRT.Release();
+
+        for (int x = 0; x < Size3D.x; x++) { 
+            for (int z = 0; z < Size3D.z; z++) {
+                for (int y = 0; y < Size3D.y; y++)
+                {
+                    result[x, y, z] = noiseArray1d[x + worldSize.x * y + worldSize.x * worldSize.y * z];
+                }
+            }
+        }
+
+        noiseArray = result;
     }
 
-    private float ReadNoiseTex(int x, int y, int z, ref float[] noise)
+
+    private void GenerateNoiseCPU3D(out float[,,] noiseArray, Vector3 scale, Vector3 offset, int octaves)
     {
-        int xyzCoord = x + worldSize.x * y + worldSize.x * worldSize.y * z;
-        return noise[xyzCoord];
+        float[,,] result = new float[worldSize.x, worldSize.y, worldSize.z];
+        Vector3Int Size3D = new Vector3Int(worldSize.x, worldSize.y, worldSize.z);
+        for (int x = 0; x < Size3D.x; x++) { 
+            for (int z = 0; z < Size3D.z; z++) {
+                for (int y = 0; y < Size3D.y; y++)
+                {
+                    result[x,y,z] = Perlin.Fbm(x * worldSettings.NoiseScale * scale.x + offset.x + seedOffset, y * worldSettings.NoiseScale * scale.y + offset.y + seedOffset, z * worldSettings.NoiseScale * scale.z +offset.z + seedOffset, octaves);
+                }
+            }
+        }
+        noiseArray = result;
+    }
+    private void GenerateNoiseCPU2D(out float[,,] noiseArray, Vector3 scale, Vector3 offset, int octaves)
+    {
+        float[,,] result = new float[worldSize.x, worldSize.y, worldSize.z];
+        Vector3Int Size3D = new Vector3Int(worldSize.x, worldSize.y, worldSize.z);
+        for (int x = 0; x < Size3D.x; x++) {
+            for (int z = 0; z < Size3D.z; z++) {
+                float n = Perlin.Fbm(x * worldSettings.NoiseScale * scale.x + offset.x + seedOffset, z * worldSettings.NoiseScale * scale.z + offset.z + seedOffset, octaves);
+
+                for (int y = 0; y < Size3D.y; y++){
+                    result[x, y, z] = n;
+                }
+            }
+        }
+        noiseArray = result;
     }
 
-    private void TerrainNoise(int x, int z)
+    private void BuildTerrain(int x, int y, int z)
     {
-        float h = 0f;
-
-
-        float noise = Perlin.Fbm(x * worldSettings.NoiseScale + seedOffset, z * worldSettings.NoiseScale + seedOffset, worldSettings.NoiseOctaves);
-        float noise2 = Perlin.Fbm(x * worldSettings.NoiseScale * 0.2f + seedOffset, z * worldSettings.NoiseScale * 0.2f + seedOffset, worldSettings.NoiseOctaves);
-        h = noise * worldSettings.HeightRange + worldSettings.HeightOffset;
+        float noise = noiseArray3d[x, 2, z];
+        float noise2 = noiseArray3d_2[x, 2, z];
+        float h = noise * worldSettings.HeightRange + worldSettings.HeightOffset;
         h = h + (noise2 * worldSettings.HeightRange * 4);
 
-        //float h = ReadNoiseTex(x, 1, z, ref noiseArray);
-        //h = h * worldSettings.HeightRange + worldSettings.HeightOffset;
-        //Debug.Log($"h={h}");
+        UnityEngine.Random.InitState(x + y + z);
+        int r = Mathf.FloorToInt(UnityEngine.Random.Range(0f, 5.99f));
+        OrthoNormal o1 = VoxelHelper.OrthoDirections[r];
+        OrthoNormal o2 = VoxelHelper.OrthoDirections[(r + 2) % 5];
+        o1 = OrthoNormal.up;
+        o2 = OrthoNormal.forward;
 
-        for (int y = 0; y < worldSize.y; y++)
+        float depth = h - y;
+        if (depth < 0f)
         {
-            UnityEngine.Random.InitState(x + y + z);
-            int r = Mathf.FloorToInt(UnityEngine.Random.Range(0f, 5.99f));
-            OrthoNormal o1 = VoxelHelper.OrthoDirections[r];
-            OrthoNormal o2 = VoxelHelper.OrthoDirections[(r + 2) % 5];
-            o1 = OrthoNormal.up;
-            o2 = OrthoNormal.forward;
-
-            float depth = h - y;
-            if (depth < 0f)
-            {
-                SetVoxel(x, y, z, new Voxel(BlockID.Air));
-
-            }
-            else
-            {
-                SetVoxel(x, y, z, new Voxel(BlockID.Dirt));
-
-                // Stone Layers
-                if (depth < 4f)
-                {
-                    SetVoxel(x, y, z, new Voxel(BlockID.Dirt));
-                }
-                else if (depth < 8f)
-                {
-                    SetVoxel(x, y, z, new Voxel(BlockID.Rocky_Dirt, o1, o2));
-                }
-                else if (depth < 15f)
-                {
-                    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Sandstone, o1, o2));
-                }
-                else if (depth < 22f)
-                {
-                    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Limestone, 0, 0, BlockShape.Solid));
-                }
-                else if (depth < 30f)
-                {
-                    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Dolomite, o1, o2));
-                }
-                else if (depth < 40f)
-                {
-                    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Shale, o1, o2));
-                }
-                else if (depth < 52f)
-                {
-                    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Slate, 0, 0, BlockShape.Solid));
-                }
-                else if (depth < 65f)
-                {
-                    SetVoxel(x, y, z, new Voxel(BlockID.Stone_Basalt, o1, o2));
-                }
-
-                // Caves / Color Testing
-                //float color_r = Mathf.Abs(h);
-                //float color_g = Mathf.Abs(ReadNoiseTex(x, 20, z, ref noiseArray));
-                //float color_b = Mathf.Abs(ReadNoiseTex(x, 40, z, ref noiseArray));
-
-                //float c = ReadNoiseTex(x, 7, z, ref noiseArray2);
-
-                //bool cave = false;
-                ////if (c > 0.05f) cave = true;
-                //if ((((float)y / worldSize.y) - color_g) * 2f < 2f * c)
-                //{
-                //    cave = true;
-                //}
-                //Color color = Color.black;
-                //if (!cave)
-                //{
-                //    SetVoxel(x, y, z, new Voxel(BlockID.Air));
-                //    color = new Color(color_r, color_g, color_b).NormalizeRGB();
-                //    //SetVoxel(x, y, z, new Voxel(color));
-                //}   //SetVoxel(x, y, z, new Voxel(Color.black));
-                //else
-                //{
-                //    SetVoxel(x, y, z, new Voxel(BlockID.Dirt));
-                //    //SetVoxel(x, y, z, new Voxel(color)
-                //}
-            }
-
+            SetVoxel(x, y, z, new Voxel(BlockID.Air));
 
         }
+        else
+        {
+            SetVoxel(x, y, z, new Voxel(BlockID.Dirt));
+
+            // Stone Layers
+            if (depth < 4f)
+            {
+                SetVoxel(x, y, z, new Voxel(BlockID.Dirt));
+            }
+            else if (depth < 8f)
+            {
+                SetVoxel(x, y, z, new Voxel(BlockID.Rocky_Dirt, o1, o2));
+            }
+            else if (depth < 15f)
+            {
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Sandstone, o1, o2));
+            }
+            else if (depth < 22f)
+            {
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Limestone, 0, 0, BlockShape.Solid));
+            }
+            else if (depth < 30f)
+            {
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Dolomite, o1, o2));
+            }
+            else if (depth < 40f)
+            {
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Shale, o1, o2));
+            }
+            else if (depth < 52f)
+            {
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Slate, 0, 0, BlockShape.Solid));
+            }
+            else if (depth < 65f)
+            {
+                SetVoxel(x, y, z, new Voxel(BlockID.Stone_Basalt, o1, o2));
+            }
+
+            // Caves / Color Testing
+            //float color_r = Mathf.Abs(h);
+            //float color_g = Mathf.Abs(ReadNoiseTex(x, 20, z, ref noiseArray));
+            //float color_b = Mathf.Abs(ReadNoiseTex(x, 40, z, ref noiseArray));
+
+            //float c = ReadNoiseTex(x, 7, z, ref noiseArray2);
+
+            //bool cave = false;
+            ////if (c > 0.05f) cave = true;
+            //if ((((float)y / worldSize.y) - color_g) * 2f < 2f * c)
+            //{
+            //    cave = true;
+            //}
+            //Color color = Color.black;
+            //if (!cave)
+            //{
+            //    SetVoxel(x, y, z, new Voxel(BlockID.Air));
+            //    color = new Color(color_r, color_g, color_b).NormalizeRGB();
+            //    //SetVoxel(x, y, z, new Voxel(color));
+            //}   //SetVoxel(x, y, z, new Voxel(Color.black));
+            //else
+            //{
+            //    SetVoxel(x, y, z, new Voxel(BlockID.Dirt));
+            //    //SetVoxel(x, y, z, new Voxel(color)
+            //}
+        }
+
+
+        
     }
 
     private void SoilNoise(int x, int y, int z)
     {
         if (GetVoxel(x, y, z).BlockID != BlockID.Air) {
 
-            float sand = Perlin.Fbm(x * worldSettings.NoiseScale + 4392f + seedOffset, y * worldSettings.NoiseScale * 0.3f + 200f + seedOffset,  z * worldSettings.NoiseScale + 9200f + seedOffset, 3);
-            float silt = Perlin.Fbm(x * worldSettings.NoiseScale - 9492f + seedOffset, y * worldSettings.NoiseScale * 0.3f - 600f + seedOffset,  z * worldSettings.NoiseScale - 3300f + seedOffset, 3);
-            float clay = Perlin.Fbm(x * worldSettings.NoiseScale + 2124f + seedOffset, y * worldSettings.NoiseScale * 0.3f + 3000f + seedOffset, z * worldSettings.NoiseScale + 100f + seedOffset, 3);
+            float sand = noiseSand[x, y, z];
+            float silt = noiseSilt[x, y, z];
+            float clay = noiseClay[x, y, z];
 
             Color soilMix = new Color(sand, silt, clay);
             Color.RGBToHSV(soilMix, out float hue, out float sat, out float val);
@@ -292,13 +342,13 @@ public class VoxelGenerator : MonoBehaviour
     }
     private void AddGrass(int x, int y, int z)
     {
-        if (GetVoxel(x, y, z).BlockID == BlockID.Dirt && GetVoxel(x, y + 1, z).BlockID == BlockID.Air)
-        {
-            SetVoxel(x, y, z, new Voxel(BlockID.Grass));
-            //SetVoxel(x, y + 1, z, new Voxel(BlockID.Foliage_Grass, BlockShape.Foliage));
+        //if (GetVoxel(x, y, z).BlockID == BlockID.Dirt && GetVoxel(x, y + 1, z).BlockID == BlockID.Air)
+        //{
+        //    SetVoxel(x, y, z, new Voxel(BlockID.Grass));
+        //    //SetVoxel(x, y + 1, z, new Voxel(BlockID.Foliage_Grass, BlockShape.Foliage));
 
-        }
-        else if (GetVoxel(x, y, z).BlockID == BlockID.Sand && GetVoxel(x, y + 1, z).BlockID == BlockID.Air)
+        //}
+        if (GetVoxel(x, y, z).BlockID == BlockID.Sand && GetVoxel(x, y + 1, z).BlockID == BlockID.Air)
         {
             SetVoxel(x, y, z, new Voxel(BlockID.GrassySand));
             //SetVoxel(x, y + 1, z, new Voxel(BlockID.Foliage_Grass, BlockShape.Foliage));
@@ -320,7 +370,7 @@ public class VoxelGenerator : MonoBehaviour
     private void CarveCaves(int x, int y, int z) 
     {
         if (y < 2 || GetVoxel(x,y,z).BlockID == BlockID.Air) return;
-        float noise = Perlin.Fbm(x * worldSettings.NoiseScale * 1.4f, y * worldSettings.NoiseScale *1.4f, z * worldSettings.NoiseScale * 1.4f, 2);
+        float noise = noiseCaves[x, y, z];
         if (noise < -0.1f)
         {
             SetVoxel(x, y, z, new Voxel(BlockID.Air));

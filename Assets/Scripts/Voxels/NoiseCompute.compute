@@ -12,7 +12,8 @@ uint3 ThreadCount;
 uint3 ThreadSize;
 float Seed;
 
-float Scale;
+float3 Scale;
+float3 Offset;
 int Octaves; 
 float OctaveStrength;
 float OctaveScale;
@@ -21,7 +22,7 @@ float remap(float value, float originMin, float originMax, float destinationMin,
     return destinationMin + (value - originMin) * (destinationMax - destinationMin) / (originMax - originMin);
 }
 
-[numthreads(16,1,16)]
+[numthreads(8,8,8)]
 void GenerateNoise (uint3 id : SV_DispatchThreadID)
 { 
     
@@ -30,34 +31,33 @@ void GenerateNoise (uint3 id : SV_DispatchThreadID)
     //uint sizeZ = WorldSize.z / ThreadCount.z;
     
     uint startX = id.x * ThreadSize.x;
-    uint startY = id.y * ThreadSize.y;
+    uint startY = id.y * ThreadSize.y; 
     uint startZ = id.z * ThreadSize.z;
 
-    // TODO: insert actual code here! 
     for (uint x = startX; x < startX + ThreadSize.x; x++) {
         for (uint y = startY; y < startY + ThreadSize.y; y++) {
             for (uint z = startZ; z < startZ + ThreadSize.z; z++) {
                 
                 float n1 = 0;
-                float n2 = 0;
+                //float n2 = 0;
                 float str = 1;
-                float scale = Scale;
+                float3 scale = Scale;
                 for (int o = 0; o < Octaves; o++)
                 {
-                    n1 += str * SimplexNoise(float3(1000 * Seed + x * scale + o * 10, 1000 * Seed + y * scale + o * 10, 1000 * Seed + z * scale + o * 10));
-                    n2 += str * SimplexNoise(float3(500 * Seed + x * scale + o * 10, 500 * Seed + y * scale + o * 10, 500 * Seed + z * scale + o * 10));
+                    n1 += str * SimplexNoise(float3(1000 * Seed + Offset.x + x * scale.x + o * 10, 1000 * Seed + Offset.y + y * scale.y + o * 10, 1000 * Seed + Offset.z + z * scale.z + o * 10));
+                    //n2 += str * SimplexNoise(float3(500 * Seed + x * scale + o * 10, 500 * Seed + y * scale + o * 10, 500 * Seed + z * scale + o * 10));
                     str *= OctaveStrength;
                     scale *= OctaveScale;
 
                 }
                 //Result[uint3(x,y,z)] = n;
                 Noise1Buffer[x + WorldSize.x * y + WorldSize.x * WorldSize.y * z] = n1;
-                float width = 0.1;
-                float edge1 = clamp(remap(n2, 0.5 - width*2, 0.5 - width, 0, 1), 0, 1);
-                float edge2 = clamp(remap(n2, 0.5 + width, 0.5 + width*2, 1, 0), 0, 1);
-                float cave = edge1 * edge2;
+                //float width = 0.1;
+                //float edge1 = clamp(remap(n2, 0.5 - width*2, 0.5 - width, 0, 1), 0, 1);
+                //float edge2 = clamp(remap(n2, 0.5 + width, 0.5 + width*2, 1, 0), 0, 1);
+                //float cave = edge1 * edge2;
 
-                Noise2Buffer[x + WorldSize.x * y + WorldSize.x * WorldSize.y * z] = cave;
+                //Noise2Buffer[x + WorldSize.x * y + WorldSize.x * WorldSize.y * z] = cave;
                 
             }
         }

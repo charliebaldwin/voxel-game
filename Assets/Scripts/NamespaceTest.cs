@@ -18,11 +18,11 @@ namespace Tag
     }
 }
 
-public class Test
-{
-    Tag.Type Type = Tag.Type.Item;
-    int BlockType = (int)Tag.Block.ID.Air;
-}
+//public class Test
+//{
+//    Tag.Type Type = Tag.Type.Item;
+//    int BlockType = (int)Tag.Block.ID.Air;
+//}
 
 
 

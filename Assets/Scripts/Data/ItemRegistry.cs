@@ -3,8 +3,11 @@ using UnityEditor;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-public class ItemRegistry : MonoBehaviour
+public class ItemRegistry : MonoBehaviour, IInitializable
 {
+    bool IInitializable.Initialized { get { return initialized; } }
+    private bool initialized = false;
+
     public static ItemRegistry Instance;
     public List<ItemDataObject> ItemDataObjects;
     public Dictionary<ItemID, Item> Items;
@@ -14,12 +17,22 @@ public class ItemRegistry : MonoBehaviour
     public List<Item> ItemList;
     public Dictionary<ItemID, Item> ItemDict = new Dictionary<ItemID, Item>();
 
+    private void OnValidate()
+    {
+        Initialize();
+    }
     private void Awake()
+    {
+        Initialize();
+    }
+    [Button]
+    public void Initialize()
     {
         SetInstance();
         LoadObjectsFromPath();
         PopulateDictionary();
     }
+
     private void SetInstance()
     {
         if (Instance != null && Instance != this) Destroy(this);

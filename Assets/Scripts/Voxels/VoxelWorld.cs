@@ -174,14 +174,14 @@ public partial class VoxelWorld : MonoBehaviour
 	[Sirenix.OdinInspector.Button]
 	private void LoadAllChunks()
 	{
-		 for (int x = 0; x < WorldSize.x; x++) {
+		for (int x = 0; x < WorldSize.x; x++) {
 			for (int z = 0; z < WorldSize.z; z++) {
 				for (int y = 0; y < WorldSize.y; y++)
 				{
 					LoadChunk(new Vector3Int(x, y, z));
 				}
 			}
-		 }
+		}
 	}
 
 	private List<VoxelChunk> chunksToLoad = new List<VoxelChunk>();
@@ -209,10 +209,8 @@ public partial class VoxelWorld : MonoBehaviour
 						{
 							return;
 						}
-
 					}
 					sortedChunksToLoad.Add(distance, c);
-
 				}
 			}
 		}
@@ -262,7 +260,7 @@ public partial class VoxelWorld : MonoBehaviour
 					loadedChunks.Add(Chunks[coord.x, coord.y, coord.z].LoadChunk());
 		} else
 		{
-			Debug.Log("chunk outside bounds");
+			//Debug.Log("chunk outside bounds");
 		}
 	}
 
