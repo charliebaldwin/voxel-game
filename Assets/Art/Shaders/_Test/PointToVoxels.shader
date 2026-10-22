@@ -28,10 +28,13 @@ Shader "Test/PointToVoxels"
 
 			#pragma shader_feature _RECEIVE_SHADOWS_ON
 			#pragma multi_compile _MAIN_LIGHT_SHADOWS
+			#pragma multi_compile_fog
 
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Fog.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderVariablesFunctions.hlsl"
 			
 			TEXTURE2D(_TextureAtlas);
 			SAMPLER(sampler_TextureAtlas);
@@ -81,11 +84,11 @@ Shader "Test/PointToVoxels"
 				return OUT;
 			}
 
+
+
 			static const float3 FaceN[6] = { float3( -1,0,0), float3( 1,0,0), float3(0,-1,0), float3(0,1,0), float3(0,0,-1), float3(0,0, 1) };
 			static const float3 FaceB[6] = { float3(0,1,0),  float3(0,0,1),  float3(0,0,1),  float3(1,0,0),  float3(1,0,0),  float3(0,1,0)  };
 			static const float3 FaceT[6] = { float3(0,0,1),  float3(0,1,0),  float3(1,0,0),  float3(0,0,1),  float3(0,1,0),  float3(1,0,0)  };
-
-
 			static const float2 UVs[6][4] = {
 				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) },
 				{ float2(1,0), float2(1,1), float2(0,0), float2(0,1) },
@@ -94,6 +97,7 @@ Shader "Test/PointToVoxels"
 				{ float2(1,0), float2(1,1), float2(0,0), float2(0,1) },
 				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) }
 			};
+
 			float2 flipbook(float2 UV, float Width, float Height, float Tile, float2 Invert)
 			{
 				Tile = fmod(Tile, Width * Height);
@@ -103,6 +107,8 @@ Shader "Test/PointToVoxels"
 				return (UV + float2(tileX, tileY)) * tileCount;
 			}
 			 
+
+
 			[maxvertexcount(24)]
 			void geo(point v2g input[1], inout TriangleStream<g2f> stream) {
 				float3 c = input[0].positionOS;
@@ -147,23 +153,28 @@ Shader "Test/PointToVoxels"
 						//float2 uv = TRANSFORM_TEX(IN.texCoord, _TextureAtlas);
 
 						// Triangle strip order: (-t,-b) (+t,-b) (-t,+b) (+t,+b)
-						o.positionCS = TransformObjectToHClip(fc - t*h - b*h); 
-						o.positionWS = fc - t*h - b*h;
+						VertexPositionInputs inputs = GetVertexPositionInputs(fc - t*h - b*h);
+						o.positionCS = inputs.positionCS;
+						o.positionWS = inputs.positionWS;
 						o.texCoord = fb1;
 						stream.Append(o);
 
-						o.positionCS = TransformObjectToHClip(fc + t*h - b*h); 
-						o.positionWS = fc + t*h - b*h;
+						inputs = GetVertexPositionInputs(fc + t*h - b*h);
+						o.positionCS = inputs.positionCS;
+						o.positionWS = inputs.positionWS;
 						o.texCoord = fb2;
 						stream.Append(o);
 
-						o.positionCS = TransformObjectToHClip(fc - t*h + b*h);
-						o.positionWS = fc - t*h + b*h;
+
+						inputs = GetVertexPositionInputs(fc - t*h + b*h);
+						o.positionCS = inputs.positionCS;
+						o.positionWS = inputs.positionWS;
 						o.texCoord = fb3;
 						stream.Append(o);
 
-						o.positionCS = TransformObjectToHClip(fc + t*h + b*h); 
-						o.positionWS = fc + t*h + b*h;
+						inputs = GetVertexPositionInputs(fc + t*h + b*h); 
+						o.positionCS = inputs.positionCS;
+						o.positionWS = inputs.positionWS;
 						o.texCoord = fb4;
 						stream.Append(o); 
 
@@ -172,10 +183,15 @@ Shader "Test/PointToVoxels"
 				}
 			}
 
+
+
+
 			half4 frag(g2f IN) : SV_Target
 			{
 
-
+				float viewZ = -TransformWorldToView(IN.positionWS).z;
+				float nearZ0ToFarZ = max(viewZ - _ProjectionParams.y, 0);
+				float fogStr = 1.0 - ComputeFogIntensity(ComputeFogFactorZ0ToFar(nearZ0ToFarZ));
 				Light l = GetMainLight();
 				half light = saturate(dot(normalize(IN.normalWS), l.direction)) * 0.8 + 0.2;
 
@@ -185,8 +201,11 @@ Shader "Test/PointToVoxels"
 				shadow *= AdditionalLightRealtimeShadow(0, steppedPos);
 
 				half4 texColor = SAMPLE_TEXTURE2D(_TextureAtlas, sampler_TextureAtlas, IN.texCoord);
+
+				half3 c = texColor * light;
+				c = lerp(c, unity_FogColor, fogStr);
 				//return half4(texColor.rgb * light * shadow, 1);
-				return half4(texColor.rgb * light, 1);
+				return half4(c, 1);
 
 				//return half4(IN.texCoord * light, 0, 1);
 			}

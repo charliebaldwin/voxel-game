@@ -10,7 +10,7 @@ public class TestScript : MonoBehaviour
 {
     private void Start()
     {
-        RunTest();
+    //    RunTest();
 
     }
     private void Update()

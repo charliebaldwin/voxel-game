@@ -67,7 +67,9 @@ public partial class VoxelWorld : MonoBehaviour
 
 	void Start()
 	{
+		//if (!Initialized)
 		Initialize();
+	
 		blockUpdate_co = BlockUpdateCO();
 		//StartCoroutine(blockUpdate_co);
 	}
@@ -174,6 +176,8 @@ public partial class VoxelWorld : MonoBehaviour
 	[Sirenix.OdinInspector.Button]
 	private void LoadAllChunks()
 	{
+		if (!Initialized)
+			Initialize();
 		for (int x = 0; x < WorldSize.x; x++) {
 			for (int z = 0; z < WorldSize.z; z++) {
 				for (int y = 0; y < WorldSize.y; y++)
