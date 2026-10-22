@@ -5,6 +5,7 @@ Shader "Test/PointToVoxels"
 		[MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
 		_Size("Size", Float) = 0.5
 		_TextureAtlas("Texture Atlas", 2D) = "white" {}
+		_EdgeNormalAtlas("Edge Normal Atlas", 2D) = "white" {}
 		_Rows("Rows", Int) = 1
 		_Cols("Columns", Int) = 8
 		_AtlasIndex("Atlas Index", Int) = 4
@@ -38,11 +39,14 @@ Shader "Test/PointToVoxels"
 			
 			TEXTURE2D(_TextureAtlas);
 			SAMPLER(sampler_TextureAtlas);
+			TEXTURE2D(_EdgeNormalAtlas);
+			SAMPLER(sampler_EdgeNormalAtlas);
 
 			CBUFFER_START(UnityPerMaterial)
 				half4 _BaseColor;
 				float _Size;
 				float4 _TextureAtlas_ST;
+				float4 _EdgeNormalAtlas_ST;
 				int _Rows;
 				int _Cols;
 				int _AtlasIndex;
@@ -69,6 +73,8 @@ Shader "Test/PointToVoxels"
 				float3 positionWS : POSITION1;
 				float3 normalWS : NORMAL;
 				float2 texCoord : TEXCOORD0;
+				float2 normalUV : TEXCOORD1;
+				//float4 tempC : TEXCOORD2;
 			};
 
 
@@ -93,10 +99,25 @@ Shader "Test/PointToVoxels"
 				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) },
 				{ float2(1,0), float2(1,1), float2(0,0), float2(0,1) },
 				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) },
-				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) },
+				{ float2(1,1), float2(0,1), float2(1,0), float2(0,0) },
 				{ float2(1,0), float2(1,1), float2(0,0), float2(0,1) },
 				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) }
 			};
+
+			static const int EdgeIndices[6][4] = {
+				{3, 5, 2, 4}, // -X
+				{3, 4, 2, 5}, // +X
+				{0, 5, 1, 4}, // -Y
+				{4, 0, 5, 1}, // +Y
+				{3, 0, 2, 1}, // -Z
+				{3, 1, 2, 0}  // +Z
+			};
+			//{3, 5, 2, 4}, // -X
+			//{3, 4, 2, 5}, // +X
+			//{0, 5, 1, 4}, // -Y
+			//{0, 4, 1, 5}, // +Y
+			//{3, 0, 2, 1}, // -Z
+			//{3, 1, 2, 0}  // +Z
 
 			float2 flipbook(float2 UV, float Width, float Height, float Tile, float2 Invert)
 			{
@@ -138,10 +159,22 @@ Shader "Test/PointToVoxels"
 
 						int tex = tArray[f];
 
-						float2 fb1 = flipbook(UVs[f][0], _Cols, _Rows, tex, float2(0,0));
-						float2 fb2 = flipbook(UVs[f][1], _Cols, _Rows, tex, float2(0,0));
-						float2 fb3 = flipbook(UVs[f][2], _Cols, _Rows, tex, float2(0,0));
-						float2 fb4 = flipbook(UVs[f][3], _Cols, _Rows, tex, float2(0,0));
+						float2 fb_atlas1 = flipbook(UVs[f][0], _Cols, _Rows, tex, float2(0,0));
+						float2 fb_atlas2 = flipbook(UVs[f][1], _Cols, _Rows, tex, float2(0,0));
+						float2 fb_atlas3 = flipbook(UVs[f][2], _Cols, _Rows, tex, float2(0,0));
+						float2 fb_atlas4 = flipbook(UVs[f][3], _Cols, _Rows, tex, float2(0,0));
+
+						int normalTile = 0;
+						normalTile += 8 * (solidFaces >> EdgeIndices[f][0] & 1); 
+						normalTile += 2 * (solidFaces >> EdgeIndices[f][1] & 1);
+						normalTile += 1 * (solidFaces >> EdgeIndices[f][2] & 1);
+						normalTile += 4 * (solidFaces >> EdgeIndices[f][3] & 1); 
+						//normalTile += 16 * (solidFaces >> EdgeIndices[f][0] & 1); 
+						//normalTile = 15;
+						float2 fb_normal1 = flipbook(UVs[f][0], 4, 4, normalTile, float2(0,1));
+						float2 fb_normal2 = flipbook(UVs[f][1], 4, 4, normalTile, float2(0,1));
+						float2 fb_normal3 = flipbook(UVs[f][2], 4, 4, normalTile, float2(0,1));
+						float2 fb_normal4 = flipbook(UVs[f][3], 4, 4, normalTile, float2(0,1));
 
 
 						// Skip faces pointing away from the camera -> "up to 6" faces
@@ -156,26 +189,30 @@ Shader "Test/PointToVoxels"
 						VertexPositionInputs inputs = GetVertexPositionInputs(fc - t*h - b*h);
 						o.positionCS = inputs.positionCS;
 						o.positionWS = inputs.positionWS;
-						o.texCoord = fb1;
+						o.texCoord = fb_atlas1;
+						o.normalUV = fb_normal1;
 						stream.Append(o);
 
 						inputs = GetVertexPositionInputs(fc + t*h - b*h);
 						o.positionCS = inputs.positionCS;
 						o.positionWS = inputs.positionWS;
-						o.texCoord = fb2;
+						o.texCoord = fb_atlas2;
+						o.normalUV = fb_normal2;
 						stream.Append(o);
 
 
 						inputs = GetVertexPositionInputs(fc - t*h + b*h);
 						o.positionCS = inputs.positionCS;
 						o.positionWS = inputs.positionWS;
-						o.texCoord = fb3;
+						o.texCoord = fb_atlas3;
+						o.normalUV = fb_normal3;
 						stream.Append(o);
 
 						inputs = GetVertexPositionInputs(fc + t*h + b*h); 
 						o.positionCS = inputs.positionCS;
 						o.positionWS = inputs.positionWS;
-						o.texCoord = fb4;
+						o.texCoord = fb_atlas4;
+						o.normalUV = fb_normal4;
 						stream.Append(o); 
 
 						stream.RestartStrip();
@@ -204,6 +241,8 @@ Shader "Test/PointToVoxels"
 
 				half3 c = texColor * light;
 				c = lerp(c, unity_FogColor, fogStr);
+
+				c = SAMPLE_TEXTURE2D(_EdgeNormalAtlas, sampler_EdgeNormalAtlas, IN.normalUV);
 				//return half4(texColor.rgb * light * shadow, 1);
 				return half4(c, 1);
 
