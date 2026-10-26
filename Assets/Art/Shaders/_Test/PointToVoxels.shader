@@ -18,7 +18,7 @@ Shader "Test/PointToVoxels"
 		Pass
 		{
 			Name "ForwardLit"
-			Tags {"LightMode" = "UniversalForward"}
+			Tags { "LightMode" = "UniversalForward" }
 			Cull Back
 
 			HLSLPROGRAM
@@ -36,7 +36,7 @@ Shader "Test/PointToVoxels"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Fog.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderVariablesFunctions.hlsl"
-			
+
 			TEXTURE2D(_TextureAtlas);
 			SAMPLER(sampler_TextureAtlas);
 			TEXTURE2D(_EdgeNormalAtlas);
@@ -67,7 +67,7 @@ Shader "Test/PointToVoxels"
 				float4 uv1 : TEXCOORD1;
 				float4 uv2 : TEXCOORD2;
 			};
-			struct g2f 
+			struct g2f
 			{
 				float4 positionCS : SV_POSITION;
 				float3 positionWS : POSITION1;
@@ -95,7 +95,8 @@ Shader "Test/PointToVoxels"
 			static const float3 FaceN[6] = { float3( -1,0,0), float3( 1,0,0), float3(0,-1,0), float3(0,1,0), float3(0,0,-1), float3(0,0, 1) };
 			static const float3 FaceB[6] = { float3(0,1,0),  float3(0,0,1),  float3(0,0,1),  float3(1,0,0),  float3(1,0,0),  float3(0,1,0)  };
 			static const float3 FaceT[6] = { float3(0,0,1),  float3(0,1,0),  float3(1,0,0),  float3(0,0,1),  float3(0,1,0),  float3(1,0,0)  };
-			static const float2 UVs[6][4] = {
+			static const float2 UVs[6][4] =
+			{
 				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) },
 				{ float2(1,0), float2(1,1), float2(0,0), float2(0,1) },
 				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) },
@@ -104,7 +105,8 @@ Shader "Test/PointToVoxels"
 				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) }
 			};
 
-			static const int EdgeIndices[6][4] = {
+			static const int EdgeIndices[6][4] =
+			{
 				{3, 5, 2, 4}, // -X
 				{3, 4, 2, 5}, // +X
 				{0, 5, 1, 4}, // -Y
@@ -127,11 +129,12 @@ Shader "Test/PointToVoxels"
 				float tileX = abs(Invert.x * Width - ((Tile - Width * floor(Tile * tileCount.x)) + Invert.x * 1));
 				return (UV + float2(tileX, tileY)) * tileCount;
 			}
-			 
+
 
 
 			[maxvertexcount(24)]
-			void geo(point v2g input[1], inout TriangleStream<g2f> stream) {
+			void geo(point v2g input[1], inout TriangleStream<g2f> stream)
+			{
 				float3 c = input[0].positionOS;
 				float  h =  _Size;
 
@@ -153,7 +156,8 @@ Shader "Test/PointToVoxels"
 				[unroll]
 				for (int f = 0; f < 6; f++)
 				{
-					if ((solidFaces >> f) & 1) {
+					if ((solidFaces >> f) & 1)
+					{
 						float3 n = FaceN[f], t = FaceT[f], b = FaceB[f];
 						float3 fc = c + n * h - float3(0,0,0);
 
@@ -165,11 +169,11 @@ Shader "Test/PointToVoxels"
 						float2 fb_atlas4 = flipbook(UVs[f][3], _Cols, _Rows, tex, float2(0,0));
 
 						int normalTile = 0;
-						normalTile += 8 * (solidFaces >> EdgeIndices[f][0] & 1); 
+						normalTile += 8 * (solidFaces >> EdgeIndices[f][0] & 1);
 						normalTile += 2 * (solidFaces >> EdgeIndices[f][1] & 1);
 						normalTile += 1 * (solidFaces >> EdgeIndices[f][2] & 1);
-						normalTile += 4 * (solidFaces >> EdgeIndices[f][3] & 1); 
-						//normalTile += 16 * (solidFaces >> EdgeIndices[f][0] & 1); 
+						normalTile += 4 * (solidFaces >> EdgeIndices[f][3] & 1);
+						//normalTile += 16 * (solidFaces >> EdgeIndices[f][0] & 1);
 						//normalTile = 15;
 						float2 fb_normal1 = flipbook(UVs[f][0], 4, 4, normalTile, float2(0,1));
 						float2 fb_normal2 = flipbook(UVs[f][1], 4, 4, normalTile, float2(0,1));
@@ -208,12 +212,12 @@ Shader "Test/PointToVoxels"
 						o.normalUV = fb_normal3;
 						stream.Append(o);
 
-						inputs = GetVertexPositionInputs(fc + t*h + b*h); 
+						inputs = GetVertexPositionInputs(fc + t*h + b*h);
 						o.positionCS = inputs.positionCS;
 						o.positionWS = inputs.positionWS;
 						o.texCoord = fb_atlas4;
 						o.normalUV = fb_normal4;
-						stream.Append(o); 
+						stream.Append(o);
 
 						stream.RestartStrip();
 					}
@@ -252,35 +256,35 @@ Shader "Test/PointToVoxels"
 		}
 
 		Pass
-        {
-            Name "ShadowCaster"
-            Tags{"LightMode" = "ShadowCaster"}
+		{
+			Name "ShadowCaster"
+			Tags { "LightMode" = "ShadowCaster" }
 
-            ZWrite On
-            ZTest LEqual
-            Cull[_Cull]
+			ZWrite On
+			ZTest LEqual
+			Cull[_Cull]
 
-            HLSLPROGRAM
-            // Required to compile gles 2.0 with standard srp library
-            #pragma prefer_hlslcc gles
-            #pragma exclude_renderers d3d11_9x
-            #pragma target 2.0
+			HLSLPROGRAM
+			// Required to compile gles 2.0 with standard srp library
+			#pragma prefer_hlslcc gles
+			#pragma exclude_renderers d3d11_9x
+			#pragma target 2.0
 
-            // -------------------------------------
-            // Material Keywords
-            #pragma shader_feature _ALPHATEST_ON
+			// -------------------------------------
+			// Material Keywords
+			#pragma shader_feature _ALPHATEST_ON
 
-            //--------------------------------------
-            // GPU Instancing
-            #pragma multi_compile_instancing
-            #pragma shader_feature _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+			//--------------------------------------
+			// GPU Instancing
+			#pragma multi_compile_instancing
+			#pragma shader_feature _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
-            #pragma vertex ShadowPassVertex
-            #pragma fragment ShadowPassFragment
+			#pragma vertex ShadowPassVertex
+			#pragma fragment ShadowPassFragment
 
-           // #include "Assets/Shaders/Texel/Lit/TexelLitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
-            ENDHLSL
-        }
+			// #include "Assets/Shaders/Texel/Lit/TexelLitInput.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
+			ENDHLSL
+		}
 	}
 }
