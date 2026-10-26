@@ -6,8 +6,7 @@
 #include "Packages/jp.keijiro.noiseshader/Shader/ClassicNoise3D.hlsl"
 
 //RWTexture2DArray<float> Result;
-RWStructuredBuffer<float> Noise1Buffer;
-RWStructuredBuffer<float> Noise2Buffer;
+RWStructuredBuffer<float> NoiseBuffer;
 uint3 WorldSize;
 uint3 ThreadCount;
 uint3 ThreadSize;
@@ -25,13 +24,10 @@ float remap(float value, float originMin, float originMax, float destinationMin,
     return destinationMin + (value - originMin) * (destinationMax - destinationMin) / (originMax - originMin);
 }
 
+
 [numthreads(8,8,8)]
 void GenerateNoise (uint3 id : SV_DispatchThreadID)
 { 
-    
-    //uint sizeX = WorldSize.x / ThreadCount.x;
-    //uint sizeY = WorldSize.y / ThreadCount.y;
-    //uint sizeZ = WorldSize.z / ThreadCount.z;
     
     uint startX = id.x * ThreadSize.x;
     uint startY = id.y * ThreadSize.y; 
@@ -42,26 +38,16 @@ void GenerateNoise (uint3 id : SV_DispatchThreadID)
             for (uint z = startZ; z < startZ + ThreadSize.z; z++) {
                 
                 float n1 = 0;
-                //float n2 = 0;
                 float str = 1;
                 float3 scale = Scale;
                 for (int o = 0; o < Octaves; o++)
                 {
-                    n1 += str * SimplexNoise(float3(1000 * Seed + Offset.x + x * scale.x + o * 10, 1000 * Seed + Offset.y + y * scale.y + o * 10, 1000 * Seed + Offset.z + z * scale.z + o * 10));
-                    //n2 += str * SimplexNoise(float3(500 * Seed + x * scale + o * 10, 500 * Seed + y * scale + o * 10, 500 * Seed + z * scale + o * 10));
+                    n1 += str * SimplexNoise(float3(Offset.x + x * scale.x + o * Offset.x, Offset.y + y * scale.y + o * Offset.y, Offset.z + z * scale.z + o * Offset.z));
                     str *= OctaveStrength;
                     scale *= OctaveScale;
 
                 }
-                //Result[uint3(x,y,z)] = n;
-                Noise1Buffer[x + WorldSize.x * y + WorldSize.x * WorldSize.y * z] = n1;
-                //float width = 0.1;
-                //float edge1 = clamp(remap(n2, 0.5 - width*2, 0.5 - width, 0, 1), 0, 1);
-                //float edge2 = clamp(remap(n2, 0.5 + width, 0.5 + width*2, 1, 0), 0, 1);
-                //float cave = edge1 * edge2;
-
-                //Noise2Buffer[x + WorldSize.x * y + WorldSize.x * WorldSize.y * z] = cave;
-                
+                NoiseBuffer[x + WorldSize.x * y + WorldSize.x * WorldSize.y * z] = n1;                
             }
         }
     }
@@ -72,29 +58,20 @@ void GenerateNoise (uint3 id : SV_DispatchThreadID)
 [numthreads(8, 8, 8)]
 void GenerateNoiseCaves(uint3 id : SV_DispatchThreadID)
 {
-    
-    //uint sizeX = WorldSize.x / ThreadCount.x;
-    //uint sizeY = WorldSize.y / ThreadCount.y;
-    //uint sizeZ = WorldSize.z / ThreadCount.z;
-    
     uint startX = id.x * ThreadSize.x;
     uint startY = id.y * ThreadSize.y;
     uint startZ = id.z * ThreadSize.z;
 
-    for (uint x = startX; x < startX + ThreadSize.x; x++)
-    {
-        for (uint y = startY; y < startY + ThreadSize.y; y++)
-        {
-            for (uint z = startZ; z < startZ + ThreadSize.z; z++)
-            {
+    for (uint x = startX; x < startX + ThreadSize.x; x++) {
+        for (uint y = startY; y < startY + ThreadSize.y; y++) {
+            for (uint z = startZ; z < startZ + ThreadSize.z; z++) {
                 
                 float n1 = 0;
-                //float n2 = 0;
                 float str = 1;
                 float3 scale = Scale;
                 for (int o = 0; o < Octaves; o++)
                 {
-                    n1 += str * SimplexNoise(float3(1000 * Seed + Offset.x + x * scale.x + o * 10, 1000 * Seed + Offset.y + y * scale.y + o * 10, 1000 * Seed + Offset.z + z * scale.z + o * 10));
+                    n1 += str * SimplexNoise(float3(Offset.x + x * scale.x + o * Offset.x, Offset.y + y * scale.y + o * Offset.y, Offset.z + z * scale.z + o * Offset.z));
                     str *= OctaveStrength;
                     scale *= OctaveScale;
 
@@ -107,7 +84,7 @@ void GenerateNoiseCaves(uint3 id : SV_DispatchThreadID)
                 float h = float(y) / float(WorldSize.y);
                 cave *= 0.7;
 
-                Noise1Buffer[x + WorldSize.x * y + WorldSize.x * WorldSize.y * z] = cave;
+                NoiseBuffer[x + WorldSize.x * y + WorldSize.x * WorldSize.y * z] = cave;
                 
             }
         }

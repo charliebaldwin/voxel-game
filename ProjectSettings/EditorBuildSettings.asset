@@ -12,6 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/VoxelWorld.unity
     guid: 9b5e4b1128e97484eb163240a5574117
   m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 8f672a4094ea0b64996fe528eb4bd520, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 00f3060a54cd65440a542faee3600d26, type: 2}
   m_UseUCBPForAssetBundles: 0

@@ -34,40 +34,40 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 {
 
 	public Vector3Int ChunkPos;
-    public static Vector3Int Size3D = new Vector3Int(16, 32, 16);
+	public static Vector3Int Size3D = new Vector3Int(16, 32, 16);
 	private MeshingMethod meshingMethod = MeshingMethod.CPU;
 
 	// voxel data
-    private Voxel[,,] Voxels = new Voxel[1, 1, 1];
-    private List<Vector3Int> activeVoxels = new List<Vector3Int>();
-    private Dictionary<Vector3Int, BlockEntityActor> BlockEntities;
+	private Voxel[,,] Voxels = new Voxel[1, 1, 1];
+	private List<Vector3Int> activeVoxels = new List<Vector3Int>();
+	private Dictionary<Vector3Int, BlockEntityActor> BlockEntities;
 
 
-    // status
-    bool IInitializable.Initialized { get { return initialized; } }
-    private bool initialized = false;
+	// status
+	bool IInitializable.Initialized { get { return initialized; } }
+	private bool initialized = false;
 	public bool Loaded = false;
-    private bool meshDirty = true;
+	private bool meshDirty = true;
 
 	// references
-    private static VoxelWorld world;
-    private MeshFilter meshFilter;
+	private static VoxelWorld world;
+	private MeshFilter meshFilter;
 	private Mesh mesh;
 	private MeshCollider meshCollider;
 	private MeshRenderer meshRenderer;
 	[SerializeField] private GameObject blockBreakVFXPrefab;
 	[SerializeField] private GameObject blockHitVFXPrefab;
 	[SerializeField] private ChunkFoliage foliage;
-    // neighbors
-    private VoxelChunk neighborNX;
-    private VoxelChunk neighborPX;
-    private VoxelChunk neighborNY;
-    private VoxelChunk neighborPY;
-    private VoxelChunk neighborNZ;
-    private VoxelChunk neighborPZ;
+	// neighbors
+	private VoxelChunk neighborNX;
+	private VoxelChunk neighborPX;
+	private VoxelChunk neighborNY;
+	private VoxelChunk neighborPY;
+	private VoxelChunk neighborNZ;
+	private VoxelChunk neighborPZ;
 
-    // data storage for meshing function
-    private List<Vector3> vertices = new List<Vector3>();
+	// data storage for meshing function
+	private List<Vector3> vertices = new List<Vector3>();
 	private List<Vector3> normals = new List<Vector3>();
 	private List<Vector4> uvs = new List<Vector4>();
 	private List<int> triangles = new List<int>();
@@ -78,35 +78,35 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 	private List<int> tempTriangles = new List<int>();
 	private List<Color> tempColors = new List<Color>();
 	private int t = 0;
-    Dictionary<Vector3Int, Voxel> neighborCache;
-    private List<Vector3> foliageGrassCoords = new List<Vector3>();
+	Dictionary<Vector3Int, Voxel> neighborCache;
+	private List<Vector3> foliageGrassCoords = new List<Vector3>();
 
 	// profiling
 	readonly ProfilerMarker meshMarker = new ProfilerMarker("Chunk Mesher");
-    readonly ProfilerMarker voxelMarker = new ProfilerMarker("Mesh for Single Voxel");
-    private ProfilerRecorder meshRecorder;
+	readonly ProfilerMarker voxelMarker = new ProfilerMarker("Mesh for Single Voxel");
+	private ProfilerRecorder meshRecorder;
 
 
-    #region INITIALIZATION
+	#region INITIALIZATION
 
 	public void Initialize()
 	{
-        world = World();
+		world = World();
 
-        meshingMethod = world.MeshingMethod;
+		meshingMethod = world.MeshingMethod;
 		meshFilter = GetComponent<MeshFilter>();
-        meshCollider = GetComponent<MeshCollider>();
-        meshRenderer = GetComponent<MeshRenderer>();
-        foliage = GetComponentInChildren<ChunkFoliage>();
+		meshCollider = GetComponent<MeshCollider>();
+		meshRenderer = GetComponent<MeshRenderer>();
+		foliage = GetComponentInChildren<ChunkFoliage>();
 
 		meshRenderer.material = world.ChunkMaterials[(int)meshingMethod];
 
-        meshFilter.sharedMesh = new Mesh();
+		meshFilter.sharedMesh = new Mesh();
 		meshCollider.enabled = false;
 		meshRenderer.enabled = false;
 
-        Voxels = new Voxel[Size3D.x, Size3D.y, Size3D.z];
-        BlockEntities = new Dictionary<Vector3Int, BlockEntityActor>();
+		Voxels = new Voxel[Size3D.x, Size3D.y, Size3D.z];
+		BlockEntities = new Dictionary<Vector3Int, BlockEntityActor>();
 
 		UnloadChunk();
 
@@ -120,7 +120,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		meshFilter.sharedMesh = new Mesh();
 		Remesh();
 		meshCollider.enabled = true;
-		foreach(KeyValuePair<Vector3Int, BlockEntityActor> entity in BlockEntities)
+		foreach (KeyValuePair<Vector3Int, BlockEntityActor> entity in BlockEntities)
 		{
 			entity.Value.LoadEntity();
 		}
@@ -168,192 +168,195 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 
 	private void SetNeighborsDirty(Vector3Int localVoxelPos)
 	{
-        Vector3Int dirtyNeighbors = CheckPosOnEdge(localVoxelPos, Size3D);
-        if (dirtyNeighbors.x == -1 && neighborNX != null)
-            neighborNX.SetDirty();
-        if (dirtyNeighbors.x == 1 && neighborPX != null)
-            neighborPX.SetDirty();
-        if (dirtyNeighbors.y == -1 && neighborNY != null)
-            neighborNY.SetDirty();
-        if (dirtyNeighbors.y == -1 && neighborPY != null)
-            neighborPY.SetDirty();
-        if (dirtyNeighbors.z == -1 && neighborNZ != null)
-            neighborNZ.SetDirty();
-        if (dirtyNeighbors.z == 1 && neighborPZ != null)
-            neighborPZ.SetDirty();
-    }
+		Vector3Int dirtyNeighbors = CheckPosOnEdge(localVoxelPos, Size3D);
+		if (dirtyNeighbors.x == -1 && neighborNX != null)
+			neighborNX.SetDirty();
+		if (dirtyNeighbors.x == 1 && neighborPX != null)
+			neighborPX.SetDirty();
+		if (dirtyNeighbors.y == -1 && neighborNY != null)
+			neighborNY.SetDirty();
+		if (dirtyNeighbors.y == -1 && neighborPY != null)
+			neighborPY.SetDirty();
+		if (dirtyNeighbors.z == -1 && neighborNZ != null)
+			neighborNZ.SetDirty();
+		if (dirtyNeighbors.z == 1 && neighborPZ != null)
+			neighborPZ.SetDirty();
+	}
 
 	private void Loop3D(Action<int, int, int> loopFunction)
 	{
-		for (int z = 0; z < Size3D.z; z++) {
-			for (int y = 0; y < Size3D.y; y++) {
-				for (int x = 0; x < Size3D.x; x++) {
+		for (int z = 0; z < Size3D.z; z++)
+		{
+			for (int y = 0; y < Size3D.y; y++)
+			{
+				for (int x = 0; x < Size3D.x; x++)
+				{
 					loopFunction(x, y, z);
 				}
 			}
 		}
 	}
 
-    #endregion
+	#endregion
 
 
-    #region UPDATE
-    private void FixedUpdate()
-    {
-        if (meshDirty && Loaded)
-        {
-            Remesh();
-            meshDirty = false;
-        }
-    }
+	#region UPDATE
+	private void FixedUpdate()
+	{
+		if (meshDirty && Loaded)
+		{
+			Remesh();
+			meshDirty = false;
+		}
+	}
 
-    public void BlockUpdate()
-    {
-        BlockUpdateFast();
-        //Loop3D(BlockUpdateAction);
-    }
-    private void BlockUpdateLoop(int x, int y, int z)
-    {
-        Vector3Int pos = new Vector3Int(x, y, z);
-        Voxel voxel = Voxels[x, y, z];
-        BlockID voxelID = voxel.BlockID;
-        switch (voxelID)
-        {
-            case (BlockID.Grass):
-                if (y < Size3D.y - 1)
-                {
-                    if (Voxels[x, y + 1, z].BlockID != BlockID.Air)
-                    {
-                        world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel(BlockID.Dirt, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
-                        meshDirty = true;
-                    }
-                }
-                break;
-            case (BlockID.Dirt):
-                if (y < Size3D.y - 1)
-                {
-                    //Voxel upVoxel = World().LookupVoxel(LocalToWorldPos((pos + new Vector3Int(0, 1, 0))));
-                    Voxel upVoxel = GetVoxelLocal(pos + Vector3Int.up);
-                    if (upVoxel.BlockID == BlockID.Air)
-                    {
-                        // grow into dirt with random chance
-                        if (BlockRandomEvent(new int3(x, y, z), 0.04f))
-                        {
-                            world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel(BlockID.Grass, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
+	public void BlockUpdate()
+	{
+		BlockUpdateFast();
+		//Loop3D(BlockUpdateAction);
+	}
+	private void BlockUpdateLoop(int x, int y, int z)
+	{
+		Vector3Int pos = new Vector3Int(x, y, z);
+		Voxel voxel = Voxels[x, y, z];
+		BlockID voxelID = voxel.BlockID;
+		switch (voxelID)
+		{
+			case (BlockID.Grass):
+				if (y < Size3D.y - 1)
+				{
+					if (Voxels[x, y + 1, z].BlockID != BlockID.Air)
+					{
+						world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel(BlockID.Dirt, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
+						meshDirty = true;
+					}
+				}
+				break;
+			case (BlockID.Dirt):
+				if (y < Size3D.y - 1)
+				{
+					//Voxel upVoxel = World().LookupVoxel(LocalToWorldPos((pos + new Vector3Int(0, 1, 0))));
+					Voxel upVoxel = GetVoxelLocal(pos + Vector3Int.up);
+					if (upVoxel.BlockID == BlockID.Air)
+					{
+						// grow into dirt with random chance
+						if (BlockRandomEvent(new int3(x, y, z), 0.04f))
+						{
+							world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel(BlockID.Grass, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
 
-                            SetDirty();
-                        }
-                    }
-                }
-                break;
-        }
+							SetDirty();
+						}
+					}
+				}
+				break;
+		}
 
-        if (Voxels[x, y, z].Damage > 0 && !PlayerView.usingTool)
-        {
-            if (BlockRandomEvent(new int3(x, y, z), 0.05f))
-            {
-                voxel.Damage -= 1;
-                //SetBlock(LocalToWorld(new Vector3Int(x, y, z), ChunkCoord, Size3D), voxel);
-                world.SetVoxel(LocalToWorld(new Vector3Int(x, y, z), ChunkPos, Size3D), voxel);
-                SetDirty();
-            }
-        }
-    }
+		if (Voxels[x, y, z].Damage > 0 && !PlayerView.usingTool)
+		{
+			if (BlockRandomEvent(new int3(x, y, z), 0.05f))
+			{
+				voxel.Damage -= 1;
+				//SetBlock(LocalToWorld(new Vector3Int(x, y, z), ChunkCoord, Size3D), voxel);
+				world.SetVoxel(LocalToWorld(new Vector3Int(x, y, z), ChunkPos, Size3D), voxel);
+				SetDirty();
+			}
+		}
+	}
 
-    private void FillActiveVoxelsLoop(int x, int y, int z)
-    {
-        BlockID id = Voxels[x, y, z].BlockID;
-        if (id != BlockID.Air)
-        {
-            activeVoxels.Add(new Vector3Int(x, y, z));
-        }
-    }
+	private void FillActiveVoxelsLoop(int x, int y, int z)
+	{
+		BlockID id = Voxels[x, y, z].BlockID;
+		if (id != BlockID.Air)
+		{
+			activeVoxels.Add(new Vector3Int(x, y, z));
+		}
+	}
 
-    private void BlockUpdateFast()
-    {
-        if (activeVoxels.Count > 0)
-        {
-            //Debug.Log($"updating chunk {ChunkCoord}- there are {activeVoxels.Count} voxels to check");
-            Vector3Int[] tempActiveVoxels = new Vector3Int[activeVoxels.Count];
-            activeVoxels.CopyTo(tempActiveVoxels);
-            foreach (Vector3Int pos in tempActiveVoxels)
-            {
-                if (IsPosInGridBounds(pos, Size3D))
-                {
-                    Voxel voxel = Voxels[pos.x, pos.y, pos.z];
-                    BlockID voxelID = voxel.BlockID;
-                    switch (voxelID)
-                    {
-                        case (BlockID.Air):
-                            activeVoxels.Remove(pos);
-                            break;
-                        case (BlockID.Grass):
-                            if (pos.y < Size3D.y - 1)
-                            {
-                                if (Voxels[pos.x, pos.y + 1, pos.z].BlockID != BlockID.Air)
-                                {
-                                    world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel(BlockID.Dirt, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
-                                    meshDirty = true;
-                                }
+	private void BlockUpdateFast()
+	{
+		if (activeVoxels.Count > 0)
+		{
+			//Debug.Log($"updating chunk {ChunkCoord}- there are {activeVoxels.Count} voxels to check");
+			Vector3Int[] tempActiveVoxels = new Vector3Int[activeVoxels.Count];
+			activeVoxels.CopyTo(tempActiveVoxels);
+			foreach (Vector3Int pos in tempActiveVoxels)
+			{
+				if (IsPosInGridBounds(pos, Size3D))
+				{
+					Voxel voxel = Voxels[pos.x, pos.y, pos.z];
+					BlockID voxelID = voxel.BlockID;
+					switch (voxelID)
+					{
+						case (BlockID.Air):
+							activeVoxels.Remove(pos);
+							break;
+						case (BlockID.Grass):
+							if (pos.y < Size3D.y - 1)
+							{
+								if (Voxels[pos.x, pos.y + 1, pos.z].BlockID != BlockID.Air)
+								{
+									world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel(BlockID.Dirt, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
+									meshDirty = true;
+								}
 
-                            }
-                            if (voxel.Damage <= 0) activeVoxels.Remove(pos);
-                            break;
-                        case (BlockID.Dirt):
-                            if (pos.y < Size3D.y - 1)
-                            {
-                                //Voxel upVoxel = World().LookupVoxel(LocalToWorldPos((pos + new Vector3Int(0, 1, 0))));
-                                Voxel upVoxel = GetVoxelLocal(pos + Vector3Int.up);
-                                if (upVoxel.BlockID == BlockID.Air)
-                                {
-                                    // grow into dirt with random chance
-                                    if (BlockRandomEvent(new int3(pos.x, pos.y, pos.z), 0.04f))
-                                    {
-                                        world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel(BlockID.Grass, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
-                                        if (voxel.Damage <= 0) activeVoxels.Remove(pos);
-                                        SetDirty();
-                                    }
-                                }
-                                else
-                                {
-                                    if (voxel.Damage <= 0) activeVoxels.Remove(pos);
-                                }
-                            }
-                            break;
-                        default:
-                            if (voxel.Damage <= 0) activeVoxels.Remove(pos);
-                            break;
-                    }
-                    if (voxel.Damage > 0 && !PlayerView.usingTool)
-                    {
-                        if (BlockRandomEvent(new int3(pos.x, pos.y, pos.z), 0.1f))
-                        {
-                            voxel.Damage -= 1;
-                            world.SetVoxel(LocalToWorld(new Vector3Int(pos.x, pos.y, pos.z), ChunkPos, Size3D), voxel);
-                            if (voxel.Damage <= 0) activeVoxels.Remove(pos);
-                            SetDirty();
-                        }
-                    }
-                }
-                else
-                {
-                    activeVoxels.Remove(pos);
-                }
-            }
-        }
-    }
+							}
+							if (voxel.Damage <= 0) activeVoxels.Remove(pos);
+							break;
+						case (BlockID.Dirt):
+							if (pos.y < Size3D.y - 1)
+							{
+								//Voxel upVoxel = World().LookupVoxel(LocalToWorldPos((pos + new Vector3Int(0, 1, 0))));
+								Voxel upVoxel = GetVoxelLocal(pos + Vector3Int.up);
+								if (upVoxel.BlockID == BlockID.Air)
+								{
+									// grow into dirt with random chance
+									if (BlockRandomEvent(new int3(pos.x, pos.y, pos.z), 0.04f))
+									{
+										world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel(BlockID.Grass, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
+										if (voxel.Damage <= 0) activeVoxels.Remove(pos);
+										SetDirty();
+									}
+								}
+								else
+								{
+									if (voxel.Damage <= 0) activeVoxels.Remove(pos);
+								}
+							}
+							break;
+						default:
+							if (voxel.Damage <= 0) activeVoxels.Remove(pos);
+							break;
+					}
+					if (voxel.Damage > 0 && !PlayerView.usingTool)
+					{
+						if (BlockRandomEvent(new int3(pos.x, pos.y, pos.z), 0.1f))
+						{
+							voxel.Damage -= 1;
+							world.SetVoxel(LocalToWorld(new Vector3Int(pos.x, pos.y, pos.z), ChunkPos, Size3D), voxel);
+							if (voxel.Damage <= 0) activeVoxels.Remove(pos);
+							SetDirty();
+						}
+					}
+				}
+				else
+				{
+					activeVoxels.Remove(pos);
+				}
+			}
+		}
+	}
 
-    private bool BlockRandomEvent(int3 pos, float probability)
-    {
-        int seed = (pos.x + Size3D.x * pos.y + Size3D.x * Size3D.y * pos.z) + (1000 * ChunkPos.x + 10000 * ChunkPos.y) + (Time.frameCount % 10000);
-        Random.InitState(seed);
-        return Random.Range(0f, 1f) < probability;
-    }
-    #endregion
+	private bool BlockRandomEvent(int3 pos, float probability)
+	{
+		int seed = (pos.x + Size3D.x * pos.y + Size3D.x * Size3D.y * pos.z) + (1000 * ChunkPos.x + 10000 * ChunkPos.y) + (Time.frameCount % 10000);
+		Random.InitState(seed);
+		return Random.Range(0f, 1f) < probability;
+	}
+	#endregion
 
 
-    #region MESHING
-    public void SetDirty()
+	#region MESHING
+	public void SetDirty()
 	{
 		meshDirty = true;
 	}
@@ -393,7 +396,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 			normals = normals.ToArray(),
 			colors = colors.ToArray()
 		};
-		mesh.SetUVs(0,uvs.ToArray());
+		mesh.SetUVs(0, uvs.ToArray());
 		mesh.RecalculateTangents();
 		meshFilter.mesh = mesh;
 		meshCollider.sharedMesh = mesh;
@@ -406,9 +409,9 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		foliage.SetFoliage(foliageGrassCoords);
 		foliageGrassCoords.Clear();
 		neighborCache.Clear();
-        
+
 		meshMarker.End();
-        float duration = Mathf.Round((float)(Time.realtimeSinceStartupAsDouble - startTime) * 10000f) / 100f;
+		float duration = Mathf.Round((float)(Time.realtimeSinceStartupAsDouble - startTime) * 10000f) / 100f;
 		DebugOverlay.SetDebugValue("Mesh Time", $"{duration}ms");
 	}
 
@@ -443,13 +446,13 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		foreach (Color c in model.colors) colors.Add(c);
 		foreach (int tri in model.triangles) triangles.Add(tri);
 
-		
+
 		t = model.lastT;
 		//voxelMarker.End();
 	}
 
 	private Voxel GetCachedNeighbor(Vector3Int worldPos)
-	{ 
+	{
 		if (neighborCache.ContainsKey(worldPos)) return neighborCache[worldPos];
 		else
 		{
@@ -458,26 +461,29 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 			return neighbor;
 		}
 	}
-	
+
 	private void RemeshShader()
 	{
-        meshMarker.Begin();
-        double startTime = Time.realtimeSinceStartupAsDouble;
+		meshMarker.Begin();
+		double startTime = Time.realtimeSinceStartupAsDouble;
 
-        Mesh mesh = new Mesh { indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
+		Mesh mesh = new Mesh { indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
 
 		List<Vector3> positions = new List<Vector3>();
 		List<Color> colors = new List<Color>();
 		List<Vector4> uvs0 = new List<Vector4>(); // rgba=texture indices 0-3
 		List<Vector4> uvs1 = new List<Vector4>(); // rg=texture indices 4-5
-		List<Vector4> uvs2 = new List<Vector4>(); // r=solid faces
+		List<Vector4> uvs2 = new List<Vector4>(); // r=solid faces, g=damage
 		foliageGrassCoords = new List<Vector3>();
-        neighborCache = new Dictionary<Vector3Int, Voxel>();
+		neighborCache = new Dictionary<Vector3Int, Voxel>();
 
 
-        for (int z = 0; z < Size3D.z; z++) {
-			for (int y = 0; y < Size3D.y; y++) {
-				for (int x = 0; x < Size3D.x; x++) {
+		for (int z = 0; z < Size3D.z; z++)
+		{
+			for (int y = 0; y < Size3D.y; y++)
+			{
+				for (int x = 0; x < Size3D.x; x++)
+				{
 
 					Voxel vox = Voxels[x, y, z];
 					if (vox.BlockID == BlockID.Foliage_Grass || vox.Shape == BlockShape.Foliage)
@@ -486,37 +492,38 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 					}
 					else if (vox.BlockID != BlockID.Air && vox.BlockID != BlockID.Foliage_Grass && vox.Shape != BlockShape.Empty && vox.Shape != BlockShape.Foliage)
 					{
-                        Vector3Int localPos = new Vector3Int(x, y, z);
-                        Vector3Int worldPos = LocalToWorld(localPos, ChunkPos, Size3D);
+						Vector3Int localPos = new Vector3Int(x, y, z);
+						Vector3Int worldPos = LocalToWorld(localPos, ChunkPos, Size3D);
 						bool shouldDraw = false;
 						uint solidFaces = 0;
-                        for (int n = 0; n < 6; n++)
-                        {
-                            Vector3Int dir = OrthoNormal.AlignYZ(OrthoDirections[n], vox.UpAxis, vox.ForwardAxis).ToVector();
-                            Voxel neighbor = GetCachedNeighbor(worldPos + dir);
+						for (int n = 0; n < 6; n++)
+						{
+							Vector3Int dir = OrthoNormal.AlignYZ(OrthoDirections[n], vox.UpAxis, vox.ForwardAxis).ToVector();
+							Voxel neighbor = GetCachedNeighbor(worldPos + dir);
 							if (neighbor.Shape == BlockShape.Foliage || neighbor.Shape == BlockShape.Empty)
 							{
 								shouldDraw = true;
 								solidFaces = solidFaces | ((uint)1 << n);
 							}
-                        }
+						}
 						if (shouldDraw)
 						{
 							positions.Add(new Vector3(x, y, z));
 							List<int> indices = BlockRegistry.LookupBlockTextures(vox.BlockID);
-							
+
 							Vector4 uv0 = Vector4.zero;
 							uv0.x = indices[0];
-                            if (indices.Count > 1) uv0.y = indices[1];
-                            if (indices.Count > 2) uv0.z = indices[2];
-                            if (indices.Count > 3) uv0.w = indices[3];
+							if (indices.Count > 1) uv0.y = indices[1];
+							if (indices.Count > 2) uv0.z = indices[2];
+							if (indices.Count > 3) uv0.w = indices[3];
 
-                            Vector4 uv1 = Vector4.zero;
-                            if (indices.Count > 4) uv1.x = indices[4];
-                            if (indices.Count > 6) uv1.y = indices[5];
+							Vector4 uv1 = Vector4.zero;
+							if (indices.Count > 4) uv1.x = indices[4];
+							if (indices.Count > 6) uv1.y = indices[5];
 
-                            Vector4 uv2 = Vector4.zero;
+							Vector4 uv2 = Vector4.zero;
 							uv2.x = solidFaces;
+							uv2.y = vox.Damage;
 
 							uvs0.Add(uv0);
 							uvs1.Add(uv1);
@@ -529,22 +536,22 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 
 		mesh.SetVertices(positions);
 		mesh.SetUVs(0, uvs0);
-        mesh.SetUVs(1, uvs1);
-        mesh.SetUVs(2, uvs2);
-        mesh.SetIndices(Enumerable.Range(0, positions.Count).ToArray(), MeshTopology.Points, 0);
+		mesh.SetUVs(1, uvs1);
+		mesh.SetUVs(2, uvs2);
+		mesh.SetIndices(Enumerable.Range(0, positions.Count).ToArray(), MeshTopology.Points, 0);
 		meshFilter.mesh = mesh;
 
 		foliage.SetFoliage(foliageGrassCoords);
 		foliageGrassCoords.Clear();
-        neighborCache.Clear();
+		neighborCache.Clear();
 
-        meshMarker.End();
-        float duration = Mathf.Round((float)(Time.realtimeSinceStartupAsDouble - startTime) * 10000f) / 100f;
-        DebugOverlay.SetDebugValue("Mesh Time", $"{duration}ms");
+		meshMarker.End();
+		float duration = Mathf.Round((float)(Time.realtimeSinceStartupAsDouble - startTime) * 10000f) / 100f;
+		DebugOverlay.SetDebugValue("Mesh Time", $"{duration}ms");
 
-    }
+	}
 
-    private bool GetVoxelFaceVisible(Vector3Int pos, Vector3Int faceDirection)
+	private bool GetVoxelFaceVisible(Vector3Int pos, Vector3Int faceDirection)
 	{
 		Voxel thisVoxel = world.LookupVoxelWorld(LocalToWorld(pos, ChunkPos, Size3D));
 		Voxel neighborVoxel = world.LookupVoxelWorld(LocalToWorld(pos + faceDirection, ChunkPos, Size3D));
@@ -561,7 +568,8 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		try
 		{
 			result = GetVoxelLocal(localPos);
-		} catch (IndexOutOfRangeException)
+		}
+		catch (IndexOutOfRangeException)
 		{
 			result = LookupWorldVoxel(localPos);
 		}
@@ -592,7 +600,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 
 
 	#region MODIFY VOXELS
-	
+
 	public void SetVoxel(Vector3Int worldPos, Voxel voxelData)
 	{
 		Vector3Int localPos = WorldToLocal(worldPos, ChunkPos, Size3D);
@@ -655,7 +663,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 			voxel.Shape = 0;
 		}
 		world.SetVoxel(worldPos, voxel); // set via world
-		//SetVoxel(worldPos, voxel); // set directly
+										 //SetVoxel(worldPos, voxel); // set directly
 	}
 
 	#endregion

@@ -6,6 +6,7 @@ Shader "Test/PointToVoxels"
 		_Size("Size", Float) = 0.5
 		_TextureAtlas("Texture Atlas", 2D) = "white" {}
 		_EdgeNormalAtlas("Edge Normal Atlas", 2D) = "white" {}
+		_DamageAtlas("Damage Texture Atlas", 2D) = "white" {}
 		_Rows("Rows", Int) = 1
 		_Cols("Columns", Int) = 8
 		_AtlasIndex("Atlas Index", Int) = 4
@@ -41,17 +42,23 @@ Shader "Test/PointToVoxels"
 			SAMPLER(sampler_TextureAtlas);
 			TEXTURE2D(_EdgeNormalAtlas);
 			SAMPLER(sampler_EdgeNormalAtlas);
+			TEXTURE2D(_DamageAtlas);
+			SAMPLER(sampler_DamageAtlas);
 
 			CBUFFER_START(UnityPerMaterial)
 				half4 _BaseColor;
 				float _Size;
 				float4 _TextureAtlas_ST;
 				float4 _EdgeNormalAtlas_ST;
+				float4 _DamageAtlas_ST;
 				int _Rows;
 				int _Cols;
 				int _AtlasIndex;
 			CBUFFER_END
 
+
+
+			// TYPES
 			struct v
 			{
 				float4 positionOS : POSITION;
@@ -72,13 +79,17 @@ Shader "Test/PointToVoxels"
 				float4 positionCS : SV_POSITION;
 				float3 positionWS : POSITION1;
 				float3 normalWS : NORMAL;
-				float2 texCoord : TEXCOORD0;
+				float2 baseUV : TEXCOORD0;
 				float2 normalUV : TEXCOORD1;
+				float2 damageUV : DAMAGE;
 				//float4 tempC : TEXCOORD2;
 			};
 
 
 
+
+
+			// VERTEX SHADER
 			v2g vert(v IN)
 			{
 				v2g OUT;
@@ -89,6 +100,7 @@ Shader "Test/PointToVoxels"
 				//OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
 				return OUT;
 			}
+
 
 
 
@@ -131,7 +143,7 @@ Shader "Test/PointToVoxels"
 			}
 
 
-
+			// GEOMETRY SHADER
 			[maxvertexcount(24)]
 			void geo(point v2g input[1], inout TriangleStream<g2f> stream)
 			{
@@ -152,6 +164,9 @@ Shader "Test/PointToVoxels"
 				int tArray[6] = {t1, t2, t3, t4, t5, t6};
 
 				uint solidFaces = uint(input[0].uv2.x);
+
+				int damage = input[0].uv2.y;
+
 
 				[unroll]
 				for (int f = 0; f < 6; f++)
@@ -180,10 +195,20 @@ Shader "Test/PointToVoxels"
 						float2 fb_normal3 = flipbook(UVs[f][2], 4, 4, normalTile, float2(0,1));
 						float2 fb_normal4 = flipbook(UVs[f][3], 4, 4, normalTile, float2(0,1));
 
+						float2 damageUV[4] =
+						{
+							flipbook(UVs[f][0], 6, 1, damage, float2(0,0)),
+							flipbook(UVs[f][1], 6, 1, damage, float2(0,0)),
+							flipbook(UVs[f][2], 6, 1, damage, float2(0,0)),
+							flipbook(UVs[f][3], 6, 1, damage, float2(0,0))
+						};
 
 						// Skip faces pointing away from the camera -> "up to 6" faces
 						if (dot(n, camOS - fc) <= 0) continue;
 
+
+
+						// add points
 						g2f o;
 						o.normalWS = TransformObjectToWorldNormal(n);
 
@@ -193,30 +218,34 @@ Shader "Test/PointToVoxels"
 						VertexPositionInputs inputs = GetVertexPositionInputs(fc - t*h - b*h);
 						o.positionCS = inputs.positionCS;
 						o.positionWS = inputs.positionWS;
-						o.texCoord = fb_atlas1;
+						o.baseUV = fb_atlas1;
 						o.normalUV = fb_normal1;
+						o.damageUV = damageUV[0];
 						stream.Append(o);
 
 						inputs = GetVertexPositionInputs(fc + t*h - b*h);
 						o.positionCS = inputs.positionCS;
 						o.positionWS = inputs.positionWS;
-						o.texCoord = fb_atlas2;
+						o.baseUV = fb_atlas2;
 						o.normalUV = fb_normal2;
+						o.damageUV = damageUV[1];
 						stream.Append(o);
 
 
 						inputs = GetVertexPositionInputs(fc - t*h + b*h);
 						o.positionCS = inputs.positionCS;
 						o.positionWS = inputs.positionWS;
-						o.texCoord = fb_atlas3;
+						o.baseUV = fb_atlas3;
 						o.normalUV = fb_normal3;
+						o.damageUV = damageUV[2];
 						stream.Append(o);
 
 						inputs = GetVertexPositionInputs(fc + t*h + b*h);
 						o.positionCS = inputs.positionCS;
 						o.positionWS = inputs.positionWS;
-						o.texCoord = fb_atlas4;
+						o.baseUV = fb_atlas4;
 						o.normalUV = fb_normal4;
+						o.damageUV = damageUV[3];
 						stream.Append(o);
 
 						stream.RestartStrip();
@@ -226,13 +255,11 @@ Shader "Test/PointToVoxels"
 
 
 
-
+			// FRAGMENT SHADER
 			half4 frag(g2f IN) : SV_Target
 			{
 
-				float viewZ = -TransformWorldToView(IN.positionWS).z;
-				float nearZ0ToFarZ = max(viewZ - _ProjectionParams.y, 0);
-				float fogStr = 1.0 - ComputeFogIntensity(ComputeFogFactorZ0ToFar(nearZ0ToFarZ));
+				float fogStr = 1.0 - ComputeFogIntensity(ComputeFogFactor(IN.positionCS.z));
 				Light l = GetMainLight();
 				half light = saturate(dot(normalize(IN.normalWS), l.direction)) * 0.8 + 0.2;
 
@@ -241,16 +268,20 @@ Shader "Test/PointToVoxels"
 				half shadow = MainLightRealtimeShadow(shadowCoord);
 				shadow *= AdditionalLightRealtimeShadow(0, steppedPos);
 
-				half4 texColor = SAMPLE_TEXTURE2D(_TextureAtlas, sampler_TextureAtlas, IN.texCoord);
 
-				half3 c = texColor * light;
-				c = lerp(c, unity_FogColor, fogStr);
+				half4 baseColor = SAMPLE_TEXTURE2D(_TextureAtlas, sampler_TextureAtlas, IN.baseUV);
 
-				c = SAMPLE_TEXTURE2D(_EdgeNormalAtlas, sampler_EdgeNormalAtlas, IN.normalUV);
-				//return half4(texColor.rgb * light * shadow, 1);
+				float damageMask = clamp(SAMPLE_TEXTURE2D(_DamageAtlas, sampler_DamageAtlas, IN.damageUV).a, 0, .75);
+
+				half3 c = lerp(baseColor, half3(0,0,0), damageMask) * light;
+
+				c = lerp(c, unity_FogColor, clamp(pow(1.0 - (IN.positionCS.z * 100.0), 5.0), 0.0, 10000.0));
+
+				//c = SAMPLE_TEXTURE2D(_EdgeNormalAtlas, sampler_EdgeNormalAtlas, IN.normalUV);
+				//return half4(baseColor.rgb * light * shadow, 1);
 				return half4(c, 1);
 
-				//return half4(IN.texCoord * light, 0, 1);
+				//return half4(IN.baseUV * light, 0, 1);
 			}
 			ENDHLSL
 		}

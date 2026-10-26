@@ -10,6 +10,7 @@ public struct Voxel
     public OrthoNormal UpAxis;
     public OrthoNormal ForwardAxis;
     public Color VertexColor;
+    public bool ExposedToSky;
 
 
     public Voxel(BlockID id, byte damage, byte orientation)
@@ -23,6 +24,8 @@ public struct Voxel
         UpAxis = OrthoNormal.up;
         ForwardAxis = OrthoNormal.forward;
         VertexColor = Color.black;
+
+        ExposedToSky = false;
 
     }
 
@@ -38,6 +41,8 @@ public struct Voxel
         ForwardAxis = OrthoNormal.forward;
         VertexColor = Color.black;
 
+        ExposedToSky = false;
+
     }
     public Voxel(BlockID id, byte damage, byte orientation, BlockShape blockShape)
     {
@@ -50,6 +55,9 @@ public struct Voxel
         UpAxis = OrthoNormal.up;
         ForwardAxis = OrthoNormal.forward;
         VertexColor = Color.black;
+
+        ExposedToSky = false;
+
 
     }
     public Voxel(BlockID id, BlockShape blockShape)
@@ -64,6 +72,8 @@ public struct Voxel
         ForwardAxis = OrthoNormal.forward;
         VertexColor = Color.black;
 
+        ExposedToSky = false;
+
     }
     public Voxel(BlockID id, byte damage, BlockShape blockShape, OrthoNormal upAxis, OrthoNormal fwdAxis)
     {
@@ -76,6 +86,8 @@ public struct Voxel
         UpAxis = upAxis;
         ForwardAxis = fwdAxis;
         VertexColor = Color.black;
+
+        ExposedToSky = false;
 
     }
     public Voxel(BlockID id, OrthoNormal upAxis, OrthoNormal fwdAxis)
@@ -90,6 +102,8 @@ public struct Voxel
         ForwardAxis = fwdAxis;
         VertexColor = Color.black;
 
+        ExposedToSky = false;
+
     }
     public Voxel(Color color)
     {
@@ -102,6 +116,8 @@ public struct Voxel
         UpAxis = OrthoNormal.up;
         ForwardAxis = OrthoNormal.forward;
         VertexColor = color;
+
+        ExposedToSky = false;
 
     }
 
