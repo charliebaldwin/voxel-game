@@ -67,8 +67,8 @@ public class VoxelGenerator : MonoBehaviour
 
 
 		GenerateNoiseGPU(out noiseArray1, 0.2f * Vector3.one, Seed, Octaves);
-		//GenerateNoiseGPU(out noiseArray2, 0.2f * Vector3.one, Seed + 1, Octaves);
-		ErosionGPU();
+		GenerateNoiseGPU(out noiseArray2, 0.2f * Vector3.one, Seed + 1, Octaves);
+		//ErosionGPU();
 
 		LoopXZ(BuildTerrain);
 
@@ -269,12 +269,12 @@ public class VoxelGenerator : MonoBehaviour
 
 	private void BuildTerrain(int x, int z)
 	{
-		//float noise1 = noiseArray1[x, 2, z];
-		//float noise2 = noiseArray2[x, 2, z];
-		//float h = noise1 * HeightRange + HeightOffset;
-		//h += noise2 * HeightRange * 4;
+		float noise1 = noiseArray1[x, 2, z];
+		float noise2 = noiseArray2[x, 2, z];
+		float h = noise1 * HeightRange + HeightOffset;
+		h += noise2 * HeightRange * 4;
 
-		float h = erosionArray[x, 2, z] * HeightRange + HeightOffset;
+		//float h = erosionArray[x, 2, z] * HeightRange + HeightOffset;
 
 		for (int y = 0; y < worldSize.y; y++)
 		{
