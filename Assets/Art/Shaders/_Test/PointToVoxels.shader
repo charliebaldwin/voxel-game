@@ -7,6 +7,7 @@ Shader "Test/PointToVoxels"
 		_TextureAtlas("Texture Atlas", 2D) = "white" {}
 		_EdgeNormalAtlas("Edge Normal Atlas", 2D) = "white" {}
 		_DamageAtlas("Damage Texture Atlas", 2D) = "white" {}
+		_DebugTexture("Face Debug Texture", 2D) = "white" {}
 		_Rows("Rows", Int) = 1
 		_Cols("Columns", Int) = 8
 		_AtlasIndex("Atlas Index", Int) = 4
@@ -15,6 +16,8 @@ Shader "Test/PointToVoxels"
 	SubShader
 	{
 		Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
+
+		UsePass "Custom/VoxelShadowCaster/SHADOWCASTER"
 
 		Pass
 		{
@@ -37,6 +40,9 @@ Shader "Test/PointToVoxels"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Fog.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderVariablesFunctions.hlsl"
+			
+			#include "Assets/Art/Shaders/VoxelShaderConstants.hlsl"
+			#include "Assets/Art/Shaders/UVFlipbook.hlsl"
 
 			TEXTURE2D(_TextureAtlas);
 			SAMPLER(sampler_TextureAtlas);
@@ -44,22 +50,20 @@ Shader "Test/PointToVoxels"
 			SAMPLER(sampler_EdgeNormalAtlas);
 			TEXTURE2D(_DamageAtlas);
 			SAMPLER(sampler_DamageAtlas);
+			TEXTURE2D(_DebugTexture);
+			SAMPLER(sampler_DebugTexture);
 
 			CBUFFER_START(UnityPerMaterial)
 				half4 _BaseColor;
 				float _Size;
-				float4 _TextureAtlas_ST;
-				float4 _EdgeNormalAtlas_ST;
-				float4 _DamageAtlas_ST;
 				int _Rows;
 				int _Cols;
 				int _AtlasIndex;
 			CBUFFER_END
 
 
-
 			// TYPES
-			struct v
+			struct Voxel
 			{
 				float4 positionOS : POSITION;
 				float4 uv0 : TEXCOORD0;
@@ -67,13 +71,6 @@ Shader "Test/PointToVoxels"
 				float4 uv2 : TEXCOORD2;
 			};
 
-			struct v2g
-			{
-				float4 positionOS : SV_POSITION;
-				float4 uv0 : TEXCOORD0;
-				float4 uv1 : TEXCOORD1;
-				float4 uv2 : TEXCOORD2;
-			};
 			struct g2f
 			{
 				float4 positionCS : SV_POSITION;
@@ -86,66 +83,17 @@ Shader "Test/PointToVoxels"
 			};
 
 
-
-
-
 			// VERTEX SHADER
-			v2g vert(v IN)
+			Voxel vert(Voxel IN)
 			{
-				v2g OUT;
-				OUT.positionOS = IN.positionOS;
-				OUT.uv0 = IN.uv0;
-				OUT.uv1 = IN.uv1;
-				OUT.uv2 = IN.uv2;
-				//OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
-				return OUT;
+				return IN;
 			}
 
-
-
-
-			static const float3 FaceN[6] = { float3( -1,0,0), float3( 1,0,0), float3(0,-1,0), float3(0,1,0), float3(0,0,-1), float3(0,0, 1) };
-			static const float3 FaceB[6] = { float3(0,1,0),  float3(0,0,1),  float3(0,0,1),  float3(1,0,0),  float3(1,0,0),  float3(0,1,0)  };
-			static const float3 FaceT[6] = { float3(0,0,1),  float3(0,1,0),  float3(1,0,0),  float3(0,0,1),  float3(0,1,0),  float3(1,0,0)  };
-			static const float2 UVs[6][4] =
-			{
-				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) },
-				{ float2(1,0), float2(1,1), float2(0,0), float2(0,1) },
-				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) },
-				{ float2(1,1), float2(0,1), float2(1,0), float2(0,0) },
-				{ float2(1,0), float2(1,1), float2(0,0), float2(0,1) },
-				{ float2(0,0), float2(1,0), float2(0,1), float2(1,1) }
-			};
-
-			static const int EdgeIndices[6][4] =
-			{
-				{3, 5, 2, 4}, // -X
-				{3, 4, 2, 5}, // +X
-				{0, 5, 1, 4}, // -Y
-				{4, 0, 5, 1}, // +Y
-				{3, 0, 2, 1}, // -Z
-				{3, 1, 2, 0}  // +Z
-			};
-			//{3, 5, 2, 4}, // -X
-			//{3, 4, 2, 5}, // +X
-			//{0, 5, 1, 4}, // -Y
-			//{0, 4, 1, 5}, // +Y
-			//{3, 0, 2, 1}, // -Z
-			//{3, 1, 2, 0}  // +Z
-
-			float2 flipbook(float2 UV, float Width, float Height, float Tile, float2 Invert)
-			{
-				Tile = fmod(Tile, Width * Height);
-				float2 tileCount = float2(1.0, 1.0) / float2(Width, Height);
-				float tileY = abs(Invert.y * Height - (floor(Tile * tileCount.x) + Invert.y * 1));
-				float tileX = abs(Invert.x * Width - ((Tile - Width * floor(Tile * tileCount.x)) + Invert.x * 1));
-				return (UV + float2(tileX, tileY)) * tileCount;
-			}
 
 
 			// GEOMETRY SHADER
 			[maxvertexcount(24)]
-			void geo(point v2g input[1], inout TriangleStream<g2f> stream)
+			void geo(point Voxel input[1], inout TriangleStream<g2f> stream)
 			{
 				float3 c = input[0].positionOS;
 				float  h =  _Size;
@@ -178,22 +126,29 @@ Shader "Test/PointToVoxels"
 
 						int tex = tArray[f];
 
-						float2 fb_atlas1 = flipbook(UVs[f][0], _Cols, _Rows, tex, float2(0,0));
-						float2 fb_atlas2 = flipbook(UVs[f][1], _Cols, _Rows, tex, float2(0,0));
-						float2 fb_atlas3 = flipbook(UVs[f][2], _Cols, _Rows, tex, float2(0,0));
-						float2 fb_atlas4 = flipbook(UVs[f][3], _Cols, _Rows, tex, float2(0,0));
+						float2 baseUV1 = flipbook(UVs[f][0], _Cols, _Rows, tex, float2(0,0));
+						float2 baseUV2 = flipbook(UVs[f][1], _Cols, _Rows, tex, float2(0,0));
+						float2 baseUV3 = flipbook(UVs[f][2], _Cols, _Rows, tex, float2(0,0));
+						float2 baseUV4 = flipbook(UVs[f][3], _Cols, _Rows, tex, float2(0,0));
+
+
+						// DEBUG TEXTURE UVs
+						// baseUV1 = flipbook(UVs[f][0], 1, 6, f, float2(0,1));
+						// baseUV2 = flipbook(UVs[f][1], 1, 6, f, float2(0,1));
+                        // baseUV3 = flipbook(UVs[f][2], 1, 6, f, float2(0,1));
+                        // baseUV4 = flipbook(UVs[f][3], 1, 6, f, float2(0,1));
 
 						int normalTile = 0;
-						normalTile += 8 * (solidFaces >> EdgeIndices[f][0] & 1);
+						normalTile += 1 * (solidFaces >> EdgeIndices[f][0] & 1);
 						normalTile += 2 * (solidFaces >> EdgeIndices[f][1] & 1);
-						normalTile += 1 * (solidFaces >> EdgeIndices[f][2] & 1);
-						normalTile += 4 * (solidFaces >> EdgeIndices[f][3] & 1);
+						normalTile += 4 * (solidFaces >> EdgeIndices[f][2] & 1);
+						normalTile += 8 * (solidFaces >> EdgeIndices[f][3] & 1);
 						//normalTile += 16 * (solidFaces >> EdgeIndices[f][0] & 1);
 						//normalTile = 15;
-						float2 fb_normal1 = flipbook(UVs[f][0], 4, 4, normalTile, float2(0,1));
-						float2 fb_normal2 = flipbook(UVs[f][1], 4, 4, normalTile, float2(0,1));
-						float2 fb_normal3 = flipbook(UVs[f][2], 4, 4, normalTile, float2(0,1));
-						float2 fb_normal4 = flipbook(UVs[f][3], 4, 4, normalTile, float2(0,1));
+						float2 normalUV1 = flipbook(UVs[f][0], 4, 4, normalTile, float2(0,1));
+						float2 normalUV2 = flipbook(UVs[f][1], 4, 4, normalTile, float2(0,1));
+						float2 normalUV3 = flipbook(UVs[f][2], 4, 4, normalTile, float2(0,1));
+						float2 normalUV4 = flipbook(UVs[f][3], 4, 4, normalTile, float2(0,1));
 
 						float2 damageUV[4] =
 						{
@@ -218,16 +173,16 @@ Shader "Test/PointToVoxels"
 						VertexPositionInputs inputs = GetVertexPositionInputs(fc - t*h - b*h);
 						o.positionCS = inputs.positionCS;
 						o.positionWS = inputs.positionWS;
-						o.baseUV = fb_atlas1;
-						o.normalUV = fb_normal1;
+						o.baseUV = baseUV1;
+						o.normalUV = normalUV1;
 						o.damageUV = damageUV[0];
 						stream.Append(o);
 
 						inputs = GetVertexPositionInputs(fc + t*h - b*h);
 						o.positionCS = inputs.positionCS;
 						o.positionWS = inputs.positionWS;
-						o.baseUV = fb_atlas2;
-						o.normalUV = fb_normal2;
+						o.baseUV = baseUV2;
+						o.normalUV = normalUV2;
 						o.damageUV = damageUV[1];
 						stream.Append(o);
 
@@ -235,16 +190,16 @@ Shader "Test/PointToVoxels"
 						inputs = GetVertexPositionInputs(fc - t*h + b*h);
 						o.positionCS = inputs.positionCS;
 						o.positionWS = inputs.positionWS;
-						o.baseUV = fb_atlas3;
-						o.normalUV = fb_normal3;
+						o.baseUV = baseUV3;
+						o.normalUV = normalUV3;
 						o.damageUV = damageUV[2];
 						stream.Append(o);
 
 						inputs = GetVertexPositionInputs(fc + t*h + b*h);
 						o.positionCS = inputs.positionCS;
 						o.positionWS = inputs.positionWS;
-						o.baseUV = fb_atlas4;
-						o.normalUV = fb_normal4;
+						o.baseUV = baseUV4;
+						o.normalUV = normalUV4;
 						o.damageUV = damageUV[3];
 						stream.Append(o);
 
@@ -260,24 +215,26 @@ Shader "Test/PointToVoxels"
 			{
 
 				float fogStr = 1.0 - ComputeFogIntensity(ComputeFogFactor(IN.positionCS.z));
-				Light l = GetMainLight();
-				half light = saturate(dot(normalize(IN.normalWS), l.direction)) * 0.8 + 0.2;
+				fogStr = clamp(pow(1.0 - clamp(IN.positionCS.z * 30000.0, 0, 1), 6.0), 0.0, 1.0);
 
-				float3 steppedPos = floor(IN.positionWS * 8) / 8;
-				float4 shadowCoord = TransformWorldToShadowCoord(IN.positionWS);
+
+				float3 steppedWS = floor(IN.positionWS * 16 + 0.001) / 16;
+				float4 shadowCoord = TransformWorldToShadowCoord(steppedWS);
 				half shadow = MainLightRealtimeShadow(shadowCoord);
-				shadow *= AdditionalLightRealtimeShadow(0, steppedPos);
+				shadow = clamp(shadow, 0.3, 1.0);
 
+				Light l = GetMainLight(shadowCoord, IN.positionWS, 1.0);
+				half light = saturate(dot(normalize(IN.normalWS), l.direction)) * 0.8 + 0.2;
+				light *= shadow;
 
 				half4 baseColor = SAMPLE_TEXTURE2D(_TextureAtlas, sampler_TextureAtlas, IN.baseUV);
+				baseColor += baseColor * SAMPLE_TEXTURE2D(_EdgeNormalAtlas, sampler_EdgeNormalAtlas, IN.normalUV);
 
 				float damageMask = clamp(SAMPLE_TEXTURE2D(_DamageAtlas, sampler_DamageAtlas, IN.damageUV).a, 0, .75);
 
 				half3 c = lerp(baseColor, half3(0,0,0), damageMask) * light;
+				c = lerp(c, unity_FogColor, fogStr);
 
-				c = lerp(c, unity_FogColor, clamp(pow(1.0 - (IN.positionCS.z * 100.0), 5.0), 0.0, 10000.0));
-
-				//c = SAMPLE_TEXTURE2D(_EdgeNormalAtlas, sampler_EdgeNormalAtlas, IN.normalUV);
 				//return half4(baseColor.rgb * light * shadow, 1);
 				return half4(c, 1);
 
@@ -285,37 +242,7 @@ Shader "Test/PointToVoxels"
 			}
 			ENDHLSL
 		}
+		
 
-		Pass
-		{
-			Name "ShadowCaster"
-			Tags { "LightMode" = "ShadowCaster" }
-
-			ZWrite On
-			ZTest LEqual
-			Cull[_Cull]
-
-			HLSLPROGRAM
-			// Required to compile gles 2.0 with standard srp library
-			#pragma prefer_hlslcc gles
-			#pragma exclude_renderers d3d11_9x
-			#pragma target 2.0
-
-			// -------------------------------------
-			// Material Keywords
-			#pragma shader_feature _ALPHATEST_ON
-
-			//--------------------------------------
-			// GPU Instancing
-			#pragma multi_compile_instancing
-			#pragma shader_feature _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
-
-			#pragma vertex ShadowPassVertex
-			#pragma fragment ShadowPassFragment
-
-			// #include "Assets/Shaders/Texel/Lit/TexelLitInput.hlsl"
-			#include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
-			ENDHLSL
-		}
 	}
 }
