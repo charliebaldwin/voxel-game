@@ -1373,13 +1373,13 @@
         {
             "m_OutputSlot": {
                 "m_Node": {
-                    "m_Id": "b6dc72dae6fd4bc0a4a8f63e0589b523"
+                    "m_Id": "b4a45671cef2443dbcddbbb97ecdf2ca"
                 },
                 "m_SlotId": 1
             },
             "m_InputSlot": {
                 "m_Node": {
-                    "m_Id": "2ba82976055e432780c00476cf77f5ff"
+                    "m_Id": "986617a8d4294d97ae93e1b8005cca79"
                 },
                 "m_SlotId": 0
             }
@@ -1592,6 +1592,20 @@
                     "m_Id": "98de1147644048aca302ceb10e634626"
                 },
                 "m_SlotId": -1536068580
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "df0fa8065b214f09a274293a78f65694"
+                },
+                "m_SlotId": 1
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "2ba82976055e432780c00476cf77f5ff"
+                },
+                "m_SlotId": 0
             }
         },
         {
@@ -5577,8 +5591,8 @@
     "m_ObjectId": "582a219413f342d9b3ff7bb8fafffdc2",
     "m_Title": "damage",
     "m_Position": {
-        "x": -219.99996948242188,
-        "y": -457.3333740234375
+        "x": -220.0,
+        "y": -457.33331298828127
     }
 }
 
@@ -6541,8 +6555,8 @@
     "m_ObjectId": "6bf8915349124ef38edc7f28f0b51df4",
     "m_Title": "Edge Normal",
     "m_Position": {
-        "x": -1350.66650390625,
-        "y": 1283.33349609375
+        "x": -1350.666748046875,
+        "y": 1283.333251953125
     }
 }
 
@@ -10972,7 +10986,7 @@
     "m_Title": "Blend Normals",
     "m_Position": {
         "x": 147.333251953125,
-        "y": 1432.6666259765625
+        "y": 1432.66650390625
     }
 }
 
@@ -12426,7 +12440,7 @@
     "m_ObjectId": "fe612248fe20498da7ed44710bf1f43c",
     "m_Title": "Face Normal",
     "m_Position": {
-        "x": -223.9999542236328,
+        "x": -224.0,
         "y": 834.6666870117188
     }
 }

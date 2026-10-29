@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_Voxel
-  m_Shader: {fileID: -6465566751694194690, guid: 68bb890b9f844e14586d5b41dbd959dd, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 6bc4d32cb44ea6f46a170d67627d3bc8, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -39,6 +39,18 @@ Material:
     m_TexEnvs:
     - _AtlasTex:
         m_Texture: {fileID: 2800000, guid: a51116a72bc355a498a391b21c6b7e27, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _AtlasTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _AtlasTextureMS:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _AtlasTextureNormal:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -93,6 +105,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_301f8cd0d1db4a9480b4b500f2c810f2_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 4fa817e2b3e91e345b9d23c4189ae2cc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_5f8f92e35f6c42d2a49d672d3a1ed350_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 7fee2b02e32ced24ab98755839c60e9a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_64b6263ec078420d9dc8ff1fbf5bc49a_Texture_1_Texture2D:
         m_Texture: {fileID: 2800000, guid: 89dfdb5e7f44b0147b242e0f586f03f0, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -111,6 +131,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_814f326e4bf742ac8c5a46cd65265c8e_Out_0_Texture2D:
+        m_Texture: {fileID: 2800000, guid: e27622ee40fad34469b65172f048d753, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -135,6 +159,7 @@ Material:
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _Columns: 4
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
@@ -152,6 +177,7 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Rotate: 0
+    - _Rows: 4
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

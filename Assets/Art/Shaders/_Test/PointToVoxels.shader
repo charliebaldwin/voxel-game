@@ -98,6 +98,7 @@ Shader "Test/PointToVoxels"
 				float2 damageUV 		: TEXCOORD2;
 				float  ao 				: AMBIENTOCCLUSION;
 				float4 color 			: COLOR;
+				float3x3 tbn 			: TNBMATRIX;
 				//float4 tempC : TEXCOORD2;
 			};
 
@@ -207,6 +208,8 @@ Shader "Test/PointToVoxels"
 							uint side2 = ((solidNeighbors >> (aoPos3.x + aoPos3.y * 3 + aoPos3.z * 9)) & 1);
 							o.ao = (side1 != 0u && side2 != 0u) ? 1.0 : (side1 + side2 + corner) / 3.0;
 							//o.ao = (corner + side1 + side2) / 3.0;
+
+							o.tbn = float3x3(tan, bitan, norm);
 							stream.Append(o);
 						}
 

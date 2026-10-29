@@ -32,3 +32,4 @@ static const int EdgeIndices[6][4] =
     {3, 0, 2, 1}, // -Z
     {3, 1, 2, 0}  // +Z
 };
+
