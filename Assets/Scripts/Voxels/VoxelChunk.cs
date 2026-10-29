@@ -473,7 +473,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		List<Color> colors = new List<Color>();
 		List<Vector4> uvs0 = new List<Vector4>(); // rgba=texture indices 0-3
 		List<Vector4> uvs1 = new List<Vector4>(); // rg=texture indices 4-5
-		List<Vector4> uvs2 = new List<Vector4>(); // r=solid faces, g=damage
+		List<Vector4> uvs2 = new List<Vector4>(); // r=solid faces, g=damage, b=solid neighbors
 		foliageGrassCoords = new List<Vector3>();
 		neighborCache = new Dictionary<Vector3Int, Voxel>();
 
@@ -503,7 +503,25 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 							if (neighbor.Shape == BlockShape.Foliage || neighbor.Shape == BlockShape.Empty)
 							{
 								shouldDraw = true;
-								solidFaces = solidFaces | ((uint)1 << n);
+								solidFaces |= (uint)1 << n;
+							}
+						}
+
+						uint solidNeighbors = 0;
+						for (int dx = 0; dx <= 2; dx++)
+						{
+							for (int dy = 0; dy <= 2; dy++)
+							{
+								for (int dz = 0; dz <= 2; dz++)
+								{
+									Vector3Int neighborLocalPos = new Vector3Int(x + dx - 1, y + dy - 1, z + dz - 1);
+									Vector3Int neighborWorldPos = LocalToWorld(neighborLocalPos, ChunkPos, Size3D);
+									Voxel neighbor = GetCachedNeighbor(neighborWorldPos);
+									if (neighbor.Shape != BlockShape.Empty || neighbor.BlockID != BlockID.Air)
+									{
+										solidNeighbors |= (uint)1 << (dx + dy * 3 + dz * 9);
+									}
+								}
 							}
 						}
 						if (shouldDraw)
@@ -512,18 +530,19 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 							List<int> indices = BlockRegistry.LookupBlockTextures(vox.BlockID);
 
 							Vector4 uv0 = Vector4.zero;
-							uv0.x = indices[0];
+							if (indices.Count > 0) uv0.x = indices[0];
 							if (indices.Count > 1) uv0.y = indices[1];
 							if (indices.Count > 2) uv0.z = indices[2];
 							if (indices.Count > 3) uv0.w = indices[3];
 
 							Vector4 uv1 = Vector4.zero;
 							if (indices.Count > 4) uv1.x = indices[4];
-							if (indices.Count > 6) uv1.y = indices[5];
+							if (indices.Count > 5) uv1.y = indices[5];
 
 							Vector4 uv2 = Vector4.zero;
 							uv2.x = solidFaces;
 							uv2.y = vox.Damage;
+							uv2.z = solidNeighbors;
 
 							uvs0.Add(uv0);
 							uvs1.Add(uv1);

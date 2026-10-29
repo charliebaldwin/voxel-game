@@ -34,6 +34,7 @@ Shader "Test/PointToVoxels"
 			#pragma shader_feature _RECEIVE_SHADOWS_ON
 			#pragma multi_compile _MAIN_LIGHT_SHADOWS
 			#pragma multi_compile_fog
+			#pragma exclude_renderers metal
 
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
@@ -42,7 +43,7 @@ Shader "Test/PointToVoxels"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderVariablesFunctions.hlsl"
 			
 			#include "Assets/Art/Shaders/VoxelShaderConstants.hlsl"
-			#include "Assets/Art/Shaders/UVFlipbook.hlsl"
+			#include "Assets/Art/Shaders/VoxelShaderHelpers.hlsl"
 
 			TEXTURE2D(_TextureAtlas);
 			SAMPLER(sampler_TextureAtlas);
@@ -63,145 +64,150 @@ Shader "Test/PointToVoxels"
 
 
 			// TYPES
+			struct SourceVoxel
+			{
+			float4 positionOS 			: POSITION;
+				float4 uv0 				: TEXCOORD0;
+				float4 uv1 				: TEXCOORD1;
+				float4 uv2 				: TEXCOORD2;
+			};
 			struct Voxel
 			{
-				float4 positionOS : POSITION;
-				float4 uv0 : TEXCOORD0;
-				float4 uv1 : TEXCOORD1;
-				float4 uv2 : TEXCOORD2;
+				float4 	positionOS 		: POSITION;
+				float4 	uv0 			: TEXCOORD0;
+				float4 	uv1 			: TEXCOORD1;
+				float4 	uv2 			: TEXCOORD2;
+				uint 	texIndex0		: TEXINDEX0;
+				uint 	texIndex1		: TEXINDEX1;	
+				uint 	texIndex2		: TEXINDEX2;
+				uint 	texIndex3		: TEXINDEX3;
+				uint 	texIndex4		: TEXINDEX4;
+				uint 	texIndex5		: TEXINDEX5;
+				uint    solidFaces		: SOLIDFACES;
+				uint	damage 			: DAMAGE;
+				uint		solidNeighbors	: SOLIDNEIGHBORS;
 			};
 
-			struct g2f
+			struct Vertex
 			{
-				float4 positionCS : SV_POSITION;
-				float3 positionWS : POSITION1;
-				float3 normalWS : NORMAL;
-				float2 baseUV : TEXCOORD0;
-				float2 normalUV : TEXCOORD1;
-				float2 damageUV : DAMAGE;
+				float4 positionCS 		: SV_POSITION;
+				float3 positionWS 		: POSITION1;
+				float3 normalWS 		: NORMAL;
+				float2 baseUV 			: TEXCOORD0;
+				float2 normalUV 		: TEXCOORD1;
+				float2 damageUV 		: TEXCOORD2;
+				float  ao 				: AMBIENTOCCLUSION;
+				float4 color 			: COLOR;
 				//float4 tempC : TEXCOORD2;
 			};
 
 
-			// VERTEX SHADER
-			Voxel vert(Voxel IN)
+			// VOXEL/POINT SHADER
+			Voxel vert(SourceVoxel IN)
 			{
-				return IN;
+				Voxel OUT;
+
+				OUT.positionOS = IN.positionOS;
+
+				OUT.texIndex0 = (uint)IN.uv0.x;
+				OUT.texIndex1 = (uint)IN.uv0.y;
+				OUT.texIndex2 = (uint)IN.uv0.z;
+				OUT.texIndex3 = (uint)IN.uv0.w;
+				OUT.texIndex4 = (uint)IN.uv1.x;
+				OUT.texIndex5 = (uint)IN.uv1.y;
+
+				OUT.solidFaces =(uint)IN.uv2.x;
+				OUT.damage = (uint)IN.uv2.y;
+				OUT.solidNeighbors = (uint)IN.uv2.z;
+
+				return OUT;
 			}
 
 
 
 			// GEOMETRY SHADER
 			[maxvertexcount(24)]
-			void geo(point Voxel input[1], inout TriangleStream<g2f> stream)
+			void geo(point Voxel IN[1], inout TriangleStream<Vertex> stream)
 			{
-				float3 c = input[0].positionOS;
-				float  h =  _Size;
+				float3 posOS = IN[0].positionOS;
+
+				float4 color = float4(0,0,0,1);
+
+				int texArray[6] = {IN[0].texIndex0, IN[0].texIndex1, IN[0].texIndex2, IN[0].texIndex3, IN[0].texIndex4, IN[0].texIndex5};
+				uint solidFaces = IN[0].solidFaces;
+				uint damage = IN[0].damage;
+				
+				uint solidNeighbors = IN[0].solidNeighbors;
+				float sumNeighbors = 0;
+				for (int i = 0; i < 27; i++)
+				{
+					sumNeighbors += (solidNeighbors >> i) & 1;
+				}
+				//color.r = sumNeighbors / 27.0;
+				color.r = (solidNeighbors >> 8 & 1);
+				color.g = (solidNeighbors >> 2 & 1);
+				color.b = (solidNeighbors >> 3 & 1);
 
 				// Camera in object space, for optional per-face culling
 				float3 camOS = TransformWorldToObject(GetCameraPositionWS());
 
-				int t1 = (int)input[0].uv0.x;
-				int t2 = max(t1, (int)input[0].uv0.y);
-				int t3 = max(t1, (int)input[0].uv0.z);
-				int t4 = max(t1, (int)input[0].uv0.w);
-				int t5 = max(t1, (int)input[0].uv1.x);
-				int t6 = max(t1, (int)input[0].uv1.y);
-
-
-				int tArray[6] = {t1, t2, t3, t4, t5, t6};
-
-				uint solidFaces = uint(input[0].uv2.x);
-
-				int damage = input[0].uv2.y;
-
-
 				[unroll]
 				for (int f = 0; f < 6; f++)
 				{
+					// run per-face
 					if ((solidFaces >> f) & 1)
 					{
-						float3 n = FaceN[f], t = FaceT[f], b = FaceB[f];
-						float3 fc = c + n * h - float3(0,0,0);
+						float3 norm = FaceN[f], tan = FaceT[f], bitan = FaceB[f];
+						float3 center = posOS + norm * _Size; // - float3(0,0,0);
 
-						int tex = tArray[f];
-
-						float2 baseUV1 = flipbook(UVs[f][0], _Cols, _Rows, tex, float2(0,0));
-						float2 baseUV2 = flipbook(UVs[f][1], _Cols, _Rows, tex, float2(0,0));
-						float2 baseUV3 = flipbook(UVs[f][2], _Cols, _Rows, tex, float2(0,0));
-						float2 baseUV4 = flipbook(UVs[f][3], _Cols, _Rows, tex, float2(0,0));
-
-
-						// DEBUG TEXTURE UVs
-						// baseUV1 = flipbook(UVs[f][0], 1, 6, f, float2(0,1));
-						// baseUV2 = flipbook(UVs[f][1], 1, 6, f, float2(0,1));
-                        // baseUV3 = flipbook(UVs[f][2], 1, 6, f, float2(0,1));
-                        // baseUV4 = flipbook(UVs[f][3], 1, 6, f, float2(0,1));
-
-						int normalTile = 0;
-						normalTile += 1 * (solidFaces >> EdgeIndices[f][0] & 1);
-						normalTile += 2 * (solidFaces >> EdgeIndices[f][1] & 1);
-						normalTile += 4 * (solidFaces >> EdgeIndices[f][2] & 1);
-						normalTile += 8 * (solidFaces >> EdgeIndices[f][3] & 1);
-						//normalTile += 16 * (solidFaces >> EdgeIndices[f][0] & 1);
-						//normalTile = 15;
-						float2 normalUV1 = flipbook(UVs[f][0], 4, 4, normalTile, float2(0,1));
-						float2 normalUV2 = flipbook(UVs[f][1], 4, 4, normalTile, float2(0,1));
-						float2 normalUV3 = flipbook(UVs[f][2], 4, 4, normalTile, float2(0,1));
-						float2 normalUV4 = flipbook(UVs[f][3], 4, 4, normalTile, float2(0,1));
-
-						float2 damageUV[4] =
-						{
-							flipbook(UVs[f][0], 6, 1, damage, float2(0,0)),
-							flipbook(UVs[f][1], 6, 1, damage, float2(0,0)),
-							flipbook(UVs[f][2], 6, 1, damage, float2(0,0)),
-							flipbook(UVs[f][3], 6, 1, damage, float2(0,0))
-						};
+						int tex = texArray[f];
+						int edgeTile = getEdgeTile(f, solidFaces);			
 
 						// Skip faces pointing away from the camera -> "up to 6" faces
-						if (dot(n, camOS - fc) <= 0) continue;
-
-
-
-						// add points
-						g2f o;
-						o.normalWS = TransformObjectToWorldNormal(n);
-
-						//float2 uv = TRANSFORM_TEX(IN.texCoord, _TextureAtlas);
+						if (dot(norm, camOS - center) <= 0) continue;
 
 						// Triangle strip order: (-t,-b) (+t,-b) (-t,+b) (+t,+b)
-						VertexPositionInputs inputs = GetVertexPositionInputs(fc - t*h - b*h);
-						o.positionCS = inputs.positionCS;
-						o.positionWS = inputs.positionWS;
-						o.baseUV = baseUV1;
-						o.normalUV = normalUV1;
-						o.damageUV = damageUV[0];
-						stream.Append(o);
+						float3 offset[4] = {
+							-tan-bitan,
+							+tan-bitan,
+							-tan+bitan,
+							+tan+bitan,
+						};
+						float3 offset2[4] = {
+							-tan, +tan, -tan, +tan
+						};
+						float3 offset3[4] = {
+							-bitan, -bitan, +bitan, +bitan
+						};
+						// add points
+						Vertex o;
+						o.normalWS = TransformObjectToWorldNormal(norm);
+						for(int i = 0; i < 4; i++)
+						{
+							VertexPositionInputs inputs = GetVertexPositionInputs(center + _Size*offset[i]);
+							o.positionCS = inputs.positionCS;
+							o.positionWS = inputs.positionWS;
+							o.baseUV =		flipbook(UVs[f][i], _Cols, _Rows, tex, float2(0,0));
+							o.normalUV = 	flipbook(UVs[f][i], 4, 4, edgeTile, float2(0,1));
+							o.damageUV = 	flipbook(UVs[f][i], 6, 1, damage, float2(0,0));
+							//o.ao = sumNeighbors;// / 27.0;
+							o.color = float4((offset[i]+1)/2 , 1);
+							o.color *= float4(1,0,0,1);
 
-						inputs = GetVertexPositionInputs(fc + t*h - b*h);
-						o.positionCS = inputs.positionCS;
-						o.positionWS = inputs.positionWS;
-						o.baseUV = baseUV2;
-						o.normalUV = normalUV2;
-						o.damageUV = damageUV[1];
-						stream.Append(o);
+							uint3 aoPos1 = uint3( offset[i] + norm + 1);
+							//aoPos1 = uint3(offset[i]) + 1 + uint3(norm);
+							uint3 aoPos2 = uint3(offset2[i] + norm + 1);
+							uint3 aoPos3 = uint3(offset3[i] + norm + 1);
+
+							o.color = float4(aoPos1-1, 1);
 
 
-						inputs = GetVertexPositionInputs(fc - t*h + b*h);
-						o.positionCS = inputs.positionCS;
-						o.positionWS = inputs.positionWS;
-						o.baseUV = baseUV3;
-						o.normalUV = normalUV3;
-						o.damageUV = damageUV[2];
-						stream.Append(o);
-
-						inputs = GetVertexPositionInputs(fc + t*h + b*h);
-						o.positionCS = inputs.positionCS;
-						o.positionWS = inputs.positionWS;
-						o.baseUV = baseUV4;
-						o.normalUV = normalUV4;
-						o.damageUV = damageUV[3];
-						stream.Append(o);
+							o.ao = 	((solidNeighbors >> (aoPos1.x + aoPos1.y * 3 + aoPos1.z * 9)) & 1);
+							o.ao += ((solidNeighbors >> (aoPos2.x + aoPos2.y * 3 + aoPos2.z * 9)) & 1);
+							o.ao += ((solidNeighbors >> (aoPos3.x + aoPos3.y * 3 + aoPos3.z * 9)) & 1);
+							o.ao /= 3.0;
+							stream.Append(o);
+						}
 
 						stream.RestartStrip();
 					}
@@ -210,35 +216,38 @@ Shader "Test/PointToVoxels"
 
 
 
+
 			// FRAGMENT SHADER
-			half4 frag(g2f IN) : SV_Target
+
+			half4 frag(Vertex IN) : SV_Target
 			{
-
-				float fogStr = 1.0 - ComputeFogIntensity(ComputeFogFactor(IN.positionCS.z));
-				fogStr = clamp(pow(1.0 - clamp(IN.positionCS.z * 30000.0, 0, 1), 6.0), 0.0, 1.0);
-
-
-				float3 steppedWS = floor(IN.positionWS * 16 + 0.001) / 16;
-				float4 shadowCoord = TransformWorldToShadowCoord(steppedWS);
-				half shadow = MainLightRealtimeShadow(shadowCoord);
-				shadow = clamp(shadow, 0.3, 1.0);
-
-				Light l = GetMainLight(shadowCoord, IN.positionWS, 1.0);
-				half light = saturate(dot(normalize(IN.normalWS), l.direction)) * 0.8 + 0.2;
+				half shadow = GetShadow(IN.positionWS, IN.normalWS);	
+				half light = GetLight(IN.normalWS);
 				light *= shadow;
 
-				half4 baseColor = SAMPLE_TEXTURE2D(_TextureAtlas, sampler_TextureAtlas, IN.baseUV);
-				baseColor += baseColor * SAMPLE_TEXTURE2D(_EdgeNormalAtlas, sampler_EdgeNormalAtlas, IN.normalUV);
+				half4 c = SAMPLE_TEXTURE2D(_TextureAtlas, sampler_TextureAtlas, IN.baseUV);
+				half alpha = c.a;
+				c = pow(1-IN.ao, 1) * float4(0.5,0.5,0.5,1);//float4(abs(IN.normalWS), 1);
+				c += c * .7 * SAMPLE_TEXTURE2D(_EdgeNormalAtlas, sampler_EdgeNormalAtlas, IN.normalUV);
+
+				//if (IN.color.r > 0)
+				//c = IN.color;
+				//c= lerp(c, half4(0,0,0,0), pow(IN.ao,2));
 
 				float damageMask = clamp(SAMPLE_TEXTURE2D(_DamageAtlas, sampler_DamageAtlas, IN.damageUV).a, 0, .75);
+				c = lerp(c, half4(0,0,0,0), damageMask);
 
-				half3 c = lerp(baseColor, half3(0,0,0), damageMask) * light;
-				c = lerp(c, unity_FogColor, fogStr);
+				c = c * light;
+				if (FOG_LINEAR || FOG_EXP || FOG_EXP2) {
+					half fog = GetFog(IN.positionCS);
+					c = lerp(c, unity_FogColor, fog*unity_FogColor.a);
+				}
 
-				//return half4(baseColor.rgb * light * shadow, 1);
-				return half4(c, 1);
+				c.a=alpha;
 
-				//return half4(IN.baseUV * light, 0, 1);
+				//c = IN.color;
+				return half4(c.rgb, alpha);
+
 			}
 			ENDHLSL
 		}

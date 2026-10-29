@@ -10,8 +10,8 @@ Shader "Custom/VoxelShadowCaster"
 			Tags { "LightMode" = "ShadowCaster" }
 
 			ZWrite On
-			ZTest LEqual
-			Cull[_Cull]
+			ZTest Less
+			//Cull[_Cull]
 
 
 			HLSLPROGRAM
