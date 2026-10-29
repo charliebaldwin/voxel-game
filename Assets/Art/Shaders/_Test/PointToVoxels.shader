@@ -118,7 +118,7 @@ Shader "Test/PointToVoxels"
 
 				OUT.solidFaces =(uint)IN.uv2.x;
 				OUT.damage = (uint)IN.uv2.y;
-				OUT.solidNeighbors = (uint)IN.uv2.z;
+				OUT.solidNeighbors = (uint)IN.uv2.z + ((uint)IN.uv2.w << 14);
 
 				return OUT;
 			}
@@ -201,11 +201,12 @@ Shader "Test/PointToVoxels"
 
 							o.color = float4(aoPos1-1, 1);
 
-
-							o.ao = 	((solidNeighbors >> (aoPos1.x + aoPos1.y * 3 + aoPos1.z * 9)) & 1);
-							o.ao += ((solidNeighbors >> (aoPos2.x + aoPos2.y * 3 + aoPos2.z * 9)) & 1);
-							o.ao += ((solidNeighbors >> (aoPos3.x + aoPos3.y * 3 + aoPos3.z * 9)) & 1);
-							o.ao /= 3.0;
+							o.ao = 0;
+							uint corner = ((solidNeighbors >> (aoPos1.x + aoPos1.y * 3 + aoPos1.z * 9)) & 1);
+							uint side1 = ((solidNeighbors >> (aoPos2.x + aoPos2.y * 3 + aoPos2.z * 9)) & 1);
+							uint side2 = ((solidNeighbors >> (aoPos3.x + aoPos3.y * 3 + aoPos3.z * 9)) & 1);
+							o.ao = (side1 != 0u && side2 != 0u) ? 1.0 : (side1 + side2 + corner) / 3.0;
+							//o.ao = (corner + side1 + side2) / 3.0;
 							stream.Append(o);
 						}
 
@@ -227,9 +228,11 @@ Shader "Test/PointToVoxels"
 
 				half4 c = SAMPLE_TEXTURE2D(_TextureAtlas, sampler_TextureAtlas, IN.baseUV);
 				half alpha = c.a;
-				c = pow(1-IN.ao, 1) * float4(0.5,0.5,0.5,1);//float4(abs(IN.normalWS), 1);
+				//c = float4(abs(IN.normalWS), 1);
 				c += c * .7 * SAMPLE_TEXTURE2D(_EdgeNormalAtlas, sampler_EdgeNormalAtlas, IN.normalUV);
 
+				half ao = 1-(IN.ao*1);
+				c *= ao;
 				//if (IN.color.r > 0)
 				//c = IN.color;
 				//c= lerp(c, half4(0,0,0,0), pow(IN.ao,2));
@@ -245,7 +248,6 @@ Shader "Test/PointToVoxels"
 
 				c.a=alpha;
 
-				//c = IN.color;
 				return half4(c.rgb, alpha);
 
 			}

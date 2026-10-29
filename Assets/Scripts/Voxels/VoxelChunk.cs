@@ -473,7 +473,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		List<Color> colors = new List<Color>();
 		List<Vector4> uvs0 = new List<Vector4>(); // rgba=texture indices 0-3
 		List<Vector4> uvs1 = new List<Vector4>(); // rg=texture indices 4-5
-		List<Vector4> uvs2 = new List<Vector4>(); // r=solid faces, g=damage, b=solid neighbors
+		List<Vector4> uvs2 = new List<Vector4>(); // r=solid faces, g=damage, ba=solid neighbors
 		foliageGrassCoords = new List<Vector3>();
 		neighborCache = new Dictionary<Vector3Int, Voxel>();
 
@@ -507,7 +507,8 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 							}
 						}
 
-						uint solidNeighbors = 0;
+						uint solidNeighbors1 = 0;
+						uint solidNeighbors2 = 0;
 						for (int dx = 0; dx <= 2; dx++)
 						{
 							for (int dy = 0; dy <= 2; dy++)
@@ -519,7 +520,11 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 									Voxel neighbor = GetCachedNeighbor(neighborWorldPos);
 									if (neighbor.Shape != BlockShape.Empty || neighbor.BlockID != BlockID.Air)
 									{
-										solidNeighbors |= (uint)1 << (dx + dy * 3 + dz * 9);
+										int index = dx + dy * 3 + dz * 9;
+										if (index < 14)
+											solidNeighbors1 |= (uint)1 << index;
+										else
+											solidNeighbors2 |= (uint)1 << (index - 14);
 									}
 								}
 							}
@@ -542,7 +547,8 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 							Vector4 uv2 = Vector4.zero;
 							uv2.x = solidFaces;
 							uv2.y = vox.Damage;
-							uv2.z = solidNeighbors;
+							uv2.z = solidNeighbors1;
+							uv2.w = solidNeighbors2;
 
 							uvs0.Add(uv0);
 							uvs1.Add(uv1);
