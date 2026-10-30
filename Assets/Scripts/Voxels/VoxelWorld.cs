@@ -28,6 +28,7 @@ public partial class VoxelWorld : MonoBehaviour
 	[SerializeField] private Vector3Int WorldSize = new Vector3Int(32, 1, 32);
 	//[SerializeField] private int2 InitialLoadedChunks = new int2(2, 2);
 	[SerializeField] private WorldGenSettings GenerationSettings;
+	[SerializeField] VoxelGenerator generator;
 	[SerializeField] private GameObject ChunkPrefab;
 	[SerializeField] private GameObject BlockEntityPrefab;
 	public MeshingMethod MeshingMethod = MeshingMethod.CPUPlusGeoShader;
@@ -92,8 +93,8 @@ public partial class VoxelWorld : MonoBehaviour
 
 		Vector3Int worldVoxelSize = new Vector3Int(ChunkSize.x * WorldSize.x, ChunkSize.y * WorldSize.y, ChunkSize.z * WorldSize.z);
 		//GenerateVoxelsCPU(worldVoxelSize);
-		VoxelGenerator generator = GetComponent<VoxelGenerator>();
-		generator.Generate(worldVoxelSize, GenerationSettings);
+		generator = GetComponent<VoxelGenerator>();
+		generator.Generate(worldVoxelSize, Vector3Int.zero);
 		Voxels = generator.GetGeneratedVoxels();
 
 		loadedChunks = new List<VoxelChunk>();
@@ -133,6 +134,9 @@ public partial class VoxelWorld : MonoBehaviour
 	{
 		if (Chunks[chunkPos.x, chunkPos.y, chunkPos.z] == null)
 		{
+			// generator.Generate(ChunkSize, chunkPos * ChunkSize);
+			// Voxel[,,] chunkData = generator.GetGeneratedVoxels();
+
 			VoxelChunk newChunk = Instantiate(ChunkPrefab).GetComponent<VoxelChunk>();
 			Chunks[chunkPos.x, chunkPos.y, chunkPos.z] = newChunk;
 			newChunk.transform.name = $"Chunk_x{chunkPos.x}_y{chunkPos.y}_z{chunkPos.z}";
@@ -140,6 +144,7 @@ public partial class VoxelWorld : MonoBehaviour
 			newChunk.transform.parent = transform;
 
 			//MinMaxAABB bounds = new MinMaxAABB(new float3(pos.x * ChunkSize.x, pos.y * ChunkSize.y, pos.z * ChunkSize.z), new float3((pos.x + 1) * ChunkSize.x, (pos.y + 1) * ChunkSize.y, (pos.z + 1) * ChunkSize.z));
+
 
 			Voxel[,,] chunkData = new Voxel[ChunkSize.x, ChunkSize.y, ChunkSize.z];
 
