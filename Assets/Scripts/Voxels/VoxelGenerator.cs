@@ -2,7 +2,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using System;
 using Unity.Collections;
-using Unity.Mathematics;
+//using Unity.Mathematics;
 using UnityEditor;
 using UnityEditor.AdaptivePerformance.Editor;
 using UnityEngine;

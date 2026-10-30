@@ -2,14 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using Unity.Mathematics;
-using Unity.Mathematics.Geometry;
+//using Unity.Mathematics;
+//using Unity.Mathematics.Geometry;
 using Unity.Profiling;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.LightTransport;
-using UnityEngine.Splines;
-using UnityEngine.Timeline;
+//using UnityEngine.Splines;
+//using UnityEngine.Timeline;
 using UnityEngine.VFX;
 //using VFolders.Libs;
 using VInspector;
@@ -69,7 +69,7 @@ public partial class VoxelWorld : MonoBehaviour
 	{
 		//if (!Initialized)
 		Initialize();
-	
+
 		blockUpdate_co = BlockUpdateCO();
 		//StartCoroutine(blockUpdate_co);
 	}
@@ -162,8 +162,10 @@ public partial class VoxelWorld : MonoBehaviour
 			//Chunks[chunkPos.x, chunkPos.y, chunkPos.z] = newChunk;
 		}
 
-		for (int x = 0; x < WorldSize.x; x++) {
-			for (int z = 0; z < WorldSize.z; z++) {
+		for (int x = 0; x < WorldSize.x; x++)
+		{
+			for (int z = 0; z < WorldSize.z; z++)
+			{
 				for (int y = 0; y < WorldSize.y; y++)
 				{
 					if (Chunks[x, y, z] != null)
@@ -178,8 +180,10 @@ public partial class VoxelWorld : MonoBehaviour
 	{
 		if (!Initialized)
 			Initialize();
-		for (int x = 0; x < WorldSize.x; x++) {
-			for (int z = 0; z < WorldSize.z; z++) {
+		for (int x = 0; x < WorldSize.x; x++)
+		{
+			for (int z = 0; z < WorldSize.z; z++)
+			{
 				for (int y = 0; y < WorldSize.y; y++)
 				{
 					LoadChunk(new Vector3Int(x, y, z));
@@ -191,7 +195,7 @@ public partial class VoxelWorld : MonoBehaviour
 	private List<VoxelChunk> chunksToLoad = new List<VoxelChunk>();
 	private SortedDictionary<float, VoxelChunk> sortedChunksToLoad = new SortedDictionary<float, VoxelChunk>();
 	static readonly ProfilerMarker enqueueChunkMarker = new ProfilerMarker("Enqueue Chunk");
-	public void EnqueueChunk (Vector3Int coord, float distance)
+	public void EnqueueChunk(Vector3Int coord, float distance)
 	{
 		enqueueChunkMarker.Begin();
 		if (IsChunkCoordInBounds(coord))
@@ -200,7 +204,8 @@ public partial class VoxelWorld : MonoBehaviour
 			VoxelChunk c = Chunks[coord.x, coord.y, coord.z];
 			if (c != null && !c.Loaded)
 			{
-				if (!loadedChunks.Contains(c) && !chunksToLoad.Contains(c)) { 
+				if (!loadedChunks.Contains(c) && !chunksToLoad.Contains(c))
+				{
 					chunksToLoad.Add(c);
 
 
@@ -209,7 +214,8 @@ public partial class VoxelWorld : MonoBehaviour
 						if (sortedChunksToLoad[distance].ChunkPos != c.ChunkPos)
 						{
 							distance += 0.01f;
-						} else
+						}
+						else
 						{
 							return;
 						}
@@ -221,7 +227,7 @@ public partial class VoxelWorld : MonoBehaviour
 		else
 			//Debug.Log("chunk outside bounds");
 
-		enqueueChunkMarker.End();
+			enqueueChunkMarker.End();
 	}
 	public void LoadLastQueuedChunk()
 	{
@@ -240,13 +246,13 @@ public partial class VoxelWorld : MonoBehaviour
 		DebugOverlay.SetDebugValue("Queued Chunks", chunksToLoadCopy.Count);
 		//for (int i = 0; i < chunksToLoadCopy.Count; i++)
 		int i = 0;
-		foreach(KeyValuePair<float, VoxelChunk> kvp in sortedChunksToLoadCopy)
+		foreach (KeyValuePair<float, VoxelChunk> kvp in sortedChunksToLoadCopy)
 		{
 			//loadedChunks.Add(chunksToLoadCopy[i].LoadChunk());
 			loadedChunks.Add(kvp.Value.LoadChunk());
 
-			DebugOverlay.SetDebugValue("Queued Chunks", chunksToLoadCopy.Count-i);
-			DebugOverlay.SetDebugValue("Loaded Chunks", loadedChunks.Count); 
+			DebugOverlay.SetDebugValue("Queued Chunks", chunksToLoadCopy.Count - i);
+			DebugOverlay.SetDebugValue("Loaded Chunks", loadedChunks.Count);
 			i++;
 			yield return new WaitForSeconds(ChunkLoadDelay);
 		}
@@ -258,11 +264,13 @@ public partial class VoxelWorld : MonoBehaviour
 
 	public void LoadChunk(Vector3Int coord)
 	{
-		if (IsChunkCoordInBounds(coord)) {
-			if (Chunks[coord.x, coord.y, coord.z] != null) 
+		if (IsChunkCoordInBounds(coord))
+		{
+			if (Chunks[coord.x, coord.y, coord.z] != null)
 				if (!Chunks[coord.x, coord.y, coord.z].Loaded)
 					loadedChunks.Add(Chunks[coord.x, coord.y, coord.z].LoadChunk());
-		} else
+		}
+		else
 		{
 			//Debug.Log("chunk outside bounds");
 		}
@@ -315,7 +323,8 @@ public partial class VoxelWorld : MonoBehaviour
 		chunksToLoad.Clear();
 		sortedChunksToLoad.Clear();
 
-		foreach(VoxelChunk chunk in Chunks) {
+		foreach (VoxelChunk chunk in Chunks)
+		{
 			if (!chunk.Loaded)
 			{
 				Vector3Int chunkCoord = chunk.ChunkPos;
@@ -332,13 +341,15 @@ public partial class VoxelWorld : MonoBehaviour
 
 	public void UnloadChunk(Vector3Int coord)
 	{
-		if (IsChunkCoordInBounds(coord)) {
-			if (Chunks[coord.x, coord.y, coord.z].Loaded) {
+		if (IsChunkCoordInBounds(coord))
+		{
+			if (Chunks[coord.x, coord.y, coord.z].Loaded)
+			{
 				loadedChunks.Remove(Chunks[coord.x, coord.y, coord.z].UnloadChunk());
 				DebugOverlay.SetDebugValue("Loaded Chunks", loadedChunks.Count);
 
 			}
-		} 
+		}
 	}
 
 	static readonly ProfilerMarker unloadChunkMarker = new ProfilerMarker("Chunk Unload");
@@ -457,18 +468,24 @@ public partial class VoxelWorld : MonoBehaviour
 
 	private void GenerateGrassAction(int x, int y, int z)
 	{
-		if (Voxels[x, y, z].BlockID == BlockID.Stone && y < ChunkSize.y - 1) {
-			if (Voxels[x, y + 1, z].BlockID == BlockID.Air) {
+		if (Voxels[x, y, z].BlockID == BlockID.Stone && y < ChunkSize.y - 1)
+		{
+			if (Voxels[x, y + 1, z].BlockID == BlockID.Air)
+			{
 				Voxels[x, y, z].BlockID = BlockID.Grass;
 			}
 		}
-		if (Voxels[x, y, z].BlockID == BlockID.Stone && y < ChunkSize.y - 2) {
-			if (Voxels[x, y + 2, z].BlockID == BlockID.Air) {
+		if (Voxels[x, y, z].BlockID == BlockID.Stone && y < ChunkSize.y - 2)
+		{
+			if (Voxels[x, y + 2, z].BlockID == BlockID.Air)
+			{
 				Voxels[x, y, z].BlockID = BlockID.Dirt;
 			}
 		}
-		if (Voxels[x, y, z].BlockID == BlockID.Stone && y < ChunkSize.y - 3) {
-			if (Voxels[x, y + 3, z].BlockID == BlockID.Air) {
+		if (Voxels[x, y, z].BlockID == BlockID.Stone && y < ChunkSize.y - 3)
+		{
+			if (Voxels[x, y + 3, z].BlockID == BlockID.Air)
+			{
 				Voxels[x, y, z].BlockID = BlockID.Dirt;
 			}
 		}
@@ -478,7 +495,7 @@ public partial class VoxelWorld : MonoBehaviour
 	private void LoadStructure(VoxelStructure structure)
 	{
 		Dictionary<Vector3Int, Voxel> structureVoxels = structure.GetStructureVoxels();
-		foreach(KeyValuePair<Vector3Int, Voxel> v in structureVoxels)
+		foreach (KeyValuePair<Vector3Int, Voxel> v in structureVoxels)
 		{
 			Voxels[v.Key.x, v.Key.y, v.Key.z] = v.Value;
 		}
@@ -529,7 +546,8 @@ public partial class VoxelWorld : MonoBehaviour
 	private IEnumerator BlockUpdateCO()
 	{
 		List<VoxelChunk> tempLoadedChunks = loadedChunks;
-		for (int i = 0; i < tempLoadedChunks.Count; i++) {
+		for (int i = 0; i < tempLoadedChunks.Count; i++)
+		{
 			tempLoadedChunks[i].BlockUpdate();
 			yield return new WaitForSeconds(BlockUpdateDelay);
 		}
@@ -578,7 +596,7 @@ public partial class VoxelWorld : MonoBehaviour
 				//PickupManager.SpawnItemPickup(worldPos, pickupItemID, 1);
 			}
 		}
-		SetVoxel(SnapToGrid(worldPos) , voxel);
+		SetVoxel(SnapToGrid(worldPos), voxel);
 	}
 	public void AddVoxel(Vector3 worldPos, Voxel voxel)
 	{
@@ -601,9 +619,9 @@ public partial class VoxelWorld : MonoBehaviour
 
 			Vector3Int chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
 			VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y, chunkPos.z];
-			
+
 			//Debug.Log($"World is placing block, id={data.BlockID}, isEntity={data.IsBlockEntity}");
-			
+
 			if (data.IsBlockEntity)
 			{
 				BlockEntityActor entity = Instantiate(BlockEntityPrefab, chunk.transform).GetComponent<BlockEntityActor>();
@@ -662,7 +680,7 @@ public partial class VoxelWorld : MonoBehaviour
 		// For each step, determine which distance to the next voxel boundary is lowest (i.e.
 		// which voxel boundary is nearest) and walk that way.
 		Vector3Int stepPos = start;
-		Vector3Int hitNormal = new Vector3Int(0,0,0);
+		Vector3Int hitNormal = new Vector3Int(0, 0, 0);
 		float t = 0f;
 		bool didHit = false;
 
@@ -691,7 +709,7 @@ public partial class VoxelWorld : MonoBehaviour
 				{
 					didHit = true;
 				}
-				else if(localHitPos.y + dir.y < 0)
+				else if (localHitPos.y + dir.y < 0)
 				{
 					hitNormal = Vector3Int.up;
 					didHit = true;
@@ -726,9 +744,9 @@ public partial class VoxelWorld : MonoBehaviour
 				DEBUGTraversalColorList.Add(new Color(Mathf.Abs(hitNormal.x), Mathf.Abs(hitNormal.y), Mathf.Abs(hitNormal.z)));
 
 
-			
-				// going through air
-				Vector3 absTMax = new Vector3(Mathf.Abs(tMax.x), Mathf.Abs(tMax.y), Mathf.Abs(tMax.z));
+
+			// going through air
+			Vector3 absTMax = new Vector3(Mathf.Abs(tMax.x), Mathf.Abs(tMax.y), Mathf.Abs(tMax.z));
 			if (absTMax.x < absTMax.y && absTMax.x < absTMax.z) // tMax.X is the lowest, an YZ cell boundary plane is nearest.
 			{
 				stepPos.x += stepX;
@@ -761,15 +779,15 @@ public partial class VoxelWorld : MonoBehaviour
 	}
 	public bool IsChunkCoordInBounds(Vector3Int coord)
 	{
-		return coord.x >= 0 && coord.y >= 0 && coord.z >= 0 && 
-				coord.x < WorldSize.x - 1 && 
-				coord.y < WorldSize.y - 1 && 
+		return coord.x >= 0 && coord.y >= 0 && coord.z >= 0 &&
+				coord.x < WorldSize.x - 1 &&
+				coord.y < WorldSize.y - 1 &&
 				coord.z < WorldSize.z - 1;
 	}
 
 	public void Explode(Vector3Int center, float radius)
 	{
-		Vector3Int[] sphere = GetCoordinateSphere(center,radius);
+		Vector3Int[] sphere = GetCoordinateSphere(center, radius);
 		foreach (Vector3Int p in sphere)
 		{
 			//int2 chunkCoord = FindContainingChunk(p, ChunkSize);
@@ -779,9 +797,9 @@ public partial class VoxelWorld : MonoBehaviour
 	}
 
 
-	
+
 	private void OnDrawGizmos()
-	{ 
+	{
 		//for (int i = 0; i < DEBUGTraversalPosList.Count; i++)
 		//{
 		//    //Gizmos.color = DEBUGTraversalColorList[i];

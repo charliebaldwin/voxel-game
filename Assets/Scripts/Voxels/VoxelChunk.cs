@@ -9,7 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.Collections;
 using Unity.Jobs;
-using Unity.Mathematics;
+//using Unity.Mathematics;
 using Unity.Profiling;
 using UnityEditor;
 using UnityEngine;
@@ -240,7 +240,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 					if (upVoxel.BlockID == BlockID.Air)
 					{
 						// grow into dirt with random chance
-						if (BlockRandomEvent(new int3(x, y, z), 0.04f))
+						if (BlockRandomEvent(new Vector3Int(x, y, z), 0.04f))
 						{
 							world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel(BlockID.Grass, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
 
@@ -253,7 +253,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 
 		if (Voxels[x, y, z].Damage > 0 && !PlayerView.usingTool)
 		{
-			if (BlockRandomEvent(new int3(x, y, z), 0.05f))
+			if (BlockRandomEvent(new Vector3Int(x, y, z), 0.05f))
 			{
 				voxel.Damage -= 1;
 				//SetBlock(LocalToWorld(new Vector3Int(x, y, z), ChunkCoord, Size3D), voxel);
@@ -310,7 +310,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 								if (upVoxel.BlockID == BlockID.Air)
 								{
 									// grow into dirt with random chance
-									if (BlockRandomEvent(new int3(pos.x, pos.y, pos.z), 0.04f))
+									if (BlockRandomEvent(new Vector3Int(pos.x, pos.y, pos.z), 0.04f))
 									{
 										world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel(BlockID.Grass, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
 										if (voxel.Damage <= 0) activeVoxels.Remove(pos);
@@ -329,7 +329,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 					}
 					if (voxel.Damage > 0 && !PlayerView.usingTool)
 					{
-						if (BlockRandomEvent(new int3(pos.x, pos.y, pos.z), 0.1f))
+						if (BlockRandomEvent(new Vector3Int(pos.x, pos.y, pos.z), 0.1f))
 						{
 							voxel.Damage -= 1;
 							world.SetVoxel(LocalToWorld(new Vector3Int(pos.x, pos.y, pos.z), ChunkPos, Size3D), voxel);
@@ -346,7 +346,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		}
 	}
 
-	private bool BlockRandomEvent(int3 pos, float probability)
+	private bool BlockRandomEvent(Vector3Int pos, float probability)
 	{
 		int seed = (pos.x + Size3D.x * pos.y + Size3D.x * Size3D.y * pos.z) + (1000 * ChunkPos.x + 10000 * ChunkPos.y) + (Time.frameCount % 10000);
 		Random.InitState(seed);
