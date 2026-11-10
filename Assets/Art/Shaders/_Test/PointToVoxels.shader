@@ -26,7 +26,7 @@ Shader "Test/PointToVoxels"
 			Cull Back
 
 			HLSLPROGRAM
-			#pragma target 4.0
+			#pragma target 4.5
 			#pragma vertex vert
 			#pragma geometry geo
 			#pragma fragment frag
@@ -54,19 +54,13 @@ Shader "Test/PointToVoxels"
 			TEXTURE2D(_DebugTexture);
 			SAMPLER(sampler_DebugTexture);
 
-			CBUFFER_START(UnityPerMaterial)
-				half4 _BaseColor;
-				float _Size;
-				int _Rows;
-				int _Cols;
-				int _AtlasIndex;
-			CBUFFER_END
+
 
 
 			// TYPES
 			struct SourceVoxel
 			{
-			float4 positionOS 			: POSITION;
+				float4 positionOS 			: POSITION;
 				float4 uv0 				: TEXCOORD0;
 				float4 uv1 				: TEXCOORD1;
 				float4 uv2 				: TEXCOORD2;
@@ -74,9 +68,9 @@ Shader "Test/PointToVoxels"
 			struct Voxel
 			{
 				float4 	positionOS 		: POSITION;
-				float4 	uv0 			: TEXCOORD0;
-				float4 	uv1 			: TEXCOORD1;
-				float4 	uv2 			: TEXCOORD2;
+				// float4 	uv0 			: TEXCOORD0;
+				// float4 	uv1 			: TEXCOORD1;
+				// float4 	uv2 			: TEXCOORD2;
 				uint 	texIndex0		: TEXINDEX0;
 				uint 	texIndex1		: TEXINDEX1;	
 				uint 	texIndex2		: TEXINDEX2;
@@ -85,7 +79,7 @@ Shader "Test/PointToVoxels"
 				uint 	texIndex5		: TEXINDEX5;
 				uint    solidFaces		: SOLIDFACES;
 				uint	damage 			: DAMAGE;
-				uint		solidNeighbors	: SOLIDNEIGHBORS;
+				uint	solidNeighbors	: SOLIDNEIGHBORS;
 			};
 
 			struct Vertex
@@ -102,24 +96,56 @@ Shader "Test/PointToVoxels"
 				//float4 tempC : TEXCOORD2;
 			};
 
+			CBUFFER_START(UnityPerMaterial)
+				half4 _BaseColor;
+				float _Size;
+				int _Rows;
+				int _Cols;
+				int _AtlasIndex;
+			CBUFFER_END
+			
+			StructuredBuffer<Voxel> _VoxelBuffer;
 
 			// VOXEL/POINT SHADER
-			Voxel vert(SourceVoxel IN)
+			Voxel vert(SourceVoxel IN, uint id : SV_VertexID)
 			{
 				Voxel OUT;
 
-				OUT.positionOS = IN.positionOS;
+				Voxel v = _VoxelBuffer[id];
 
-				OUT.texIndex0 = (uint)IN.uv0.x;
-				OUT.texIndex1 = (uint)IN.uv0.y;
-				OUT.texIndex2 = (uint)IN.uv0.z;
-				OUT.texIndex3 = (uint)IN.uv0.w;
-				OUT.texIndex4 = (uint)IN.uv1.x;
-				OUT.texIndex5 = (uint)IN.uv1.y;
+				// OUT.positionOS = IN.positionOS;
+				// OUT.texIndex0 = (uint)IN.uv0.x;
+				// OUT.texIndex1 = (uint)IN.uv0.y;
+				// OUT.texIndex2 = (uint)IN.uv0.z;
+				// OUT.texIndex3 = (uint)IN.uv0.w;
+				// OUT.texIndex4 = (uint)IN.uv1.x;
+				// OUT.texIndex5 = (uint)IN.uv1.y;
+				// OUT.solidFaces =(uint)IN.uv2.x;
+				// OUT.damage = (uint)IN.uv2.y;
+				// OUT.solidNeighbors = (uint)IN.uv2.z + ((uint)IN.uv2.w << 14);
 
-				OUT.solidFaces =(uint)IN.uv2.x;
-				OUT.damage = (uint)IN.uv2.y;
-				OUT.solidNeighbors = (uint)IN.uv2.z + ((uint)IN.uv2.w << 14);
+// alternative way to get voxels from buffer instead of input vertex:
+				//OUT.positionOS = float4(_VoxelBuffer[id].positionOS.xyz, 0) * 1000;
+				// OUT.texIndex0 = (uint)v.uv0.x;
+				// OUT.texIndex1 = (uint)v.uv0.y;
+				// OUT.texIndex2 = (uint)v.uv0.z;
+				// OUT.texIndex3 = (uint)v.uv0.w;
+				// OUT.texIndex4 = (uint)v.uv1.x;
+				// OUT.texIndex5 = (uint)v.uv1.y;
+				// OUT.solidFaces = (uint)_VoxelBuffer[id].uv2.x;
+				// OUT.damage = (uint)_VoxelBuffer[id].uv2.y;
+				// OUT.solidNeighbors = (uint)_VoxelBuffer[id].uv2.z + ((uint)_VoxelBuffer[id].uv2.w << 14);
+				
+				OUT.positionOS = _VoxelBuffer[id].positionOS;
+				OUT.texIndex0 = v.texIndex0;
+				OUT.texIndex1 = v.texIndex1;
+				OUT.texIndex2 = v.texIndex2;
+				OUT.texIndex3 = v.texIndex3;
+				OUT.texIndex4 = v.texIndex4;
+				OUT.texIndex5 = v.texIndex5;
+				OUT.solidFaces = v.solidFaces;
+				OUT.damage = v.damage;
+				OUT.solidNeighbors = v.solidNeighbors;
 
 				return OUT;
 			}

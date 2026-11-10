@@ -1,0 +1,12 @@
+OVDF v1.1
+Registry, Assembly-CSharp
+MetaGuid:9505a537fc9a8cb4389df9f2a1475129
+
+# DefaultVoxelStates
++ [Sirenix.OdinInspector.DictionaryDrawerSettings]
+
+# BaseBlockTypes
++ [Sirenix.OdinInspector.ListDrawerSettingsAttribute]
+	AlwaysAddDefaultValue = True
+	showIndexLabels = True
+	showIndexLabelsHasValue = True

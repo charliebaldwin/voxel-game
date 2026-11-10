@@ -462,6 +462,30 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		}
 	}
 
+	struct SourceVoxel
+	{
+		public Vector4 v_positionOS;
+		public Vector4 v_uv0;
+		public Vector4 v_uv1;
+		public Vector4 v_uv2;
+	}
+	struct SourceVoxel2
+	{
+		public Vector4 positionOS;
+		public uint texIndex0;
+		public uint texIndex1;
+		public uint texIndex2;
+		public uint texIndex3;
+		public uint texIndex4;
+		public uint texIndex5;
+		public uint solidFaces;
+		public uint damage;
+		public uint solidNeighbors;
+
+
+	}
+	private GraphicsBuffer sourceVoxelBuffer;
+	private MaterialPropertyBlock mpb;
 	private void RemeshShader()
 	{
 		meshMarker.Begin();
@@ -474,15 +498,19 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		List<Vector4> uvs0 = new List<Vector4>(); // rgba=texture indices 0-3
 		List<Vector4> uvs1 = new List<Vector4>(); // rg=texture indices 4-5
 		List<Vector4> uvs2 = new List<Vector4>(); // r=solid faces, g=damage, ba=solid neighbors
+
+		List<SourceVoxel2> sourceVoxels = new List<SourceVoxel2>();
+		SourceVoxel2[] sourceVoxelArray = new SourceVoxel2[Size3D.x * Size3D.y * Size3D.z];
 		foliageGrassCoords = new List<Vector3>();
 		neighborCache = new Dictionary<Vector3Int, Voxel>();
 
+		int i = 0;
 
-		for (int z = 0; z < Size3D.z; z++)
+		for (int x = 0; x < Size3D.x; x++)
 		{
 			for (int y = 0; y < Size3D.y; y++)
 			{
-				for (int x = 0; x < Size3D.x; x++)
+				for (int z = 0; z < Size3D.z; z++)
 				{
 
 					Voxel vox = Voxels[x, y, z];
@@ -507,30 +535,34 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 							}
 						}
 
-						uint solidNeighbors1 = 0;
-						uint solidNeighbors2 = 0;
-						for (int dx = 0; dx <= 2; dx++)
+						if (shouldDraw)
 						{
-							for (int dy = 0; dy <= 2; dy++)
+
+							uint solidNeighbors1 = 0;
+							uint solidNeighbors2 = 0;
+							uint solidNeighbors0 = 0;
+							for (int dx = 0; dx <= 2; dx++)
 							{
-								for (int dz = 0; dz <= 2; dz++)
+								for (int dy = 0; dy <= 2; dy++)
 								{
-									Vector3Int neighborLocalPos = new Vector3Int(x + dx - 1, y + dy - 1, z + dz - 1);
-									Vector3Int neighborWorldPos = LocalToWorld(neighborLocalPos, ChunkPos, Size3D);
-									Voxel neighbor = GetCachedNeighbor(neighborWorldPos);
-									if (neighbor.Shape != BlockShape.Empty || neighbor.BlockID != BlockID.Air)
+									for (int dz = 0; dz <= 2; dz++)
 									{
-										int index = dx + dy * 3 + dz * 9;
-										if (index < 14)
-											solidNeighbors1 |= (uint)1 << index;
-										else
-											solidNeighbors2 |= (uint)1 << (index - 14);
+										Vector3Int neighborLocalPos = new Vector3Int(x + dx - 1, y + dy - 1, z + dz - 1);
+										Vector3Int neighborWorldPos = LocalToWorld(neighborLocalPos, ChunkPos, Size3D);
+										Voxel neighbor = GetCachedNeighbor(neighborWorldPos);
+										if (neighbor.Shape != BlockShape.Empty || neighbor.BlockID != BlockID.Air)
+										{
+											int index = dx + dy * 3 + dz * 9;
+											solidNeighbors0 |= (uint)1 << index;
+											if (index < 14)
+												solidNeighbors1 |= (uint)1 << index;
+											else
+												solidNeighbors2 |= (uint)1 << (index - 14);
+										}
 									}
 								}
 							}
-						}
-						if (shouldDraw)
-						{
+
 							positions.Add(new Vector3(x, y, z));
 							List<int> indices = BlockRegistry.LookupBlockTextures(vox.BlockID);
 
@@ -553,16 +585,64 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 							uvs0.Add(uv0);
 							uvs1.Add(uv1);
 							uvs2.Add(uv2);
+							colors.Add(new Color(i, 0, 0, 0));
+
+							SourceVoxel sourceVoxel = new SourceVoxel
+							{
+								v_positionOS = new Vector4(x, y, z, 0),
+								v_uv0 = uv0,
+								v_uv1 = uv1,
+								v_uv2 = uv2
+							};
+							SourceVoxel2 sourceVoxel2 = new SourceVoxel2
+							{
+								positionOS = new Vector4(x, y, z, 0),
+								texIndex0 = (uint)uv0.x,
+								texIndex1 = (uint)uv0.y,
+								texIndex2 = (uint)uv0.z,
+								texIndex3 = (uint)uv0.w,
+								texIndex4 = (uint)uv1.x,
+								texIndex5 = (uint)uv1.y,
+								solidFaces = (uint)uv2.x,
+								damage = (uint)uv2.y,
+								solidNeighbors = solidNeighbors0
+							};
+							sourceVoxels.Add(sourceVoxel2);
+							sourceVoxelArray[i] = sourceVoxel2;
+
+							i++;
 						}
 					}
 				}
 			}
 		}
 
+		if (sourceVoxels.Count == 0)
+		{
+			mesh.Clear();
+			meshFilter.mesh = mesh;
+			meshCollider.sharedMesh = mesh;
+			foliage.SetFoliage(foliageGrassCoords);
+			foliageGrassCoords.Clear();
+			neighborCache.Clear();
+			meshMarker.End();
+			return;
+		}
+		sourceVoxelBuffer?.Release();
+		sourceVoxelBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, sourceVoxels.Count, sizeof(float) * 4 + sizeof(uint) * 9);
+		sourceVoxelBuffer.SetData(sourceVoxels);
+
+		mpb ??= new MaterialPropertyBlock();
+		meshRenderer.GetPropertyBlock(mpb);
+		mpb.SetBuffer("_VoxelBuffer", sourceVoxelBuffer);
+		meshRenderer.SetPropertyBlock(mpb);
+		//meshRenderer.sharedMaterial.SetBuffer("_VoxelBuffer", sourceVoxelBuffer);
+
 		mesh.SetVertices(positions);
 		mesh.SetUVs(0, uvs0);
 		mesh.SetUVs(1, uvs1);
 		mesh.SetUVs(2, uvs2);
+		mesh.SetColors(colors);
 		mesh.SetIndices(Enumerable.Range(0, positions.Count).ToArray(), MeshTopology.Points, 0);
 		meshFilter.mesh = mesh;
 
