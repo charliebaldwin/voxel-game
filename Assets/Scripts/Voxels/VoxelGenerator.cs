@@ -54,6 +54,13 @@ public class VoxelGenerator : MonoBehaviour
 	private Vector3 soilNorm;
 
 
+	int GetNextSeed(int seed)
+	{
+		UnityEngine.Random.InitState(seed);
+		int newSeed = Mathf.FloorToInt(UnityEngine.Random.Range(0, 999999));
+		Debug.Log($"seed:{newSeed}");
+		return newSeed;
+	}
 	public void Generate(Vector3Int worldSize, Vector3Int worldOrigin)
 	{
 		this.worldSize = worldSize;
@@ -67,17 +74,23 @@ public class VoxelGenerator : MonoBehaviour
 		UnityEngine.Random.InitState(Seed);
 		seedOffset = UnityEngine.Random.Range(0f, 999999f);
 
+		int seed = GetNextSeed(Seed);
 
-		GenerateNoiseGPU(out noiseArray1, 0.2f * Vector3.one, Seed, Octaves);
-		GenerateNoiseGPU(out noiseArray2, 0.2f * Vector3.one, Seed + 1, Octaves);
+		GenerateNoiseGPU(out noiseArray1, 0.2f * Vector3.one, seed, Octaves);
+		seed = GetNextSeed(seed);
+		GenerateNoiseGPU(out noiseArray2, 0.2f * Vector3.one, seed, Octaves);
+		seed = GetNextSeed(seed);
 		//ErosionGPU();
 
-		LoopXZ(BuildTerrain);
+		//LoopXZ(BuildTerrain);
+		LoopXYZ(BuildTerrain2);
 
-
-		GenerateNoiseGPU(out noiseSand, new Vector3(1f, 0.9f, 1f), Seed + 2, Octaves + 2);
-		GenerateNoiseGPU(out noiseSilt, new Vector3(1f, 0.9f, 1f), Seed + 3, Octaves + 2);
-		GenerateNoiseGPU(out noiseClay, new Vector3(1f, 0.9f, 1f), Seed + 4, Octaves + 2);
+		GenerateNoiseGPU(out noiseSand, new Vector3(1f, 0.9f, 1f), seed, Octaves + 2);
+		seed = GetNextSeed(seed);
+		GenerateNoiseGPU(out noiseSilt, new Vector3(1f, 0.9f, 1f), seed, Octaves + 2);
+		seed = GetNextSeed(seed);
+		GenerateNoiseGPU(out noiseClay, new Vector3(1f, 0.9f, 1f), seed, Octaves + 2);
+		seed = GetNextSeed(seed);
 		LoopXYZ(SoilNoise);
 
 		//GenerateNoiseGPU(out noiseCaves, 2f * new Vector3(0.3f, 0.6f, 0.3f), Seed + 5, Octaves, "GenerateNoiseCaves");
@@ -173,7 +186,8 @@ public class VoxelGenerator : MonoBehaviour
 		NoiseCS.SetInts("WorldOrigin", origin);
 		NoiseCS.SetInts("ThreadCount", threads);
 		NoiseCS.SetInts("ThreadSize", threadSize);
-		NoiseCS.SetFloat("Seed", Seed);
+		NoiseCS.SetInt("Seed", seed);
+		Debug.Log($"using seed: {seed}");
 		NoiseCS.SetVector("Scale", Scale * scale);
 		UnityEngine.Random.InitState(seed);
 		Vector3 offset = UnityEngine.Random.insideUnitSphere * UnityEngine.Random.Range(-100000f, 100000f);
@@ -272,7 +286,11 @@ public class VoxelGenerator : MonoBehaviour
 		}
 		noiseArray = result;
 	}
-
+	private void BuildTerrain2(int x, int y, int z)
+	{
+		int n = Mathf.RoundToInt(noiseArray1[x, y, z]);
+		SetVoxel(x, y, z, new Voxel((BlockID)n));
+	}
 	private void BuildTerrain(int x, int z)
 	{
 		float noise1 = noiseArray1[x, 2, z];
