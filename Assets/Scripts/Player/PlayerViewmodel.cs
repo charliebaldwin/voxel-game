@@ -28,7 +28,7 @@ public class PlayerViewmodel : MonoBehaviour
     public void SetItemModel(ItemID id)
     {
         Item item = ItemRegistry.LookupItem(id);
-        SetItemModel(item);   
+        SetItemModel(item);
     }
     public void SetItemModel(Item item)
     {
@@ -40,7 +40,7 @@ public class PlayerViewmodel : MonoBehaviour
         {
             ItemMeshFilter.mesh = item.ViewmodelMesh;
             //ItemMeshRenderer.material = item.ViewmodelMat;
-            if (item.Type == ItemType.Block)
+            if (item.Type == ItemCategory.Block)
             {
                 ItemMeshRenderer.material = BlockMat;
                 List<int> textureIndices = BlockRegistry.LookupBlockTextures(item.BlockID);

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum ItemType : byte
+public enum ItemCategory : byte
 {
     Null,
     Default,

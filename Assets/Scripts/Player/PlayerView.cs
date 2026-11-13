@@ -17,7 +17,7 @@ public class PlayerView : MonoBehaviour
     public LayerMask mask;
     public float AimDistance = 5f;
     public int Steps = 300;
-    
+
 
     public GameObject VoxelCursor;
     public InventoryManager PlayerInventory;
@@ -27,7 +27,7 @@ public class PlayerView : MonoBehaviour
     public MeshRenderer ItemMeshRenderer;
     public Material NullMaterial;
     public Mesh NullMesh;
-    
+
 
     private Vector3 debugRayStart;
     private Vector3 debugRayEnd;
@@ -36,7 +36,7 @@ public class PlayerView : MonoBehaviour
     private VoxelHitInfo lastHitInfo;
 
     // Held Item
-    private ItemType currentItemType;
+    private ItemCategory currentItemType;
     private Item heldItem;
     // held block
     private BlockID heldBlockID = BlockID.Air;
@@ -87,7 +87,7 @@ public class PlayerView : MonoBehaviour
     }
     public void OnSecondary(InputAction.CallbackContext context)
     {
-        if (context.started && Cursor.lockState == CursorLockMode.Locked && currentItemType == ItemType.Block)
+        if (context.started && Cursor.lockState == CursorLockMode.Locked && currentItemType == ItemCategory.Block)
         {
             secondaryDown = true;
             if (!usingTool)
@@ -96,7 +96,8 @@ public class PlayerView : MonoBehaviour
 
                 StartCoroutine(CO_useTool);
             }
-        } else if (context.canceled)
+        }
+        else if (context.canceled)
         {
             secondaryDown = false;
             usingTool = false;
@@ -113,7 +114,7 @@ public class PlayerView : MonoBehaviour
     public void OnNumKey(InputAction.CallbackContext context)
     {
         if (context.started)
-        { 
+        {
             //placedBlockType = Mathf.RoundToInt(context.ReadValue<float>());
             int num = Mathf.RoundToInt(context.ReadValue<float>());
             heldBlockShape = (BlockShape)num;
@@ -123,7 +124,7 @@ public class PlayerView : MonoBehaviour
     }
     public void OnScroll(InputAction.CallbackContext context)
     {
-        if (context.started) 
+        if (context.started)
         {
             hotbarSlot += Mathf.RoundToInt(context.ReadValue<float>());
             hotbarSlot = Mathf.Clamp(hotbarSlot, 0, NUM_HOTBAR_SLOTS - 1);
@@ -149,23 +150,23 @@ public class PlayerView : MonoBehaviour
         {
             ItemMeshFilter.mesh = heldItem.ViewmodelMesh;
             ItemMeshRenderer.material = heldItem.ViewmodelMat;
-            if (heldItem.Type == ItemType.Block)
+            if (heldItem.Type == ItemCategory.Block)
             {
-                currentItemType = ItemType.Block;
+                currentItemType = ItemCategory.Block;
                 BlockData block = BlockRegistry.LookupBlock(heldItem.BlockID);
 
                 heldBlockID = block.BlockID;
                 ItemMeshRenderer.material.SetInt("_TextureIndex", (int)block.BlockID);
             }
-            else if (heldItem.Type == ItemType.Tool)
+            else if (heldItem.Type == ItemCategory.Tool)
             {
-                currentItemType = ItemType.Tool;
+                currentItemType = ItemCategory.Tool;
                 toolDamage = heldItem.Strength;
                 toolUseTime = heldItem.UseTime;
             }
             else
             {
-                currentItemType = ItemType.Null;
+                currentItemType = ItemCategory.Null;
                 toolDamage = 1;
                 toolUseTime = DEFAULT_TOOL_USE_TIME;
                 heldBlockID = 0;
@@ -243,7 +244,7 @@ public class PlayerView : MonoBehaviour
     {
         if (lastHitInfo.didHit)
         {
-            if (currentItemType == ItemType.Block)
+            if (currentItemType == ItemCategory.Block)
             {
                 //byte o = VoxelHelper.NormalToOrientation(lastHitInfo.hitNormal);
                 ////byte o = VoxelHelper.NormalToOrientation(Vector3Int.up);
@@ -286,7 +287,7 @@ public class PlayerView : MonoBehaviour
                     VoxelWorld.Instance.DamageVoxel(lastHitInfo.voxelPos, lastHitInfo, (byte)toolDamage);
                     break;
                 case 2:
-                    if (currentItemType == ItemType.Block)
+                    if (currentItemType == ItemCategory.Block)
                     {
                         byte o = VoxelHelper.NormalToOrientation(lastHitInfo.hitNormal);
                         VoxelWorld.Instance.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(heldBlockID, 0, o, heldBlockShape));
@@ -297,7 +298,7 @@ public class PlayerView : MonoBehaviour
                     VoxelWorld.Instance.Explode(lastHitInfo.voxelPos, 3f);
                     break;
             }
-        } 
+        }
         else
         {
             VoxelCursor.SetActive(false);

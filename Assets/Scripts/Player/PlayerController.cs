@@ -34,7 +34,8 @@ public class PlayerController : MonoBehaviour
     public float lookSens = 1f;
     [Range(0f, 3f)]
     public float cameraLeanAmount = 1f;
-    [Range(0f, 1f)][HideIf("cameraLeanAmount", 0f)]
+    [Range(0f, 1f)]
+    [HideIf("cameraLeanAmount", 0f)]
     public float cameraLeanSpeed = 0.1f;
     [EndIf]
     [Range(0f, 1f)]
@@ -123,7 +124,7 @@ public class PlayerController : MonoBehaviour
         DebugPanel.PlayerForward = forward;
         DebugPanel.PlayerForwardOrtho = facingXZOrtho;
 
-        
+
 
 
     }
@@ -176,7 +177,7 @@ public class PlayerController : MonoBehaviour
         {
             //primaryDown = true;
             int strength = equippedItem.Strength;
-            if (equippedItem.Type != ItemType.Tool) 
+            if (equippedItem.Type != ItemCategory.Tool)
             {
                 strength = 1;
             }
@@ -194,7 +195,7 @@ public class PlayerController : MonoBehaviour
         if (context.started && Cursor.lockState == CursorLockMode.Locked)
         {
             //secondaryDown = true;
-            if (equippedItem.Type == ItemType.Block)
+            if (equippedItem.Type == ItemCategory.Block)
             {
                 PlaceVoxel(equippedItem.BlockID);
             }
@@ -230,7 +231,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log($"{hitBlockEntity.name}");
             GUIController.OpenPopup();
-            
+
         }
     }
     #endregion
@@ -251,7 +252,8 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(CameraPivot.position, CameraPivot.forward, out hit, 10f, 1 << 7))
         {
             hitBlockEntity = hit.collider.GetComponent<BlockEntityActor>();
-        } else
+        }
+        else
         {
             hitBlockEntity = null;
         }

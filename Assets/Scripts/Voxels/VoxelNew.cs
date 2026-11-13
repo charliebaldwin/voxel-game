@@ -16,7 +16,7 @@ public class VoxelNew
 
     public VoxelNew(string blockBase)
     {
-        BaseType = Registry.Instance.GetBlockBaseFromString(blockBase);
+        BaseType = 0;// Registry.Instance.GetBlockBaseFromString(blockBase);
         State = VoxelState.Solid;
         Damage = 0;
     }
@@ -29,4 +29,18 @@ public enum VoxelState
     Solid = 1,
     Permeable = 2,
     SemiSolid = 3
+}
+
+public enum VoxelBaseType
+{
+    None = 0,
+    Sand = 10, Silt = 11, Clay = 12,
+    Stone = 20, Granite = 21, Chert = 22, Limestone = 23, Sandstone = 24, Dolomite = 25,
+    OakLog = 50, PineLog = 51, WalnutLog = 52, AshLog = 53,
+    OakWood = 60, PineWood = 61, WalnutWood = 62, AshWood = 63
+}
+
+public enum VoxelTags
+{
+
 }

@@ -7,7 +7,7 @@ public class VoxelCursor : MonoBehaviour
     public Color BlockColor;
     public Color ToolColor;
 
-    public void MoveCursor(VoxelHitInfo hit, ItemType itemType)
+    public void MoveCursor(VoxelHitInfo hit, ItemCategory itemType)
     {
 
         if (hit.didHit)
@@ -20,20 +20,20 @@ public class VoxelCursor : MonoBehaviour
 
             if (hit.voxel.Shape == BlockShape.HalfSlab)
                 transform.position += Vector3.down * 0.5f;
-            if (itemType == ItemType.Block)
+            if (itemType == ItemCategory.Block)
                 transform.position += hit.hitNormal;
 
             switch (itemType)
             {
-                case ItemType.Block:
+                case ItemCategory.Block:
                     MeshRenderer.enabled = true;
                     MeshRenderer.material.SetColor("_Color", BlockColor);
                     break;
-                case ItemType.Tool:
+                case ItemCategory.Tool:
                     MeshRenderer.enabled = true;
                     MeshRenderer.material.SetColor("_Color", ToolColor);
                     break;
-                case ItemType.Null:
+                case ItemCategory.Null:
                     MeshRenderer.enabled = false;
                     break;
             }
@@ -46,12 +46,12 @@ public class VoxelCursor : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

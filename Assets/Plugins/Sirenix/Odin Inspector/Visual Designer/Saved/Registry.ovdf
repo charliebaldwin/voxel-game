@@ -10,3 +10,10 @@ MetaGuid:9505a537fc9a8cb4389df9f2a1475129
 	AlwaysAddDefaultValue = True
 	showIndexLabels = True
 	showIndexLabelsHasValue = True
+
+# Items
++ [Sirenix.OdinInspector.TableListAttribute]
++ [Sirenix.OdinInspector.TypeFilterAttribute]
+
+# Blocks
++ [Sirenix.OdinInspector.TableListAttribute]
