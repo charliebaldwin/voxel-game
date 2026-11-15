@@ -24,7 +24,7 @@ public class MagicCarpet : MonoBehaviour
 
     void SetPlane(MagicCarpetPlane plane, VoxelHitInfo hit)
     {
-        if (hit.didHit && hit.voxel.Shape == BlockShape.Solid)
+        if (hit.didHit && !hit.voxel.IsEmpty())
         {
             plane.gameObject.SetActive(true);
             plane.transform.position = hit.voxelPos + plane.GetOffset();

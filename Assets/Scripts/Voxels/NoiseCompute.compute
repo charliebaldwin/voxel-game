@@ -27,6 +27,10 @@ float CaveWidth;
 float remap(float value, float originMin, float originMax, float destinationMin, float destinationMax) {
     return destinationMin + (value - originMin) * (destinationMax - destinationMin) / (originMax - originMin);
 }
+float smoothstep(float x) {
+    float t = clamp(x / 1, 0, 1);
+    return t * t * (3-2*t);
+}
 
 
 
@@ -48,20 +52,30 @@ float noise(float3 p, int seed, float3 scale, int octaves, float octaveStrength,
 
 int flatIndex(int x, int y, int z) {
     return x + WorldSize.x * y + WorldSize.x * WorldSize.y * z;
-}
+} 
+ 
+float getHeight(float3 p) {
+    float big = noise(float3(p) + WorldOrigin, Seed + 1000, Scale * 0.3, Octaves, OctaveStrength * 0.8, OctaveScale);
+    //h1 = pow(h1, 2);
+    big = smoothstep(smoothstep(smoothstep(big)));
+    big *= 80;
 
-float getNoise(float3 p) {
-    float h1 = noise(float3(p) + WorldOrigin, Seed + 1000, Scale * 0.5, Octaves, OctaveStrength, OctaveScale);
-    h1 = pow(clamp(h1,-2,2), 1);
-    h1 = 15 + 30 * h1;
+    float mask_big = noise(float3(p) + WorldOrigin, Seed + 750, Scale * .15, Octaves, 0.6* OctaveStrength, 0.7 * OctaveScale);
+    mask_big = smoothstep(smoothstep(mask_big));
+    big *= mask_big;
 
-    float h2 = noise(float3(p) + WorldOrigin, Seed + 2000, Scale * 1.3, Octaves, OctaveStrength, OctaveScale);
-    h2 = 15 * h2;
+    float med = noise(float3(p) + WorldOrigin, Seed + 2000, Scale * .5, Octaves, 0.6 * OctaveStrength, OctaveScale);
+    med *= 15;
 
-    float h3 = noise(float3(p) + WorldOrigin, Seed + 100, Scale * .2, Octaves, OctaveStrength, OctaveScale);
-    h3 = h3 * 20 - 10;
+    float small = noise(float3(p) + WorldOrigin, Seed + 100, Scale * 1, Octaves, OctaveStrength, OctaveScale);
+    small *= 10;
+    float mask_small = noise(float3(p) + WorldOrigin, Seed + 870, Scale * .7, Octaves, 0.8 * OctaveStrength, 0.8 * OctaveScale);
+    mask_small = smoothstep(smoothstep(smoothstep(mask_small)));
+    small *= mask_small;
 
-    return h1;// + h2 + h3;
+    
+
+    return 15 + big + med + small;
 }
 
 const int SILT=4, SAND=5, CLAY=6, TEST=5;
@@ -79,13 +93,13 @@ void GenerateNoise (uint3 id : SV_DispatchThreadID)
         for (uint z = startZ; z < startZ + ThreadSize.z; z++) {
                             
             float3 p = float3(x,1.0,z);
-            float h = getNoise(p);
+            float h = getHeight(p);
 
             // slope
-            float h_nx = getNoise(p - float3(1,0,0));
-            float h_px = getNoise(p + float3(1,0,0));
-            float h_nz = getNoise(p - float3(0,0,1));
-            float h_pz = getNoise(p + float3(0,0,1));
+            float h_nx = getHeight(p - float3(1,0,0));
+            float h_px = getHeight(p + float3(1,0,0));
+            float h_nz = getHeight(p - float3(0,0,1));
+            float h_pz = getHeight(p + float3(0,0,1));
             float2 slope = float2(h_px - h_nx, h_pz - h_nz);
             float steep = length(slope);
             
@@ -96,7 +110,7 @@ void GenerateNoise (uint3 id : SV_DispatchThreadID)
                 float surface = 1.0 - ((y * (h-y)) / h)/y;
 
                 float soil = 0.04 + 0.08 * noise(p + WorldOrigin, Seed + 17, Scale * 0.01 * float3(1,0.1,1), Octaves, 0.5 * OctaveStrength, 1 * OctaveScale);
-                soil *= (lerp(0, (3-steep), pow(surface, 3)));
+                soil *= (lerp(0, (3-steep), pow(surface, 5)));
 
                 if (depth > 0.0) {
 

@@ -627,7 +627,7 @@ public partial class VoxelWorld : MonoBehaviour
 			Voxel hitVoxel = LookupVoxelWorld(stepPos);
 
 			// hit full block
-			if (hitVoxel.Shape == BlockShape.Solid || hitVoxel.Shape != BlockShape.HalfSlab && hitVoxel.Shape != BlockShape.Empty)
+			if (!hitVoxel.IsEmpty())
 			{
 				didHit = true;
 			}
