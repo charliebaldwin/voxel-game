@@ -11,6 +11,7 @@ using Unity.Collections;
 using Unity.Jobs;
 //using Unity.Mathematics;
 using Unity.Profiling;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -146,8 +147,9 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 	public void FillVoxelData(Voxel[,,] newVoxels)
 	{
 		Voxels = newVoxels;
-		activeVoxels = new List<Vector3Int>();
-		Loop3D(FillActiveVoxelsLoop);
+		//Debug.Log($"voxel at 5,5,5 = ({Voxels[5, 5, 5].BlockType})");
+		//activeVoxels = new List<Vector3Int>();
+		//Loop3D(FillActiveVoxelsLoop);
 	}
 
 	public void FindNeighbors()
@@ -219,37 +221,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 	{
 		Vector3Int pos = new Vector3Int(x, y, z);
 		Voxel voxel = Voxels[x, y, z];
-		BlockID voxelID = voxel.BlockID;
-		switch (voxelID)
-		{
-			case (BlockID.Grass):
-				if (y < Size3D.y - 1)
-				{
-					if (Voxels[x, y + 1, z].BlockID != BlockID.Air)
-					{
-						world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel(BlockID.Dirt, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
-						meshDirty = true;
-					}
-				}
-				break;
-			case (BlockID.Dirt):
-				if (y < Size3D.y - 1)
-				{
-					//Voxel upVoxel = World().LookupVoxel(LocalToWorldPos((pos + new Vector3Int(0, 1, 0))));
-					Voxel upVoxel = GetVoxelLocal(pos + Vector3Int.up);
-					if (upVoxel.BlockID == BlockID.Air)
-					{
-						// grow into dirt with random chance
-						if (BlockRandomEvent(new Vector3Int(x, y, z), 0.04f))
-						{
-							world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel(BlockID.Grass, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
 
-							SetDirty();
-						}
-					}
-				}
-				break;
-		}
 
 		if (Voxels[x, y, z].Damage > 0 && !PlayerView.usingTool)
 		{
@@ -265,8 +237,8 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 
 	private void FillActiveVoxelsLoop(int x, int y, int z)
 	{
-		BlockID id = Voxels[x, y, z].BlockID;
-		if (id != BlockID.Air)
+		if (Voxels[x, y, z] == null) { Debug.Log("voxel is empty!"); }
+		if (!Voxels[x, y, z].IsEmpty())
 		{
 			activeVoxels.Add(new Vector3Int(x, y, z));
 		}
@@ -284,35 +256,34 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 				if (IsPosInGridBounds(pos, Size3D))
 				{
 					Voxel voxel = Voxels[pos.x, pos.y, pos.z];
-					BlockID voxelID = voxel.BlockID;
-					switch (voxelID)
+					switch (voxel.BlockType)
 					{
-						case (BlockID.Air):
+						case (0):
 							activeVoxels.Remove(pos);
 							break;
-						case (BlockID.Grass):
+						case (1):
 							if (pos.y < Size3D.y - 1)
 							{
-								if (Voxels[pos.x, pos.y + 1, pos.z].BlockID != BlockID.Air)
+								if (!Voxels[pos.x, pos.y + 1, pos.z].IsEmpty())
 								{
-									world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel(BlockID.Dirt, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
+									world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel("silt"));
 									meshDirty = true;
 								}
 
 							}
 							if (voxel.Damage <= 0) activeVoxels.Remove(pos);
 							break;
-						case (BlockID.Dirt):
+						case (2):
 							if (pos.y < Size3D.y - 1)
 							{
 								//Voxel upVoxel = World().LookupVoxel(LocalToWorldPos((pos + new Vector3Int(0, 1, 0))));
 								Voxel upVoxel = GetVoxelLocal(pos + Vector3Int.up);
-								if (upVoxel.BlockID == BlockID.Air)
+								if (upVoxel.IsEmpty())
 								{
 									// grow into dirt with random chance
 									if (BlockRandomEvent(new Vector3Int(pos.x, pos.y, pos.z), 0.04f))
 									{
-										world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel(BlockID.Grass, voxel.Damage, voxel.Shape, voxel.UpAxis, voxel.ForwardAxis));
+										world.SetVoxel(LocalToWorld(pos, ChunkPos, Size3D), new Voxel("silt"));
 										if (voxel.Damage <= 0) activeVoxels.Remove(pos);
 										SetDirty();
 									}
@@ -418,13 +389,13 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 	private void ComputeMeshLoop(int x, int y, int z)
 	{
 		Voxel vox = Voxels[x, y, z];
-		if (vox.BlockID == BlockID.Air || vox.BlockID == BlockID.Machine) return;
+		if (vox.IsEmpty()) return;
 
-		if (vox.BlockID == BlockID.Foliage_Grass)
-		{
-			foliageGrassCoords.Add(new Vector3(x, y, z));
-			return;
-		}
+		// if (vox.BlockID == BlockID.Foliage_Grass)
+		// {
+		// 	foliageGrassCoords.Add(new Vector3(x, y, z));
+		// 	return;
+		// }
 		//voxelMarker.Begin();
 
 		Vector3Int localPos = new Vector3Int(x, y, z);
@@ -462,22 +433,12 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		}
 	}
 
+
 	struct SourceVoxel
 	{
-		public Vector4 v_positionOS;
-		public Vector4 v_uv0;
-		public Vector4 v_uv1;
-		public Vector4 v_uv2;
-	}
-	struct SourceVoxel2
-	{
 		public Vector4 positionOS;
-		public uint texIndex0;
-		public uint texIndex1;
-		public uint texIndex2;
-		public uint texIndex3;
-		public uint texIndex4;
-		public uint texIndex5;
+		public uint texIndex0; public uint texIndex1; public uint texIndex2; public uint texIndex3; public uint texIndex4; public uint texIndex5;
+		public int feature0Index0; public int feature0Index1; public int feature0Index2; public int feature0Index3; public int feature0Index4; public int feature0Index5;
 		public uint solidFaces;
 		public uint damage;
 		public uint solidNeighbors;
@@ -499,8 +460,8 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		List<Vector4> uvs1 = new List<Vector4>(); // rg=texture indices 4-5
 		List<Vector4> uvs2 = new List<Vector4>(); // r=solid faces, g=damage, ba=solid neighbors
 
-		List<SourceVoxel2> sourceVoxels = new List<SourceVoxel2>();
-		SourceVoxel2[] sourceVoxelArray = new SourceVoxel2[Size3D.x * Size3D.y * Size3D.z];
+		List<SourceVoxel> sourceVoxels = new List<SourceVoxel>();
+		SourceVoxel[] sourceVoxelArray = new SourceVoxel[Size3D.x * Size3D.y * Size3D.z];
 		foliageGrassCoords = new List<Vector3>();
 		neighborCache = new Dictionary<Vector3Int, Voxel>();
 
@@ -514,11 +475,12 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 				{
 
 					Voxel vox = Voxels[x, y, z];
-					if (vox.BlockID == BlockID.Foliage_Grass || vox.Shape == BlockShape.Foliage)
-					{
-						foliageGrassCoords.Add(new Vector3(x, y, z));
-					}
-					else if (vox.BlockID != BlockID.Air && vox.BlockID != BlockID.Foliage_Grass && vox.Shape != BlockShape.Empty && vox.Shape != BlockShape.Foliage)
+					if (vox == null) continue;
+					// if (vox.BlockID == BlockID.Foliage_Grass || vox.Shape == BlockShape.Foliage)
+					// {
+					// 	foliageGrassCoords.Add(new Vector3(x, y, z));
+					// }
+					if (!vox.IsEmpty())// && vox.BlockID != BlockID.Foliage_Grass && vox.Shape != BlockShape.Empty && vox.Shape != BlockShape.Foliage)
 					{
 						Vector3Int localPos = new Vector3Int(x, y, z);
 						Vector3Int worldPos = LocalToWorld(localPos, ChunkPos, Size3D);
@@ -528,7 +490,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 						{
 							Vector3Int dir = OrthoNormal.AlignYZ(OrthoDirections[n], vox.UpAxis, vox.ForwardAxis).ToVector();
 							Voxel neighbor = GetCachedNeighbor(worldPos + dir);
-							if (neighbor.Shape == BlockShape.Foliage || neighbor.Shape == BlockShape.Empty)
+							if (neighbor == null || neighbor.IsEmpty())
 							{
 								shouldDraw = true;
 								solidFaces |= (uint)1 << n;
@@ -550,7 +512,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 										Vector3Int neighborLocalPos = new Vector3Int(x + dx - 1, y + dy - 1, z + dz - 1);
 										Vector3Int neighborWorldPos = LocalToWorld(neighborLocalPos, ChunkPos, Size3D);
 										Voxel neighbor = GetCachedNeighbor(neighborWorldPos);
-										if (neighbor.Shape != BlockShape.Empty || neighbor.BlockID != BlockID.Air)
+										if (neighbor != null && !neighbor.IsEmpty())
 										{
 											int index = dx + dy * 3 + dz * 9;
 											solidNeighbors0 |= (uint)1 << index;
@@ -564,51 +526,36 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 							}
 
 							positions.Add(new Vector3(x, y, z));
-							List<int> indices = BlockRegistry.LookupBlockTextures(vox.BlockID);
-
-							Vector4 uv0 = Vector4.zero;
-							if (indices.Count > 0) uv0.x = indices[0];
-							if (indices.Count > 1) uv0.y = indices[1];
-							if (indices.Count > 2) uv0.z = indices[2];
-							if (indices.Count > 3) uv0.w = indices[3];
-
-							Vector4 uv1 = Vector4.zero;
-							if (indices.Count > 4) uv1.x = indices[4];
-							if (indices.Count > 5) uv1.y = indices[5];
-
-							Vector4 uv2 = Vector4.zero;
-							uv2.x = solidFaces;
-							uv2.y = vox.Damage;
-							uv2.z = solidNeighbors1;
-							uv2.w = solidNeighbors2;
-
-							uvs0.Add(uv0);
-							uvs1.Add(uv1);
-							uvs2.Add(uv2);
-							colors.Add(new Color(i, 0, 0, 0));
+							BlockType type = Registry.GetBlockType(vox);
+							int[] indices = type.TextureGroup.GetIndices();//BlockRegistry.LookupBlockTextures(vox.BlockID);
+							int[] grassIndices = new int[6] { -1, -1, -1, -1, -1, -1 };
+							if (type.TextureFeatures.Count > 0 && vox.Grassy)
+							{
+								grassIndices = type.TextureFeatures[0].GetIndices();
+							}
 
 							SourceVoxel sourceVoxel = new SourceVoxel
 							{
-								v_positionOS = new Vector4(x, y, z, 0),
-								v_uv0 = uv0,
-								v_uv1 = uv1,
-								v_uv2 = uv2
-							};
-							SourceVoxel2 sourceVoxel2 = new SourceVoxel2
-							{
 								positionOS = new Vector4(x, y, z, 0),
-								texIndex0 = (uint)uv0.x,
-								texIndex1 = (uint)uv0.y,
-								texIndex2 = (uint)uv0.z,
-								texIndex3 = (uint)uv0.w,
-								texIndex4 = (uint)uv1.x,
-								texIndex5 = (uint)uv1.y,
-								solidFaces = (uint)uv2.x,
-								damage = (uint)uv2.y,
+								texIndex0 = (uint)indices[0],
+								texIndex1 = (uint)indices[1],
+								texIndex2 = (uint)indices[2],
+								texIndex3 = (uint)indices[3],
+								texIndex4 = (uint)indices[4],
+								texIndex5 = (uint)indices[5],
+								feature0Index0 = grassIndices[0],
+								feature0Index1 = grassIndices[1],
+								feature0Index2 = grassIndices[2],
+								feature0Index3 = grassIndices[3],
+								feature0Index4 = grassIndices[4],
+								feature0Index5 = grassIndices[5],
+								solidFaces = (uint)solidFaces,
+								damage = (uint)vox.Damage,
 								solidNeighbors = solidNeighbors0
 							};
-							sourceVoxels.Add(sourceVoxel2);
-							sourceVoxelArray[i] = sourceVoxel2;
+
+							sourceVoxels.Add(sourceVoxel);
+							sourceVoxelArray[i] = sourceVoxel;
 
 							i++;
 						}
@@ -629,7 +576,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 			return;
 		}
 		sourceVoxelBuffer?.Release();
-		sourceVoxelBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, sourceVoxels.Count, sizeof(float) * 4 + sizeof(uint) * 9);
+		sourceVoxelBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, sourceVoxels.Count, sizeof(float) * 4 + sizeof(uint) * 15);
 		sourceVoxelBuffer.SetData(sourceVoxels);
 
 		mpb ??= new MaterialPropertyBlock();
@@ -660,7 +607,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 	{
 		Voxel thisVoxel = world.LookupVoxelWorld(LocalToWorld(pos, ChunkPos, Size3D));
 		Voxel neighborVoxel = world.LookupVoxelWorld(LocalToWorld(pos + faceDirection, ChunkPos, Size3D));
-		return neighborVoxel.BlockID == 0 && thisVoxel.BlockID > 0;
+		return neighborVoxel.IsEmpty() && !thisVoxel.IsEmpty();
 	}
 	#endregion
 
@@ -712,7 +659,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		Voxel currentVoxel = GetVoxel(localPos);
 		if (IsPosInGridBounds(localPos, Size3D))
 		{
-			if (currentVoxel.BlockID == 0 || true)
+			if (currentVoxel.IsEmpty() || true)
 			{
 				Voxels[localPos.x, localPos.y, localPos.z] = voxelData;
 
@@ -746,25 +693,25 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 	public void DamageVoxel(Vector3Int worldPos, VoxelHitInfo hitInfo, byte damage)
 	{
 		Voxel voxel = GetVoxel(worldPos);
-		BlockData data = BlockRegistry.LookupBlock(voxel.BlockID);
+		BlockType blockType = Registry.GetBlockType(voxel);
 
-		VFX().SpawnVFX(VFXType.BLOCK_DMG, hitInfo.hitPos, hitInfo.hitNormal, (int)voxel.BlockID);
+		VFX().SpawnVFX(VFXType.BLOCK_DMG, hitInfo.hitPos, hitInfo.hitNormal, 1);
 
 		voxel.Damage += damage;
-		int toughness = data.Toughness;
+		int toughness = blockType.Toughness;
 		if (voxel.Damage >= toughness)
 		{
-			if (data.IsBlockEntity)
-			{
-				if (BlockEntities.ContainsKey(worldPos))
-				{
-					Destroy(BlockEntities[worldPos].gameObject);
-					BlockEntities.Remove(worldPos);
-				}
-			}
-			VFX().SpawnVFX(VFXType.BLOCK_BREAK, worldPos, Vector3.zero, (int)voxel.BlockID);
+			// if (data.IsBlockEntity)
+			// {
+			// 	if (BlockEntities.ContainsKey(worldPos))
+			// 	{
+			// 		Destroy(BlockEntities[worldPos].gameObject);
+			// 		BlockEntities.Remove(worldPos);
+			// 	}
+			// }
+			VFX().SpawnVFX(VFXType.BLOCK_BREAK, worldPos, Vector3.zero, 0);
 
-			voxel = new Voxel(BlockID.Air, 0, 0);
+			voxel = new Voxel("air");
 			voxel.Shape = 0;
 		}
 		world.SetVoxel(worldPos, voxel); // set via world

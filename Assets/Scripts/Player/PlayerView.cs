@@ -39,7 +39,7 @@ public class PlayerView : MonoBehaviour
     private ItemCategory currentItemType;
     private Item heldItem;
     // held block
-    private BlockID heldBlockID = BlockID.Air;
+    private BlockType heldBlockType;
     private BlockShape heldBlockShape = BlockShape.Solid;
     private float blockPlaceTime = DEFAULT_TOOL_USE_TIME;
     // held tool
@@ -152,11 +152,11 @@ public class PlayerView : MonoBehaviour
             ItemMeshRenderer.material = heldItem.ViewmodelMat;
             if (heldItem.Type == ItemCategory.Block)
             {
-                currentItemType = ItemCategory.Block;
-                BlockData block = BlockRegistry.LookupBlock(heldItem.BlockID);
+                // currentItemType = ItemCategory.Block;
+                // BlockType block = Registry(heldItem.BlockID);
 
-                heldBlockID = block.BlockID;
-                ItemMeshRenderer.material.SetInt("_TextureIndex", (int)block.BlockID);
+                // heldBlockType = block.BlockID;
+                // ItemMeshRenderer.material.SetInt("_TextureIndex", (int)block.BlockID);
             }
             else if (heldItem.Type == ItemCategory.Tool)
             {
@@ -169,7 +169,7 @@ public class PlayerView : MonoBehaviour
                 currentItemType = ItemCategory.Null;
                 toolDamage = 1;
                 toolUseTime = DEFAULT_TOOL_USE_TIME;
-                heldBlockID = 0;
+                // heldBlockType = 0;
             }
 
         }
@@ -249,12 +249,12 @@ public class PlayerView : MonoBehaviour
                 //byte o = VoxelHelper.NormalToOrientation(lastHitInfo.hitNormal);
                 ////byte o = VoxelHelper.NormalToOrientation(Vector3Int.up);
                 //World().AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(heldBlockID, 0, o, heldBlockShape));
-                BlockData block = BlockRegistry.LookupBlock(heldBlockID);
-                OrthoNormal up = block.CanChangeUpAxis ? OrthoNormal.FromVector(lastHitInfo.hitNormal) : OrthoNormal.up;
-                OrthoNormal fwd = (up == OrthoNormal.forward || up == OrthoNormal.back) ? OrthoNormal.right : OrthoNormal.forward;
-                World().AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(heldBlockID, 0, heldBlockShape, up, fwd));
+                //BlockType block = BlockRegistry.LookupBlock(heldBlockType);
+                //OrthoNormal up = block.CanChangeUpAxis ? OrthoNormal.FromVector(lastHitInfo.hitNormal) : OrthoNormal.up;
+                //OrthoNormal fwd = (up == OrthoNormal.forward || up == OrthoNormal.back) ? OrthoNormal.right : OrthoNormal.forward;
+                World().AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(heldBlockType.ID));
 
-                Debug.Log($"placed block, ID={heldBlockID}, shape={heldBlockShape}");
+                Debug.Log($"placed block, ID={heldBlockType}, shape={heldBlockShape}");
 
             }
         }
@@ -290,7 +290,7 @@ public class PlayerView : MonoBehaviour
                     if (currentItemType == ItemCategory.Block)
                     {
                         byte o = VoxelHelper.NormalToOrientation(lastHitInfo.hitNormal);
-                        VoxelWorld.Instance.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(heldBlockID, 0, o, heldBlockShape));
+                        VoxelWorld.Instance.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(heldBlockType.ID));
                     }
                     //Debug.Log($"normal: {hitData.hitNormal}"); 
                     break;

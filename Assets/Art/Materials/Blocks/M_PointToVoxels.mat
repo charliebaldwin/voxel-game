@@ -35,16 +35,21 @@ Material:
         m_Texture: {fileID: 2800000, guid: 3bcd5321ed31fd340bd14e36d606ecc1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _TextureAtlas:
-        m_Texture: {fileID: 2800000, guid: 01007be6429e2344e8f24706b57d93f0, type: 2}
+    - _FeatureAtlas0:
+        m_Texture: {fileID: 2800000, guid: 1b0cc1ff4a36ed34ab8739ed60ad616c, type: 2}
         m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TextureAtlas:
+        m_Texture: {fileID: 2800000, guid: 966b806d839b17c4fa009411cbac9c00, type: 2}
+        m_Scale: {x: -1, y: -1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _AtlasIndex: 2
-    - _Cols: 8
-    - _Rows: 7
+    - _Cols: 4
+    - _Rows: 5
     - _Size: 0.5
+    - _UseAO: 1.29
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

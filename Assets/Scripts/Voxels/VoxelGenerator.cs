@@ -58,7 +58,7 @@ public class VoxelGenerator : MonoBehaviour
 	{
 		UnityEngine.Random.InitState(seed);
 		int newSeed = Mathf.FloorToInt(UnityEngine.Random.Range(0, 999999));
-		Debug.Log($"seed:{newSeed}");
+		//Debug.Log($"seed:{newSeed}");
 		return newSeed;
 	}
 	public void Generate(Vector3Int worldSize, Vector3Int worldOrigin)
@@ -78,20 +78,20 @@ public class VoxelGenerator : MonoBehaviour
 
 		GenerateNoiseGPU(out noiseArray1, 0.2f * Vector3.one, seed, Octaves);
 		seed = GetNextSeed(seed);
-		GenerateNoiseGPU(out noiseArray2, 0.2f * Vector3.one, seed, Octaves);
-		seed = GetNextSeed(seed);
+		// GenerateNoiseGPU(out noiseArray2, 0.2f * Vector3.one, seed, Octaves);
+		// seed = GetNextSeed(seed);
 		//ErosionGPU();
 
 		//LoopXZ(BuildTerrain);
 		LoopXYZ(BuildTerrain2);
 
-		GenerateNoiseGPU(out noiseSand, new Vector3(1f, 0.9f, 1f), seed, Octaves + 2);
-		seed = GetNextSeed(seed);
-		GenerateNoiseGPU(out noiseSilt, new Vector3(1f, 0.9f, 1f), seed, Octaves + 2);
-		seed = GetNextSeed(seed);
-		GenerateNoiseGPU(out noiseClay, new Vector3(1f, 0.9f, 1f), seed, Octaves + 2);
-		seed = GetNextSeed(seed);
-		LoopXYZ(SoilNoise);
+		// GenerateNoiseGPU(out noiseSand, new Vector3(1f, 0.9f, 1f), seed, Octaves + 2);
+		// seed = GetNextSeed(seed);
+		// GenerateNoiseGPU(out noiseSilt, new Vector3(1f, 0.9f, 1f), seed, Octaves + 2);
+		// seed = GetNextSeed(seed);
+		// GenerateNoiseGPU(out noiseClay, new Vector3(1f, 0.9f, 1f), seed, Octaves + 2);
+		// seed = GetNextSeed(seed);
+		// LoopXYZ(SoilNoise);
 
 		//GenerateNoiseGPU(out noiseCaves, 2f * new Vector3(0.3f, 0.6f, 0.3f), Seed + 5, Octaves, "GenerateNoiseCaves");
 		//LoopXYZ(CarveCaves);
@@ -130,7 +130,7 @@ public class VoxelGenerator : MonoBehaviour
 		}
 		else
 		{
-			return new Voxel(BlockID.Invalid, 0, 0);
+			return new Voxel(-1);
 		}
 	}
 	#endregion
@@ -187,7 +187,7 @@ public class VoxelGenerator : MonoBehaviour
 		NoiseCS.SetInts("ThreadCount", threads);
 		NoiseCS.SetInts("ThreadSize", threadSize);
 		NoiseCS.SetInt("Seed", seed);
-		Debug.Log($"using seed: {seed}");
+		//Debug.Log($"using seed: {seed}");
 		NoiseCS.SetVector("Scale", Scale * scale);
 		UnityEngine.Random.InitState(seed);
 		Vector3 offset = UnityEngine.Random.insideUnitSphere * UnityEngine.Random.Range(-100000f, 100000f);
@@ -289,7 +289,8 @@ public class VoxelGenerator : MonoBehaviour
 	private void BuildTerrain2(int x, int y, int z)
 	{
 		int n = Mathf.RoundToInt(noiseArray1[x, y, z]);
-		SetVoxel(x, y, z, new Voxel((BlockID)n));
+		SetVoxel(x, y, z, new Voxel(n));
+
 	}
 	private void BuildTerrain(int x, int z)
 	{
@@ -305,55 +306,55 @@ public class VoxelGenerator : MonoBehaviour
 			float depth = h - y;
 			if (depth < 0f)
 			{
-				SetVoxel(x, y, z, new Voxel(BlockID.Air));
+				SetVoxel(x, y, z, new Voxel(Registry.GetVoxelID("air")));
 			}
 			else
 			{
-				SetVoxel(x, y, z, new Voxel(BlockID.Dirt));
+				SetVoxel(x, y, z, new Voxel(Registry.GetVoxelID("silt")));
 
 				// Stone Layers
-				if (DoStoneLayers)
-				{
-					UnityEngine.Random.InitState(x + y + z);
-					int r = Mathf.FloorToInt(UnityEngine.Random.Range(0f, 5.99f));
-					OrthoNormal o1 = VoxelHelper.OrthoDirections[r];
-					OrthoNormal o2 = VoxelHelper.OrthoDirections[(r + 2) % 5];
-					o1 = OrthoNormal.up;
-					o2 = OrthoNormal.forward;
+				// if (DoStoneLayers)
+				// {
+				// 	UnityEngine.Random.InitState(x + y + z);
+				// 	int r = Mathf.FloorToInt(UnityEngine.Random.Range(0f, 5.99f));
+				// 	OrthoNormal o1 = VoxelHelper.OrthoDirections[r];
+				// 	OrthoNormal o2 = VoxelHelper.OrthoDirections[(r + 2) % 5];
+				// 	o1 = OrthoNormal.up;
+				// 	o2 = OrthoNormal.forward;
 
-					if (depth < 4f)
-					{
-						SetVoxel(x, y, z, new Voxel(BlockID.Dirt));
-					}
-					else if (depth < 8f)
-					{
-						SetVoxel(x, y, z, new Voxel(BlockID.Rocky_Dirt, o1, o2));
-					}
-					else if (depth < 15f)
-					{
-						SetVoxel(x, y, z, new Voxel(BlockID.Stone_Sandstone, o1, o2));
-					}
-					else if (depth < 22f)
-					{
-						SetVoxel(x, y, z, new Voxel(BlockID.Stone_Limestone, 0, 0, BlockShape.Solid));
-					}
-					else if (depth < 30f)
-					{
-						SetVoxel(x, y, z, new Voxel(BlockID.Stone_Dolomite, o1, o2));
-					}
-					else if (depth < 40f)
-					{
-						SetVoxel(x, y, z, new Voxel(BlockID.Stone_Shale, o1, o2));
-					}
-					else if (depth < 52f)
-					{
-						SetVoxel(x, y, z, new Voxel(BlockID.Stone_Slate, 0, 0, BlockShape.Solid));
-					}
-					else //if (depth < 65f)
-					{
-						SetVoxel(x, y, z, new Voxel(BlockID.Stone_Basalt, o1, o2));
-					}
-				}
+				// 	if (depth < 4f)
+				// 	{
+				// 		SetVoxel(x, y, z, new Voxel(Registry.GetVoxelID("silt")));
+				// 	}
+				// 	else if (depth < 8f)
+				// 	{
+				// 		SetVoxel(x, y, z, new Voxel(BlockID.Rocky_Dirt, o1, o2));
+				// 	}
+				// 	else if (depth < 15f)
+				// 	{
+				// 		SetVoxel(x, y, z, new Voxel(BlockID.Stone_Sandstone, o1, o2));
+				// 	}
+				// 	else if (depth < 22f)
+				// 	{
+				// 		SetVoxel(x, y, z, new Voxel(BlockID.Stone_Limestone, 0, 0, BlockShape.Solid));
+				// 	}
+				// 	else if (depth < 30f)
+				// 	{
+				// 		SetVoxel(x, y, z, new Voxel(BlockID.Stone_Dolomite, o1, o2));
+				// 	}
+				// 	else if (depth < 40f)
+				// 	{
+				// 		SetVoxel(x, y, z, new Voxel(BlockID.Stone_Shale, o1, o2));
+				// 	}
+				// 	else if (depth < 52f)
+				// 	{
+				// 		SetVoxel(x, y, z, new Voxel(BlockID.Stone_Slate, 0, 0, BlockShape.Solid));
+				// 	}
+				// 	else //if (depth < 65f)
+				// 	{
+				// 		SetVoxel(x, y, z, new Voxel(BlockID.Stone_Basalt, o1, o2));
+				// 	}
+				// }
 
 				// Caves / Color Testing
 				//float color_r = Mathf.Abs(h);
@@ -392,7 +393,7 @@ public class VoxelGenerator : MonoBehaviour
 			if (stillExposed)
 			{
 				exposedToSky[x, y, z] = true;
-				if (GetVoxel(x, y, z).BlockID != BlockID.Air)
+				if (!GetVoxel(x, y, z).IsEmpty())
 				{
 					// SetVoxel(x, y, z, new Voxel(BlockID.Clay));
 					stillExposed = false;
@@ -407,7 +408,7 @@ public class VoxelGenerator : MonoBehaviour
 
 	private void SoilNoise(int x, int y, int z)
 	{
-		if (GetVoxel(x, y, z).BlockID == BlockID.Dirt)
+		if (GetVoxel(x, y, z).BlockType == Registry.GetVoxelID("silt"))
 		{
 
 			float sand = noiseSand[x, y, z];
@@ -418,21 +419,21 @@ public class VoxelGenerator : MonoBehaviour
 			Color.RGBToHSV(soilMix, out float hue, out float sat, out float val);
 			if (sat < 0.02f)
 			{
-				SetVoxel(x, y, z, new Voxel(BlockID.Stone)); // even mixture (loam)
+				SetVoxel(x, y, z, new Voxel("loam")); // even mixture (loam)
 			}
 			else
 			{
 				if (hue < soilNorm.x) // red (sand)
 				{
-					SetVoxel(x, y, z, new Voxel(BlockID.Sand));
+					SetVoxel(x, y, z, new Voxel("sand"));
 				}
 				else if (hue < soilNorm.x + soilNorm.y) // green (silt)
 				{
-					SetVoxel(x, y, z, new Voxel(BlockID.Silt));
+					SetVoxel(x, y, z, new Voxel("silt"));
 				}
 				else // blue (clay)
 				{
-					SetVoxel(x, y, z, new Voxel(BlockID.Clay));
+					SetVoxel(x, y, z, new Voxel("clay"));
 				}
 			}
 		}
@@ -442,35 +443,15 @@ public class VoxelGenerator : MonoBehaviour
 	{
 		if (exposedToSky[x, y, z])
 		{
-			if (GetVoxel(x, y, z).BlockID == BlockID.Dirt)
-			{
-				SetVoxel(x, y, z, new Voxel(BlockID.Grass));
-				//SetVoxel(x, y + 1, z, new Voxel(BlockID.Foliage_Grass, BlockShape.Foliage));
-
-			}
-			else if (GetVoxel(x, y, z).BlockID == BlockID.Sand)
-			{
-				SetVoxel(x, y, z, new Voxel(BlockID.GrassySand));
-				//SetVoxel(x, y + 1, z, new Voxel(BlockID.Foliage_Grass, BlockShape.Foliage));
-
-			}
-			else if (GetVoxel(x, y, z).BlockID == BlockID.Silt)
-			{
-				SetVoxel(x, y, z, new Voxel(BlockID.GrassySilt));
-				// SetVoxel(x, y+1, z, new Voxel(BlockID.Foliage_Grass, BlockShape.Foliage));
-			}
-			else if (GetVoxel(x, y, z).BlockID == BlockID.Clay)
-			{
-				SetVoxel(x, y, z, new Voxel(BlockID.GrassyClay));
-				// SetVoxel(x, y + 1, z, new Voxel(BlockID.Foliage_Grass, BlockShape.Foliage));
-
-			}
+			Voxel v = GetVoxel(x, y, z);
+			v.Grassy = true;
+			SetVoxel(x, y, z, v);
 		}
 	}
 
 	private void CarveCaves(int x, int y, int z)
 	{
-		if (y < 2 || GetVoxel(x, y, z).BlockID == BlockID.Air) return;
+		if (y < 2 || GetVoxel(x, y, z).IsEmpty()) return;
 		float noise = noiseCaves[x, y, z];
 
 		//float height = (float)y / (float)worldSize.y;
@@ -483,7 +464,7 @@ public class VoxelGenerator : MonoBehaviour
 			if (noise < CaveThreshold)
 			//if (height > 0.5f)
 			{
-				SetVoxel(x, y, z, new Voxel(BlockID.Air));
+				SetVoxel(x, y, z, new Voxel("air"));
 			}
 		}
 		else
@@ -491,7 +472,7 @@ public class VoxelGenerator : MonoBehaviour
 			if (noise > CaveThreshold)
 			//if (height > 0.5f)
 			{
-				SetVoxel(x, y, z, new Voxel(BlockID.Air));
+				SetVoxel(x, y, z, new Voxel("air"));
 			}
 		}
 

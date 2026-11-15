@@ -7,13 +7,13 @@ public class VoxelStructureComponent : MonoBehaviour
 {
     public BoxCollider Box;
     public Color PreviewColor;
-    public BlockID BlockID;
+    public string BlockID;
     private Dictionary<Vector3Int, Voxel> voxels = new Dictionary<Vector3Int, Voxel>();
 
-    private void OnValidate()
-    {
-        GenerateVoxels();
-    }
+    // private void OnValidate()
+    // {
+    //     GenerateVoxels();
+    // }
 
     [Button]
     public Dictionary<Vector3Int, Voxel> GenerateVoxels()
@@ -31,7 +31,7 @@ public class VoxelStructureComponent : MonoBehaviour
             {
                 for (int z = root.z; z < root.z + size.z; z++)
                 {
-                    voxels.Add(new Vector3Int(x, y, z), new Voxel(BlockID, 0, 0));
+                    voxels.Add(new Vector3Int(x, y, z), new Voxel(BlockID));
                 }
             }
         }
@@ -40,7 +40,7 @@ public class VoxelStructureComponent : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        foreach(KeyValuePair<Vector3Int, Voxel> v in voxels)
+        foreach (KeyValuePair<Vector3Int, Voxel> v in voxels)
         {
             Gizmos.color = PreviewColor;
             Gizmos.DrawCube(v.Key, Vector3.one);
@@ -49,12 +49,12 @@ public class VoxelStructureComponent : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

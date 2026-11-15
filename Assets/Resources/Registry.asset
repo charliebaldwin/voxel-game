@@ -20,6 +20,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: f781d9b63bbf8784d8378783062d78e6, type: 3}
     - {fileID: 21300000, guid: 995d9ce92e2e8ec4cb563e22ed6c906a, type: 3}
     - {fileID: -68131589, guid: 68a035836e904954eb79f97d34414980, type: 3}
+    - {fileID: 2800000, guid: 067fee68b1b1d5d48b3268337ed102cc, type: 3}
     - {fileID: 2800000, guid: 86e54275ea12c9c4bb514f1a4c046ccf, type: 3}
     - {fileID: 2800000, guid: 6328a857a5ea9514186886a65d561af8, type: 3}
     - {fileID: 2800000, guid: c4eb3db8f3ac540408b0678eb8df0b5f, type: 3}
@@ -36,6 +37,18 @@ MonoBehaviour:
     - {fileID: 2800000, guid: 8dd4c64a283e58d48b68ce12a89dc44d, type: 3}
     - {fileID: 2800000, guid: 8adf4fad747e4dc4796605d58880d27b, type: 3}
     - {fileID: 2800000, guid: 655edeaf0e2b8e54eb16c6e9e373d4fe, type: 3}
+    - {fileID: 2800000, guid: d2204800bcc32b342935c25a65b1a466, type: 3}
+    - {fileID: 2800000, guid: 4bd0dff451a3a2448b2df4100acfdec2, type: 3}
+    - {fileID: 2800000, guid: 9d670fdfb5e8c5941a2a6378478e9ee9, type: 3}
+    - {fileID: 2800000, guid: 6fb1d3af2b877e94ca25d4bdab11f5f4, type: 3}
+    - {fileID: 2800000, guid: ca83a8687fabc0d468efcc0cf1745e15, type: 3}
+    - {fileID: 2800000, guid: 50899cce0d08822439066e3995540fe5, type: 3}
+    - {fileID: 2800000, guid: 71657794a207a1745a6cf55b94da7ad5, type: 3}
+    - {fileID: 2800000, guid: bd22ff30efa73324c9b4b59f17104e0e, type: 3}
+    - {fileID: 2800000, guid: 025d960fc025ec6488ae757432d553d0, type: 3}
+    - {fileID: 2800000, guid: dd606ad1b88d2374a84b7b41d9c7a47a, type: 3}
+    - {fileID: 2800000, guid: 0e2e0a5a35626d24bbb2ac1bf285e4ac, type: 3}
+    - {fileID: 2800000, guid: dbc9cbfde2527d845b99f0d6b25fc713, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -426,13 +439,13 @@ MonoBehaviour:
       Data: 33|System.Collections.Generic.List`1[[BlockType, Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
-      Data: 8
+      Data: 17
     - Name: 
       Entry: 7
       Data: 34|BlockType, Assembly-CSharp
     - Name: ID
       Entry: 1
-      Data: silt
+      Data: air
     - Name: TextureGroup
       Entry: 7
       Data: 35|UniformBlockTextureGroup, Assembly-CSharp
@@ -476,40 +489,7 @@ MonoBehaviour:
         mscorlib
     - Name: 
       Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 7
-      Data: 39|GrassTextureFeature, Assembly-CSharp
-    - Name: FeatureAtlas
-      Entry: 3
       Data: 0
-    - Name: TextureIndices
-      Entry: 7
-      Data: 40|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 2
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: 1
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: GrassSideTexture
-      Entry: 10
-      Data: 5
-    - Name: GrassTopTexture
-      Entry: 10
-      Data: 6
-    - Name: 
-      Entry: 8
-      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -518,10 +498,10 @@ MonoBehaviour:
       Data: 
     - Name: Toughness
       Entry: 3
-      Data: 1
+      Data: 0
     - Name: Colors
       Entry: 7
-      Data: 41|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
+      Data: 39|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
         mscorlib
     - Name: 
       Entry: 12
@@ -555,23 +535,149 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 42|BlockType, Assembly-CSharp
+      Data: 40|BlockType, Assembly-CSharp
+    - Name: ID
+      Entry: 1
+      Data: silt
+    - Name: TextureGroup
+      Entry: 7
+      Data: 41|UniformBlockTextureGroup, Assembly-CSharp
+    - Name: Textures
+      Entry: 7
+      Data: 42|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 10
+      Data: 5
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureIndices
+      Entry: 7
+      Data: 43|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureFeatures
+      Entry: 7
+      Data: 44|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 45|GrassTextureFeature, Assembly-CSharp
+    - Name: FeatureAtlas
+      Entry: 3
+      Data: 0
+    - Name: TextureIndices
+      Entry: 7
+      Data: 46|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: GrassSideTexture
+      Entry: 10
+      Data: 6
+    - Name: GrassTopTexture
+      Entry: 10
+      Data: 7
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Toughness
+      Entry: 3
+      Data: 1
+    - Name: Colors
+      Entry: 7
+      Data: 47|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Color, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 48|BlockType, Assembly-CSharp
     - Name: ID
       Entry: 1
       Data: sand
     - Name: TextureGroup
       Entry: 7
-      Data: 43|UniformBlockTextureGroup, Assembly-CSharp
+      Data: 49|UniformBlockTextureGroup, Assembly-CSharp
     - Name: Textures
       Entry: 7
-      Data: 44|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
+      Data: 50|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
         mscorlib
     - Name: 
       Entry: 12
       Data: 1
     - Name: 
       Entry: 10
-      Data: 7
+      Data: 8
     - Name: 
       Entry: 13
       Data: 
@@ -580,13 +686,13 @@ MonoBehaviour:
       Data: 
     - Name: TextureIndices
       Entry: 7
-      Data: 45|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+      Data: 51|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
     - Name: 
       Entry: 12
       Data: 1
     - Name: 
       Entry: 3
-      Data: 1
+      Data: 2
     - Name: 
       Entry: 13
       Data: 
@@ -598,20 +704,20 @@ MonoBehaviour:
       Data: 
     - Name: TextureFeatures
       Entry: 7
-      Data: 46|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
+      Data: 52|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
       Data: 1
     - Name: 
       Entry: 7
-      Data: 47|GrassTextureFeature, Assembly-CSharp
+      Data: 53|GrassTextureFeature, Assembly-CSharp
     - Name: FeatureAtlas
       Entry: 3
       Data: 0
     - Name: TextureIndices
       Entry: 7
-      Data: 48|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+      Data: 54|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
     - Name: 
       Entry: 12
       Data: 2
@@ -629,10 +735,10 @@ MonoBehaviour:
       Data: 
     - Name: GrassSideTexture
       Entry: 10
-      Data: 8
+      Data: 9
     - Name: GrassTopTexture
       Entry: 10
-      Data: 9
+      Data: 10
     - Name: 
       Entry: 8
       Data: 
@@ -647,7 +753,7 @@ MonoBehaviour:
       Data: 1
     - Name: Colors
       Entry: 7
-      Data: 49|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
+      Data: 55|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
         mscorlib
     - Name: 
       Entry: 12
@@ -681,23 +787,23 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 50|BlockType, Assembly-CSharp
+      Data: 56|BlockType, Assembly-CSharp
     - Name: ID
       Entry: 1
       Data: clay
     - Name: TextureGroup
       Entry: 7
-      Data: 51|UniformBlockTextureGroup, Assembly-CSharp
+      Data: 57|UniformBlockTextureGroup, Assembly-CSharp
     - Name: Textures
       Entry: 7
-      Data: 52|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
+      Data: 58|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
         mscorlib
     - Name: 
       Entry: 12
       Data: 1
     - Name: 
       Entry: 10
-      Data: 10
+      Data: 11
     - Name: 
       Entry: 13
       Data: 
@@ -706,13 +812,13 @@ MonoBehaviour:
       Data: 
     - Name: TextureIndices
       Entry: 7
-      Data: 53|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+      Data: 59|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
     - Name: 
       Entry: 12
       Data: 1
     - Name: 
       Entry: 3
-      Data: 2
+      Data: 3
     - Name: 
       Entry: 13
       Data: 
@@ -724,20 +830,20 @@ MonoBehaviour:
       Data: 
     - Name: TextureFeatures
       Entry: 7
-      Data: 54|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
+      Data: 60|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
       Data: 1
     - Name: 
       Entry: 7
-      Data: 55|GrassTextureFeature, Assembly-CSharp
+      Data: 61|GrassTextureFeature, Assembly-CSharp
     - Name: FeatureAtlas
       Entry: 3
       Data: 0
     - Name: TextureIndices
       Entry: 7
-      Data: 56|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+      Data: 62|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
     - Name: 
       Entry: 12
       Data: 2
@@ -755,10 +861,10 @@ MonoBehaviour:
       Data: 
     - Name: GrassSideTexture
       Entry: 10
-      Data: 11
+      Data: 12
     - Name: GrassTopTexture
       Entry: 10
-      Data: 12
+      Data: 13
     - Name: 
       Entry: 8
       Data: 
@@ -773,7 +879,7 @@ MonoBehaviour:
       Data: 1
     - Name: Colors
       Entry: 7
-      Data: 57|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
+      Data: 63|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
         mscorlib
     - Name: 
       Entry: 12
@@ -807,149 +913,23 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 58|BlockType, Assembly-CSharp
+      Data: 64|BlockType, Assembly-CSharp
     - Name: ID
       Entry: 1
       Data: loam
     - Name: TextureGroup
       Entry: 7
-      Data: 59|UniformBlockTextureGroup, Assembly-CSharp
+      Data: 65|UniformBlockTextureGroup, Assembly-CSharp
     - Name: Textures
       Entry: 7
-      Data: 60|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
+      Data: 66|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
         mscorlib
     - Name: 
       Entry: 12
       Data: 1
     - Name: 
-      Entry: 10
-      Data: 13
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: TextureIndices
-      Entry: 7
-      Data: 61|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 3
-      Data: 3
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: TextureFeatures
-      Entry: 7
-      Data: 62|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 7
-      Data: 63|GrassTextureFeature, Assembly-CSharp
-    - Name: FeatureAtlas
-      Entry: 3
-      Data: 0
-    - Name: TextureIndices
-      Entry: 7
-      Data: 64|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 2
-    - Name: 
-      Entry: 3
-      Data: 6
-    - Name: 
-      Entry: 3
-      Data: 7
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: GrassSideTexture
       Entry: 10
       Data: 14
-    - Name: GrassTopTexture
-      Entry: 10
-      Data: 15
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Toughness
-      Entry: 3
-      Data: 1
-    - Name: Colors
-      Entry: 7
-      Data: 65|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 7
-      Data: UnityEngine.Color, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 1
-    - Name: 
-      Entry: 4
-      Data: 1
-    - Name: 
-      Entry: 4
-      Data: 1
-    - Name: 
-      Entry: 4
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 66|BlockType, Assembly-CSharp
-    - Name: ID
-      Entry: 1
-      Data: mud
-    - Name: TextureGroup
-      Entry: 7
-      Data: 67|UniformBlockTextureGroup, Assembly-CSharp
-    - Name: Textures
-      Entry: 7
-      Data: 68|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 10
-      Data: 16
     - Name: 
       Entry: 13
       Data: 
@@ -958,7 +938,7 @@ MonoBehaviour:
       Data: 
     - Name: TextureIndices
       Entry: 7
-      Data: 69|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+      Data: 67|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
     - Name: 
       Entry: 12
       Data: 1
@@ -976,11 +956,44 @@ MonoBehaviour:
       Data: 
     - Name: TextureFeatures
       Entry: 7
-      Data: 70|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
+      Data: 68|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 69|GrassTextureFeature, Assembly-CSharp
+    - Name: FeatureAtlas
+      Entry: 3
       Data: 0
+    - Name: TextureIndices
+      Entry: 7
+      Data: 70|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 3
+      Data: 6
+    - Name: 
+      Entry: 3
+      Data: 7
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: GrassSideTexture
+      Entry: 10
+      Data: 15
+    - Name: GrassTopTexture
+      Entry: 10
+      Data: 16
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -1029,7 +1042,7 @@ MonoBehaviour:
       Data: 72|BlockType, Assembly-CSharp
     - Name: ID
       Entry: 1
-      Data: dolomite
+      Data: mud
     - Name: TextureGroup
       Entry: 7
       Data: 73|UniformBlockTextureGroup, Assembly-CSharp
@@ -1122,7 +1135,7 @@ MonoBehaviour:
       Data: 78|BlockType, Assembly-CSharp
     - Name: ID
       Entry: 1
-      Data: granite
+      Data: dolomite
     - Name: TextureGroup
       Entry: 7
       Data: 79|UniformBlockTextureGroup, Assembly-CSharp
@@ -1215,7 +1228,7 @@ MonoBehaviour:
       Data: 84|BlockType, Assembly-CSharp
     - Name: ID
       Entry: 1
-      Data: limestone
+      Data: granite
     - Name: TextureGroup
       Entry: 7
       Data: 85|UniformBlockTextureGroup, Assembly-CSharp
@@ -1304,6 +1317,867 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
+      Entry: 7
+      Data: 90|BlockType, Assembly-CSharp
+    - Name: ID
+      Entry: 1
+      Data: limestone
+    - Name: TextureGroup
+      Entry: 7
+      Data: 91|UniformBlockTextureGroup, Assembly-CSharp
+    - Name: Textures
+      Entry: 7
+      Data: 92|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 10
+      Data: 20
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureIndices
+      Entry: 7
+      Data: 93|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 8
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureFeatures
+      Entry: 7
+      Data: 94|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Toughness
+      Entry: 3
+      Data: 1
+    - Name: Colors
+      Entry: 7
+      Data: 95|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Color, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 96|BlockType, Assembly-CSharp
+    - Name: ID
+      Entry: 1
+      Data: planks-birch
+    - Name: TextureGroup
+      Entry: 7
+      Data: 97|UniformBlockTextureGroup, Assembly-CSharp
+    - Name: Textures
+      Entry: 7
+      Data: 98|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 10
+      Data: 21
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureIndices
+      Entry: 7
+      Data: 99|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 9
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureFeatures
+      Entry: 7
+      Data: 100|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Toughness
+      Entry: 3
+      Data: 1
+    - Name: Colors
+      Entry: 7
+      Data: 101|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Color, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 102|BlockType, Assembly-CSharp
+    - Name: ID
+      Entry: 1
+      Data: log-birch
+    - Name: TextureGroup
+      Entry: 7
+      Data: 103|LogBlockTextureGroup, Assembly-CSharp
+    - Name: Textures
+      Entry: 7
+      Data: 104|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 10
+      Data: 22
+    - Name: 
+      Entry: 10
+      Data: 23
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureIndices
+      Entry: 7
+      Data: 105|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 3
+      Data: 10
+    - Name: 
+      Entry: 3
+      Data: 11
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureFeatures
+      Entry: 7
+      Data: 106|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Toughness
+      Entry: 3
+      Data: 1
+    - Name: Colors
+      Entry: 7
+      Data: 107|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Color, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 108|BlockType, Assembly-CSharp
+    - Name: ID
+      Entry: 1
+      Data: planks-oak
+    - Name: TextureGroup
+      Entry: 7
+      Data: 109|UniformBlockTextureGroup, Assembly-CSharp
+    - Name: Textures
+      Entry: 7
+      Data: 110|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 10
+      Data: 24
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureIndices
+      Entry: 7
+      Data: 111|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 12
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureFeatures
+      Entry: 7
+      Data: 112|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Toughness
+      Entry: 3
+      Data: 1
+    - Name: Colors
+      Entry: 7
+      Data: 113|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Color, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 114|BlockType, Assembly-CSharp
+    - Name: ID
+      Entry: 1
+      Data: log-oak
+    - Name: TextureGroup
+      Entry: 7
+      Data: 115|LogBlockTextureGroup, Assembly-CSharp
+    - Name: Textures
+      Entry: 7
+      Data: 116|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 10
+      Data: 25
+    - Name: 
+      Entry: 10
+      Data: 26
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureIndices
+      Entry: 7
+      Data: 117|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 3
+      Data: 13
+    - Name: 
+      Entry: 3
+      Data: 14
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureFeatures
+      Entry: 7
+      Data: 118|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Toughness
+      Entry: 3
+      Data: 1
+    - Name: Colors
+      Entry: 7
+      Data: 119|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Color, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 120|BlockType, Assembly-CSharp
+    - Name: ID
+      Entry: 1
+      Data: planks-ash
+    - Name: TextureGroup
+      Entry: 7
+      Data: 121|UniformBlockTextureGroup, Assembly-CSharp
+    - Name: Textures
+      Entry: 7
+      Data: 122|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 10
+      Data: 27
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureIndices
+      Entry: 7
+      Data: 123|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 15
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureFeatures
+      Entry: 7
+      Data: 124|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Toughness
+      Entry: 3
+      Data: 1
+    - Name: Colors
+      Entry: 7
+      Data: 125|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Color, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 126|BlockType, Assembly-CSharp
+    - Name: ID
+      Entry: 1
+      Data: log-pine
+    - Name: TextureGroup
+      Entry: 7
+      Data: 127|LogBlockTextureGroup, Assembly-CSharp
+    - Name: Textures
+      Entry: 7
+      Data: 128|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 10
+      Data: 28
+    - Name: 
+      Entry: 10
+      Data: 29
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureIndices
+      Entry: 7
+      Data: 129|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 3
+      Data: 16
+    - Name: 
+      Entry: 3
+      Data: 17
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureFeatures
+      Entry: 7
+      Data: 130|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Toughness
+      Entry: 3
+      Data: 1
+    - Name: Colors
+      Entry: 7
+      Data: 131|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Color, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 132|BlockType, Assembly-CSharp
+    - Name: ID
+      Entry: 1
+      Data: planks-pine
+    - Name: TextureGroup
+      Entry: 7
+      Data: 133|UniformBlockTextureGroup, Assembly-CSharp
+    - Name: Textures
+      Entry: 7
+      Data: 134|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 10
+      Data: 30
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureIndices
+      Entry: 7
+      Data: 135|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 18
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureFeatures
+      Entry: 7
+      Data: 136|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Toughness
+      Entry: 3
+      Data: 1
+    - Name: Colors
+      Entry: 7
+      Data: 137|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Color, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 138|BlockType, Assembly-CSharp
+    - Name: ID
+      Entry: 1
+      Data: log-ash
+    - Name: TextureGroup
+      Entry: 7
+      Data: 139|LogBlockTextureGroup, Assembly-CSharp
+    - Name: Textures
+      Entry: 7
+      Data: 140|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 10
+      Data: 31
+    - Name: 
+      Entry: 10
+      Data: 32
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureIndices
+      Entry: 7
+      Data: 141|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 3
+      Data: 19
+    - Name: 
+      Entry: 3
+      Data: 20
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureFeatures
+      Entry: 7
+      Data: 142|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Toughness
+      Entry: 3
+      Data: 1
+    - Name: Colors
+      Entry: 7
+      Data: 143|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Color, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
       Entry: 13
       Data: 
     - Name: 
@@ -1312,3 +2186,4 @@ MonoBehaviour:
   MainTextureAtlasPath: Assets/Art/Textures/Generated/Atlas_Main.asset
   TextureFeatureAtlasPaths:
   - Assets/Art/Textures/Generated/Atlas_Feature_Grass.asset
+  TargetMaterial: {fileID: 2100000, guid: aad09e64c365958438aa1d115c209be7, type: 2}

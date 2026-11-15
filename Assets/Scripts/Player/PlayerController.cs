@@ -307,7 +307,7 @@ public class PlayerController : MonoBehaviour
             //fwd = OrthoNormal.forward;
 
 
-            world.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(id, 0, heldBlockShape, up, fwd));
+            world.AddVoxel(lastHitInfo.voxelPos + lastHitInfo.hitNormal, new Voxel(1));
             Debug.Log($"placed: up={up}, fwd={fwd}");
             //Debug.Log($"placed block, ID={id}, shape={heldBlockShape}");
         }
@@ -358,7 +358,7 @@ public class PlayerController : MonoBehaviour
         DebugOverlay.AddSpacer(1);
         if (lastHitInfo.didHit)
         {
-            DebugOverlay.SetDebugValue("Block ID", lastHitInfo.blockID);
+            DebugOverlay.SetDebugValue("Block ID", lastHitInfo.voxel.BlockType);
             DebugOverlay.SetDebugValue("Voxel World Pos", lastHitInfo.voxelPos);
             DebugOverlay.SetDebugValue("Voxel Local Pos", lastHitInfo.localVoxelPos);
             DebugOverlay.SetDebugValue("Chunk", lastHitInfo.chunkPos);

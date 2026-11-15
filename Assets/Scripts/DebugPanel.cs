@@ -40,7 +40,7 @@ public class DebugPanel : MonoBehaviour
     public static Vector3 PlayerForward;
     public static OrthoNormal PlayerForwardOrtho;
 
-    
+
     public void TogglePanel(InputAction.CallbackContext context)
     {
         if (context.started)
@@ -66,7 +66,7 @@ public class DebugPanel : MonoBehaviour
 
                 if (LastHitInfo.didHit)
                 {
-                    HitBlockIDText.text = LastHitInfo.voxel.BlockID.ToString();
+                    HitBlockIDText.text = LastHitInfo.voxel.BlockType.ToString();
                     HitVoxelShapeText.text = $"({LastHitInfo.voxel.Shape.ToString()})";
                     HitLocalVoxelText.text = LastHitInfo.localVoxelPos.ToString();
                     HitWorldVoxelText.text = LastHitInfo.voxelPos.ToString();
@@ -103,5 +103,5 @@ public class DebugPanel : MonoBehaviour
 
     }
 
-    
+
 }

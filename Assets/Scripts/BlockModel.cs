@@ -20,7 +20,7 @@ public class BlockModel
 
     public BlockModel(Vector3 pos, int firstTriangle, Voxel voxel, Voxel[] neighborVoxels, ref List<Vector3> vertList, ref List<Vector3> normalList, ref List<Vector4> uvList, ref List<Color> colorList, ref List<int> triangleList)
     {
-        if (voxel.BlockID != BlockID.Air)
+        if (!voxel.IsEmpty())
         {
             blockPos = pos;
             vertList.Clear();
@@ -32,159 +32,161 @@ public class BlockModel
             int t = firstTriangle;
             //int[] nb = neighbors;
             Voxel[] nbVoxels = neighborVoxels;
-            int toughness = BlockRegistry.LookupToughness(voxel.BlockID);
+            BlockType blockType = Registry.GetBlockType(voxel);
+            int toughness = blockType.Toughness;
             float damage = (float)voxel.Damage / (float)toughness;
 
             Quaternion q = Quaternion.FromToRotation(Vector3.up, voxel.UpAxis.ToVector());
             q *= Quaternion.FromToRotation(Vector3.forward, voxel.ForwardAxis.ToVector());
             Matrix4x4 rotateMat = Matrix4x4.Rotate(q);
-            switch (voxel.Shape)
-            {
-                case BlockShape.Empty:
-                    break;
+            // switch (voxel.Shape)
+            // {
+            //     case BlockShape.Empty:
+            //         break;
 
-                case BlockShape.Solid:
-                    List<int> textureIndices = BlockRegistry.LookupBlockTextures(voxel.BlockID);
+            //     case BlockShape.Solid:
+            //         List<int> textureIndices = BlockRegistry.LookupBlockTextures(voxel.BlockID);
 
-                    int air_nX = !DoAdjacentIDsMatch(nbVoxels[0].BlockID, voxel.BlockID) ? 1 : 0;
-                    int air_pX = !DoAdjacentIDsMatch(nbVoxels[1].BlockID, voxel.BlockID) ? 1 : 0;
-                    int air_nY = !DoAdjacentIDsMatch(nbVoxels[2].BlockID, voxel.BlockID) ? 1 : 0;
-                    int air_pY = !DoAdjacentIDsMatch(nbVoxels[3].BlockID, voxel.BlockID) ? 1 : 0;
-                    int air_nZ = !DoAdjacentIDsMatch(nbVoxels[4].BlockID, voxel.BlockID) ? 1 : 0;
-                    int air_pZ = !DoAdjacentIDsMatch(nbVoxels[5].BlockID, voxel.BlockID) ? 1 : 0;
-                    for (int n = 0; n < 6; n++) // iterate per face
-                    {
-                        Direction dir = (Direction)n;
+            //         int air_nX = !DoAdjacentIDsMatch(nbVoxels[0].BlockType, voxel.BlockType) ? 1 : 0;
+            //         int air_pX = !DoAdjacentIDsMatch(nbVoxels[1].BlockType, voxel.BlockType) ? 1 : 0;
+            //         int air_nY = !DoAdjacentIDsMatch(nbVoxels[2].BlockType, voxel.BlockType) ? 1 : 0;
+            //         int air_pY = !DoAdjacentIDsMatch(nbVoxels[3].BlockType, voxel.BlockType) ? 1 : 0;
+            //         int air_nZ = !DoAdjacentIDsMatch(nbVoxels[4].BlockType, voxel.BlockType) ? 1 : 0;
+            //         int air_pZ = !DoAdjacentIDsMatch(nbVoxels[5].BlockType, voxel.BlockType) ? 1 : 0;
+            //         for (int n = 0; n < 6; n++) // iterate per face
+            //         {
+            //             Direction dir = (Direction)n;
 
-                        //if ((BlockShape)nb[n] != BlockShape.Solid)
-                        if (!IsNeighborFaceSolid(dir, nbVoxels[n]))
-                        {
+            //             //if ((BlockShape)nb[n] != BlockShape.Solid)
+            //             if (!IsNeighborFaceSolid(dir, nbVoxels[n]))
+            //             {
 
-                            // Vertex Position
-                            foreach (Vector3 v in GetFaceVerts(VectorDirections[n]))
-                            {
-                                Vector3 newV = v;
-                                newV = rotateMat * v;
-                                vertList.Add(newV * 0.5f + blockPos);
-                            }
-
-
-                            // Normal
-                            Vector3 normal = VectorDirections[n];
-
-                            for (int i = 0; i < 4; i++)
-                                normalList.Add(rotateMat * normal);
-
-                            // UV
-                            foreach (Vector2 uv in GetFaceUVs(VectorDirections[n]))
-                                uvList.Add(new Vector4(uv.x, uv.y, 4294967296f, 0.75f));
-
-                            // Vertex Color
-                            int borderIndex = 0;
-                            switch (n)
-                            {
-                                case 0: // -X
-                                    borderIndex += 1 * air_pY;
-                                    borderIndex += 2 * air_pZ;
-                                    borderIndex += 4 * air_nY;
-                                    borderIndex += 8 * air_nZ;
-                                    break;
-                                case 1: // +X
-                                    borderIndex += 1 * air_pY;
-                                    borderIndex += 2 * air_nZ;
-                                    borderIndex += 4 * air_nY;
-                                    borderIndex += 8 * air_pZ;
-                                    break;
-                                case 2: // -Y
-                                    borderIndex += 1 * air_nX;
-                                    borderIndex += 2 * air_pZ;
-                                    borderIndex += 4 * air_pX;
-                                    borderIndex += 8 * air_nZ;
-                                    break;
-                                case 3: // +Y
-                                    borderIndex += 1 * air_nX;
-                                    borderIndex += 2 * air_nZ;
-                                    borderIndex += 4 * air_pX;
-                                    borderIndex += 8 * air_pZ;
-                                    break;
-                                case 4: // -Z
-                                    borderIndex += 1 * air_pY;
-                                    borderIndex += 2 * air_nX;
-                                    borderIndex += 4 * air_nY;
-                                    borderIndex += 8 * air_pX;
-                                    break;
-                                case 5: // +Z
-                                    borderIndex += 1 * air_pY;
-                                    borderIndex += 2 * air_pX;
-                                    borderIndex += 4 * air_nY;
-                                    borderIndex += 8 * air_nX;
-                                    break;
-                            }
+            //                 // Vertex Position
+            //                 foreach (Vector3 v in GetFaceVerts(VectorDirections[n]))
+            //                 {
+            //                     Vector3 newV = v;
+            //                     newV = rotateMat * v;
+            //                     vertList.Add(newV * 0.5f + blockPos);
+            //                 }
 
 
-                            int edgeIndex = 0;
-                            if (GetVoxelLeft(neighborVoxels, dir).BlockID == BlockID.StoneBricks)
-                            {
-                                edgeIndex = 1;
-                            } else if (GetVoxelRight(neighborVoxels, dir).BlockID == BlockID.StoneBricks)
-                            {
-                                edgeIndex = 2;
-                            }
+            //                 // Normal
+            //                 Vector3 normal = VectorDirections[n];
 
-                            int textureIndex = textureIndices[n];
-                            Color c = new Color(textureIndex, edgeIndex, damage, borderIndex);
-                            if (voxel.BlockID == BlockID.Color_Block)
-                            {
-                                c = voxel.VertexColor;
-                            }
-                            colorList.AddRange(new Color[4] { c, c, c, c });
+            //                 for (int i = 0; i < 4; i++)
+            //                     normalList.Add(rotateMat * normal);
+
+            //                 // UV
+            //                 foreach (Vector2 uv in GetFaceUVs(VectorDirections[n]))
+            //                     uvList.Add(new Vector4(uv.x, uv.y, 4294967296f, 0.75f));
+
+            //                 // Vertex Color
+            //                 int borderIndex = 0;
+            //                 switch (n)
+            //                 {
+            //                     case 0: // -X
+            //                         borderIndex += 1 * air_pY;
+            //                         borderIndex += 2 * air_pZ;
+            //                         borderIndex += 4 * air_nY;
+            //                         borderIndex += 8 * air_nZ;
+            //                         break;
+            //                     case 1: // +X
+            //                         borderIndex += 1 * air_pY;
+            //                         borderIndex += 2 * air_nZ;
+            //                         borderIndex += 4 * air_nY;
+            //                         borderIndex += 8 * air_pZ;
+            //                         break;
+            //                     case 2: // -Y
+            //                         borderIndex += 1 * air_nX;
+            //                         borderIndex += 2 * air_pZ;
+            //                         borderIndex += 4 * air_pX;
+            //                         borderIndex += 8 * air_nZ;
+            //                         break;
+            //                     case 3: // +Y
+            //                         borderIndex += 1 * air_nX;
+            //                         borderIndex += 2 * air_nZ;
+            //                         borderIndex += 4 * air_pX;
+            //                         borderIndex += 8 * air_pZ;
+            //                         break;
+            //                     case 4: // -Z
+            //                         borderIndex += 1 * air_pY;
+            //                         borderIndex += 2 * air_nX;
+            //                         borderIndex += 4 * air_nY;
+            //                         borderIndex += 8 * air_pX;
+            //                         break;
+            //                     case 5: // +Z
+            //                         borderIndex += 1 * air_pY;
+            //                         borderIndex += 2 * air_pX;
+            //                         borderIndex += 4 * air_nY;
+            //                         borderIndex += 8 * air_nX;
+            //                         break;
+            //                 }
 
 
-                            // Triangles
-                            for (int i = 0; i < 6; i++)
-                                triangleList.Add(t + Triangles[i]);
-                            t += 4;
-                        }
-                    }
-                    break;
+            //                 int edgeIndex = 0;
+            //                 if (GetVoxelLeft(neighborVoxels, dir).BlockID == BlockID.StoneBricks)
+            //                 {
+            //                     edgeIndex = 1;
+            //                 }
+            //                 else if (GetVoxelRight(neighborVoxels, dir).BlockID == BlockID.StoneBricks)
+            //                 {
+            //                     edgeIndex = 2;
+            //                 }
 
-                case BlockShape.HalfSlab:
-                    for (int n = 0; n < 6; n++)
-                    {
-                        //if ((BlockShape)neighbors[n] != BlockShape.Solid || n==3)
-                        if (!IsNeighborFaceSolid(OrthoDirections[n], nbVoxels[n]) || !IsFaceSolid(OrthoDirections[n], voxel))
-                        {
-                            foreach (Vector3 v in GetFaceVerts(VectorDirections[n]))
-                            {
-                                Vector3 slabV = v;
-                                slabV.y = Mathf.Clamp(v.y, -1f, 0f);
-                                slabV = rotateMat * slabV;
-                                vertList.Add(slabV * 0.5f + blockPos);
-                            }
+            //                 int textureIndex = textureIndices[n];
+            //                 Color c = new Color(textureIndex, edgeIndex, damage, borderIndex);
+            //                 if (voxel.BlockID == BlockID.Color_Block)
+            //                 {
+            //                     c = voxel.VertexColor;
+            //                 }
+            //                 colorList.AddRange(new Color[4] { c, c, c, c });
 
-                            Vector3 normal = VectorDirections[n];
-                            for (int i = 0; i < 4; i++)
-                                normalList.Add(rotateMat * normal);
 
-                            foreach (Vector2 uv in GetFaceUVs(VectorDirections[n]))
-                            {
-                                Vector2 slabUV = uv;
-                                if (n != 2 && n != 3)
-                                    slabUV.y = Mathf.Clamp(slabUV.y, 0.5f, 1f);
-                                uvList.Add(slabUV);
-                            }
+            //                 // Triangles
+            //                 for (int i = 0; i < 6; i++)
+            //                     triangleList.Add(t + Triangles[i]);
+            //                 t += 4;
+            //             }
+            //         }
+            //         break;
 
-                            Color c = new Color((int)voxel.BlockID, n, (float)voxel.Damage / (float)voxel.Toughness);
-                            colorList.AddRange(new Color[4] { c, c, c, c });
+            //     case BlockShape.HalfSlab:
+            //         for (int n = 0; n < 6; n++)
+            //         {
+            //             //if ((BlockShape)neighbors[n] != BlockShape.Solid || n==3)
+            //             if (!IsNeighborFaceSolid(OrthoDirections[n], nbVoxels[n]) || !IsFaceSolid(OrthoDirections[n], voxel))
+            //             {
+            //                 foreach (Vector3 v in GetFaceVerts(VectorDirections[n]))
+            //                 {
+            //                     Vector3 slabV = v;
+            //                     slabV.y = Mathf.Clamp(v.y, -1f, 0f);
+            //                     slabV = rotateMat * slabV;
+            //                     vertList.Add(slabV * 0.5f + blockPos);
+            //                 }
 
-                            for (int i = 0; i < 6; i++)
-                                triangleList.Add(t + Triangles[i]);
+            //                 Vector3 normal = VectorDirections[n];
+            //                 for (int i = 0; i < 4; i++)
+            //                     normalList.Add(rotateMat * normal);
 
-                            t += 4;
-                        }
-                    }
-                    break;
-            }
+            //                 foreach (Vector2 uv in GetFaceUVs(VectorDirections[n]))
+            //                 {
+            //                     Vector2 slabUV = uv;
+            //                     if (n != 2 && n != 3)
+            //                         slabUV.y = Mathf.Clamp(slabUV.y, 0.5f, 1f);
+            //                     uvList.Add(slabUV);
+            //                 }
+
+            //                 Color c = new Color((int)voxel.BlockID, n, (float)voxel.Damage / (float)voxel.Toughness);
+            //                 colorList.AddRange(new Color[4] { c, c, c, c });
+
+            //                 for (int i = 0; i < 6; i++)
+            //                     triangleList.Add(t + Triangles[i]);
+
+            //                 t += 4;
+            //             }
+            //         }
+            //         break;
+            // }
 
             lastT = t;
 
@@ -195,11 +197,12 @@ public class BlockModel
             triangles = triangleList.ToArray();
         }
     }
-    
-    
+
+
     public static Vector3[] GetVertices(BlockShape shape)
     {
-        if (shape == BlockShape.Solid) { 
+        if (shape == BlockShape.Solid)
+        {
             return new Vector3[8] {
                 new Vector3(-0.5f, -0.5f, -0.5f),
                 new Vector3(-0.5f, -0.5f,  0.5f),
@@ -294,7 +297,8 @@ public class BlockModel
 
         return false;
     }
-    public bool DoAdjacentIDsMatch(BlockID id1, BlockID id2) {
+    public bool DoAdjacentIDsMatch(BlockID id1, BlockID id2)
+    {
         if (id1 != BlockID.Air) return true; // TEMP
 
         if (id1 == BlockID.Dirt)
@@ -305,7 +309,7 @@ public class BlockModel
             return id2 == BlockID.Dirt || id2 == BlockID.Leaves || id2 == BlockID.Log;
         else if (id1 != BlockID.Air)
             return true;
-            //return true;
+        //return true;
         return id1 == id2;
     }
 
@@ -331,7 +335,7 @@ public class BlockModel
         {
             return neighbors[1]; // +X neighbor is left
         }
-        return new Voxel(BlockID.Invalid);
+        return new Voxel(-1);
     }
     public Voxel GetVoxelRight(Voxel[] neighbors, Vector3 faceNormal)
     {
@@ -355,7 +359,7 @@ public class BlockModel
         {
             return neighbors[0]; // -X neighbor is right
         }
-        return new Voxel(BlockID.Invalid);
+        return new Voxel(-1);
     }
     public Voxel GetVoxelUp(Voxel[] neighbors, Vector3 faceNormal)
     {
@@ -372,7 +376,7 @@ public class BlockModel
         {
             return neighbors[4]; // -Z neighbor is up
         }
-        return new Voxel(BlockID.Invalid);
+        return new Voxel(-1);
     }
     public Voxel GetVoxelDown(Voxel[] neighbors, Vector3 faceNormal)
     {
@@ -389,37 +393,37 @@ public class BlockModel
         {
             return neighbors[5]; // +Z neighbor is down
         }
-        return new Voxel(BlockID.Invalid);
+        return new Voxel(-1);
     }
 
     public Voxel GetVoxelLeft(Voxel[] neighbors, Direction dir)
     {
-        if (dir == Direction.NegativeX) 
+        if (dir == Direction.NegativeX)
             return neighbors[(int)Direction.PositiveZ];
         if (dir == Direction.PositiveX)
-            return neighbors[(int)Direction.NegativeZ]; 
-        if (dir == Direction.NegativeZ) 
-            return neighbors[(int)Direction.NegativeX]; 
-        if (dir == Direction.PositiveZ) 
-            return neighbors[(int)Direction.PositiveX]; 
-        if (dir == Direction.NegativeY || dir == Direction.PositiveY) 
-            return neighbors[(int)Direction.PositiveX]; 
+            return neighbors[(int)Direction.NegativeZ];
+        if (dir == Direction.NegativeZ)
+            return neighbors[(int)Direction.NegativeX];
+        if (dir == Direction.PositiveZ)
+            return neighbors[(int)Direction.PositiveX];
+        if (dir == Direction.NegativeY || dir == Direction.PositiveY)
+            return neighbors[(int)Direction.PositiveX];
 
-        return new Voxel(BlockID.Invalid);
+        return new Voxel(-1);
     }
     public Voxel GetVoxelRight(Voxel[] neighbors, Direction dir)
     {
-        if (dir == Direction.NegativeX) 
-            return neighbors[(int)Direction.NegativeZ]; 
-        if (dir == Direction.PositiveX) 
-            return neighbors[(int)Direction.PositiveZ]; 
-        if (dir == Direction.NegativeZ) 
-            return neighbors[(int)Direction.PositiveX]; 
+        if (dir == Direction.NegativeX)
+            return neighbors[(int)Direction.NegativeZ];
+        if (dir == Direction.PositiveX)
+            return neighbors[(int)Direction.PositiveZ];
+        if (dir == Direction.NegativeZ)
+            return neighbors[(int)Direction.PositiveX];
         if (dir == Direction.PositiveZ)
-            return neighbors[(int)Direction.PositiveX]; 
-        if (dir == Direction.NegativeY || dir == Direction.PositiveY) 
-            return neighbors[(int)Direction.NegativeX]; 
-        return new Voxel(BlockID.Invalid);
+            return neighbors[(int)Direction.PositiveX];
+        if (dir == Direction.NegativeY || dir == Direction.PositiveY)
+            return neighbors[(int)Direction.NegativeX];
+        return new Voxel(-1);
     }
     public Voxel GetVoxelUp(Voxel[] neighbors, Direction dir)
     {
@@ -427,20 +431,20 @@ public class BlockModel
         if (dir == Direction.NegativeX || dir == Direction.PositiveX || dir == Direction.NegativeZ || dir == Direction.PositiveZ)
             return neighbors[(int)Direction.PositiveY];
         if (dir == Direction.NegativeY)
-            return neighbors[(int)Direction.PositiveZ]; 
-        if (dir == Direction.PositiveY) 
+            return neighbors[(int)Direction.PositiveZ];
+        if (dir == Direction.PositiveY)
             return neighbors[(int)Direction.NegativeZ];
-        return new Voxel(BlockID.Invalid);
+        return new Voxel(-1);
     }
     public Voxel GetVoxelDown(Voxel[] neighbors, Direction dir)
     {
 
         if (dir == Direction.NegativeX || dir == Direction.PositiveX || dir == Direction.NegativeZ || dir == Direction.PositiveZ)
-            return neighbors[(int)Direction.NegativeY]; 
-        if (dir == Direction.NegativeY) 
+            return neighbors[(int)Direction.NegativeY];
+        if (dir == Direction.NegativeY)
             return neighbors[(int)Direction.NegativeZ];
-        if (dir == Direction.PositiveY) 
-            return neighbors[(int)Direction.PositiveZ]; 
-        return new Voxel(BlockID.Invalid);
+        if (dir == Direction.PositiveY)
+            return neighbors[(int)Direction.PositiveZ];
+        return new Voxel(-1);
     }
 }

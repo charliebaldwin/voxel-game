@@ -12,6 +12,10 @@ public abstract class BlockTextureGroup
     public abstract int GetIndexPY();
     public abstract int GetIndexNZ();
     public abstract int GetIndexPZ();
+    public int[] GetIndices()
+    {
+        return new int[6] { GetIndexNX(), GetIndexPX(), GetIndexNY(), GetIndexPY(), GetIndexNZ(), GetIndexPZ() };
+    }
 
 
 

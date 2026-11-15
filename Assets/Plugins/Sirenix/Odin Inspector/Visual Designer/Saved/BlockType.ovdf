@@ -1,0 +1,27 @@
+OVDF v1.1
+BlockType, Assembly-CSharp
+
+# $5K6QWQgAddeBDPs3taQ2Ud
+Position: $root:1
++ [Sirenix.OdinInspector.VerticalGroupAttribute]
+	GroupName = "_Textures"
+
+# $BY5JsCzRVncZk5cy8sHNs6
+Position: $root:2
++ [Sirenix.OdinInspector.VerticalGroupAttribute]
+	GroupName = "Details"
+
+# Textures
+Position: $5K6QWQgAddeBDPs3taQ2Ud:0
+
+# TextureFeatures
+Position: $5K6QWQgAddeBDPs3taQ2Ud:1
+
+# Toughness
+Position: $BY5JsCzRVncZk5cy8sHNs6:0
+
+# Colors
+Position: $BY5JsCzRVncZk5cy8sHNs6:1
+
+# TextureGroup
+Position: $5K6QWQgAddeBDPs3taQ2Ud:0

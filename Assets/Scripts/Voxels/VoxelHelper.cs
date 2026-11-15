@@ -63,7 +63,7 @@ public static class VoxelHelper
     public static byte NormalToOrientation(Vector3Int normal)
     {
         if (normal == Vector3Int.up)
-        return 0;
+            return 0;
         else if (normal == Vector3Int.down)
             return 1;
         else if (normal == Vector3Int.left)
@@ -95,7 +95,7 @@ public static class VoxelHelper
 
     public static Vector3Int CheckPosOnEdge(Vector3Int pos, Vector3Int size)
     {
-        Vector3Int edges = new Vector3Int(0,0,0);
+        Vector3Int edges = new Vector3Int(0, 0, 0);
         if (pos.x <= 0)
             edges.x = -1;
         else if (pos.x >= size.x - 1)
@@ -197,7 +197,7 @@ public static class VoxelHelper
                 for (int z = 0; z < size.z; z++)
                 {
                     int id = flat[x + size.x * y + size.x * size.y * z];
-                    result[x, y, z] = new Voxel((BlockID)id, 0, 0);
+                    result[x, y, z] = new Voxel(id);
                 }
             }
         }

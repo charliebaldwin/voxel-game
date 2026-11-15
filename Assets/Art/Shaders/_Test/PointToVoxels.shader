@@ -7,10 +7,12 @@ Shader "Test/PointToVoxels"
 		_TextureAtlas("Texture Atlas", 2D) = "white" {}
 		_EdgeNormalAtlas("Edge Normal Atlas", 2D) = "white" {}
 		_DamageAtlas("Damage Texture Atlas", 2D) = "white" {}
+		_FeatureAtlas0("Grass Atlas",2D) = "white" {}
 		_DebugTexture("Face Debug Texture", 2D) = "white" {}
 		_Rows("Rows", Int) = 1
 		_Cols("Columns", Int) = 8
 		_AtlasIndex("Atlas Index", Int) = 4
+		_UseAO("Use AO", Int) = 1 
 	}
 
 	SubShader
@@ -51,6 +53,8 @@ Shader "Test/PointToVoxels"
 			SAMPLER(sampler_EdgeNormalAtlas);
 			TEXTURE2D(_DamageAtlas);
 			SAMPLER(sampler_DamageAtlas);
+			TEXTURE2D(_FeatureAtlas0);
+			SAMPLER(sampler_FeatureAtlas0);
 			TEXTURE2D(_DebugTexture);
 			SAMPLER(sampler_DebugTexture);
 
@@ -58,25 +62,14 @@ Shader "Test/PointToVoxels"
 
 
 			// TYPES
-			struct SourceVoxel
-			{
-				float4 positionOS 			: POSITION;
-				float4 uv0 				: TEXCOORD0;
-				float4 uv1 				: TEXCOORD1;
-				float4 uv2 				: TEXCOORD2;
-			};
+
 			struct Voxel
 			{
 				float4 	positionOS 		: POSITION;
-				// float4 	uv0 			: TEXCOORD0;
-				// float4 	uv1 			: TEXCOORD1;
-				// float4 	uv2 			: TEXCOORD2;
-				uint 	texIndex0		: TEXINDEX0;
-				uint 	texIndex1		: TEXINDEX1;	
-				uint 	texIndex2		: TEXINDEX2;
-				uint 	texIndex3		: TEXINDEX3;
-				uint 	texIndex4		: TEXINDEX4;
-				uint 	texIndex5		: TEXINDEX5;
+				uint texIndex0:TEXINDEX0; uint texIndex1:TEXINDEX1; uint texIndex2:TEXINDEX2; uint texIndex3:TEXINDEX3; uint texIndex4:TEXINDEX4; uint texIndex5:TEXINDEX5;
+				int feature0Index0:FEAT0INDEX0; int feature0Index1:FEAT0INDEX1; int feature0Index2:FEAT0INDEX2; int feature0Index3:FEAT0INDEX3; int feature0Index4:FEAT0INDEX4;int feature0Index5:FEAT0INDEX5;
+
+				//uint 	atlasIndices[6] : ATLASINDICES;
 				uint    solidFaces		: SOLIDFACES;
 				uint	damage 			: DAMAGE;
 				uint	solidNeighbors	: SOLIDNEIGHBORS;
@@ -90,6 +83,7 @@ Shader "Test/PointToVoxels"
 				float2 baseUV 			: TEXCOORD0;
 				float2 normalUV 		: TEXCOORD1;
 				float2 damageUV 		: TEXCOORD2;
+				float2 grassUV			: TEXCOORD3;
 				float  ao 				: AMBIENTOCCLUSION;
 				float4 color 			: COLOR;
 				float3x3 tbn 			: TNBMATRIX;
@@ -102,52 +96,15 @@ Shader "Test/PointToVoxels"
 				int _Rows;
 				int _Cols;
 				int _AtlasIndex;
+				int _UseAO;
 			CBUFFER_END
 			
 			StructuredBuffer<Voxel> _VoxelBuffer;
 
 			// VOXEL/POINT SHADER
-			Voxel vert(SourceVoxel IN, uint id : SV_VertexID)
+			Voxel vert(uint id : SV_VertexID)
 			{
-				Voxel OUT;
-
-				Voxel v = _VoxelBuffer[id];
-
-				// OUT.positionOS = IN.positionOS;
-				// OUT.texIndex0 = (uint)IN.uv0.x;
-				// OUT.texIndex1 = (uint)IN.uv0.y;
-				// OUT.texIndex2 = (uint)IN.uv0.z;
-				// OUT.texIndex3 = (uint)IN.uv0.w;
-				// OUT.texIndex4 = (uint)IN.uv1.x;
-				// OUT.texIndex5 = (uint)IN.uv1.y;
-				// OUT.solidFaces =(uint)IN.uv2.x;
-				// OUT.damage = (uint)IN.uv2.y;
-				// OUT.solidNeighbors = (uint)IN.uv2.z + ((uint)IN.uv2.w << 14);
-
-// alternative way to get voxels from buffer instead of input vertex:
-				//OUT.positionOS = float4(_VoxelBuffer[id].positionOS.xyz, 0) * 1000;
-				// OUT.texIndex0 = (uint)v.uv0.x;
-				// OUT.texIndex1 = (uint)v.uv0.y;
-				// OUT.texIndex2 = (uint)v.uv0.z;
-				// OUT.texIndex3 = (uint)v.uv0.w;
-				// OUT.texIndex4 = (uint)v.uv1.x;
-				// OUT.texIndex5 = (uint)v.uv1.y;
-				// OUT.solidFaces = (uint)_VoxelBuffer[id].uv2.x;
-				// OUT.damage = (uint)_VoxelBuffer[id].uv2.y;
-				// OUT.solidNeighbors = (uint)_VoxelBuffer[id].uv2.z + ((uint)_VoxelBuffer[id].uv2.w << 14);
-				
-				OUT.positionOS = _VoxelBuffer[id].positionOS;
-				OUT.texIndex0 = v.texIndex0;
-				OUT.texIndex1 = v.texIndex1;
-				OUT.texIndex2 = v.texIndex2;
-				OUT.texIndex3 = v.texIndex3;
-				OUT.texIndex4 = v.texIndex4;
-				OUT.texIndex5 = v.texIndex5;
-				OUT.solidFaces = v.solidFaces;
-				OUT.damage = v.damage;
-				OUT.solidNeighbors = v.solidNeighbors;
-
-				return OUT;
+				return _VoxelBuffer[id];
 			}
 
 
@@ -161,6 +118,7 @@ Shader "Test/PointToVoxels"
 				float4 color = float4(0,0,0,1);
 
 				int texArray[6] = {IN[0].texIndex0, IN[0].texIndex1, IN[0].texIndex2, IN[0].texIndex3, IN[0].texIndex4, IN[0].texIndex5};
+				int grassIndices[6] = {IN[0].feature0Index0, IN[0].feature0Index1, IN[0].feature0Index2, IN[0].feature0Index3, IN[0].feature0Index4, IN[0].feature0Index5};
 				uint solidFaces = IN[0].solidFaces;
 				uint damage = IN[0].damage;
 				
@@ -188,6 +146,7 @@ Shader "Test/PointToVoxels"
 						float3 center = posOS + norm * _Size; // - float3(0,0,0);
 
 						int tex = texArray[f];
+						int grassIndex = grassIndices[f];
 						int edgeTile = getEdgeTile(f, solidFaces);			
 
 						// Skip faces pointing away from the camera -> "up to 6" faces
@@ -217,6 +176,12 @@ Shader "Test/PointToVoxels"
 							o.baseUV =		flipbook(UVs[f][i], _Cols, _Rows, tex, float2(0,0));
 							o.normalUV = 	flipbook(UVs[f][i], 4, 4, edgeTile, float2(0,1));
 							o.damageUV = 	flipbook(UVs[f][i], 6, 1, damage, float2(0,0));
+							if (grassIndex != -1) {
+								o.grassUV = flipbook(UVs[f][i], 4, 2, grassIndex, float2(0,0));
+							}
+							else {
+								o.grassUV = float2(-1,-1);
+							}
 							//o.ao = sumNeighbors;// / 27.0;
 							o.color = float4((offset[i]+1)/2 , 1);
 							o.color *= float4(1,0,0,1);
@@ -256,12 +221,18 @@ Shader "Test/PointToVoxels"
 				light *= shadow;
 
 				half4 c = SAMPLE_TEXTURE2D(_TextureAtlas, sampler_TextureAtlas, IN.baseUV);
+				if (IN.grassUV.x >= 0 && IN.grassUV.y >= 0) {
+					half4 grass = SAMPLE_TEXTURE2D(_FeatureAtlas0, sampler_FeatureAtlas0, IN.grassUV);
+					grass *= grass.a;
+					c = lerp(c, grass, grass.a);
+				}
 				half alpha = c.a;
 				//c = float4(abs(IN.normalWS), 1);
 				c += c * .7 * SAMPLE_TEXTURE2D(_EdgeNormalAtlas, sampler_EdgeNormalAtlas, IN.normalUV);
 
+
 				half ao = 1-(IN.ao*1);
-				c *= ao;
+				c *= lerp(1, ao, clamp(_UseAO,0,1));
 				//if (IN.color.r > 0)
 				//c = IN.color;
 				//c= lerp(c, half4(0,0,0,0), pow(IN.ao,2));

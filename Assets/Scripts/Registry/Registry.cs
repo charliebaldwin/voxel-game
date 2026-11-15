@@ -11,7 +11,7 @@ using VFolders.Libs;
 
 public class Registry : SerializedScriptableObject
 {
-    public const int ATLAS_COLUMNS = 8;
+    public const int ATLAS_COLUMNS = 4;
     public const int CELL_SIZE = 16;
 
     [SerializeField] private List<ItemType> Items;
@@ -19,6 +19,7 @@ public class Registry : SerializedScriptableObject
 
     private static Dictionary<string, BlockType> m_blocksByIDString;
     private static BlockType[] m_blocksByIndex;
+    private static string[] m_blockIDs;
 
 
     public string MainTextureAtlasPath = "Assets/Textures/Generated/Atlas_Main.asset";
@@ -26,32 +27,42 @@ public class Registry : SerializedScriptableObject
     {
         "Assets/Textures/Generated/Atlas_Feature_Grass.asset"
     };
-
+    public Material TargetMaterial;
 
     public static Registry Instance;
+    //[Button]
     private void SetInstance()
     {
         if (Instance != null && Instance != this) Destroy(this);
         else Instance = this;
     }
+    private void OnValidate()
+    {
+        RegisterBlocks();
+    }
+
 
 
     [Button]
     private void RegisterBlocks()
     {
-        List<Texture2D> mainTextures = GatherTextures();
-        GenerateTexture(mainTextures, MainTextureAtlasPath);
+        SetInstance();
 
+        List<Texture2D> mainTextures = GatherTextures();
+        Texture2D mainTex = GenerateTexture(mainTextures, MainTextureAtlasPath);
+        TargetMaterial.SetTexture("_TextureAtlas", mainTex);
         for (int f = 0; f < TextureFeatureAtlasPaths.Count; f++)
         {
             List<Texture2D> featureTextures = GatherFeatureTextures(f);
-            GenerateTexture(featureTextures, TextureFeatureAtlasPaths[f]);
+            Texture2D featureTex = GenerateTexture(featureTextures, TextureFeatureAtlasPaths[f]);
+            TargetMaterial.SetTexture($"_FeatureAtlas{f}", featureTex);
         }
 
 
 
         m_blocksByIDString = new Dictionary<string, BlockType>();
         m_blocksByIndex = new BlockType[Blocks.Count];
+        m_blockIDs = new string[Blocks.Count];
 
         int i = 0;
         foreach (BlockType b in Blocks)
@@ -67,6 +78,7 @@ public class Registry : SerializedScriptableObject
                 {
                     m_blocksByIDString.Add(b.ID, b);
                     m_blocksByIndex[i] = b;
+                    m_blockIDs[i] = b.ID;
                 }
                 i++;
             }
@@ -117,11 +129,12 @@ public class Registry : SerializedScriptableObject
         return result;
     }
 
-    private void GenerateTexture(List<Texture2D> textures, string outputPath)
+    private Texture2D GenerateTexture(List<Texture2D> textures, string outputPath)
     {
         int cols = Math.Min(ATLAS_COLUMNS, textures.Count);
-        int rows = textures.Count / cols + 1;
-        Texture2D atlas = new Texture2D(CELL_SIZE * cols, CELL_SIZE * rows, TextureFormat.RGBA32, false);
+        int rows = textures.Count / cols; //+ 1;
+
+        Texture2D atlas = new Texture2D(CELL_SIZE * cols, CELL_SIZE * rows, TextureFormat.RGBA32, true);
         atlas.filterMode = FilterMode.Point;
         atlas.FillWithColor(Color.clear);
 
@@ -145,8 +158,31 @@ public class Registry : SerializedScriptableObject
                 row++;
             }
         }
+        atlas.Apply(updateMipmaps: true);
         AssetDatabase.CreateAsset(atlas, outputPath);
         AssetDatabase.SaveAssets();
+        return atlas;
+    }
+
+    public static int GetVoxelID(string type)
+    {
+        if (m_blocksByIDString.ContainsKey(type))
+        {
+            return Array.IndexOf(m_blockIDs, type);
+        }
+        else
+        {
+            Debug.LogError($"REGISTRY ERROR: tried looking up block type ({type}), which was not present in list!");
+            return -1;
+        }
+    }
+    public static BlockType GetBlockType(Voxel vox)
+    {
+        if (m_blocksByIndex.Length > vox.BlockType)
+        {
+            return m_blocksByIndex[vox.BlockType];
+        }
+        else return null;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

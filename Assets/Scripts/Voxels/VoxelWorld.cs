@@ -156,6 +156,7 @@ public partial class VoxelWorld : MonoBehaviour
 					{
 						//Voxel v = LookupVoxelWorld(new Vector3Int(x + pos.x * ChunkSize.x, y, z + pos.z * ChunkSize.z));
 						Voxel v = Voxels[x + chunkPos.x * ChunkSize.x, y + chunkPos.y * ChunkSize.y, z + chunkPos.z * ChunkSize.z];
+						//if (v == null) v = new Voxel("air");
 						chunkData[x, y, z] = v;
 					}
 				}
@@ -431,71 +432,7 @@ public partial class VoxelWorld : MonoBehaviour
 		}
 	}
 
-	private void GenerateVoxelsCPU(Vector3Int Size3D)
-	{
-		marker.Begin();
 
-		Voxels = new Voxel[Size3D.x, Size3D.y, Size3D.z];
-		for (int x = 0; x < Size3D.x; x++)
-		{
-			for (int z = 0; z < Size3D.z; z++)
-			{
-				//float h = Mathf.Cos(z * .1f) * Mathf.Sin(x * 0.1f) * 4f + 8f;
-
-				float noise = Perlin.Fbm(x * GenerationSettings.NoiseScale, z * GenerationSettings.NoiseScale, GenerationSettings.NoiseOctaves);
-				float noise2 = Perlin.Fbm(x * GenerationSettings.NoiseScale * 0.2f, z * GenerationSettings.NoiseScale * 0.2f, GenerationSettings.NoiseOctaves);
-				float h = noise * GenerationSettings.HeightRange + GenerationSettings.HeightOffset;
-				h = h + (noise2 * GenerationSettings.HeightRange * 4);
-
-				for (int y = 0; y < Size3D.y; y++)
-				{
-					if (y < h)
-						Voxels[x, y, z] = new Voxel(BlockID.Stone, 0, orientation, BlockShape.Solid);
-					else
-						Voxels[x, y, z] = new Voxel(BlockID.Air, 0, 0, BlockShape.Empty);
-				}
-			}
-		}
-
-		Loop3D(GenerateGrassAction);
-
-		Vector3Int[] sphere = GetCoordinateSphere(new Vector3Int(20, 12, 20), 10f);
-		foreach (Vector3Int p in sphere)
-		{
-			Voxels[p.x, p.y, p.z] = new Voxel(BlockID.Stone, 0, 0, BlockShape.Solid);
-			Voxels[p.x, p.y, p.z].Toughness = 24;
-		}
-
-		LoadStructure(tempStructure);
-
-		marker.End();
-	}
-
-	private void GenerateGrassAction(int x, int y, int z)
-	{
-		if (Voxels[x, y, z].BlockID == BlockID.Stone && y < ChunkSize.y - 1)
-		{
-			if (Voxels[x, y + 1, z].BlockID == BlockID.Air)
-			{
-				Voxels[x, y, z].BlockID = BlockID.Grass;
-			}
-		}
-		if (Voxels[x, y, z].BlockID == BlockID.Stone && y < ChunkSize.y - 2)
-		{
-			if (Voxels[x, y + 2, z].BlockID == BlockID.Air)
-			{
-				Voxels[x, y, z].BlockID = BlockID.Dirt;
-			}
-		}
-		if (Voxels[x, y, z].BlockID == BlockID.Stone && y < ChunkSize.y - 3)
-		{
-			if (Voxels[x, y + 3, z].BlockID == BlockID.Air)
-			{
-				Voxels[x, y, z].BlockID = BlockID.Dirt;
-			}
-		}
-
-	}
 
 	private void LoadStructure(VoxelStructure structure)
 	{
@@ -572,7 +509,7 @@ public partial class VoxelWorld : MonoBehaviour
 				return chunk.GetVoxel(worldPos);
 			}
 		}
-		return new Voxel(BlockID.Invalid, 0, 0);
+		return new Voxel(-1);
 	}
 	public void DamageVoxel(Vector3 worldPos, VoxelHitInfo hitInfo, byte damage)
 	{
@@ -580,18 +517,18 @@ public partial class VoxelWorld : MonoBehaviour
 		VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y, chunkPos.z];
 
 		Voxel voxel = chunk.GetVoxel(SnapToGrid(worldPos));
-		BlockData data = BlockRegistry.LookupBlock(voxel.BlockID);
+		BlockType blockType = Registry.GetBlockType(voxel);
 
-		VFX().SpawnVFX(VFXType.BLOCK_DMG, hitInfo.hitPos, hitInfo.hitNormal, (int)voxel.BlockID);
+		VFX().SpawnVFX(VFXType.BLOCK_DMG, hitInfo.hitPos, hitInfo.hitNormal, voxel.BlockType);
 
 		voxel.Damage += damage;
-		int toughness = data.Toughness;
+		int toughness = blockType.Toughness;
 
 		// Break voxel
 		if (voxel.Damage >= toughness)
 		{
-			VFX().SpawnVFX(VFXType.BLOCK_BREAK, worldPos, Vector3.zero, (int)voxel.BlockID);
-			voxel = new Voxel(BlockID.Air, 0, 0);
+			VFX().SpawnVFX(VFXType.BLOCK_BREAK, worldPos, Vector3.zero, voxel.BlockType);
+			voxel = new Voxel("air");
 			voxel.Shape = 0;
 
 			// drop item
@@ -605,7 +542,7 @@ public partial class VoxelWorld : MonoBehaviour
 	}
 	public void AddVoxel(Vector3 worldPos, Voxel voxel)
 	{
-		if (voxel.BlockID == 0) voxel.Shape = 0;
+		if (voxel.IsEmpty()) voxel.Shape = 0;
 
 		Vector3Int chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
 		VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y, chunkPos.z];
@@ -620,20 +557,13 @@ public partial class VoxelWorld : MonoBehaviour
 		if (CheckWorldBounds(worldPos))
 		{
 
-			BlockData data = BlockRegistry.LookupBlock(newVoxel.BlockID);
+			BlockType blockType = Registry.GetBlockType(newVoxel);
 
 			Vector3Int chunkPos = FindContainingChunk(SnapToGrid(worldPos), ChunkSize);
 			VoxelChunk chunk = Chunks[chunkPos.x, chunkPos.y, chunkPos.z];
 
 			//Debug.Log($"World is placing block, id={data.BlockID}, isEntity={data.IsBlockEntity}");
 
-			if (data.IsBlockEntity)
-			{
-				BlockEntityActor entity = Instantiate(BlockEntityPrefab, chunk.transform).GetComponent<BlockEntityActor>();
-				entity.Data = BlockRegistry.LookupBlockEntity(data.BlockID);
-				newVoxel.Shape = BlockShape.BlockEntity;
-				chunk.AddBlockEntity(entity, worldPos, newVoxel);
-			}
 
 			Voxels[worldPos.x, worldPos.y, worldPos.z] = newVoxel;
 			chunk.SetVoxel(worldPos, newVoxel);
@@ -730,7 +660,6 @@ public partial class VoxelWorld : MonoBehaviour
 				VoxelHitInfo hitData = new VoxelHitInfo(true);
 				hitData.voxel = hitVoxel;
 				hitData.hitNormal = hitNormal;
-				hitData.blockID = hitVoxel.BlockID;
 				hitData.voxelPos = stepPos;
 				hitData.hitPos = pos + t * dir;
 				hitData.chunkPos = FindContainingChunk(stepPos, ChunkSize);
@@ -741,7 +670,7 @@ public partial class VoxelWorld : MonoBehaviour
 				return hitData;
 
 			}
-			else if (hitVoxel.BlockID == BlockID.Invalid)
+			else if (hitVoxel.BlockType < 0)
 			{
 				return new VoxelHitInfo(false);
 			}
@@ -797,7 +726,7 @@ public partial class VoxelWorld : MonoBehaviour
 		{
 			//int2 chunkCoord = FindContainingChunk(p, ChunkSize);
 			//Chunks[chunkCoord.x, chunkCoord.y].SetVoxel(p, new VoxelData(Blocks.AIR,0,0,0));
-			SetVoxel(p, new Voxel(BlockID.Air, 0, 0, 0));
+			SetVoxel(p, new Voxel("air"));
 		}
 	}
 

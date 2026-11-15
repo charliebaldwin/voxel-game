@@ -3,7 +3,6 @@ using UnityEngine;
 public struct VoxelHitInfo
 {
     public bool didHit;
-    public BlockID blockID;
     public Voxel voxel;
     public Vector3Int voxelPos;
     public Vector3Int localVoxelPos;
@@ -15,8 +14,7 @@ public struct VoxelHitInfo
     public VoxelHitInfo(bool didHit)
     {
         this.didHit = didHit;
-        blockID = 0;
-        voxel = new Voxel();
+        voxel = new Voxel(0);
         voxelPos = Vector3Int.zero;
         localVoxelPos = Vector3Int.zero;
         chunkPos = Vector3Int.zero;
