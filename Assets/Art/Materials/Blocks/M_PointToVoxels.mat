@@ -47,7 +47,7 @@ Material:
     m_Floats:
     - _AtlasIndex: 2
     - _Cols: 4
-    - _Rows: 5
+    - _Rows: 4
     - _Size: 0.5
     - _UseAO: 1.29
     m_Colors:

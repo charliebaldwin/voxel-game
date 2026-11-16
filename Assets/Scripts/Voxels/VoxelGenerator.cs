@@ -15,10 +15,13 @@ public class VoxelGenerator : MonoBehaviour
 	//private ComputeBuffer noiseBuffer1;
 	//private ComputeBuffer erosionBuffer;
 	//private ComputeBuffer noiseBuffer2;
+	ComputeBuffer heightBuffer;
+	ComputeBuffer voxelBuffer;
 
 	private float[,,] noiseArray1;
 	private float[,,] noiseArray2;
 	private float[,,] erosionArray;
+	private int[,,] voxelArray;
 
 	private float[,,] noiseSand;
 	private float[,,] noiseSilt;
@@ -75,8 +78,27 @@ public class VoxelGenerator : MonoBehaviour
 		seedOffset = UnityEngine.Random.Range(0f, 999999f);
 
 		int seed = GetNextSeed(Seed);
+		float[] noiseArray1d = new float[worldSize.x * worldSize.y * worldSize.z];
+		int[] voxelArray1d = new int[worldSize.x * worldSize.y * worldSize.z];
+		noiseArray1 = new float[this.worldSize.x, this.worldSize.y, this.worldSize.z];
+		voxelArray = new int[this.worldSize.x, this.worldSize.y, this.worldSize.z];
 
-		GenerateNoiseGPU(out noiseArray1, 0.2f * Vector3.one, seed, Octaves);
+		heightBuffer = new ComputeBuffer(worldSize.x * worldSize.y * worldSize.z, sizeof(float));
+		voxelBuffer = new ComputeBuffer(worldSize.x * worldSize.y * worldSize.z, sizeof(int));
+		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "InitialHeight");
+		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "PostProcess");
+		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "AddTrees");
+
+		voxelBuffer.GetData(voxelArray1d);
+
+
+		for (int x = 0; x < worldSize.x; x++)
+			for (int z = 0; z < worldSize.z; z++)
+				for (int y = 0; y < worldSize.y; y++)
+				{
+					voxelArray[x, y, z] = voxelArray1d[x + worldSize.x * y + worldSize.x * worldSize.y * z];
+				}
+
 		seed = GetNextSeed(seed);
 		// GenerateNoiseGPU(out noiseArray2, 0.2f * Vector3.one, seed, Octaves);
 		// seed = GetNextSeed(seed);
@@ -96,10 +118,13 @@ public class VoxelGenerator : MonoBehaviour
 		//GenerateNoiseGPU(out noiseCaves, 2f * new Vector3(0.3f, 0.6f, 0.3f), Seed + 5, Octaves, "GenerateNoiseCaves");
 		//LoopXYZ(CarveCaves);
 
-		exposedToSky = new bool[this.worldSize.x, this.worldSize.y, this.worldSize.z];
-		LoopXZ(CheckSkyExposure);
+		// exposedToSky = new bool[this.worldSize.x, this.worldSize.y, this.worldSize.z];
+		// LoopXZ(CheckSkyExposure);
 
 		LoopXYZ(AddGrass);
+
+		heightBuffer.Release();
+		voxelBuffer.Release();
 
 	}
 
@@ -164,16 +189,13 @@ public class VoxelGenerator : MonoBehaviour
 	#endregion
 
 	#region PASSES 
-	private void GenerateNoiseGPU(out float[,,] noiseArray, Vector3 scale, int seed, int octaves)
+	private void GenerateNoiseGPU(Vector3 scale, int seed, int octaves)
 	{
-		GenerateNoiseGPU(out noiseArray, scale, seed, octaves, "GenerateNoise");
+		GenerateNoiseGPU(scale, seed, octaves, "GenerateNoise");
 	}
-	private void GenerateNoiseGPU(out float[,,] noiseArray, Vector3 scale, int seed, int octaves, string kernel)
+	private void GenerateNoiseGPU(Vector3 scale, int seed, int octaves, string kernel)
 	{
 		// prep outputs
-		float[,,] result = new float[worldSize.x, worldSize.y, worldSize.z];
-		float[] noiseArray1d = new float[worldSize.x * worldSize.y * worldSize.z];
-		ComputeBuffer noiseBuffer1 = new ComputeBuffer(worldSize.x * worldSize.y * worldSize.z, sizeof(float));
 
 		// initialize compute shader params
 		int[] size = new int[3] { worldSize.x, worldSize.y, worldSize.z };
@@ -181,7 +203,10 @@ public class VoxelGenerator : MonoBehaviour
 		int[] threads = new int[3] { 8, 8, 8 };
 		int[] threadSize = new int[3] { size[0] / threads[0], size[1] / threads[1], size[2] / threads[2] };
 		int kernelID = NoiseCS.FindKernel(kernel);
-		NoiseCS.SetBuffer(kernelID, "NoiseBuffer", noiseBuffer1);
+
+		NoiseCS.SetBuffer(kernelID, "NoiseBuffer", heightBuffer);
+		NoiseCS.SetBuffer(kernelID, "VoxelBuffer", voxelBuffer);
+
 		NoiseCS.SetInts("WorldSize", size);
 		NoiseCS.SetInts("WorldOrigin", origin);
 		NoiseCS.SetInts("ThreadCount", threads);
@@ -199,17 +224,8 @@ public class VoxelGenerator : MonoBehaviour
 
 		// dispatch & read back compute shader outputs
 		NoiseCS.Dispatch(kernelID, 1, 1, 1);// threads[0], threads[1], threads[2]);
-		noiseBuffer1.GetData(noiseArray1d);
 
-		// convert data to 3D array
-		for (int x = 0; x < worldSize.x; x++)
-			for (int z = 0; z < worldSize.z; z++)
-				for (int y = 0; y < worldSize.y; y++)
-				{
-					result[x, y, z] = noiseArray1d[x + worldSize.x * y + worldSize.x * worldSize.y * z];
-				}
 
-		noiseArray = result;
 	}
 
 	private void ErosionGPU()
@@ -288,7 +304,7 @@ public class VoxelGenerator : MonoBehaviour
 	}
 	private void BuildTerrain2(int x, int y, int z)
 	{
-		int n = Mathf.RoundToInt(noiseArray1[x, y, z]);
+		int n = voxelArray[x, y, z];
 		SetVoxel(x, y, z, new Voxel(n));
 
 	}
@@ -441,12 +457,18 @@ public class VoxelGenerator : MonoBehaviour
 	}
 	private void AddGrass(int x, int y, int z)
 	{
-		if (exposedToSky[x, y, z])
+		Voxel v = GetVoxel(x, y, z);
+		if (!v.IsEmpty() && GetVoxel(x, y + 1, z).IsEmpty())
 		{
-			Voxel v = GetVoxel(x, y, z);
 			v.Grassy = true;
 			SetVoxel(x, y, z, v);
 		}
+		// if (exposedToSky[x, y, z])
+		// {
+		// 	Voxel v = GetVoxel(x, y, z);
+		// 	v.Grassy = true;
+		// 	SetVoxel(x, y, z, v);
+		// }
 	}
 
 	private void CarveCaves(int x, int y, int z)

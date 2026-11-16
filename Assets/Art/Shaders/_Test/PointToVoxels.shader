@@ -177,7 +177,7 @@ Shader "Test/PointToVoxels"
 							o.normalUV = 	flipbook(UVs[f][i], 4, 4, edgeTile, float2(0,1));
 							o.damageUV = 	flipbook(UVs[f][i], 6, 1, damage, float2(0,0));
 							if (grassIndex != -1) {
-								o.grassUV = flipbook(UVs[f][i], 4, 2, grassIndex, float2(0,0));
+								o.grassUV = flipbook(UVs[f][i], 4, 3, grassIndex, float2(0,0));
 							}
 							else {
 								o.grassUV = float2(-1,-1);

@@ -11,7 +11,9 @@ using VFolders.Libs;
 
 public class Registry : SerializedScriptableObject
 {
+    public bool RefreshOnValidate = true;
     public const int ATLAS_COLUMNS = 4;
+    private int rows, cols;
     public const int CELL_SIZE = 16;
 
     [SerializeField] private List<ItemType> Items;
@@ -38,7 +40,7 @@ public class Registry : SerializedScriptableObject
     }
     private void OnValidate()
     {
-        RegisterBlocks();
+        if (RefreshOnValidate) RegisterBlocks();
     }
 
 
@@ -51,6 +53,8 @@ public class Registry : SerializedScriptableObject
         List<Texture2D> mainTextures = GatherTextures();
         Texture2D mainTex = GenerateTexture(mainTextures, MainTextureAtlasPath);
         TargetMaterial.SetTexture("_TextureAtlas", mainTex);
+        TargetMaterial.SetInt("_Rows", rows);
+        TargetMaterial.SetInt("_Cols", cols);
         for (int f = 0; f < TextureFeatureAtlasPaths.Count; f++)
         {
             List<Texture2D> featureTextures = GatherFeatureTextures(f);
@@ -91,8 +95,9 @@ public class Registry : SerializedScriptableObject
     {
         List<Texture2D> result = new List<Texture2D>();
         int index = 0;
-        foreach (BlockType b in Blocks)
+        for (int i = 0; i < Blocks.Count; i++)
         {
+            BlockType b = Blocks[i];
             if (b.TextureGroup == null) { Debug.LogError($"REGISTRY ERROR: block with ID {b.ID} has no BlockTextureGroup!"); }
             else if (b.TextureGroup.Textures == null || b.TextureGroup.Textures.Count == 0) { Debug.LogError($"REGISTRY ERROR: block with ID {b.ID} has BlockTextureGroup with empty/invalid texture list!"); }
             else
@@ -131,8 +136,8 @@ public class Registry : SerializedScriptableObject
 
     private Texture2D GenerateTexture(List<Texture2D> textures, string outputPath)
     {
-        int cols = Math.Min(ATLAS_COLUMNS, textures.Count);
-        int rows = textures.Count / cols; //+ 1;
+        cols = Math.Min(ATLAS_COLUMNS, textures.Count);
+        rows = textures.Count / cols + 1;
 
         Texture2D atlas = new Texture2D(CELL_SIZE * cols, CELL_SIZE * rows, TextureFormat.RGBA32, true);
         atlas.filterMode = FilterMode.Point;
@@ -143,12 +148,12 @@ public class Registry : SerializedScriptableObject
 
         for (int i = 0; i < textures.Count; i++)
         {
-            for (int u = 0; u < 16; u++)
+            for (int u = 0; u < CELL_SIZE; u++)
             {
-                for (int v = 0; v < 16; v++)
+                for (int v = 0; v < CELL_SIZE; v++)
                 {
                     Color colorPixel = textures[i].GetPixel(u, v);
-                    atlas.SetPixel(u + 16 * col, v + 16 * row, colorPixel);
+                    atlas.SetPixel(u + CELL_SIZE * col, v + CELL_SIZE * row, colorPixel);
                 }
             }
             col++;

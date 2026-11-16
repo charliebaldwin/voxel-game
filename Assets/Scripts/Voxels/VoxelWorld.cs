@@ -113,6 +113,7 @@ public partial class VoxelWorld : MonoBehaviour
 		Initialized = true;
 	}
 
+
 	private void SetInstance()
 	{
 		if (Instance != null && Instance != this) Destroy(this);

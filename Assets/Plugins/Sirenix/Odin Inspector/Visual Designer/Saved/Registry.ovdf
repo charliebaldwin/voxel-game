@@ -17,3 +17,4 @@ MetaGuid:9505a537fc9a8cb4389df9f2a1475129
 
 # Blocks
 + [Sirenix.OdinInspector.TableListAttribute]
+	ShowIndexLabels = True
