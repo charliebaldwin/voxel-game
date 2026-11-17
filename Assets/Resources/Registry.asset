@@ -43,6 +43,7 @@ MonoBehaviour:
     - {fileID: 2800000, guid: ca83a8687fabc0d468efcc0cf1745e15, type: 3}
     - {fileID: 2800000, guid: 50899cce0d08822439066e3995540fe5, type: 3}
     - {fileID: 2800000, guid: d73916ede6dffec4a9452791a6b86e1a, type: 3}
+    - {fileID: 2800000, guid: 6f30d056aa286c944b9275abd0c8cc22, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -433,7 +434,7 @@ MonoBehaviour:
       Data: 33|System.Collections.Generic.List`1[[BlockType, Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
-      Data: 14
+      Data: 15
     - Name: 
       Entry: 7
       Data: 34|BlockType, Assembly-CSharp
@@ -1875,12 +1876,105 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
+      Entry: 7
+      Data: 126|BlockType, Assembly-CSharp
+    - Name: ID
+      Entry: 1
+      Data: coal
+    - Name: TextureGroup
+      Entry: 7
+      Data: 127|UniformBlockTextureGroup, Assembly-CSharp
+    - Name: Textures
+      Entry: 7
+      Data: 128|System.Collections.Generic.List`1[[UnityEngine.Texture2D, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 10
+      Data: 27
+    - Name: 
       Entry: 13
       Data: 
     - Name: 
       Entry: 8
       Data: 
-  RefreshOnValidate: 0
+    - Name: TextureIndices
+      Entry: 7
+      Data: 129|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 15
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TextureFeatures
+      Entry: 7
+      Data: 130|System.Collections.Generic.List`1[[BlockTextureFeature, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Toughness
+      Entry: 3
+      Data: 1
+    - Name: Colors
+      Entry: 7
+      Data: 131|System.Collections.Generic.List`1[[UnityEngine.Color, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Color, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  RefreshOnValidate: 1
   MainTextureAtlasPath: Assets/Art/Textures/Generated/Atlas_Main.asset
   TextureFeatureAtlasPaths:
   - Assets/Art/Textures/Generated/Atlas_Feature_Grass.asset

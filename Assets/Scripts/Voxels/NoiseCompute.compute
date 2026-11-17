@@ -59,11 +59,11 @@ int flatIndex(int x, int y, int z) {
 float getHeight(float3 p) {
     float big = noise(float3(p) + WorldOrigin, Seed + 1000, Scale * 0.3, Octaves, OctaveStrength * 0.8, OctaveScale);
     //h1 = pow(h1, 2);
-    big = smoothstep(smoothstep(smoothstep(big)));
+    big = smoothstep(smoothstep(big));
     big *= 80;
 
-    float mask_big = noise(p + float3(0,100,0) + WorldOrigin, Seed + 1000, Scale * .15, Octaves, 0.4* OctaveStrength, 1.2 * OctaveScale);
-    mask_big = smoothstep(smoothstep(mask_big));
+    float mask_big = noise(p + float3(0,500,0) + WorldOrigin, Seed + 1000, Scale * .15, Octaves, 0.4* OctaveStrength, 1.2 * OctaveScale);
+    mask_big = smoothstep(mask_big);
     big *= mask_big;
 
     float med = noise(float3(p) + WorldOrigin, Seed + 2000, Scale * .5, Octaves, 0.6 * OctaveStrength, OctaveScale);
@@ -76,7 +76,7 @@ float getHeight(float3 p) {
     small *= mask_small;
 
 
-    return 15 + big + med + small;
+    return 65 + 0.7 * (big + med + small);
 }
 
 
@@ -126,10 +126,15 @@ void PostProcess(uint3 id : SV_DispatchThreadID)
     uint startZ = id.z * ThreadSize.z;
 
     for (uint x = startX; x < startX + ThreadSize.x; x++) {
-        for (uint z = startZ; z < startZ + ThreadSize.z; z++) {          
+        for (uint z = startZ; z < startZ + ThreadSize.z; z++) {        
+                            
+            float layerNoise = 2 * noise(float3(x,1,z) + WorldOrigin, Seed + 35, Scale * 1 * float3(1,.7,1), 5, 0.7 * OctaveStrength, 1.2 * OctaveScale);
+  
             for (uint y = startY; y < startY + ThreadSize.y; y++) {
-                float h = NoiseBuffer[flatIndex(x, y, z)];
+                
                 float3 p = float3(x,y,z);
+                
+                float h = NoiseBuffer[flatIndex(x, y, z)];
 
                 // slope
                 float steep = GetSlope(x,y,z,1);//length(slope);
@@ -139,14 +144,21 @@ void PostProcess(uint3 id : SV_DispatchThreadID)
 
                 float surface = y/h;
 
-                float soil = 0.01 + 0.08 * noise(p + WorldOrigin, Seed + 17, Scale * 0.01 * float3(1,0.1,1), Octaves, 0.5 * OctaveStrength, 1 * OctaveScale);
+                // h += (50 * layerNoise); 
+                // surface += (1 * layerNoise);
+
+                float soil = 0.01 + 0.08 * noise(p + WorldOrigin, Seed + 17, Scale * 0.003 * float3(1,0.1,1), Octaves, 0.5 * OctaveStrength, 1 * OctaveScale);
                 soil *= (lerp(0, (6-steep), pow(surface, 5)));
 
-                if (surface < 1) {
-                    float sand = (1.3 - surface) * noise(p + WorldOrigin - 0.4 * float3(0,h,0), Seed + 5, Scale * 1.3 * float3(1,2.3,1), Octaves, OctaveStrength, OctaveScale);
-                    float silt = 1.0 * noise(p + WorldOrigin - 0.4 * float3(0,h,0), Seed + 6, Scale * 1.3 * float3(1,2.3,1), Octaves, OctaveStrength, OctaveScale);
-                    float clay = 1.0 * noise(p + WorldOrigin - 0.4 * float3(0,h,0), Seed + 7, Scale * 1.3 * float3(1,2.3,1), Octaves, OctaveStrength, OctaveScale);
+                float coalOre = noise(p + WorldOrigin - 0.4 * float3(0,h + 20 * layerNoise * clamp(1-surface,0,1),0), Seed +5943, Scale * 1.3 * float3(1,4,1), Octaves, 0.8 * OctaveStrength, OctaveScale);
+                coalOre = clamp((coalOre - 0.0) * clamp(1-0.3*surface, 0.5, 1), 0, 1);
 
+                if (surface < 1) {
+                    float sand = (1.3 - surface) *  noise(p + WorldOrigin - 0.4 * float3(0,h + 20 * layerNoise * clamp(1-surface,0,1),0), Seed + 5, Scale * .7 * float3(1,4,1), Octaves, OctaveStrength, OctaveScale);
+                    float silt = 1.0 *              noise(p + WorldOrigin - 0.4 * float3(0,h + 20 * layerNoise * clamp(1-surface,0,1),0), Seed + 6, Scale * .7 * float3(1,4,1), Octaves, OctaveStrength, OctaveScale);
+                    float clay = 1.0 *              noise(p + WorldOrigin - 0.4 * float3(0,h + 20 * layerNoise * clamp(1-surface,0,1),0), Seed + 7, Scale * .7 * float3(1,4,1), Octaves, OctaveStrength, OctaveScale);
+
+                    
                     if (surface > 1-soil) {
                         
                         if (silt > sand && silt > clay) {
@@ -162,28 +174,34 @@ void PostProcess(uint3 id : SV_DispatchThreadID)
                             VoxelBuffer[flatIndex(x, y, z)] = 4;      
                         }
                     }
-                    else if (surface > 0.5) {
+                    else {
+                    //else if (surface > 0.3 + 0.5 * layerNoise) {
+                        if (y > 10 * layerNoise  + 0.5* h - 20) {
                             if (silt > sand && silt > clay) {
-                                VoxelBuffer[flatIndex(x, y, z)] = 6;      
-                            }
-                            else if (sand > silt && sand > clay) {
-                                VoxelBuffer[flatIndex(x, y, z)] = 7;      
-                            }
-                            else {
-                                VoxelBuffer[flatIndex(x, y, z)] = 8;      
-                            }
+                                    VoxelBuffer[flatIndex(x, y, z)] = 6;      
+                                }
+                                else if (sand > silt && sand > clay) {
+                                    VoxelBuffer[flatIndex(x, y, z)] = 7;      
+                                }
+                                else {
+                                    VoxelBuffer[flatIndex(x, y, z)] = 8;      
+                                }
 
-                    }   
-                    else  {
-                            if (silt > sand && silt > clay) {
-                                VoxelBuffer[flatIndex(x, y, z)] = 9;      
-                            }
-                            else if (sand > silt && sand > clay) {
-                                VoxelBuffer[flatIndex(x, y, z)] = 10;      
-                            }
-                            else {
-                                VoxelBuffer[flatIndex(x, y, z)] = 11;      
-                            }
+                        }   
+                        else  {
+                                if (silt > sand && silt > clay) {
+                                    VoxelBuffer[flatIndex(x, y, z)] = 9;      
+                                }
+                                else if (sand > silt && sand > clay) {
+                                    VoxelBuffer[flatIndex(x, y, z)] = 10;      
+                                }
+                                else {
+                                    VoxelBuffer[flatIndex(x, y, z)] = 11;      
+                                }
+                        }
+                        if (coalOre > 0.75) {
+                            VoxelBuffer[flatIndex(x, y, z)] = 14;      
+                        }
                     }
           
 
