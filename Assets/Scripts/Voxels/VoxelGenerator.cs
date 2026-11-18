@@ -93,7 +93,7 @@ public class VoxelGenerator : MonoBehaviour
 
 		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "InitialHeight");
 		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "SetStone");
-		//GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "ErodeSurface");
+		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "ErodeSurface");
 		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "AddSoilLayer");
 		//GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "AddTrees");
 

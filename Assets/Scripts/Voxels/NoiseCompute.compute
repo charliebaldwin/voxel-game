@@ -362,7 +362,7 @@ void ErodeSurface(uint3 id : SV_DispatchThreadID)
             float erodeH = noise(float3(x,1,z) + WorldOrigin, Seed + 6393, Scale * .2 * float3(1,.7,1), 5, 0.5 * OctaveStrength, 1.2 * OctaveScale);     
             erodeH = clamp(erodeH, 0, 1);
             erodeH = smoothstep(smoothstep(erodeH));
-            erodeH *= 1.1; //0.8;
+            erodeH *= 1; //0.8;
             erodeH -= 1.15;
             
             float h = NoiseBuffer[flatIndex2D(x,z)];
@@ -383,7 +383,7 @@ void ErodeSurface(uint3 id : SV_DispatchThreadID)
                     }
                     //else if (abs(y - (WorldSize.y - erodeH)) < 1) {
                     else if (abs(surface - (h/WorldSize.y -  erodeH)) > .02 && VoxelBufferR[flatIndex(x, y+1, z)] == 0) {
-                        VoxelBufferW[index] = 1;
+                        //VoxelBufferW[index] = 1;
                     }
                 }
             }
@@ -401,10 +401,10 @@ void AddSoilLayer(uint3 id : SV_DispatchThreadID)
     for (int x = startX; x < startX + ThreadSize.x; x++) {
         for (int z = startZ; z < startZ + ThreadSize.z; z++) {    
 
-            float blurNoise = noise(float3(x,1,z) + WorldOrigin, Seed + 25633, Scale * .5* float3(1,.7,1), 5, 0.6 * OctaveStrength, 1 * OctaveScale);
+            float blurNoise = noise(float3(x,1,z) + WorldOrigin, Seed + 25633, Scale * .3* float3(1,.7,1), 5, 0.6 * OctaveStrength, 1 * OctaveScale);
 
-            float blurredH = GetBlurredH(x, z, 16) + 2 + 3*clamp(blurNoise, 0, 1) - 4;
-            float blurredH2= 0.95 * GetBlurredH(x, z, 32) + 2 - 3*clamp(blurNoise, 0, 1) + 3.5;
+            float blurredH = 1 * GetBlurredH(x, z, 10) - 3 + 2*clamp(blurNoise, 0, 1);
+            float blurredH2= 0.97 * GetBlurredH(x, z,28) + 2;// - 0*clamp(blurNoise, 0, 1);
             blurredH = max(blurredH, blurredH2);
 
             //float currentH = NoiseBuffer[flatIndex2D(x,z)];
@@ -425,7 +425,7 @@ void AddSoilLayer(uint3 id : SV_DispatchThreadID)
                 }
             }
         }
-    }
+    }   
 }
 
 [numthreads(8,8,8)]
