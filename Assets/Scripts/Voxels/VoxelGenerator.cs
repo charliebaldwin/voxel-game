@@ -16,9 +16,11 @@ public class VoxelGenerator : MonoBehaviour
 	//private ComputeBuffer erosionBuffer;
 	//private ComputeBuffer noiseBuffer2;
 	ComputeBuffer heightBuffer;
-	ComputeBuffer voxelBuffer;
+	ComputeBuffer voxelBufferR;
+	ComputeBuffer voxelBufferW;
+	ComputeBuffer soilBuffer;
 
-	private float[,,] noiseArray1;
+	private float[,] noiseArray1;
 	private float[,,] noiseArray2;
 	private float[,,] erosionArray;
 	private int[,,] voxelArray;
@@ -80,16 +82,22 @@ public class VoxelGenerator : MonoBehaviour
 		int seed = GetNextSeed(Seed);
 		float[] noiseArray1d = new float[worldSize.x * worldSize.y * worldSize.z];
 		int[] voxelArray1d = new int[worldSize.x * worldSize.y * worldSize.z];
-		noiseArray1 = new float[this.worldSize.x, this.worldSize.y, this.worldSize.z];
+		noiseArray1 = new float[this.worldSize.x, this.worldSize.z];
 		voxelArray = new int[this.worldSize.x, this.worldSize.y, this.worldSize.z];
 
-		heightBuffer = new ComputeBuffer(worldSize.x * worldSize.y * worldSize.z, sizeof(float));
-		voxelBuffer = new ComputeBuffer(worldSize.x * worldSize.y * worldSize.z, sizeof(int));
-		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "InitialHeight");
-		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "PostProcess");
-		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "AddTrees");
+		int bufferSize = worldSize.x * worldSize.y * worldSize.z;
+		heightBuffer = new ComputeBuffer(bufferSize / worldSize.y, sizeof(float));
+		voxelBufferR = new ComputeBuffer(bufferSize, sizeof(int));
+		voxelBufferW = new ComputeBuffer(bufferSize, sizeof(int));
+		soilBuffer = new ComputeBuffer(bufferSize, 3 * sizeof(float));
 
-		voxelBuffer.GetData(voxelArray1d);
+		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "InitialHeight");
+		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "SetStone");
+		//GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "ErodeSurface");
+		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "AddSoilLayer");
+		//GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "AddTrees");
+
+		voxelBufferR.GetData(voxelArray1d);
 
 
 		for (int x = 0; x < worldSize.x; x++)
@@ -124,7 +132,7 @@ public class VoxelGenerator : MonoBehaviour
 		LoopXYZ(AddGrass);
 
 		heightBuffer.Release();
-		voxelBuffer.Release();
+		voxelBufferR.Release();
 
 	}
 
@@ -195,35 +203,37 @@ public class VoxelGenerator : MonoBehaviour
 	}
 	private void GenerateNoiseGPU(Vector3 scale, int seed, int octaves, string kernel)
 	{
-		// prep outputs
+		int kernelID = NoiseCS.FindKernel(kernel);
 
-		// initialize compute shader params
+		// buffers
+		NoiseCS.SetBuffer(kernelID, "NoiseBuffer", heightBuffer);
+		NoiseCS.SetBuffer(kernelID, "SoilBuffer", soilBuffer);
+		NoiseCS.SetBuffer(kernelID, "VoxelBufferW", voxelBufferW);
+		NoiseCS.SetBuffer(kernelID, "VoxelBufferR", voxelBufferR);
+
+		// settings
 		int[] size = new int[3] { worldSize.x, worldSize.y, worldSize.z };
 		int[] origin = new int[3] { worldOrigin.x, worldOrigin.y, worldOrigin.z };
 		int[] threads = new int[3] { 8, 8, 8 };
 		int[] threadSize = new int[3] { size[0] / threads[0], size[1] / threads[1], size[2] / threads[2] };
-		int kernelID = NoiseCS.FindKernel(kernel);
-
-		NoiseCS.SetBuffer(kernelID, "NoiseBuffer", heightBuffer);
-		NoiseCS.SetBuffer(kernelID, "VoxelBuffer", voxelBuffer);
 
 		NoiseCS.SetInts("WorldSize", size);
 		NoiseCS.SetInts("WorldOrigin", origin);
 		NoiseCS.SetInts("ThreadCount", threads);
 		NoiseCS.SetInts("ThreadSize", threadSize);
 		NoiseCS.SetInt("Seed", seed);
-		//Debug.Log($"using seed: {seed}");
 		NoiseCS.SetVector("Scale", Scale * scale);
-		UnityEngine.Random.InitState(seed);
-		Vector3 offset = UnityEngine.Random.insideUnitSphere * UnityEngine.Random.Range(-100000f, 100000f);
-		NoiseCS.SetVector("Offset", offset);
 		NoiseCS.SetInt("Octaves", octaves);
 		NoiseCS.SetFloat("OctaveScale", OctaveScale);
 		NoiseCS.SetFloat("OctaveStrength", OctaveStrength);
 		NoiseCS.SetFloat("CaveWidth", CaveWidth);
 
-		// dispatch & read back compute shader outputs
+
+		// DISPATCH
 		NoiseCS.Dispatch(kernelID, 1, 1, 1);// threads[0], threads[1], threads[2]);
+
+
+		voxelBufferR = voxelBufferW;
 
 
 	}
@@ -310,7 +320,7 @@ public class VoxelGenerator : MonoBehaviour
 	}
 	private void BuildTerrain(int x, int z)
 	{
-		float noise1 = noiseArray1[x, 2, z];
+		float noise1 = noiseArray1[x, z];
 		float noise2 = noiseArray2[x, 2, z];
 		float h = noise1 * HeightRange + HeightOffset;
 		h += noise2 * HeightRange * 4;

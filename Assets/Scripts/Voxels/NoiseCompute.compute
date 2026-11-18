@@ -1,27 +1,35 @@
-#pragma kernel InitialHeight
-#pragma kernel PostProcess
-#pragma kernel AddTrees
-#pragma kernel GenerateNoiseCaves
-//#pragma kernel GenerateErosion
+
 
 #include "Packages/jp.keijiro.noiseshader/Shader/SimplexNoise3D.hlsl"
 #include "Packages/jp.keijiro.noiseshader/Shader/ClassicNoise3D.hlsl"
 #include "Assets/Art/Shaders/Hash.hlsl"
 #include "Assets/Art/Shaders/ErosionTerrain.hlsl"
+#include "Assets/Art/Shaders/GaussianBlur.hlsl"
 
+// KERNELS
+#pragma kernel InitialHeight
+#pragma kernel PostProcess
+#pragma kernel AddTrees
+#pragma kernel GenerateNoiseCaves
+#pragma kernel SetStone
+#pragma kernel ErodeSurface
+#pragma kernel AddSoilLayer
 
-//RWTexture2DArray<float> Result;
+// BUFFERS
 RWStructuredBuffer<float> NoiseBuffer;
-RWStructuredBuffer<int> VoxelBuffer;
-uint3 WorldSize;
-uint3 WorldOrigin;
+RWStructuredBuffer<int> VoxelBufferW;
+RWStructuredBuffer<int> VoxelBufferR;
+RWStructuredBuffer<float3> SoilBuffer;
 
-uint3 ThreadCount;
-uint3 ThreadSize;
+// SETTINGS
+int3 WorldSize;
+int3 WorldOrigin;
+
+int3 ThreadCount;
+int3 ThreadSize;
 int Seed;
 
 float3 Scale;
-float3 Offset;
 int Octaves; 
 float OctaveStrength;
 float OctaveScale;
@@ -35,7 +43,6 @@ float smoothstep(float x) {
     float t = clamp(x / 1, 0, 1);
     return t * t * (3-2*t);
 }
-
 float noise(float3 p, int seed, float3 scale, int octaves, float octaveStrength, float octaveScale) {
     float result = 0;
     float str = 1;
@@ -51,13 +58,20 @@ float noise(float3 p, int seed, float3 scale, int octaves, float octaveStrength,
     }
     return 0.5 + 0.5 * result;
 }
-
 int flatIndex(int x, int y, int z) {
     return x + WorldSize.x * y + WorldSize.x * WorldSize.y * z;
 } 
+int flatIndex2D(int x, int z) {
+    return x + WorldSize.x * z;
+}
+
+const float4x4 gaussianMat =   {{ 0.00000067, 0.00002292, 0.00019117, 0.00038771},
+                                { 0.00002292, 0.00078633, 0.00655965, 0.01330373},
+                                { 0.00019117, 0.00655965, 0.05472157, 0.11098164},
+                                { 0.00038771, 0.01330373, 0.11098164, 0.22508352}};
  
 float getHeight(float3 p) {
-    float big = noise(float3(p) + WorldOrigin, Seed + 1000, Scale * 0.3, Octaves, OctaveStrength * 0.8, OctaveScale);
+    float big = noise(float3(p) + WorldOrigin, Seed + 1000, Scale * 0.2, Octaves, OctaveStrength * 0.8, OctaveScale);
     //h1 = pow(h1, 2);
     big = smoothstep(smoothstep(big));
     big *= 80;
@@ -66,7 +80,7 @@ float getHeight(float3 p) {
     mask_big = smoothstep(mask_big);
     big *= mask_big;
 
-    float med = noise(float3(p) + WorldOrigin, Seed + 2000, Scale * .5, Octaves, 0.6 * OctaveStrength, OctaveScale);
+    float med = noise(float3(p) + WorldOrigin, Seed + 2000, Scale * .4, Octaves, 0.6 * OctaveStrength, OctaveScale);
     med *= 15;
 
     float small = noise(float3(p) + WorldOrigin, Seed + 100, Scale * 1, Octaves, OctaveStrength, OctaveScale);
@@ -76,7 +90,7 @@ float getHeight(float3 p) {
     small *= mask_small;
 
 
-    return 65 + 0.7 * (big + med + small);
+    return 35 + 0.8 * (big + med + small);
 }
 
 
@@ -94,9 +108,10 @@ void InitialHeight (uint3 id : SV_DispatchThreadID)
                             
             float3 p = float3(x,1.0,z);
             float h = getHeight(p);
-            for (uint y = startY; y < startY + ThreadSize.y; y++) {
-                NoiseBuffer[flatIndex(x, y, z)] = h;
-            }
+            NoiseBuffer[flatIndex2D(x,z)] = h;
+            // for (uint y = startY; y < startY + ThreadSize.y; y++) {
+            //     NoiseBuffer[flatIndex(x, y, z)] = h;
+            // }
 
         }
     }
@@ -104,16 +119,58 @@ void InitialHeight (uint3 id : SV_DispatchThreadID)
     //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
 }
 
-float GetSlope(uint x, uint y, uint z, int r) {
-    float h_o = NoiseBuffer[flatIndex(x, y, z)];
-    float h_nx = NoiseBuffer[flatIndex(clamp(x-r, 0, WorldSize.x), y, z)];
-    float h_px = NoiseBuffer[flatIndex(clamp(x+r, 0, WorldSize.x), y, z)];
-    float h_nz = NoiseBuffer[flatIndex(x, y, clamp(z-r, 0, WorldSize.z))];
-    float h_pz = NoiseBuffer[flatIndex(x, y, clamp(z+r, 0, WorldSize.z))];   
+float GetSlope(uint x, uint z, int r) {
+    // float h_o = NoiseBuffer[flatIndex(x, y, z)];
+    // float h_nx = NoiseBuffer[flatIndex(clamp(x-r, 0, WorldSize.x), y, z)];
+    // float h_px = NoiseBuffer[flatIndex(clamp(x+r, 0, WorldSize.x), y, z)];
+    // float h_nz = NoiseBuffer[flatIndex(x, y, clamp(z-r, 0, WorldSize.z))];
+    // float h_pz = NoiseBuffer[flatIndex(x, y, clamp(z+r, 0, WorldSize.z))];   
+
+    float h_o = NoiseBuffer [flatIndex2D(x, z)];
+    float h_nx = NoiseBuffer[flatIndex2D(clamp(x-r, 0, WorldSize.x), z)];
+    float h_px = NoiseBuffer[flatIndex2D(clamp(x+r, 0, WorldSize.x), z)];
+    float h_nz = NoiseBuffer[flatIndex2D(x, clamp(z-r, 0, WorldSize.z))];
+    float h_pz = NoiseBuffer[flatIndex2D(x, clamp(z+r, 0, WorldSize.z))];   
 
     float dx = abs(h_o - h_nx) + abs(h_o - h_px);
     float dz = abs(h_o - h_nz) + abs(h_o - h_pz);
     return 1 * (dx + dz);
+}
+float GetBlurredH(uint x, uint z, int r) {
+
+    float sum = NoiseBuffer[flatIndex2D(x, z)]; 
+    
+    int i0 = x - r;
+    int i1 = x + r;
+    int j0 = z - r;
+    int j1 = z + r;
+
+    int n=0;
+    float w;
+    for (int i=i0; i<i1; i++) { 
+        for (int j=j0; j<j1; j++) {
+            n++;
+            float sample = NoiseBuffer[flatIndex2D(clamp(i,0,WorldSize.x),clamp(j,0,WorldSize.z))];
+            float dist = distance(float2(x,z), float2(i,j));
+            float weight = ((r-dist)/r);
+            // sum = lerp(sum, sample, pow(clamp((r - dist)/r, 0, 1), 4));
+
+            sum += sample * weight;
+            w += weight;
+            // float str = clamp(dot(float2(x,z), float2(i,j)),0,1);
+            // sum = lerp(sum, sample, str);
+            //sum = (sum + sample) / 2;
+        }
+    }
+    return sum / w;
+
+    // float h_o = NoiseBuffer [flatIndex2D(x, z)];
+    // float h_nx = NoiseBuffer[flatIndex2D(clamp(x-r, 0, WorldSize.x), z)];
+    // float h_px = NoiseBuffer[flatIndex2D(clamp(x+r, 0, WorldSize.x), z)];
+    // float h_nz = NoiseBuffer[flatIndex2D(x, clamp(z-r, 0, WorldSize.z))];
+    // float h_pz = NoiseBuffer[flatIndex2D(x, clamp(z+r, 0, WorldSize.z))];   
+
+    // return (h_o + h_nx + h_px + h_nz + h_pz) / 5;
 }
 
 
@@ -121,23 +178,25 @@ float GetSlope(uint x, uint y, uint z, int r) {
 void PostProcess(uint3 id : SV_DispatchThreadID)
 { 
     
-    uint startX = id.x * ThreadSize.x;
-    uint startY = id.y * ThreadSize.y; 
-    uint startZ = id.z * ThreadSize.z;
+    int startX = id.x * ThreadSize.x;
+    int startY = id.y * ThreadSize.y; 
+    int startZ = id.z * ThreadSize.z;
 
-    for (uint x = startX; x < startX + ThreadSize.x; x++) {
-        for (uint z = startZ; z < startZ + ThreadSize.z; z++) {        
+    for (int x = startX; x < startX + ThreadSize.x; x++) {
+        for (int z = startZ; z < startZ + ThreadSize.z; z++) {        
                             
             float layerNoise = 2 * noise(float3(x,1,z) + WorldOrigin, Seed + 35, Scale * 1 * float3(1,.7,1), 5, 0.7 * OctaveStrength, 1.2 * OctaveScale);
   
-            for (uint y = startY; y < startY + ThreadSize.y; y++) {
+            for (int y = startY; y < startY + ThreadSize.y; y++) {
                 
+                int index = flatIndex(x,y,z);
+
                 float3 p = float3(x,y,z);
                 
                 float h = NoiseBuffer[flatIndex(x, y, z)];
 
                 // slope
-                float steep = GetSlope(x,y,z,1);//length(slope);
+                float steep = GetSlope(x,z,1);//length(slope);
                 
                 //h = GenerateErosion(x,y,z, h);
                 float depth = h - y;
@@ -157,63 +216,216 @@ void PostProcess(uint3 id : SV_DispatchThreadID)
                     float sand = (1.3 - surface) *  noise(p + WorldOrigin - 0.4 * float3(0,h + 20 * layerNoise * clamp(1-surface,0,1),0), Seed + 5, Scale * .7 * float3(1,4,1), Octaves, OctaveStrength, OctaveScale);
                     float silt = 1.0 *              noise(p + WorldOrigin - 0.4 * float3(0,h + 20 * layerNoise * clamp(1-surface,0,1),0), Seed + 6, Scale * .7 * float3(1,4,1), Octaves, OctaveStrength, OctaveScale);
                     float clay = 1.0 *              noise(p + WorldOrigin - 0.4 * float3(0,h + 20 * layerNoise * clamp(1-surface,0,1),0), Seed + 7, Scale * .7 * float3(1,4,1), Octaves, OctaveStrength, OctaveScale);
-
+                    
+                    SoilBuffer[index] = float3(sand, silt, clay);
                     
                     if (surface > 1-soil) {
                         
                         if (silt > sand && silt > clay) {
-                            VoxelBuffer[flatIndex(x, y, z)] = 1;      
+                            VoxelBufferW[index] = 1;      
                         }
                         else if (sand > silt && sand > clay) {
-                            VoxelBuffer[flatIndex(x, y, z)] = 2;      
+                            VoxelBufferW[index] = 2;      
                         }
                         else if (clay > silt && clay > sand ) {
-                            VoxelBuffer[flatIndex(x, y, z)] = 3;      
+                            VoxelBufferW[index] = 3;      
                         }
                         else {
-                            VoxelBuffer[flatIndex(x, y, z)] = 4;      
+                            VoxelBufferW[index] = 4;      
                         }
                     }
                     else {
                     //else if (surface > 0.3 + 0.5 * layerNoise) {
                         if (y > 10 * layerNoise  + 0.5* h - 20) {
                             if (silt > sand && silt > clay) {
-                                    VoxelBuffer[flatIndex(x, y, z)] = 6;      
+                                    VoxelBufferW[index] = 6;      
                                 }
                                 else if (sand > silt && sand > clay) {
-                                    VoxelBuffer[flatIndex(x, y, z)] = 7;      
+                                    VoxelBufferW[index] = 7;      
                                 }
                                 else {
-                                    VoxelBuffer[flatIndex(x, y, z)] = 8;      
+                                    VoxelBufferW[index] = 8;      
                                 }
 
                         }   
                         else  {
                                 if (silt > sand && silt > clay) {
-                                    VoxelBuffer[flatIndex(x, y, z)] = 9;      
+                                    VoxelBufferW[index] = 9;      
                                 }
                                 else if (sand > silt && sand > clay) {
-                                    VoxelBuffer[flatIndex(x, y, z)] = 10;      
+                                    VoxelBufferW[index] = 10;      
                                 }
                                 else {
-                                    VoxelBuffer[flatIndex(x, y, z)] = 11;      
+                                    VoxelBufferW[index] = 11;      
                                 }
                         }
                         if (coalOre > 0.75) {
-                            VoxelBuffer[flatIndex(x, y, z)] = 14;      
+                            VoxelBufferW[index] = 14;      
                         }
                     }
           
 
                 }
                 else {
-                    VoxelBuffer[flatIndex(x, y, z)] = 0;      
+                    VoxelBufferW[index] = 0;      
                 }
 
             }
         }
     }
     
+}
+
+[numthreads(8,8,8)]
+void SetStone(uint3 id : SV_DispatchThreadID)
+{ 
+    
+    int startX = id.x * ThreadSize.x;
+    int startY = id.y * ThreadSize.y; 
+    int startZ = id.z * ThreadSize.z;
+
+    for (int x = startX; x < startX + ThreadSize.x; x++) {
+        for (int z = startZ; z < startZ + ThreadSize.z; z++) {        
+                            
+            float layerNoise = 2 * noise(float3(x,1,z) + WorldOrigin, Seed + 35, Scale * .1 * float3(1,.6,1), 5, 0.7 * OctaveStrength, 1.2 * OctaveScale);
+            float h = NoiseBuffer[flatIndex2D(x, z)];
+            
+            for (int y = startY; y < startY + ThreadSize.y; y++) {
+                
+                int index = flatIndex(x,y,z);
+
+                float3 p = float3(x,y,z);
+                
+
+
+                // slope
+                float steep = GetSlope(x,z,1);//length(slope);
+                
+                //h = GenerateErosion(x,y,z, h);
+                float depth = h - y;
+
+                float surface = y/h;
+
+                // h += (50 * layerNoise); 
+                // surface += (1 * layerNoise);
+
+                if (surface < 1) {
+                    float sand = (1.3-surface)*0 +  noise(p + WorldOrigin - 0.4 * float3(0,h + 20 * layerNoise * clamp(1-surface,0,1),0), Seed + 5, Scale * .1 * float3(1,22,1), Octaves, OctaveStrength, OctaveScale);
+                    float silt = 1.0 *              noise(p + WorldOrigin - 0.4 * float3(0,h + 20 * layerNoise * clamp(1-surface,0,1),0), Seed + 6, Scale * .1 * float3(1,22,1), Octaves, OctaveStrength, OctaveScale);
+                    float clay = 1.0 *              noise(p + WorldOrigin - 0.4 * float3(0,h + 20 * layerNoise * clamp(1-surface,0,1),0), Seed + 7, Scale * .1 * float3(1,22,1), Octaves, OctaveStrength, OctaveScale);
+                    
+                    SoilBuffer[index] = float3(sand, silt, clay);
+                    
+                    
+                    if (y > 10 * layerNoise  + 0.5* h - 20) {
+                        if (silt > sand && silt > clay) {
+                            VoxelBufferW[index] = 6;      
+                        }
+                        else if (sand > silt && sand > clay) {
+                            VoxelBufferW[index] = 7;      
+                        }
+                        else {
+                            VoxelBufferW[index] = 8;      
+                        }
+
+                    }   
+                    else  {
+                            if (silt > sand && silt > clay) {
+                                VoxelBufferW[index] = 9;      
+                            }
+                            else if (sand > silt && sand > clay) {
+                                VoxelBufferW[index] = 10;      
+                            }
+                            else {
+                                VoxelBufferW[index] = 11;      
+                            }
+                    }
+                }
+                else {
+                    VoxelBufferW[index] = 0;      
+                }
+            }
+        }
+    }
+}
+
+[numthreads(8,8,8)]
+void ErodeSurface(uint3 id : SV_DispatchThreadID)
+{ 
+    int startX = id.x * ThreadSize.x;
+    int startY = id.y * ThreadSize.y; 
+    int startZ = id.z * ThreadSize.z;
+
+    for (int x = startX; x < startX + ThreadSize.x; x++) {
+        for (int z = startZ; z < startZ + ThreadSize.z; z++) {    
+
+            float erodeH = noise(float3(x,1,z) + WorldOrigin, Seed + 6393, Scale * .2 * float3(1,.7,1), 5, 0.5 * OctaveStrength, 1.2 * OctaveScale);     
+            erodeH = clamp(erodeH, 0, 1);
+            erodeH = smoothstep(smoothstep(erodeH));
+            erodeH *= 1.1; //0.8;
+            erodeH -= 1.15;
+            
+            float h = NoiseBuffer[flatIndex2D(x,z)];
+            float newH = clamp(h  - erodeH, 0, h);
+            for (int y = startY; y < startY + ThreadSize.y; y++) {
+
+                int index = flatIndex(x,y,z);
+                
+                if (VoxelBufferR[index] > 0) {
+                    
+  
+                    float surface = y/h;
+
+                    if (surface >= h/WorldSize.y -  erodeH) {
+                        NoiseBuffer[flatIndex2D(x,z)] = y-1;
+                        VoxelBufferW[index] = 0;
+                       //VoxelBufferW[flatIndex(x,y-1,z)] = 1;
+                    }
+                    //else if (abs(y - (WorldSize.y - erodeH)) < 1) {
+                    else if (abs(surface - (h/WorldSize.y -  erodeH)) > .02 && VoxelBufferR[flatIndex(x, y+1, z)] == 0) {
+                        VoxelBufferW[index] = 1;
+                    }
+                }
+            }
+        }
+    }
+}
+
+[numthreads(8,8,8)]
+void AddSoilLayer(uint3 id : SV_DispatchThreadID)
+{ 
+    int startX = id.x * ThreadSize.x;
+    int startY = id.y * ThreadSize.y; 
+    int startZ = id.z * ThreadSize.z;
+
+    for (int x = startX; x < startX + ThreadSize.x; x++) {
+        for (int z = startZ; z < startZ + ThreadSize.z; z++) {    
+
+            float blurNoise = noise(float3(x,1,z) + WorldOrigin, Seed + 25633, Scale * .5* float3(1,.7,1), 5, 0.6 * OctaveStrength, 1 * OctaveScale);
+
+            float blurredH = GetBlurredH(x, z, 16) + 2 + 3*clamp(blurNoise, 0, 1) - 4;
+            float blurredH2= 0.95 * GetBlurredH(x, z, 32) + 2 - 3*clamp(blurNoise, 0, 1) + 3.5;
+            blurredH = max(blurredH, blurredH2);
+
+            //float currentH = NoiseBuffer[flatIndex2D(x,z)];
+            for (int y = startY; y < startY + ThreadSize.y; y++) {
+
+                int index = flatIndex(x,y,z);
+                float soilNoise = noise(float3(x,y,z) + WorldOrigin, Seed + 763126, Scale * .25 * float3(1,14,1), Octaves, OctaveStrength, OctaveScale);
+                
+                if (VoxelBufferR[index] == 0 && y < blurredH) {
+                    
+                    if (soilNoise > 0.5) {
+                        VoxelBufferW[index] = 1;      
+                    }
+                    else {
+                        VoxelBufferW[index] = 3;      
+                    }
+                    //VoxelBufferW[index] = 1;
+                }
+            }
+        }
+    }
 }
 
 [numthreads(8,8,8)]
@@ -227,9 +439,13 @@ void AddTrees(uint3 id : SV_DispatchThreadID)
     for (uint x = startX; x < startX + ThreadSize.x; x++) {
         for (uint z = startZ; z < startZ + ThreadSize.z; z++) {          
             for (uint y = startY; y < startY + ThreadSize.y; y++) {
-                int vox = VoxelBuffer[flatIndex(x, y, z)];
+                
+                int index = flatIndex(x,y,z);
+
+                int vox = VoxelBufferR[index];
                 if (vox == 1 || vox == 2 || vox == 3 || vox == 4) {
-                    int vox_above = VoxelBuffer[flatIndex(x, y+1, z)];
+
+                    int vox_above = VoxelBufferR[flatIndex(x, y+1, z)];
                     float n = noise(float3(x,y,z),  Seed, 30 * float3(1,1,1), 3, 1, 6);
                     float mask = noise(float3(x,y,z) + WorldOrigin, Seed + 870, Scale * .7, Octaves, 0.8 * OctaveStrength, 0.8 * OctaveScale);
                     mask = 1.2 * smoothstep(mask);
@@ -237,17 +453,15 @@ void AddTrees(uint3 id : SV_DispatchThreadID)
 
                     n = (x%2 == z%2) ? 0 : n;
                     if (vox_above == 0 && n > 0.9) {
-                        VoxelBuffer[flatIndex(x, y+1, z)] = 12;
-                        VoxelBuffer[flatIndex(x, y+2, z)] = 12;
-
-                        VoxelBuffer[flatIndex(x,    y+3, z)] = 13;
-                        VoxelBuffer[flatIndex(x-1,  y+3, z)] = 13;
-                        VoxelBuffer[flatIndex(x+1,  y+3, z)] = 13;
-                        VoxelBuffer[flatIndex(x,    y+3, z-1)] = 13;
-                        VoxelBuffer[flatIndex(x,    y+3, z+1)] = 13;
-
-                        VoxelBuffer[flatIndex(x, y+4, z)] = 13;
-                        VoxelBuffer[flatIndex(x, y+5, z)] = 13;
+                        VoxelBufferW[flatIndex(x, y+1, z)] = 12;
+                        VoxelBufferW[flatIndex(x, y+2, z)] = 12;
+                        VoxelBufferW[flatIndex(x,    y+3, z)] = 13;
+                        VoxelBufferW[flatIndex(x-1,  y+3, z)] = 13;
+                        VoxelBufferW[flatIndex(x+1,  y+3, z)] = 13;
+                        VoxelBufferW[flatIndex(x,    y+3, z-1)] = 13;
+                        VoxelBufferW[flatIndex(x,    y+3, z+1)] = 13;
+                        VoxelBufferW[flatIndex(x, y+4, z)] = 13;
+                        VoxelBufferW[flatIndex(x, y+5, z)] = 13;
                     }
                 }
             }
