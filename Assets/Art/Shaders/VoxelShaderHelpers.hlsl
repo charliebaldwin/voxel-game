@@ -42,7 +42,7 @@ half GetShadow(float3 positionWS, float3 normalWS) {
 
     //shadow = lerp(shadow, 1.0, (1.0 - GetMainLightShadowFade(positionWS)));
 
-    shadow = lerp(shadow, 1.0, (cascadeIndex/4));
+    //shadow = lerp(shadow, 1.0, (cascadeIndex/4));
 
     return shadow;
 }

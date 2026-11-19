@@ -47,7 +47,6 @@ public class VoxelGenerator : MonoBehaviour
 	public float OctaveScale = 1.5f;
 
 	public int Seed = 1;
-	private float seedOffset;
 
 	public AnimationCurve CaveHeightCurve;
 	public float CaveThreshold = 0.3f;
@@ -77,9 +76,8 @@ public class VoxelGenerator : MonoBehaviour
 		voxels = new Voxel[this.worldSize.x, this.worldSize.y, this.worldSize.z];
 
 		UnityEngine.Random.InitState(Seed);
-		seedOffset = UnityEngine.Random.Range(0f, 999999f);
-
 		int seed = GetNextSeed(Seed);
+
 		float[] noiseArray1d = new float[worldSize.x * worldSize.y * worldSize.z];
 		int[] voxelArray1d = new int[worldSize.x * worldSize.y * worldSize.z];
 		noiseArray1 = new float[this.worldSize.x, this.worldSize.z];
@@ -91,10 +89,11 @@ public class VoxelGenerator : MonoBehaviour
 		voxelBufferW = new ComputeBuffer(bufferSize, sizeof(int));
 		soilBuffer = new ComputeBuffer(bufferSize, 3 * sizeof(float));
 
-		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "InitialHeight");
-		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "SetStone");
-		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "ErodeSurface");
-		GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "AddSoilLayer");
+		ComputePass(seed, "InitialHeight");
+		ComputePass(seed, "SetStone");
+		ComputePass(seed, "ErodeSurface");
+		ComputePass(seed, "AddSoilLayer");
+		ComputePass(seed, "AddWater");
 		//GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "AddTrees");
 
 		voxelBufferR.GetData(voxelArray1d);
@@ -197,11 +196,8 @@ public class VoxelGenerator : MonoBehaviour
 	#endregion
 
 	#region PASSES 
-	private void GenerateNoiseGPU(Vector3 scale, int seed, int octaves)
-	{
-		GenerateNoiseGPU(scale, seed, octaves, "GenerateNoise");
-	}
-	private void GenerateNoiseGPU(Vector3 scale, int seed, int octaves, string kernel)
+
+	private void ComputePass(int seed, string kernel)
 	{
 		int kernelID = NoiseCS.FindKernel(kernel);
 
@@ -222,8 +218,8 @@ public class VoxelGenerator : MonoBehaviour
 		NoiseCS.SetInts("ThreadCount", threads);
 		NoiseCS.SetInts("ThreadSize", threadSize);
 		NoiseCS.SetInt("Seed", seed);
-		NoiseCS.SetVector("Scale", Scale * scale);
-		NoiseCS.SetInt("Octaves", octaves);
+		NoiseCS.SetVector("Scale", Scale * Vector3.one);
+		NoiseCS.SetInt("Octaves", Octaves);
 		NoiseCS.SetFloat("OctaveScale", OctaveScale);
 		NoiseCS.SetFloat("OctaveStrength", OctaveStrength);
 		NoiseCS.SetFloat("CaveWidth", CaveWidth);
@@ -285,7 +281,7 @@ public class VoxelGenerator : MonoBehaviour
 			{
 				for (int y = 0; y < Size3D.y; y++)
 				{
-					result[x, y, z] = Perlin.Fbm(x * worldSettings.NoiseScale * scale.x + offset.x + seedOffset, y * worldSettings.NoiseScale * scale.y + offset.y + seedOffset, z * worldSettings.NoiseScale * scale.z + offset.z + seedOffset, octaves);
+					result[x, y, z] = Perlin.Fbm(x * scale.x + offset.x, y * scale.y + offset.y, z * scale.z + offset.z, octaves);
 				}
 			}
 		}
@@ -302,7 +298,7 @@ public class VoxelGenerator : MonoBehaviour
 		{
 			for (int z = 0; z < worldSize.z; z++)
 			{
-				float n = Perlin.Fbm(x * worldSettings.NoiseScale * scale.x + offset.x + seedOffset, z * worldSettings.NoiseScale * scale.z + offset.z + seedOffset, octaves);
+				float n = Perlin.Fbm(x * scale.x + offset.x, z * scale.z + offset.z, octaves);
 
 				for (int y = 0; y < worldSize.y; y++)
 				{

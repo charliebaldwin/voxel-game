@@ -86,7 +86,9 @@ Shader "Test/PointToVoxels"
 				float2 grassUV			: TEXCOORD3;
 				float  ao 				: AMBIENTOCCLUSION;
 				float4 color 			: COLOR;
-				float3x3 tbn 			: TNBMATRIX;
+				half3x3 tbn 			: TBNMATRIX;
+				float3 tangentWS		: TANGENT;
+				float3 bitangentWS		: BITANGENT;
 				//float4 tempC : TEXCOORD2;
 			};
 
@@ -201,6 +203,8 @@ Shader "Test/PointToVoxels"
 							//o.ao = (corner + side1 + side2) / 3.0;
 
 							o.tbn = float3x3(tan, bitan, norm);
+							o.tangentWS = tan;
+							o.bitangentWS = bitan;
 							stream.Append(o);
 						}
 
@@ -216,8 +220,16 @@ Shader "Test/PointToVoxels"
 
 			half4 frag(Vertex IN) : SV_Target
 			{
-				half shadow = GetShadow(IN.positionWS, IN.normalWS);	
-				half light = GetLight(IN.normalWS);
+				half4 normalMap = SAMPLE_TEXTURE2D(_EdgeNormalAtlas, sampler_EdgeNormalAtlas, IN.normalUV);
+				//normalMap = normalMap * 2 - 1;
+				half3 normal;
+				normal.x = dot(half3(IN.tangentWS.x, IN.bitangentWS.x, IN.normalWS.x), normalMap.xyz);
+				normal.y = dot(half3(IN.tangentWS.y, IN.bitangentWS.y, IN.normalWS.y), normalMap.xyz);
+				normal.z = dot(half3(IN.tangentWS.z, IN.bitangentWS.z, IN.normalWS.z), normalMap.xyz);
+				normal = normalize(normal);
+
+				half shadow = GetShadow(IN.positionWS, normal);	
+				half light = GetLight(normal);//IN.normalWS);
 				light *= shadow;
 
 				half4 c = SAMPLE_TEXTURE2D(_TextureAtlas, sampler_TextureAtlas, IN.baseUV);
@@ -228,7 +240,7 @@ Shader "Test/PointToVoxels"
 				}
 				half alpha = c.a;
 				//c = float4(abs(IN.normalWS), 1);
-				c += c * .7 * SAMPLE_TEXTURE2D(_EdgeNormalAtlas, sampler_EdgeNormalAtlas, IN.normalUV);
+				//c += c * .7 * SAMPLE_TEXTURE2D(_EdgeNormalAtlas, sampler_EdgeNormalAtlas, IN.normalUV);
 
 
 				half ao = 1-(IN.ao*1);

@@ -38,26 +38,25 @@ Shader "Custom/VoxelShadowCaster"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderVariablesFunctions.hlsl"
 			//#include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
-			#include "Assets/Art/Shaders/VoxelShaderConstants.hlsl"
+			#include "Assets/Art/Shaders/VoxelShaderConstants.hlsl" 
+			
+			struct Voxel
+			{
+				float4 	positionOS 		: POSITION;
+				uint texIndex0:TEXINDEX0; uint texIndex1:TEXINDEX1; uint texIndex2:TEXINDEX2; uint texIndex3:TEXINDEX3; uint texIndex4:TEXINDEX4; uint texIndex5:TEXINDEX5;
+				int feature0Index0:FEAT0INDEX0; int feature0Index1:FEAT0INDEX1; int feature0Index2:FEAT0INDEX2; int feature0Index3:FEAT0INDEX3; int feature0Index4:FEAT0INDEX4;int feature0Index5:FEAT0INDEX5;
 
-			struct v
-			{
-				float4 positionOS : POSITION;
-				float4 uv0 : TEXCOORD0;
-				float4 uv1 : TEXCOORD1;
-				float4 uv2 : TEXCOORD2;
+				//uint 	atlasIndices[6] : ATLASINDICES;
+				uint    solidFaces		: SOLIDFACES;
+				uint	damage 			: DAMAGE;
+				uint	solidNeighbors	: SOLIDNEIGHBORS;
 			};
-            struct v2g
+
+			struct Vertex
 			{
-				float4 positionOS : SV_POSITION;
-				float4 uv0 : TEXCOORD0;
-				float4 uv1 : TEXCOORD1;
-				float4 uv2 : TEXCOORD2;
-			};
-            struct g2f
-			{
-				float4 positionCS : SV_POSITION;
-				float3 positionWS : POSITION1;
+				float4 positionCS 		: SV_POSITION;
+				float3 positionWS 		: POSITION1;
+				//float4 tempC : TEXCOORD2;
 			};
             struct Varyings
             {
@@ -65,30 +64,26 @@ Shader "Custom/VoxelShadowCaster"
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
+			StructuredBuffer<Voxel> _VoxelBuffer;
 
             // VERTEX SHADER
-			v2g vert(v IN)
+			Voxel vert(uint id : SV_VertexID)
 			{
-				v2g OUT;
-				OUT.positionOS = IN.positionOS;
-                OUT.uv0 = IN.uv0;
-                OUT.uv1 = IN.uv1;
-                OUT.uv2 = IN.uv2;
-				return OUT;
+				return _VoxelBuffer[id];
 			}
 
 
             // GEOMETRY SHADER
 			[maxvertexcount(24)]
-			void geo(point v2g input[1], inout TriangleStream<Varyings> stream)
+			void geo(point Voxel IN[1], inout TriangleStream<Varyings> stream)
 			{
-				float3 c = input[0].positionOS;
+				float3 c = IN[0].positionOS;
 				float  h =  0.5; //_Size;
 
 				// Camera in object space, for optional per-face culling
 				float3 camOS = TransformWorldToObject(GetCameraPositionWS());
 
-				uint solidFaces = uint(input[0].uv2.x);
+				uint solidFaces = IN[0].solidFaces;
 
 
 				[unroll]
