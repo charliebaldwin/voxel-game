@@ -441,7 +441,7 @@ void AddWater(uint3 id : SV_DispatchThreadID)
         for (uint z = startZ; z < startZ + ThreadSize.z; z++) {          
             for (uint y = startY; y < startY + ThreadSize.y; y++) {
                 int index = flatIndex(x,y,z);
-                if (VoxelBufferR[index] == 0 && y < 25) {
+                if (VoxelBufferR[index] == 0 && y < 35) {
                     VoxelBufferW[index] = WATER_ID;
                 }
             }

@@ -169,7 +169,7 @@ public class Registry : SerializedScriptableObject
         return atlas;
     }
 
-    public static int GetVoxelID(string type)
+    public static int GetBlockID(string type)
     {
         if (m_blocksByIDString.ContainsKey(type))
         {

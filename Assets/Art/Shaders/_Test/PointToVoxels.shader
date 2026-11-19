@@ -220,16 +220,12 @@ Shader "Test/PointToVoxels"
 
 			half4 frag(Vertex IN) : SV_Target
 			{
-				half4 normalMap = SAMPLE_TEXTURE2D(_EdgeNormalAtlas, sampler_EdgeNormalAtlas, IN.normalUV);
-				//normalMap = normalMap * 2 - 1;
-				half3 normal;
-				normal.x = dot(half3(IN.tangentWS.x, IN.bitangentWS.x, IN.normalWS.x), normalMap.xyz);
-				normal.y = dot(half3(IN.tangentWS.y, IN.bitangentWS.y, IN.normalWS.y), normalMap.xyz);
-				normal.z = dot(half3(IN.tangentWS.z, IN.bitangentWS.z, IN.normalWS.z), normalMap.xyz);
-				normal = normalize(normal);
+				half3 normalMap = UnpackNormal(SAMPLE_TEXTURE2D(_EdgeNormalAtlas, sampler_EdgeNormalAtlas, IN.normalUV));
+				half3 normal = TransformTangentToWorld(normalMap, IN.tbn);
 
-				half shadow = GetShadow(IN.positionWS, normal);	
-				half light = GetLight(normal);//IN.normalWS);
+				half3 lightDir = GetMainLight().direction;
+				half shadow = GetShadow(IN.positionWS, normal, lightDir);	
+				half light = max(0, dot(normal, lightDir)) * 0.8 + 0.2;
 				light *= shadow;
 
 				half4 c = SAMPLE_TEXTURE2D(_TextureAtlas, sampler_TextureAtlas, IN.baseUV);
@@ -259,7 +255,8 @@ Shader "Test/PointToVoxels"
 				}
 
 				c.a=alpha;
-
+				//c = half4(light, light, light, 1);
+				//c = half4(normal.y, normal.y, normal.y, 1);
 				return half4(c.rgb, alpha);
 
 			}

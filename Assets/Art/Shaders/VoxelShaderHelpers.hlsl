@@ -31,11 +31,14 @@ half GetLight(float3 normalWS) {
     return light;
 }
 
-half GetShadow(float3 positionWS, float3 normalWS) {
+half GetShadow(float3 positionWS, float3 normalWS, float3 lightDir) {
     half cascadeIndex = ComputeCascadeIndex(positionWS);
-    if (cascadeIndex >= 2) return 1.0;
+    //if (cascadeIndex >= 2) return 1.0;
 
-    float3 steppedWS = floor((positionWS + 0.01 * normalWS) * 16) / 16;
+    float3 posBiased = ApplyShadowBias(positionWS+ 0.01 * normalWS , normalWS, lightDir);
+
+    float3 steppedWS = floor((posBiased) * 16) / 16;
+    
     float4 shadowCoord = TransformWorldToShadowCoord(steppedWS);
     half shadow = MainLightRealtimeShadow(shadowCoord);
     shadow = clamp(shadow, 0.3, 1.0);

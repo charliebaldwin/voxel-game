@@ -32,11 +32,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EdgeNormalAtlas:
-        m_Texture: {fileID: 2800000, guid: 7fee2b02e32ced24ab98755839c60e9a, type: 3}
+        m_Texture: {fileID: 2800000, guid: abd3262681fef2547bae88061705b27a, type: 3}
         m_Scale: {x: 5.6, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FeatureAtlas0:
-        m_Texture: {fileID: 2800000, guid: 1b0cc1ff4a36ed34ab8739ed60ad616c, type: 2}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TextureAtlas:

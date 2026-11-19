@@ -8,7 +8,6 @@ public class Voxel
     public int Damage;
     public OrthoNormal UpAxis;
     public OrthoNormal ForwardAxis;
-    public Color VertexColor;
     public bool Grassy;
 
 
@@ -21,13 +20,12 @@ public class Voxel
 
         UpAxis = OrthoNormal.up;
         ForwardAxis = OrthoNormal.forward;
-        VertexColor = Color.black;
         Grassy = false;
     }
 
     public Voxel(string id)
     {
-        new Voxel(Registry.GetVoxelID(id));
+        new Voxel(Registry.GetBlockID(id));
     }
     public bool IsEmpty()
     {

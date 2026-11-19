@@ -11,7 +11,7 @@ Shader "Custom/VoxelShadowCaster"
 
 			ZWrite On
 			ZTest Less
-			//Cull[_Cull]
+			Cull Back
 
 
 			HLSLPROGRAM

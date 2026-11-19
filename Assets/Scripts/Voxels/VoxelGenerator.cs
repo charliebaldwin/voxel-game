@@ -328,11 +328,11 @@ public class VoxelGenerator : MonoBehaviour
 			float depth = h - y;
 			if (depth < 0f)
 			{
-				SetVoxel(x, y, z, new Voxel(Registry.GetVoxelID("air")));
+				SetVoxel(x, y, z, new Voxel(0));
 			}
 			else
 			{
-				SetVoxel(x, y, z, new Voxel(Registry.GetVoxelID("silt")));
+				SetVoxel(x, y, z, new Voxel(1));
 
 				// Stone Layers
 				// if (DoStoneLayers)
@@ -430,7 +430,7 @@ public class VoxelGenerator : MonoBehaviour
 
 	private void SoilNoise(int x, int y, int z)
 	{
-		if (GetVoxel(x, y, z).BlockType == Registry.GetVoxelID("silt"))
+		if (GetVoxel(x, y, z).BlockType == 1)
 		{
 
 			float sand = noiseSand[x, y, z];
