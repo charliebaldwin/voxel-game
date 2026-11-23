@@ -2152,7 +2152,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  RefreshOnValidate: 0
+  RefreshOnValidate: 1
   MainTextureAtlasPath: Assets/Art/Textures/Generated/Atlas_Main.asset
   TextureFeatureAtlasPaths:
   - Assets/Art/Textures/Generated/Atlas_Feature_Grass.asset

@@ -39,7 +39,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 	private MeshingMethod meshingMethod = MeshingMethod.CPU;
 
 	// voxel data
-	private Voxel[,,] Voxels = new Voxel[1, 1, 1];
+	private Voxel[,,] Voxels;// = new Voxel[1, 1, 1];
 	private List<Vector3Int> activeVoxels = new List<Vector3Int>();
 	private Dictionary<Vector3Int, BlockEntityActor> BlockEntities;
 
@@ -52,6 +52,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 
 	// references
 	private static VoxelWorld world;
+	private VoxelGenerator generator;
 	private MeshFilter meshFilter;
 	private Mesh mesh;
 	private MeshCollider meshCollider;
@@ -93,7 +94,6 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 	public void Initialize()
 	{
 		world = World();
-
 		meshingMethod = world.MeshingMethod;
 		meshFilter = GetComponent<MeshFilter>();
 		meshCollider = GetComponent<MeshCollider>();
@@ -109,11 +109,19 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		Voxels = new Voxel[Size3D.x, Size3D.y, Size3D.z];
 		BlockEntities = new Dictionary<Vector3Int, BlockEntityActor>();
 
-		UnloadChunk();
 
 		initialized = true;
 
 	}
+	public void GenerateVoxels()
+	{
+		generator = GetComponent<VoxelGenerator>();
+		Voxels = new Voxel[Size3D.x, Size3D.y, Size3D.z];
+		int margin = 2;
+		generator.Generate(Size3D + 2 * margin * Vector3Int.one, SnapToGrid(transform.position));
+		Voxels = generator.GetGeneratedVoxels(margin);
+	}
+
 	public VoxelChunk LoadChunk()
 	{
 		gameObject.SetActive(true);

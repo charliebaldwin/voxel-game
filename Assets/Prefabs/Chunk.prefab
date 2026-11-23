@@ -147,6 +147,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8943404616224546622}
   - component: {fileID: 6851829942216310068}
+  - component: {fileID: 5629268765254642348}
   - component: {fileID: 131667949381789334}
   - component: {fileID: 932715542749310703}
   - component: {fileID: 8886474749343704704}
@@ -185,13 +186,88 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd09311d58c1f44bb43a7989836bc93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshFilter: {fileID: 0}
-  mesh: {fileID: 0}
-  meshCollider: {fileID: 0}
-  meshRenderer: {fileID: 0}
+  ChunkPos: {x: 0, y: 0, z: 0}
+  Loaded: 0
   blockBreakVFXPrefab: {fileID: 9064137146881411430, guid: 6cd3d86ffe9b99c42a7a5afc6d049a2e, type: 3}
   blockHitVFXPrefab: {fileID: 9064137146881411430, guid: b4c8fe101fc64644bbf37b20df6ad4cc, type: 3}
   foliage: {fileID: 0}
+--- !u!114 &5629268765254642348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3265665669344878959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c3e5e967cd5684b8efe2fd1c685a2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoxelGenerator
+  NoiseCS: {fileID: 7200000, guid: c38731ca5e06507439d8865f3f4b63e3, type: 3}
+  worldSize: {x: 96, y: 144, z: 96}
+  Scale: 0.02
+  HeightRange: 2
+  HeightOffset: 1
+  Octaves: 6
+  OctaveStrength: 0.57
+  OctaveScale: 1.7
+  Seed: 32
+  CaveHeightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.4455629
+      inSlope: 0.25455254
+      outSlope: 0.25455254
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.8251429
+    - serializedVersion: 3
+      time: 0.032363266
+      value: 0.7180804
+      inSlope: 4.9806137
+      outSlope: 4.9806137
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.09458395
+    - serializedVersion: 3
+      time: 0.17666529
+      value: 0.9983723
+      inSlope: 0.04371558
+      outSlope: 0.04371558
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.31286755
+    - serializedVersion: 3
+      time: 0.3124748
+      value: 0.6829135
+      inSlope: -4.3778787
+      outSlope: -4.3778787
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.0947517
+    - serializedVersion: 3
+      time: 0.4624443
+      value: 0.4455629
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  CaveThreshold: 0.5
+  CaveWidth: 0.08
+  InvertCaves: 0
+  DoStoneLayers: 0
+  SoilWeight: {x: 0.2, y: 1, z: 1.5}
 --- !u!33 &131667949381789334
 MeshFilter:
   m_ObjectHideFlags: 0

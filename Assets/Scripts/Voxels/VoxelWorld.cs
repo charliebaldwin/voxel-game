@@ -94,8 +94,9 @@ public partial class VoxelWorld : MonoBehaviour
 		Vector3Int worldVoxelSize = new Vector3Int(ChunkSize.x * WorldSize.x, ChunkSize.y * WorldSize.y, ChunkSize.z * WorldSize.z);
 		//GenerateVoxelsCPU(worldVoxelSize);
 		generator = GetComponent<VoxelGenerator>();
-		generator.Generate(worldVoxelSize, Vector3Int.zero);
-		Voxels = generator.GetGeneratedVoxels();
+		int margin = 0;
+		generator.Generate(worldVoxelSize + 2 * margin * Vector3Int.one, Vector3Int.zero);
+		Voxels = generator.GetGeneratedVoxels(margin);
 
 		loadedChunks = new List<VoxelChunk>();
 		Chunks = new VoxelChunk[WorldSize.x, WorldSize.y, WorldSize.z];
@@ -164,6 +165,8 @@ public partial class VoxelWorld : MonoBehaviour
 			}
 			newChunk.ChunkPos = chunkPos;
 			newChunk.Initialize();
+			//newChunk.GenerateVoxels();
+			newChunk.UnloadChunk();
 			newChunk.FillVoxelData(chunkData);
 
 			//Chunks[chunkPos.x, chunkPos.y, chunkPos.z] = newChunk;

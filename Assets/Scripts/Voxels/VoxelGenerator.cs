@@ -2,6 +2,8 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using System;
 using Unity.Collections;
+using Unity.Mathematics;
+
 //using Unity.Mathematics;
 using UnityEditor;
 using UnityEditor.AdaptivePerformance.Editor;
@@ -147,6 +149,22 @@ public class VoxelGenerator : MonoBehaviour
 	public Voxel[,,] GetGeneratedVoxels()
 	{
 		return voxels;
+	}
+	public Voxel[,,] GetGeneratedVoxels(int margin)
+	{
+		int3 croppedSize = new int3(worldSize.x - 2 * margin, worldSize.y - 2 * margin, worldSize.z - 2 * margin);
+		Voxel[,,] result = new Voxel[croppedSize.x, croppedSize.y, croppedSize.z];
+		for (int x = 0; x < croppedSize.x; x++)
+		{
+			for (int y = 0; y < croppedSize.y; y++)
+			{
+				for (int z = 0; z < croppedSize.z; z++)
+				{
+					result[x, y, z] = voxels[x + margin, y + margin, z + margin];
+				}
+			}
+		}
+		return result;
 	}
 
 	#region GET/SET

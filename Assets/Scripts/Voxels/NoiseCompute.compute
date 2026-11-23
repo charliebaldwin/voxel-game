@@ -96,18 +96,25 @@ float getHeight(float3 p) {
     return 35 + 0.8 * (big + med + small);
 }
 
-
+uint3 GetStartP(uint3 id, uint3 threadSize) {
+    return uint3(   id.x * ThreadSize.x,
+                    id.y * ThreadSize.y,
+                    id.z * ThreadSize.z);
+}
+uint3 GetEndP(uint3 startP, uint3 threadSize) {
+    return uint3(   startP.x + ThreadSize.x,
+                    startP.y + ThreadSize.y,
+                    startP.z + ThreadSize.z);
+}
 
 [numthreads(8,8,8)]
 void InitialHeight (uint3 id : SV_DispatchThreadID)
 { 
-    
-    uint startX = id.x * ThreadSize.x;
-    uint startY = id.y * ThreadSize.y; 
-    uint startZ = id.z * ThreadSize.z;
+    uint3 startP = GetStartP(id, ThreadSize);
+    uint3 endP = GetEndP(startP, ThreadSize);
 
-    for (uint x = startX; x < startX + ThreadSize.x; x++) {
-        for (uint z = startZ; z < startZ + ThreadSize.z; z++) {
+    for (uint x = startP.x; x < endP.x; x++) {
+        for (uint z = startP.z; z < endP.z; z++) {
                             
             float3 p = float3(x,1.0,z);
             float h = getHeight(p);
@@ -181,16 +188,15 @@ float GetBlurredH(uint x, uint z, int r) {
 void PostProcess(uint3 id : SV_DispatchThreadID)
 { 
     
-    int startX = id.x * ThreadSize.x;
-    int startY = id.y * ThreadSize.y; 
-    int startZ = id.z * ThreadSize.z;
-
-    for (int x = startX; x < startX + ThreadSize.x; x++) {
-        for (int z = startZ; z < startZ + ThreadSize.z; z++) {        
+    uint3 startP = GetStartP(id, ThreadSize);
+    uint3 endP = GetEndP(startP, ThreadSize);
+    
+    for (uint x = startP.x; x < endP.x; x++) {
+        for (uint z = startP.z; z < endP.z; z++) {    
                             
             float layerNoise = 2 * noise(float3(x,1,z) + WorldOrigin, Seed + 35, Scale * 1 * float3(1,.7,1), 5, 0.7 * OctaveStrength, 1.2 * OctaveScale);
   
-            for (int y = startY; y < startY + ThreadSize.y; y++) {
+            for (uint y = startP.y; z < endP.y; y++) {
                 
                 int index = flatIndex(x,y,z);
 
@@ -283,17 +289,16 @@ void PostProcess(uint3 id : SV_DispatchThreadID)
 void SetStone(uint3 id : SV_DispatchThreadID)
 { 
     
-    int startX = id.x * ThreadSize.x;
-    int startY = id.y * ThreadSize.y; 
-    int startZ = id.z * ThreadSize.z;
-
-    for (int x = startX; x < startX + ThreadSize.x; x++) {
-        for (int z = startZ; z < startZ + ThreadSize.z; z++) {        
+    uint3 startP = GetStartP(id, ThreadSize);
+    uint3 endP = GetEndP(startP, ThreadSize);
+    
+    for (uint x = startP.x; x < endP.x; x++) {
+        for (uint z = startP.z; z < endP.z; z++) {         
                             
             float layerNoise = 2 * noise(float3(x,1,z) + WorldOrigin, Seed + 35, Scale * .1 * float3(1,.6,1), 5, 0.7 * OctaveStrength, 1.2 * OctaveScale);
             float h = NoiseBuffer[flatIndex2D(x, z)];
             
-            for (int y = startY; y < startY + ThreadSize.y; y++) {
+            for (uint y = startP.y; y < endP.y; y++) {
                 
                 int index = flatIndex(x,y,z);
 
@@ -355,12 +360,11 @@ void SetStone(uint3 id : SV_DispatchThreadID)
 [numthreads(8,8,8)]
 void ErodeSurface(uint3 id : SV_DispatchThreadID)
 { 
-    int startX = id.x * ThreadSize.x;
-    int startY = id.y * ThreadSize.y; 
-    int startZ = id.z * ThreadSize.z;
-
-    for (int x = startX; x < startX + ThreadSize.x; x++) {
-        for (int z = startZ; z < startZ + ThreadSize.z; z++) {    
+    uint3 startP = GetStartP(id, ThreadSize);
+    uint3 endP = GetEndP(startP, ThreadSize);
+    
+    for (uint x = startP.x; x < endP.x; x++) {
+        for (uint z = startP.z; z < endP.z; z++) {     
 
             float erodeH = noise(float3(x,1,z) + WorldOrigin, Seed + 6393, Scale * .2 * float3(1,.7,1), 5, 0.5 * OctaveStrength, 1.2 * OctaveScale);     
             erodeH = clamp(erodeH, 0, 1);
@@ -370,7 +374,8 @@ void ErodeSurface(uint3 id : SV_DispatchThreadID)
             
             float h = NoiseBuffer[flatIndex2D(x,z)];
             float newH = clamp(h  - erodeH, 0, h);
-            for (int y = startY; y < startY + ThreadSize.y; y++) {
+
+            for (uint y = startP.y; y < endP.y; y++) { 
 
                 int index = flatIndex(x,y,z);
                 
@@ -397,12 +402,11 @@ void ErodeSurface(uint3 id : SV_DispatchThreadID)
 [numthreads(8,8,8)]
 void AddSoilLayer(uint3 id : SV_DispatchThreadID)
 { 
-    int startX = id.x * ThreadSize.x;
-    int startY = id.y * ThreadSize.y; 
-    int startZ = id.z * ThreadSize.z;
-
-    for (int x = startX; x < startX + ThreadSize.x; x++) {
-        for (int z = startZ; z < startZ + ThreadSize.z; z++) {    
+    uint3 startP = GetStartP(id, ThreadSize);
+    uint3 endP = GetEndP(startP, ThreadSize);
+    
+    for (uint x = startP.x; x < endP.x; x++) {
+        for (uint z = startP.z; z < endP.z; z++) { 
 
             float blurNoise = noise(float3(x,1,z) + WorldOrigin, Seed + 25633, Scale * .3* float3(1,.7,1), 5, 0.6 * OctaveStrength, 1 * OctaveScale);
 
@@ -411,11 +415,11 @@ void AddSoilLayer(uint3 id : SV_DispatchThreadID)
             blurredH = max(blurredH, blurredH2);
 
             //float currentH = NoiseBuffer[flatIndex2D(x,z)];
-            for (int y = startY; y < startY + ThreadSize.y; y++) {
+            for (uint y = startP.y; y < endP.y; y++) { 
 
                 int index = flatIndex(x,y,z);
                 float soilNoise = noise(float3(x,y,z) + WorldOrigin, Seed + 763126, Scale * .25 * float3(1,14,1), Octaves, OctaveStrength, OctaveScale);
-                
+                 
                 if (VoxelBufferR[index] == 0 && y < blurredH) {
                     
                     if (soilNoise > 0.5) {
@@ -435,13 +439,12 @@ void AddSoilLayer(uint3 id : SV_DispatchThreadID)
 void AddWater(uint3 id : SV_DispatchThreadID)
 { 
     const int WATER_ID = 15;
-    uint startX = id.x * ThreadSize.x;
-    uint startY = id.y * ThreadSize.y; 
-    uint startZ = id.z * ThreadSize.z;
-
-    for (uint x = startX; x < startX + ThreadSize.x; x++) {
-        for (uint z = startZ; z < startZ + ThreadSize.z; z++) {          
-            for (uint y = startY; y < startY + ThreadSize.y; y++) {
+    uint3 startP = GetStartP(id, ThreadSize);
+    uint3 endP = GetEndP(startP, ThreadSize);
+    
+    for (uint x = startP.x; x < endP.x; x++) {
+        for (uint z = startP.z; z < endP.z; z++) { 
+            for (uint y = startP.y; y < endP.y; y++) { 
                 int index = flatIndex(x,y,z);
                 if (VoxelBufferR[index] == 0 && y < 35) {
                     VoxelBufferW[index] = WATER_ID;
@@ -454,14 +457,13 @@ void AddWater(uint3 id : SV_DispatchThreadID)
 [numthreads(8,8,8)]
 void RandomInt(uint3 id : SV_DispatchThreadID)
 { 
-    const int WATER_ID = 15;
-    uint startX = id.x * ThreadSize.x;
-    uint startY = id.y * ThreadSize.y; 
-    uint startZ = id.z * ThreadSize.z;
-    for (uint x = startX; x < startX + ThreadSize.x; x++) {
-        for (uint z = startZ; z < startZ + ThreadSize.z; z++) {          
-            for (uint y = startY; y < startY + ThreadSize.y; y++) {
-                float n = 0.1 + noise(float3(x,y,z) + WorldOrigin, Seed + 802123, 10000 * float3(1,1,1), 1, 1, 1);
+    uint3 startP = GetStartP(id, ThreadSize);
+    uint3 endP = GetEndP(startP, ThreadSize);
+    
+    for (uint x = startP.x; x < endP.x; x++) {
+        for (uint z = startP.z; z < endP.z; z++) { 
+            for (uint y = startP.y; y < endP.y; y++) { 
+                float n = frac(50 * noise(float3(x,y,z) + WorldOrigin, Seed + 802123, 50000 * float3(1,1,1), 1, 1, 1));
                 RandomBuffer[flatIndex(x,y,z)] = floor(n * 1000);
             }
         }
@@ -472,13 +474,12 @@ void RandomInt(uint3 id : SV_DispatchThreadID)
 void AddTrees(uint3 id : SV_DispatchThreadID)
 { 
     
-    uint startX = id.x * ThreadSize.x;
-    uint startY = id.y * ThreadSize.y; 
-    uint startZ = id.z * ThreadSize.z;
-
-    for (uint x = startX; x < startX + ThreadSize.x; x++) {
-        for (uint z = startZ; z < startZ + ThreadSize.z; z++) {          
-            for (uint y = startY; y < startY + ThreadSize.y; y++) {
+    uint3 startP = GetStartP(id, ThreadSize);
+    uint3 endP = GetEndP(startP, ThreadSize);
+    
+    for (uint x = startP.x; x < endP.x; x++) {
+        for (uint z = startP.z; z < endP.z; z++) { 
+            for (uint y = startP.y; y < endP.y; y++) { 
                 
                 int index = flatIndex(x,y,z);
 
