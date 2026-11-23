@@ -15,12 +15,14 @@
 #pragma kernel ErodeSurface
 #pragma kernel AddSoilLayer
 #pragma kernel AddWater
+#pragma kernel RandomInt
 
 // BUFFERS
 RWStructuredBuffer<float> NoiseBuffer;
 RWStructuredBuffer<int> VoxelBufferW;
 RWStructuredBuffer<int> VoxelBufferR;
 RWStructuredBuffer<float3> SoilBuffer;
+RWStructuredBuffer<int> RandomBuffer;
 
 // SETTINGS
 int3 WorldSize;
@@ -449,6 +451,22 @@ void AddWater(uint3 id : SV_DispatchThreadID)
     }
 }
 
+[numthreads(8,8,8)]
+void RandomInt(uint3 id : SV_DispatchThreadID)
+{ 
+    const int WATER_ID = 15;
+    uint startX = id.x * ThreadSize.x;
+    uint startY = id.y * ThreadSize.y; 
+    uint startZ = id.z * ThreadSize.z;
+    for (uint x = startX; x < startX + ThreadSize.x; x++) {
+        for (uint z = startZ; z < startZ + ThreadSize.z; z++) {          
+            for (uint y = startY; y < startY + ThreadSize.y; y++) {
+                float n = 0.1 + noise(float3(x,y,z) + WorldOrigin, Seed + 802123, 10000 * float3(1,1,1), 1, 1, 1);
+                RandomBuffer[flatIndex(x,y,z)] = floor(n * 1000);
+            }
+        }
+    }
+}
 
 [numthreads(8,8,8)]
 void AddTrees(uint3 id : SV_DispatchThreadID)

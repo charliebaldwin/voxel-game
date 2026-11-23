@@ -527,7 +527,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 
 							positions.Add(new Vector3(x, y, z));
 							BlockType type = Registry.GetBlockType(vox);
-							int[] indices = type.TextureGroup.GetIndices();//BlockRegistry.LookupBlockTextures(vox.BlockID);
+							int[] indices = type.TextureGroup.GetRandomIndices(vox.Random);//BlockRegistry.LookupBlockTextures(vox.BlockID);
 							int[] grassIndices = new int[6] { -1, -1, -1, -1, -1, -1 };
 							if (type.TextureFeatures.Count > 0 && vox.Grassy)
 							{

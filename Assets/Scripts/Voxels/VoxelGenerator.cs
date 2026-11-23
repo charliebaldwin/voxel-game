@@ -19,6 +19,7 @@ public class VoxelGenerator : MonoBehaviour
 	ComputeBuffer voxelBufferR;
 	ComputeBuffer voxelBufferW;
 	ComputeBuffer soilBuffer;
+	ComputeBuffer randomBuffer;
 
 	private float[,] noiseArray1;
 	private float[,,] noiseArray2;
@@ -31,6 +32,7 @@ public class VoxelGenerator : MonoBehaviour
 
 	private float[,,] noiseCaves;
 	private bool[,,] exposedToSky;
+	private int[,,] randomInts;
 
 
 	[SerializeField]
@@ -78,32 +80,38 @@ public class VoxelGenerator : MonoBehaviour
 		UnityEngine.Random.InitState(Seed);
 		int seed = GetNextSeed(Seed);
 
-		float[] noiseArray1d = new float[worldSize.x * worldSize.y * worldSize.z];
-		int[] voxelArray1d = new int[worldSize.x * worldSize.y * worldSize.z];
+		int bufferSize = worldSize.x * worldSize.y * worldSize.z;
+
+		float[] noiseArray1d = new float[bufferSize];
+		int[] voxelArray1d = new int[bufferSize];
 		noiseArray1 = new float[this.worldSize.x, this.worldSize.z];
 		voxelArray = new int[this.worldSize.x, this.worldSize.y, this.worldSize.z];
+		int[] randomArray1d = new int[bufferSize];
+		randomInts = new int[worldSize.x, worldSize.y, worldSize.z];
 
-		int bufferSize = worldSize.x * worldSize.y * worldSize.z;
 		heightBuffer = new ComputeBuffer(bufferSize / worldSize.y, sizeof(float));
 		voxelBufferR = new ComputeBuffer(bufferSize, sizeof(int));
 		voxelBufferW = new ComputeBuffer(bufferSize, sizeof(int));
 		soilBuffer = new ComputeBuffer(bufferSize, 3 * sizeof(float));
+		randomBuffer = new ComputeBuffer(bufferSize, sizeof(int));
 
 		ComputePass(seed, "InitialHeight");
 		ComputePass(seed, "SetStone");
 		ComputePass(seed, "ErodeSurface");
 		ComputePass(seed, "AddSoilLayer");
 		ComputePass(seed, "AddWater");
+		ComputePass(seed, "RandomInt");
 		//GenerateNoiseGPU(0.2f * Vector3.one, seed, Octaves, "AddTrees");
 
 		voxelBufferR.GetData(voxelArray1d);
-
+		randomBuffer.GetData(randomArray1d);
 
 		for (int x = 0; x < worldSize.x; x++)
 			for (int z = 0; z < worldSize.z; z++)
 				for (int y = 0; y < worldSize.y; y++)
 				{
 					voxelArray[x, y, z] = voxelArray1d[x + worldSize.x * y + worldSize.x * worldSize.y * z];
+					randomInts[x, y, z] = randomArray1d[x + worldSize.x * y + worldSize.x * worldSize.y * z];
 				}
 
 		seed = GetNextSeed(seed);
@@ -206,6 +214,7 @@ public class VoxelGenerator : MonoBehaviour
 		NoiseCS.SetBuffer(kernelID, "SoilBuffer", soilBuffer);
 		NoiseCS.SetBuffer(kernelID, "VoxelBufferW", voxelBufferW);
 		NoiseCS.SetBuffer(kernelID, "VoxelBufferR", voxelBufferR);
+		NoiseCS.SetBuffer(kernelID, "RandomBuffer", randomBuffer);
 
 		// settings
 		int[] size = new int[3] { worldSize.x, worldSize.y, worldSize.z };
@@ -310,8 +319,9 @@ public class VoxelGenerator : MonoBehaviour
 	}
 	private void BuildTerrain2(int x, int y, int z)
 	{
-		int n = voxelArray[x, y, z];
-		SetVoxel(x, y, z, new Voxel(n));
+		Voxel v = new Voxel(voxelArray[x, y, z]);
+		v.Random = randomInts[x, y, z];
+		SetVoxel(x, y, z, v);
 
 	}
 	private void BuildTerrain(int x, int z)

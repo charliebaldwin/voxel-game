@@ -9,6 +9,7 @@ public class Voxel
     public OrthoNormal UpAxis;
     public OrthoNormal ForwardAxis;
     public bool Grassy;
+    public int Random;
 
 
     public Voxel(int blockType)

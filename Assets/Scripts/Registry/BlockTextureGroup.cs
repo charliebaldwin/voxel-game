@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,6 +17,19 @@ public abstract class BlockTextureGroup
     public int[] GetIndices()
     {
         return new int[6] { GetIndexNX(), GetIndexPX(), GetIndexNY(), GetIndexPY(), GetIndexNZ(), GetIndexPZ() };
+    }
+    public virtual int[] GetRandomIndices(int seed)
+    {
+        int len = Textures.Count;
+        return (new int[6] {
+            TextureIndices[(seed) % len],
+            TextureIndices[(seed+1) % len],
+            TextureIndices[(seed+2) % len],
+            TextureIndices[(seed+3) % len],
+            TextureIndices[(seed+4) % len],
+            TextureIndices[(seed+5) % len]
+        }).ToArray<int>();
+
     }
 
 
@@ -37,6 +52,7 @@ public class UniformBlockTextureGroup : BlockTextureGroup
         Textures.Add(AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Art/Textures/Blocks/Block_Default_Color.png"));
     }
 }
+
 public class SixSidedBlockTextureGroup : BlockTextureGroup
 {
 
@@ -69,5 +85,9 @@ public class LogBlockTextureGroup : BlockTextureGroup
         TextureIndices = new List<int>();
         for (int i = 0; i < 2; i++)
             Textures.Add(AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Art/Textures/Blocks/Block_Default_Color.png"));
+    }
+    public override int[] GetRandomIndices(int seed)
+    {
+        return GetIndices();
     }
 }

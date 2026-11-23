@@ -36,7 +36,7 @@ Material:
         m_Scale: {x: 5.6, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FeatureAtlas0:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 1b0cc1ff4a36ed34ab8739ed60ad616c, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TextureAtlas:
@@ -47,7 +47,7 @@ Material:
     m_Floats:
     - _AtlasIndex: 2
     - _Cols: 4
-    - _Rows: 5
+    - _Rows: 8
     - _Size: 0.5
     - _UseAO: 1.29
     m_Colors:
