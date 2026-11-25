@@ -118,7 +118,7 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 		generator = GetComponent<VoxelGenerator>();
 		Voxels = new Voxel[Size3D.x, Size3D.y, Size3D.z];
 		int margin = 2;
-		generator.Generate(Size3D + 2 * margin * Vector3Int.one, SnapToGrid(transform.position));
+		generator.Generate(Size3D + (2 * margin * Vector3Int.one), SnapToGrid(transform.position));
 		Voxels = generator.GetGeneratedVoxels(margin);
 	}
 
@@ -534,13 +534,23 @@ public class VoxelChunk : MonoBehaviour, IInitializable
 							}
 
 							positions.Add(new Vector3(x, y, z));
+							int[] indices = new int[6] { 1, 1, 1, 1, 1, 1 };
 							BlockType type = Registry.GetBlockType(vox);
-							int[] indices = type.TextureGroup.GetRandomIndices(vox.Random);//BlockRegistry.LookupBlockTextures(vox.BlockID);
-							int[] grassIndices = new int[6] { -1, -1, -1, -1, -1, -1 };
-							if (type.TextureFeatures.Count > 0 && vox.Grassy)
+							if (type != null)
 							{
-								grassIndices = type.TextureFeatures[0].GetIndices();
+								BlockTextureGroup tg = type.TextureGroup;
+								if (tg != null)
+								{
+									int r = vox.Random;
+									indices = tg.GetRandomIndices(r);
+								}
 							}
+							//BlockRegistry.LookupBlockTextures(vox.BlockID);
+							int[] grassIndices = new int[6] { -1, -1, -1, -1, -1, -1 };
+							// if (type.TextureFeatures.Count > 0 && vox.Grassy)
+							// {
+							// 	grassIndices = type.TextureFeatures[0].GetIndices();
+							// }
 
 							SourceVoxel sourceVoxel = new SourceVoxel
 							{

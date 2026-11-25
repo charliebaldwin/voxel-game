@@ -29,6 +29,7 @@ public partial class VoxelWorld : MonoBehaviour
 	//[SerializeField] private int2 InitialLoadedChunks = new int2(2, 2);
 	[SerializeField] private WorldGenSettings GenerationSettings;
 	[SerializeField] VoxelGenerator generator;
+	[SerializeField] Registry registry;
 	[SerializeField] private GameObject ChunkPrefab;
 	[SerializeField] private GameObject BlockEntityPrefab;
 	public MeshingMethod MeshingMethod = MeshingMethod.CPUPlusGeoShader;
@@ -81,6 +82,7 @@ public partial class VoxelWorld : MonoBehaviour
 	public void Initialize()
 	{
 		SetInstance();
+		registry.Initialize();
 		VoxelChunk.Size3D = ChunkSize;
 
 		for (int i = transform.childCount - 1; i >= 0; i--)
@@ -93,10 +95,10 @@ public partial class VoxelWorld : MonoBehaviour
 
 		Vector3Int worldVoxelSize = new Vector3Int(ChunkSize.x * WorldSize.x, ChunkSize.y * WorldSize.y, ChunkSize.z * WorldSize.z);
 		//GenerateVoxelsCPU(worldVoxelSize);
-		generator = GetComponent<VoxelGenerator>();
-		int margin = 0;
-		generator.Generate(worldVoxelSize + 2 * margin * Vector3Int.one, Vector3Int.zero);
-		Voxels = generator.GetGeneratedVoxels(margin);
+		//generator = GetComponent<VoxelGenerator>();
+		//int margin = 0;
+		//generator.Generate(worldVoxelSize + 2 * margin * Vector3Int.one, Vector3Int.zero);
+		//Voxels = generator.GetGeneratedVoxels(margin);
 
 		loadedChunks = new List<VoxelChunk>();
 		Chunks = new VoxelChunk[WorldSize.x, WorldSize.y, WorldSize.z];
@@ -148,26 +150,26 @@ public partial class VoxelWorld : MonoBehaviour
 			//MinMaxAABB bounds = new MinMaxAABB(new float3(pos.x * ChunkSize.x, pos.y * ChunkSize.y, pos.z * ChunkSize.z), new float3((pos.x + 1) * ChunkSize.x, (pos.y + 1) * ChunkSize.y, (pos.z + 1) * ChunkSize.z));
 
 
-			Voxel[,,] chunkData = new Voxel[ChunkSize.x, ChunkSize.y, ChunkSize.z];
+			// Voxel[,,] chunkData = new Voxel[ChunkSize.x, ChunkSize.y, ChunkSize.z];
 
-			for (int x = 0; x < ChunkSize.x; x++)
-			{
-				for (int y = 0; y < ChunkSize.y; y++)
-				{
-					for (int z = 0; z < ChunkSize.z; z++)
-					{
-						//Voxel v = LookupVoxelWorld(new Vector3Int(x + pos.x * ChunkSize.x, y, z + pos.z * ChunkSize.z));
-						Voxel v = Voxels[x + chunkPos.x * ChunkSize.x, y + chunkPos.y * ChunkSize.y, z + chunkPos.z * ChunkSize.z];
-						//if (v == null) v = new Voxel("air");
-						chunkData[x, y, z] = v;
-					}
-				}
-			}
+			// for (int x = 0; x < ChunkSize.x; x++)
+			// {
+			// 	for (int y = 0; y < ChunkSize.y; y++)
+			// 	{
+			// 		for (int z = 0; z < ChunkSize.z; z++)
+			// 		{
+			// 			//Voxel v = LookupVoxelWorld(new Vector3Int(x + pos.x * ChunkSize.x, y, z + pos.z * ChunkSize.z));
+			// 			Voxel v = Voxels[x + chunkPos.x * ChunkSize.x, y + chunkPos.y * ChunkSize.y, z + chunkPos.z * ChunkSize.z];
+			// 			//if (v == null) v = new Voxel("air");
+			// 			chunkData[x, y, z] = v;
+			// 		}
+			// 	}
+			// }
 			newChunk.ChunkPos = chunkPos;
 			newChunk.Initialize();
-			//newChunk.GenerateVoxels();
+			newChunk.GenerateVoxels();
 			newChunk.UnloadChunk();
-			newChunk.FillVoxelData(chunkData);
+			//newChunk.FillVoxelData(chunkData);
 
 			//Chunks[chunkPos.x, chunkPos.y, chunkPos.z] = newChunk;
 		}
@@ -190,11 +192,11 @@ public partial class VoxelWorld : MonoBehaviour
 	{
 		if (!Initialized)
 			Initialize();
-		for (int x = 0; x < WorldSize.x; x++)
+		for (int x = 0; x <= WorldSize.x; x++)
 		{
-			for (int z = 0; z < WorldSize.z; z++)
+			for (int z = 0; z <= WorldSize.z; z++)
 			{
-				for (int y = 0; y < WorldSize.y; y++)
+				for (int y = 0; y <= WorldSize.y; y++)
 				{
 					LoadChunk(new Vector3Int(x, y, z));
 				}

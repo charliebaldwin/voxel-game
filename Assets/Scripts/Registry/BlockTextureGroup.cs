@@ -20,14 +20,16 @@ public abstract class BlockTextureGroup
     }
     public virtual int[] GetRandomIndices(int seed)
     {
-        int len = Textures.Count;
+        int len = TextureIndices.Count;
+        int i = TextureIndices[0];
         return (new int[6] {
-            TextureIndices[(seed) % len],
-            TextureIndices[(seed+1) % len],
-            TextureIndices[(seed+2) % len],
-            TextureIndices[(seed+3) % len],
-            TextureIndices[(seed+4) % len],
-            TextureIndices[(seed+5) % len]
+            i,i,i,i,i,i
+            // TextureIndices[(seed+6) % len],
+            // TextureIndices[(seed+1) % len],
+            // TextureIndices[(seed+2) % len],
+            // TextureIndices[(seed+3) % len],
+            // TextureIndices[(seed+4) % len],
+            // TextureIndices[(seed+5) % len]
         }).ToArray<int>();
 
     }

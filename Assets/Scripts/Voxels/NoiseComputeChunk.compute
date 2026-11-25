@@ -1,0 +1,191 @@
+
+
+#include "Packages/jp.keijiro.noiseshader/Shader/SimplexNoise3D.hlsl"
+#include "Packages/jp.keijiro.noiseshader/Shader/ClassicNoise3D.hlsl"
+#include "Assets/Art/Shaders/Hash.hlsl"
+#include "Assets/Art/Shaders/ErosionTerrain.hlsl"
+#include "Assets/Art/Shaders/GaussianBlur.hlsl"
+
+// KERNELS
+#pragma kernel InitialHeight
+
+
+// BUFFERS
+RWStructuredBuffer<float> NoiseBuffer;
+RWStructuredBuffer<int> VoxelBufferW;
+RWStructuredBuffer<int> VoxelBufferR;
+RWStructuredBuffer<float3> SoilBuffer;
+RWStructuredBuffer<int> RandomBuffer;
+
+// SETTINGS
+int3 WorldSize;
+int3 WorldOrigin;
+
+int3 ThreadCount;
+int3 ThreadSize;
+int3 ThreadGroups;
+
+int Seed;
+
+float3 Scale;
+int Octaves; 
+float OctaveStrength;
+float OctaveScale;
+
+float CaveWidth;
+
+float remap(float value, float originMin, float originMax, float destinationMin, float destinationMax) {
+    return destinationMin + (value - originMin) * (destinationMax - destinationMin) / (originMax - originMin);
+}
+float smoothstep(float x) {
+    float t = clamp(x / 1, 0, 1);
+    return t * t * (3-2*t);
+}
+float noise(float3 p, int seed, float3 scale, int octaves, float octaveStrength, float octaveScale) {
+    float result = 0;
+    float str = 1;
+    float3 scaleO = scale;
+
+    float3 seedP = hash31(seed+1); 
+
+    for (int o = 0; o < octaves; o++)
+    {    
+        result += str * SimplexNoise(p * scaleO + seedP);
+        str *= octaveStrength;
+        scaleO *= octaveScale;
+    }
+    return 0.5 + 0.5 * result;
+}
+int flatIndex(int x, int y, int z) {
+    return x + WorldSize.x * y + WorldSize.x * WorldSize.y * z;
+} 
+int flatIndex2D(int x, int z) {
+    return x + WorldSize.x * z;
+}
+
+const float4x4 gaussianMat =   {{ 0.00000067, 0.00002292, 0.00019117, 0.00038771},
+                                { 0.00002292, 0.00078633, 0.00655965, 0.01330373},
+                                { 0.00019117, 0.00655965, 0.05472157, 0.11098164},
+                                { 0.00038771, 0.01330373, 0.11098164, 0.22508352}};
+ 
+float getHeight(float3 p) {
+    float big = noise(float3(p) + WorldOrigin, Seed + 1000, Scale * 0.2, Octaves, OctaveStrength * 0.8, OctaveScale);
+    //h1 = pow(h1, 2);
+    big = smoothstep(smoothstep(big));
+    big *= 80;
+
+    float mask_big = noise(p + float3(0,500,0) + WorldOrigin, Seed + 1000, Scale * .15, Octaves, 0.4* OctaveStrength, 1.2 * OctaveScale);
+    mask_big = smoothstep(mask_big);
+    big *= mask_big;
+
+    float med = noise(float3(p) + WorldOrigin, Seed + 2000, Scale * .4, Octaves, 0.6 * OctaveStrength, OctaveScale);
+    med *= 15;
+
+    float small = noise(float3(p) + WorldOrigin, Seed + 100, Scale * 1, Octaves, OctaveStrength, OctaveScale);
+    small *= 13;
+    float mask_small = noise(float3(p) + WorldOrigin, Seed + 870, Scale * .7, Octaves, 0.8 * OctaveStrength, 0.8 * OctaveScale);
+    mask_small = smoothstep(smoothstep(smoothstep(mask_small)));
+    small *= mask_small;
+
+
+    return 35 + 0.8 * (big + med + small);
+}
+
+uint3 GetStartP(uint3 id, uint3 threadSize) {
+    return uint3(   id.x * ThreadSize.x,
+                    id.y * ThreadSize.y,
+                    id.z * ThreadSize.z) + uint3(WorldOrigin);
+}
+uint3 GetEndP(uint3 startP, uint3 threadSize) {
+    return uint3(   startP.x + ThreadSize.x,
+                    startP.y + ThreadSize.y,
+                    startP.z + ThreadSize.z);
+}
+float GetSlope(uint x, uint z, int r) {
+    // float h_o = NoiseBuffer[flatIndex(x, y, z)];
+    // float h_nx = NoiseBuffer[flatIndex(clamp(x-r, 0, WorldSize.x), y, z)];
+    // float h_px = NoiseBuffer[flatIndex(clamp(x+r, 0, WorldSize.x), y, z)];
+    // float h_nz = NoiseBuffer[flatIndex(x, y, clamp(z-r, 0, WorldSize.z))];
+    // float h_pz = NoiseBuffer[flatIndex(x, y, clamp(z+r, 0, WorldSize.z))];   
+
+    float h_o = NoiseBuffer [flatIndex2D(x, z)];
+    float h_nx = NoiseBuffer[flatIndex2D(clamp(x-r, 0, WorldSize.x), z)];
+    float h_px = NoiseBuffer[flatIndex2D(clamp(x+r, 0, WorldSize.x), z)];
+    float h_nz = NoiseBuffer[flatIndex2D(x, clamp(z-r, 0, WorldSize.z))];
+    float h_pz = NoiseBuffer[flatIndex2D(x, clamp(z+r, 0, WorldSize.z))];   
+
+    float dx = abs(h_o - h_nx) + abs(h_o - h_px);
+    float dz = abs(h_o - h_nz) + abs(h_o - h_pz);
+    return 1 * (dx + dz);
+}
+float GetBlurredH(uint x, uint z, int r) {
+
+    float sum = NoiseBuffer[flatIndex2D(x, z)]; 
+    
+    int i0 = x - r;
+    int i1 = x + r;
+    int j0 = z - r;
+    int j1 = z + r;
+
+    int n=0;
+    float w;
+    for (int i=i0; i<i1; i++) { 
+        for (int j=j0; j<j1; j++) {
+            n++;
+            float sample = NoiseBuffer[flatIndex2D(clamp(i,0,WorldSize.x),clamp(j,0,WorldSize.z))];
+            float dist = distance(float2(x,z), float2(i,j));
+            float weight = ((r-dist)/r);
+            // sum = lerp(sum, sample, pow(clamp((r - dist)/r, 0, 1), 4));
+
+            sum += sample * weight;
+            w += weight;
+            // float str = clamp(dot(float2(x,z), float2(i,j)),0,1);
+            // sum = lerp(sum, sample, str);
+            //sum = (sum + sample) / 2;
+        }
+    }
+    return sum / w;
+
+    // float h_o = NoiseBuffer [flatIndex2D(x, z)];
+    // float h_nx = NoiseBuffer[flatIndex2D(clamp(x-r, 0, WorldSize.x), z)];
+    // float h_px = NoiseBuffer[flatIndex2D(clamp(x+r, 0, WorldSize.x), z)];
+    // float h_nz = NoiseBuffer[flatIndex2D(x, clamp(z-r, 0, WorldSize.z))];
+    // float h_pz = NoiseBuffer[flatIndex2D(x, clamp(z+r, 0, WorldSize.z))];   
+
+    // return (h_o + h_nx + h_px + h_nz + h_pz) / 5;
+}
+
+
+
+[numthreads(1,16,1)]
+void InitialHeight (uint3 id : SV_GroupID)
+{ 
+    int x = id.x;
+    int z = id.z;
+    float3 p = float3(x,1,z);
+//getHeight(p + WorldOrigin);
+    for (int y = 0; y < 16; y++) {
+
+        int3 worldP = int3(id.x, y, id.z) + WorldOrigin;
+        float h = noise(worldP, Seed, Scale * 0.2, Octaves, OctaveStrength, OctaveScale);
+        if (h < 0.5) {
+            if (worldP.y < 8) { 
+                VoxelBufferW[flatIndex(id.x, y, id.z)] = 2;
+            }
+            else {
+                VoxelBufferW[flatIndex(id.x, y, id.z)] = 1;
+            }
+        } else {
+            VoxelBufferW[flatIndex(id.x, y, id.z)] = 0;
+        }
+        // for (uint y = startY; y < startY + ThreadSize.y; y++) {
+        //     NoiseBuffer[flatIndex(x, y, z)] = h;
+        // }
+    }
+ 
+
+     
+    //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+}
+
+

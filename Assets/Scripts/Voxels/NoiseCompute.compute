@@ -30,6 +30,7 @@ int3 WorldOrigin;
 
 int3 ThreadCount;
 int3 ThreadSize;
+int3 ThreadGroups;
 int Seed;
 
 float3 Scale;
@@ -62,10 +63,10 @@ float noise(float3 p, int seed, float3 scale, int octaves, float octaveStrength,
     return 0.5 + 0.5 * result;
 }
 int flatIndex(int x, int y, int z) {
-    return x + WorldSize.x * y + WorldSize.x * WorldSize.y * z;
+    return (x - WorldOrigin.x) + WorldSize.x * (y - WorldOrigin.y) + WorldSize.x * WorldSize.y * (z - WorldOrigin.z);
 } 
 int flatIndex2D(int x, int z) {
-    return x + WorldSize.x * z;
+    return (x - WorldOrigin.x) + WorldSize.x * (z * WorldOrigin.z);
 }
 
 const float4x4 gaussianMat =   {{ 0.00000067, 0.00002292, 0.00019117, 0.00038771},
@@ -99,36 +100,13 @@ float getHeight(float3 p) {
 uint3 GetStartP(uint3 id, uint3 threadSize) {
     return uint3(   id.x * ThreadSize.x,
                     id.y * ThreadSize.y,
-                    id.z * ThreadSize.z);
+                    id.z * ThreadSize.z) + uint3(WorldOrigin);
 }
 uint3 GetEndP(uint3 startP, uint3 threadSize) {
     return uint3(   startP.x + ThreadSize.x,
                     startP.y + ThreadSize.y,
                     startP.z + ThreadSize.z);
 }
-
-[numthreads(8,8,8)]
-void InitialHeight (uint3 id : SV_DispatchThreadID)
-{ 
-    uint3 startP = GetStartP(id, ThreadSize);
-    uint3 endP = GetEndP(startP, ThreadSize);
-
-    for (uint x = startP.x; x < endP.x; x++) {
-        for (uint z = startP.z; z < endP.z; z++) {
-                            
-            float3 p = float3(x,1.0,z);
-            float h = getHeight(p);
-            NoiseBuffer[flatIndex2D(x,z)] = h;
-            // for (uint y = startY; y < startY + ThreadSize.y; y++) {
-            //     NoiseBuffer[flatIndex(x, y, z)] = h;
-            // }
-
-        }
-    }
-     
-    //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
-}
-
 float GetSlope(uint x, uint z, int r) {
     // float h_o = NoiseBuffer[flatIndex(x, y, z)];
     // float h_nx = NoiseBuffer[flatIndex(clamp(x-r, 0, WorldSize.x), y, z)];
@@ -184,7 +162,32 @@ float GetBlurredH(uint x, uint z, int r) {
 }
 
 
-[numthreads(8,8,8)]
+
+[numthreads(8,16,8)]
+void InitialHeight (uint3 id : SV_DispatchThreadID)
+{ 
+    uint3 startP = GetStartP(id, ThreadSize);
+    uint3 endP = GetEndP(startP, ThreadSize);
+
+    for (uint x = startP.x; x < endP.x; x++) {
+        for (uint z = startP.z; z < endP.z; z++) {
+                            
+            float3 p = float3(x,1.0,z);
+            float h = getHeight(p);
+            NoiseBuffer[flatIndex2D(x,z)] = h;
+            // for (uint y = startY; y < startY + ThreadSize.y; y++) {
+            //     NoiseBuffer[flatIndex(x, y, z)] = h;
+            // }
+
+        }
+    }
+     
+    //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+}
+
+
+
+[numthreads(8,16,8)]
 void PostProcess(uint3 id : SV_DispatchThreadID)
 { 
     
@@ -285,7 +288,7 @@ void PostProcess(uint3 id : SV_DispatchThreadID)
     
 }
 
-[numthreads(8,8,8)]
+[numthreads(8,16,8)]
 void SetStone(uint3 id : SV_DispatchThreadID)
 { 
     
@@ -357,7 +360,7 @@ void SetStone(uint3 id : SV_DispatchThreadID)
     }
 }
 
-[numthreads(8,8,8)]
+[numthreads(8,16,8)]
 void ErodeSurface(uint3 id : SV_DispatchThreadID)
 { 
     uint3 startP = GetStartP(id, ThreadSize);
@@ -399,7 +402,7 @@ void ErodeSurface(uint3 id : SV_DispatchThreadID)
     }
 }
 
-[numthreads(8,8,8)]
+[numthreads(8,16,8)]
 void AddSoilLayer(uint3 id : SV_DispatchThreadID)
 { 
     uint3 startP = GetStartP(id, ThreadSize);
@@ -435,7 +438,7 @@ void AddSoilLayer(uint3 id : SV_DispatchThreadID)
     }   
 }
 
-[numthreads(8,8,8)]
+[numthreads(8,16,8)]
 void AddWater(uint3 id : SV_DispatchThreadID)
 { 
     const int WATER_ID = 15;
@@ -454,7 +457,7 @@ void AddWater(uint3 id : SV_DispatchThreadID)
     }
 }
 
-[numthreads(8,8,8)]
+[numthreads(8,16,8)]
 void RandomInt(uint3 id : SV_DispatchThreadID)
 { 
     uint3 startP = GetStartP(id, ThreadSize);
@@ -470,7 +473,7 @@ void RandomInt(uint3 id : SV_DispatchThreadID)
     }
 }
 
-[numthreads(8,8,8)]
+[numthreads(8,16,8)]
 void AddTrees(uint3 id : SV_DispatchThreadID)
 { 
     
@@ -511,7 +514,7 @@ void AddTrees(uint3 id : SV_DispatchThreadID)
 }
 
 
-[numthreads(8, 8, 8)]
+[numthreads(8,16,8)]
 void GenerateNoiseCaves(uint3 id : SV_DispatchThreadID)
 {
     uint startX = id.x * ThreadSize.x;

@@ -203,7 +203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7c3e5e967cd5684b8efe2fd1c685a2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VoxelGenerator
-  NoiseCS: {fileID: 7200000, guid: c38731ca5e06507439d8865f3f4b63e3, type: 3}
+  NoiseCS: {fileID: 7200000, guid: 6b417893ccf5415469fff1b22cb132bd, type: 3}
   worldSize: {x: 96, y: 144, z: 96}
   Scale: 0.02
   HeightRange: 2

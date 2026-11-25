@@ -31,6 +31,11 @@ public class Registry : SerializedScriptableObject
     };
     public Material TargetMaterial;
 
+
+    public void Initialize()
+    {
+        SetInstance();
+    }
     public static Registry Instance;
     //[Button]
     private void SetInstance()
